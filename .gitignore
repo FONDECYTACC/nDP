@@ -84,3 +84,6 @@ renv/*
 renv.lock
 *.dta
 *.txt
+*ssh*
+*id_rsa_*
+*.rar

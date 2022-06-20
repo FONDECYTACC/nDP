@@ -1111,7 +1111,7 @@ girafe_options(gg2_plot, opts_tooltip(placement="auto"), opts_sizing(rescale = T
 ```
 ]
 
-`r knitr::include_url("./_figs/regional1.html", height = "400px")`
+`r knitr::include_url("_figs/regional1.html", height = "400px")`
 
 ]
 ]
@@ -1163,7 +1163,7 @@ girafe_options(gg3_plot, opts_tooltip(placement="auto"), opts_sizing(rescale = T
 ```
 ]
 
-`r knitr::include_url("./_figs/comunal1.html", height = "400px")`
+`r knitr::include_url("_figs/comunal1.html", height = "400px")`
 
 ]
 
