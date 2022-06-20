@@ -1,0 +1,1241 @@
+---
+title: "Assessing the impact of Substance abuse treatment (SUT) on the justice system contact prevention in Chile"
+subtitle: "Reunión ampliada nDP"
+author: "Mariel Mateo & Andrés González"
+date: "`r format(Sys.time()+60*60*24, '%d %B, %Y')`"
+output:
+  xaringan::moon_reader:
+    includes:
+      after_body: ['libs/collapseoutput.js','hideOutput.js', 'zoom.html', 'libs/manualcollapseinput.html'] # collapse-output.html
+    transition: slide
+    lib_dir: libs
+    css: ['xaringan-themer.css', 'animate.min.css', 'ninjutsu']
+    self_contained: true # if true, fonts will be stored locally
+    seal: false # show a title slide with YAML information
+    nature:
+      countdown: 90000 #60 segundos *2
+      highlightStyle: github
+      highlightLines: true # {{}} o * los pondrá como muy importantes  para destacar: # <<
+      slideNumberFormat: '%current%'
+      countIncrementalSlides: false
+      ratio: '16:9' # alternatives '16:9' or '4:3' or others e.g. 13:9
+      navigation:
+        scroll: false # disable slide transitions by scrolling
+---
+
+```{r setup_theme0, include = FALSE}
+rm(list=ls());gc()
+if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
+
+load(paste0(sub("$\\/","",sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",here::here())),"/11_pres.RData"))
+options(servr.daemon = TRUE)
+rm(list=setdiff(ls(), c("CONS_C1_df_dup_SEP_2020", "Base_fiscalia_v5", "db_ser_2022", "rut_enc_saf_jun22")))
+
+```
+
+```{r setup, include = FALSE}
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+
+if(!require(pacman)){install.packages("pacman")}
+pacman::p_load(devtools, here, showtext, ggpattern, RefManageR, pagedown, magick, bibtex, DiagrammeR, xaringan, xaringanExtra, xaringanthemer, fontawesome, widgetframe, datapasta, tidyverse, psych, cowplot, coxphw, future, timereg, flexsurv, pdftools, mstate, showtext, compareGroups, chilemapas, choroplethrAdmin1,  choroplethr, choroplethrMaps, ggiraph, sf, install=F)
+
+if(!require(xaringanBuilder)){devtools::install_github("jhelvy/xaringanBuilder",upgrade = "never")}
+if(!require(icons)){remotes::install_github("mitchelloharawild/icons",upgrade = "never")}
+
+test_fontawesome<- function(x="github"){
+tryCatch({
+  invisible(fontawesome::fa(name = x))
+  return(message("fontawesome installed"))
+},
+# ... but if an error occurs, tell me what happened: 
+error=function(error_message) {
+  message("Installing fontawesome")
+  icons::download_fontawesome()  
+})
+}
+plot_prueba<-barplot(rep(2,9), col=c("#92B6B1", "#fdecef", "#F9C784", "#CAE7B9", "#BDC667", "#B9D8C2", "#591F0A", "#D6FFF6", "#45503B"))
+
+#https://coolors.co/21177a-fe4a17-788aa3-45503b
+style_duo(
+  primary_color = "white",
+  secondary_color = "#21177A",
+  text_color = "#798086",
+  text_bold_color = "#FE4A17", ##92B6B1   #fdecef  #F9C784   ##CAE7B9 ##BDC667 ##B9D8C2 ##591F0A ##D6FFF6 #45503B
+  #base_color = '#aaaaaa',
+#  background_color = 'white',
+  background_position = 'center',
+  header_font_google = google_font("Baloo Bhai 2"),
+  text_font_family = "Rooney Sans",
+  text_font_url = "http://db.onlinewebfonts.com/c/0ec2c5a68270757c2200d436b6904b60?family=MFRooneySans-Regular.css",
+  code_font_google   = google_font("Roboto"),
+  code_font_size = '55%', #sirve
+  padding = "0.4em 2.4em 0.4em 2.4em",
+  extra_fonts = list(google_font("Roboto")),
+  extra_css =
+  list(
+  ".remark-slide-scaler" = list("overflow-y" = "auto"), # para no tener limites de extensión
+ # ".remark-slide-number" = list("display" = "none"), #oculta el reloj también
+ # "pre"= list("line-height"= "0.2em"),
+  ".gray"   = list(color = "#aaaaaa"),
+  ".red"   = list(color = "#A4222B"),
+  ".darkgreen"   = list(color = "#45503B"),
+  ".darkred"   = list(color = "#591F0A"),
+  ".small" = list("font-size" = "90%"),
+  ".pull_c" = list("float" = "center","width" = "30%", "height" = "50%", "padding-left" = "40%"),
+  ".pull_c_title" = list("height" = "90%"),
+  ".pull_l_70" = list("float"= "left","width"= "72%", "font-size"= "90%"),
+  ".pull_r_30" = list("float"= "right","width"= "23%", "font-size"= "90%"),
+  ".pull_left"  = list("float"= "left","width"= "47%", "height"= "100%", "padding-right"= "2%"),
+  ".pull_right" = list("float"= "right","width"= "47%", "height"= "100%", "padding-left"= "2%"),
+  ".small_left"  = list("float"= "left", "width"= "47%", "height"= "50%", "padding-right"= "2%"),
+  ".small_right" = list("float"= "right","width"= "47%", "height"= "50%", "padding-left"= "2%"),
+  ".left_code" = list("float"="left","width"="47%","height"="100%","padding-right"="2%",    "font"="Roboto"),
+  ".code_out"  = list("float"="right","width"="47%","height"="100%","padding-left"="2%",    "font"="Roboto"),
+  ".text_180" = list("font-size" = "180%"),
+  ".text_170" = list("font-size" = "170%"),
+  ".text_160" = list("font-size" = "160%"),    
+  ".text_150" = list("font-size" = "150%"),
+  ".text_140" = list("font-size" = "140%"),  
+  ".text_130" = list("font-size" = "130%"),
+  ".text_120" = list("font-size" = "120%"),
+  ".text_110" = list("font-size" = "110%"),
+  ".text_110" = list("font-size" = "110%"),
+  ".text_100" = list("font-size" = "100%"),
+  ".code_10" = list("code-inline-font-size"= "60%",
+                    "overflow-y" = "scroll !important",
+                    "overflow-x" = "scroll !important",
+                    "max-height" = "5vh !important",
+                    "line-height"= "0.75em"),
+   ".code_10_pre" = list("code-inline-font-size"= "60%",
+                    "overflow-y" = "scroll !important",
+                    "overflow-x" = "scroll !important",
+                    "max-height" = "15vh !important",
+                    "line-height"= "0.75em",
+                    "min-height"="0.5em"
+                    ),
+  ".code_15" = list("code-inline-font-size"= "15%",
+                    "overflow-y" = "scroll !important",
+                    "overflow-x" = "scroll !important",
+                    "max-height" = "10vh !important"),
+  ".text_90" = list("font-size" = "90%"),
+  ".text_80" = list("font-size" = "80%"),
+  ".text_70" = list("font-size" = "70%"),
+  ".text_60" = list("font-size" = "60%"),
+  ".text_50" = list("font-size" = "50%"),
+  ".text_40" = list("font-size" = "40%"),
+  ".text_30" = list("font-size" = "30%"),
+  ".text_20" = list("font-size" = "20%"),
+  ".line_space_11" = list("line-height" = "1.1em;"),
+  ".line_space_15" = list("line-height" = "1.5em;"),
+  ".line_space_09" = list("line-height" = "0.9em;"),
+  ".line_space_07" = list("line-height" = "0.7em;"),
+  ".line_space_05" = list("line-height" = "0.5em;"),
+  ".largest" =  list("font-size" = "2.488em;"),
+  ".larger" =  list("font-size" = "2.074em;"),
+  ".large" =  list("font-size" = "1.44em;"),
+  ".small" =  list("font-size" = "0.833em;"),
+  ".smaller" =  list("font-size" = "0.694em;"),
+  ".smallest" =  list("font-size" = "0.579em;"),
+  ".limity150" = list("max-height" = "150px;",
+                     "overflow-y" = "auto;"
+      ),
+    ".tiny_text" = list(
+      "font-size"= "70%"
+      ),
+    ".large_text" = list(
+      "font-size"= "150%"
+      ),
+    ".slide_blue" = list(
+      "background-color" = "#FEDA3F",
+      "color" = "#3C3C3B"
+      ),
+  ".center_image" = list(
+    margin  = "0",
+    position = "absolute",
+    top      = "50%",
+    left     = "50%",
+    '-ms-transform' = "translate(-50%, -50%)",
+    transform = "translate(-50%, -50%)"
+    ),
+    ".center_down_image" = list(
+    margin  = "0",
+    position = "absolute",
+    top      = "90%",
+    left     = "50%",
+    '-ms-transform' = "translate(-50%, -50%)",
+    transform = "translate(-50%, -50%)"
+    ),
+    "slides > slide" = list(
+    "overflow-x"  = "auto !important",
+    "overflow-y" = "auto !important"
+    ),
+ #   "pre" = list(
+#    "white-space"  = "pre !important",
+#    "overflow-y" = "scroll !important",
+#    "max-height" = "40vh !important",
+#    "font-size" = "0.8em"
+#    ),
+    ".superbigimage" = list(
+    "white-space"  = "nowrap",
+    "overflow-y" = "scroll"
+    )
+  )
+)
+
+#knitr::opts_chunk$set(comment = NA) # lo saqué pa probar por si
+knitr::opts_chunk$set(dpi=1500)
+#options(htmltools.preserve.raw = FALSE)#A recent update to rmarkdown (in version 2.6) changed how HTML widgets are included in the output file to use pandoc's raw HTML blocks. Unfortunately, this feature isn't compatible with the JavaScript markdown library used by xaringan. You can disable this feature and resolve the issue with htmlwidgets in xaringan slides by setting
+#https://stackoverflow.com/questions/65766516/xaringan-presentation-not-displaying-html-widgets-even-when-knitting-provided-t/65768952#65768952
+
+xaringanExtra::use_fit_screen()
+#xaringanExtra::use_progress_bar(color = "#12636B", location = "top")#, height = "550px")
+xaringanExtra::use_animate_css()
+xaringanExtra::use_scribble()
+xaringanExtra::use_tile_view()
+#xaringanExtra::use_webcam()
+#https://gist.github.com/gadenbuie/61b27108ceec6c7a55cd9966609128d7
+
+# padding-top: 0.4em;
+# padding-right: 2.4em;
+# padding-bottom: 0.4em;
+# padding-left: 2.4em;
+invisible("https://www.youtube.com/watch?v=M3skTMQbCD0")
+invisible("https://zane.lol/slides/adirondack/#39")
+#https://titanwolf.org/Network/Articles/Article?AID=3896fe2c-1b3b-4ebd-9906-1f9ed1675b35#gsc.tab=0
+#https://annakrystalli.me/talks/xaringan/xaringan.html#55
+#https://bookdown.org/yihui/rmarkdown/some-tips.html
+#https://arm.rbind.io/slides/xaringan.html#90
+#https://stackoverflow.com/questions/62069400/font-size-of-figure-in-xaringan-slide-too-small
+#https://irene.vrbik.ok.ubc.ca/blog/2021-07-14-xaringan-slides/
+
+#https://evamaerey.github.io/doublecrochet/
+#devtools::install_github("paulhendricks/anonymizer")
+check_code <- function(expr, available){
+  if(available){
+    eval(parse(text = expr))
+  } else {
+    expr
+  }
+}
+path2<-dirname(rstudioapi::getSourceEditorContext()$path)
+
+```
+
+```{r, load_refs, include=F, cache=FALSE}
+library(RefManageR)
+BibOptions(check.entries = FALSE,
+           bib.style = "numeric",
+           cite.style = "numeric",
+           style = "markdown",
+           super = TRUE,
+           hyperlink = FALSE,
+           dashed = FALSE)
+warning(paste0(sub("$\\/","",sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2)),"/_bibs/libreria_generica.txt"))
+
+myBib <- ReadBib(paste0(sub("$\\/","",sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2)),"/_bibs/libreria_generica.txt"), check = FALSE)
+
+invisible("Si no puedo bajar Rooney Sans. Alternativas:")
+font_add(family = "Rooney Sans", paste0(sub("$\\/","",sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2)),"/_style/RooneySansRegular.otf"))
+
+
+```
+
+
+class: title-slide, middle
+
+
+background-image: url(_style/Logo_nDP_monotono_vertical_en.png)
+background-position: top right
+background-size: 20%
+
+<br>
+
+## .text_80[Assessing the impact of Substance abuse treatment (SUT) on the justice system contact prevention in Chile]
+
+<br>
+
+.line_space_11[
+
+
+<br>
+
+.text_70[[Code available in: `r fontawesome::fa(name = "github")`](https://github.com/FONDECYTACC/SUD_health_Chile.github.io)]
+
+.text_110[Propuesta - Concurso Fondo de Investigación Intramural nDP]
+
+]
+
+.bg-text[
+<hr />
+
+`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`
+
+
+.text_100[Mariel Mateo Piñones & Andrés González Santa Cruz]
+
+.text_70[mdmateo@uc.cl]
+.text_70[gonzalez.santacruz.andres@gmail.com] [`r fontawesome::fa(name = "github")`](https://github.com/AGSCL) [`r fontawesome::fa(name = "orcid", fill="green")`](https://orcid.org/0000-0002-5166-9121)
+]
+
+<br>
+
+```{r echo=FALSE, out.width = '15%'}
+knitr::include_graphics('./_style/blank_space.png')
+knitr::include_graphics('./_style/blank_space.png')
+knitr::include_graphics('./_style/blank_space.png')
+knitr::include_graphics('./_style/blank_space.png')
+knitr::include_graphics('./_style/blank_space.png')
+```
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+
+- Mi nombre es andrés gonzález. Soy asistente de investigación del proyecto que lidera Alvaro Castillo
+- En esta instancia haré un resumen de una idea de investigación que dirige mi compañera Mariel Mateo, que en esta instancia no se encuentra disponible debido a diferencias de horario. Se encuentra en Australia.
+
+---
+layout: true
+class: animated, fadeIn
+---
+## Antecedentes
+
+- Los trastornos por uso de sustancias (TUS) requieren un abordaje **multidimensional** $`r Cite(myBib, c("Stephen2012","RN266" ))`$.
+
+- Reducir el uso se asocia a una reducción de la actividad criminal $`r Cite(myBib, "prendergast2006")`$.
+
+- **“puerta giratoria”** $`r Cite(myBib, c("White2012","Valenzuela2012","Sullivan2019"))`$.
+
+- **Evidencia:** Países desarrollados, muestras pequeñas, modalidades específicas de tratamiento, determinados perfiles de usuarios de drogas, etc. $`r Cite(myBib, c("Krebs2008","Burdon2007", "Teesson2015" ))`$
+
+- Completar el tratamiento: Uno de los criterios más utilizados para evaluar efectividad $`r Cite(myBib, c("Eastwood2018","Brorson2013"))`$.
+
+
+.center[
+.darkred[
+**¿Mismo contexto que en nuestro país /región?**
+]
+]
+
+---
+## Antecedentes (2)
+
+- Perfiles de consumo distintos  $`r Cite(myBib, c("Pacurucu2019","Reyes2013","Silva2009", "Castro2021"))`$ 
+
+- Chile, caso de interés, sistemas de monitoreo de tratamientos más antiguos en la región $`r Cite(myBib, c("Marin2018"))`$ 
+
+- Cambios en patrones de contactos con el sistema de justicia y tratamiento TUS $`r Cite(myBib, c("Castillo2015"))`$
+
+- Los tratamientos no sobran: Brecha de acceso: 1:10 usuarios tratados por TUS (13° Estudio Nacional de uso de Sustancias en Población General 2018) $`r Cite(myBib, c("nuevo1"))`$.
+
+- Chile, desafíos en materia de **evaluación efectividad de tratamientos** $`r Cite(myBib, c("nuevo2"))`$. (DIPRES-ISUC, 2020)
+
+- Completar tratamiento ~ readmisión tratamientos TUS (Chile) $`r Cite(myBib, c("Olivari2021"))`$.
+
+
+.center[
+.darkgreen[
+**¿qué ocurre con los contactos con el sistema de justicia?**
+]
+]
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+
+
+---
+class: center, middle
+
+## Objetivos
+
+Examinar el impacto de tratamientos por uso de sustancias en la prevención del contacto con el sistema judicial en Chile, en el corto (3 a 6 meses), medio (1 año) y largo plazo (3 años)
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- Nuestra hipótesis es que los pacientes que completan tendrán una probabilidad más baja de contactos con el sistema judicial en comparación con los que no completan, aunque este efecto disminuya a medida que el tiempo pasa.
+
+---
+## Estructura de datos
+
+- Estructura hipotética
+
+.details-code[
+
+```{r p1-est, eval=T, echo=T, warning=FALSE, include=T, paged.print=TRUE, fig.align="center", fig.width = 7, fig.height = 5, out.width="50%", out.height="50%", error=T, dpi=750, fig.showtext=T}
+
+# Libraries
+library(ggplot2)
+
+set.seed(2125)
+# Create data
+data <- data.frame(
+  y=abs(rpois(1:250,15)),
+  y2=abs(rpois(1:250,15))
+) %>% 
+  dplyr::filter(y2>y, y>=8, y2<=22) %>%
+  dplyr::mutate(Paciente=row_number()) %>% 
+  #filtrar tratamientos más largos que 3 años
+  dplyr::mutate(diff_treat=y2-y) %>% 
+  dplyr::filter(diff_treat<=3)
+
+for (i in 1:nrow(data)){
+   data$y3[i]<-base::sample(x=seq(from=data$y2[i]+1,to=22),1)
+   data$y3[i]<-ifelse(data$y3[i]<=data$y2[i],22,data$y3[i])
+   data$y3[i]<-ifelse(data$y3[i]>=23,22,data$y3[i])
+   data$y4[i]<-ifelse(!is.na(data$y3[i]),base::sample(x=seq(from=data$y3[i]+1,to=22),1),22)
+   data$y4[i]<-ifelse(data$y4[i]<=data$y3[i],22,data$y4[i])
+   data$y4[i]<-ifelse(data$y4[i]>=23,22,data$y4[i])
+}
+
+
+set.seed(2125)
+pac_aleatorio1<-sample(1:max(data$Paciente),40)
+pac_aleatorio2<-setdiff(sample(1:max(data$Paciente),40), pac_aleatorio1)
+# Horizontal version, antes era 1985
+end_plot<-20
+
+fig_trans<-ggplot(data) 
+  ###>=10
+  #datos de tratamiento en periodo de seguimiento, posterior al 2010
+fig_trans<-try(fig_trans+geom_segment(data=dplyr::filter(data,y>=10,y2<=end_plot), aes(x=Paciente, xend=Paciente, y=y, yend=y2), color="#21177A", alpha=.6, size=.8))
+  #datos de tratamiento en periodo de seguimiento, exceden el seguiemiento. linea entera hasta el 2020
+fig_trans<-try(fig_trans+ geom_segment(data=dplyr::filter(data,y>=10,y2>end_plot), aes(x=Paciente, xend=Paciente, y=y, yend=end_plot), color="#21177A", alpha=.6, size=.8))
+  #datos de tratamiento en periodo de seguimiento, exceden el seguiemiento. linea entrecortada despues del 2020
+fig_trans<-try(fig_trans+geom_segment(data=dplyr::filter(data,y>=10,y2>end_plot), aes(x=Paciente, xend=Paciente, y=end_plot, yend=y2), color="#21177A", alpha=.6, linetype="dotted", size=.8))
+  ###<10
+  #datos de tratamiento en periodo de seguimiento, exceden el seguiemiento. linea entrecortada despues del 2020
+fig_trans<-try(fig_trans+geom_segment(data=dplyr::filter(data,y<10), aes(x=Paciente, xend=Paciente, y=y, yend=10), color="#21177A", alpha=.6, linetype="dotted", size=.8))
+  #datos de tratamiento en periodo de seguimiento, menos de 2010 pero sólo y1
+fig_trans<-try(fig_trans+geom_segment(data=dplyr::filter(data,y<10,y2>=10,y2<=end_plot), aes(x=Paciente, xend=Paciente, y=10, yend=y2), color="#21177A", alpha=.6,  size=.8))
+  #datos de tratamiento en periodo de seguimiento, exceden el seguiemiento. linea entera hasta el 2020
+# fig_trans<-try(fig_trans+geom_segment(data=dplyr::filter(data,y<10,y2>end_plot), aes(x=Paciente, xend=Paciente, y=10, yend=end_plot), color="#21177A", alpha=.6, size=.8))
+# CONTACTO: VICTIMARIO: debo saber si y3 está dentro o no del seguimiento
+  ###>=10
+  #datos de justicia en periodo de seguimiento, linea solida
+fig_trans<-try(fig_trans+geom_segment(data=dplyr::filter(data,y3<=end_plot, y4<=end_plot, Paciente%in% pac_aleatorio1), aes(x=Paciente, xend=Paciente, y=y3, yend=y4), color="#FE4A17", alpha=.6, size=.8))
+  #datos de justicia en periodo de seguimiento, exceden el seguiemiento pero parten en él. linea solida hasta el 2020
+fig_trans<-try(fig_trans+geom_segment(data=dplyr::filter(data,y3<=end_plot, y4>end_plot, Paciente%in% pac_aleatorio1), aes(x=Paciente, xend=Paciente, y=y3, yend=end_plot), color="#FE4A17", alpha=.6, size=.8))
+#si estoy dentro de los datos en y, peroen end plot no, tengo q hacer el interlineado afuera
+fig_trans<-try(fig_trans+geom_segment(data=dplyr::filter(data,y3<=end_plot, y4>end_plot, Paciente%in% pac_aleatorio1), aes(x=Paciente, xend=Paciente, y=end_plot, yend=y4), color="#FE4A17", alpha=.6,linetype="dotted",  size=.8))
+  #datos de tratamiento en periodo de seguimiento, exceden el seguiemiento. linea entrecortada despues del 2020
+ fig_trans<-try(fig_trans+geom_segment(data=dplyr::filter(data,y3>end_plot, y4>end_plot, Paciente%in% pac_aleatorio1), aes(x=Paciente, xend=Paciente, y=y3, yend=y4), color="#FE4A17", alpha=.6, linetype="dotted", size=.8))
+
+ fig_trans_final<-
+   #Puntos
+fig_trans+
+     #Tratamientos completados
+    geom_point(data=dplyr::filter(data,Paciente%in% sample(c(pac_aleatorio1,pac_aleatorio2),15)), aes(x=Paciente, y=y2), color="#21177A", size=3, alpha=.6) +
+     #Victimario
+    geom_point(data=dplyr::filter(data,Paciente%in% pac_aleatorio1), aes(x=Paciente, y=y3), color="#FE4A17", size=3, alpha=.6, shape=15)+
+    #víctima (no necesita tiempo de seguimiento)
+     geom_point(data=dplyr::filter(data,Paciente%in% pac_aleatorio2), aes(x=Paciente, y=y3), color="#FE4A17", size=3, alpha=.6, shape=17)+
+    theme_light() +
+    coord_flip() +
+    #fechas donde yo tomo gente
+     annotate("rect", xmin=-Inf, xmax=Inf, ymin=10, ymax=10.5,
+          alpha = .2, fill="blue")+
+    annotate("rect", xmin=-Inf, xmax=Inf, ymin=19.5, ymax=20,
+          alpha = .2, fill="blue")+
+    theme(
+      panel.grid.major.y = element_blank(),
+      panel.border = element_blank(),
+      axis.ticks.y = element_blank()
+    )+
+    scale_x_continuous(breaks=seq(1,max(data$Paciente),by=10))+
+    scale_y_continuous(breaks=seq(min(data$y),max(data$y4),by=2), labels=seq(min(data$y),max(data$y4),by=2)+2000)+
+   labs(y="Tiempo de seguimiento (en trimestres)", x="Individuos (ID)")+
+  #labs(y="Follow-up (in quarters)",x="Individual(ID)", caption="Note. Dot= Complete treatment;\nSquare= Contact w/ justice system (imputed);\nTriangle= Contact w/ justice system (victim);\nBlue line= Time in treatment;\nOrange line= Time in conctact w/justice system;\nShared area=Follow-up window")+
+  theme(plot.caption = element_text(hjust = 0, face= "italic"))
+ 
+
+ ggsave(paste0(sub("$\\/","",sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2)),"/_figs/situacion_hipotética.png"),fig_trans_final,width = 7, height = 5, dpi = 600)
+
+fig_trans_final
+```
+
+]
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+
+- La figura muestra distintas trayectorias de la cohorte. Incluye personas con y sin contactos con el sistema judicial. La entrada de paciente a la cohorte retrospectiva empieza a la fecha en que es admitido por primera vez en un tratamiento por uso de sustancias enn el período de 2010-2019 y figura en las listas anuales del SENDA al 2010 al 2019 (independientemente si tienen tratamientos previos).
+
+- **Punto**= Completa tratamiento;**Cuadrado**= Contacto con el sistema judicial como imputado;**Triángulo**= Contacto con el sistema judicial como víctima;**Area sombreada**: Ventana de seguimiento;**Línea Naranja**=Tiempo de contacto con el sistema judicial;**Azul**=Tiempo en tratamiento
+
+- **Censura administrativa**: entrega información SENDA (2019-11-13), 
+- Otra censura ocurre después que se produce un evento de resultado competidor
+- Cuando un paciente deja la cohorte sin experimentar resultados (ej, si se va fuera del país). 
+- **Eventuales competidores**: tiempo en tratamiento (especialmente residenciales) o una sentencia **aunque debemos ver si es posible conocer este tiempo de censura**
+
+---
+# Métodos
+
++ SENDA, más cobertura tratamientos por TUS 
+  - Define estándares
+  - Compra
+  - Supervisa $`r Cite(myBib,"RN143")`$
++ ~15.000 adultos/año y monitorea trat. públicos (~73%) $`r Cite(myBib,c("RN155","RN216"))`$
++ 2009, SISTRAT
+
++ 2010-2019, ~85.000 usuarios (n~ 110.000 registros)
+
++ Pareado con datos de fiscalía (~560,000 registros), para ~75.000 usuarios
+
++ Análisis de supervivencia
+
+  - Modelos de aceleración (AFT)
+
+$$logT=-\beta X+W$$ 
+
+$$log\lambda(t|z)=log\lambda_0(te^{-z^T\beta})$$
+
+
+
+.superbigimage[
+.text_50[
+$$readmisión\,|\,contacto\,con\,el\,sistema\,de\,justicia\sim \alpha+ X_{1 (Completa\,el\,tratamiento\,por\,uso\,de\,sustancias)}+X_{2 (Covariables)}+\epsilon$$
+
+]
+]
+
+<br>
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+
+ (si es imputado, se buscará condena y se asumirá como riesgo competidor )
+- https://journals.sagepub.com/doi/full/10.1177/09622802211041759
+- Pang M, Platt RW, Schuster T, Abrahamowicz M. Flexible extension of the accelerated failure time model to account for nonlinear and time-dependent effects of covariates on the hazard. Statistical Methods in Medical Research. 2021;30(11):2526-2542. doi:10.1177/09622802211041759
+
+- **factor de aceleración** Los modelos AFT asumen que los efectos de las covariables son constantes y multiplicativos en la escala de tiempo. Ese efecto se denomina factor de aceleración, que representa la razón de supervivencia correspondiente a cualquier valor fijado de tiempo de supervivencia.
+- De otra manera, TR/AFT puede verse como el tiempo de supervivencia esperado, o el tiempo mediano de supervivencia de la población 2 es c veces lo mismo que el de la población 1. O razón de sobrevida calculada bajo distintas condiciones, para cualquier tiempo fijo t.
+
+- **La velocidad en que dura libre de un evento, por lo que menor a 1 es malo si el evento es indeseado y viceversa**
+- **No asume que los riesgos son proporcionales en el tiempo en los distintos grupos**
+
+- Se ejemplifica con un modelo Lognormal: $log\lambda(t|z)=log\lambda_0(te^{-z^T\beta})$
+
+**Plan de análisis**
+- Se imputarán algunas variables con casos perdidos.
+- Es necesario tener en cuenta que en algunos casos no se tendrá información exacta del tiempo en que se produce el evento y las características de él (¿Cuándo empieza a regir?, ¿Se podrá aplicar?)
+- Puede existir un período de incubación que haga menos informativa una determinada forma de supervivencia.
+
+---
+## Planificación
+
+<br>
+
+.details-code[
+
+```{r fig-gantt, echo=T, cache= T, paged.print=TRUE, dpi = 720, fig.align="center",error=T, fig.cap="Figure. Gantt", error=T, out.width="50%", out.height="50%", warning=F,fig.showtext=T, fig.height=5, fig.width=8}
+if(isTRUE(getOption('knitr.in.progress'))==T){
+  path<-path2
+} else {
+  #path<-ifelse(!grepl("$\\/",path2),paste0(path2,"/"),path2)
+}
+
+#"Progress report"
+tasks <- c("Review literature", "Mung data (linkage & standardization)", "Stats analysis", "Progress report", "Final arrangements", "Manuscript ready for submission", "Presentation in scientific meetings")
+
+tasks <- c("Revisión de la literatura", "Vinculación y estandarización de datos", "Análisis estadístico", "Reporte de progreso", "Arreglos finales", "Manuscrito publicable", "Presentación en congresos/seminarios")
+
+invisible(Sys.setlocale(category = "LC_ALL", locale = "spanish"))
+
+dfr <- data.frame(
+  name        = factor(tasks, levels = tasks),
+  start.date  = as.Date(c("2022-06-12", "2022-06-12", "2022-10-01", "2023-01-01", "2023-04-01","2023-04-01","2023-04-01")),
+  end.date    = as.Date(c("2022-09-30", "2022-10-31", "2023-02-28", "2023-03-30","2023-06-30","2023-06-30","2023-06-30")),
+  Critical = c("Yes", "No", "Yes", "Yes", "No", "Yes", "Yes"),
+  Actor= factor(c("MM & AGS","AGS","AGS & MM", "MM & AGS", "MM & AGS", "MM & AGS", "MM & AGS"))
+)
+for (i in 1:nrow(dfr)){
+  dfr$mean_date[i]<-as.Date(mean(c(as.numeric(dfr$start.date[i]),as.numeric(dfr$end.date[i])),na.rm=T),origin="1970-01-01")
+} 
+dfr$mean_date<-as.Date(dfr$mean_date, origin="1970-01-01")
+
+size_gplot<- 13/3
+
+
+ggant<-
+ggplot(dfr, aes(x =start.date, xend= end.date, y=factor(name, levels = rev(levels(name))), yend = factor(name, levels = rev(levels(name))))) +
+  geom_segment(size = size_gplot*3.5,colour="#45503B") +
+  #scale_color_manual(values=c("gray70","gray30"))+# #FE4A17 ##21177A
+  scale_color_manual(values="#FE4A17")+# #FE4A17 ##21177A
+  scale_fill_manual(values="#FE4A17")+# #FE4A17 ##21177A
+  xlab(NULL) + ylab(NULL)+
+  theme_minimal()+
+  geom_label(data=dfr, aes(x=mean_date, y=factor(name, levels = rev(levels(name))),  label = Actor), size=size_gplot*1, color="gray40",show.legend=F#,
+             #nudge_x = c(-300, -200, -200, -100)
+             ) +
+    scale_x_date(date_breaks = "2 months",date_labels="%b '%y",limits=c(as.Date("2022-06-01"),as.Date("2023-07-02")))+
+      theme(axis.text.x= element_text(size=size_gplot*2.692),
+          axis.text.y= element_text(size=size_gplot*2.692),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        title = element_blank(),
+        legend.title =  element_blank(),
+        legend.text =  element_blank(),
+        plot.caption = element_text(hjust=0, size=size_gplot*2.308),
+        legend.position=c(.83,.8)#,
+   # panel.grid.minor = element_blank(), 
+   # panel.grid.major = element_blank(),
+   # panel.grid.major.x = element_blank(),
+  #  panel.background = element_blank()
+  )+
+  labs(caption="MM= Mariel Mateo; AGS= Andrés González")
+
+invisible("Para exportar a formato .png")
+
+size_gplot2<- 13
+
+ggant2<-
+ggplot(dfr, aes(x =start.date, xend= end.date, y=factor(name, levels = rev(levels(name))), yend = factor(name, levels = rev(levels(name))), pattern_fill = Actor, label=Actor)) +
+  geom_segment(size = size_gplot2*1.2) +
+  #scale_color_manual(values=c("gray70","gray30"))+# #FE4A17 ##21177A
+  scale_color_manual(values=,"#FE4A17")+# #FE4A17 ##21177A
+  xlab(NULL) + ylab(NULL)+
+  theme_minimal()+
+  geom_label(data=dfr, aes(x=mean_date, y=factor(name, levels = rev(levels(name))),  label = Actor), size=size_gplot2, color="gray20",show.legend=F#,
+             #nudge_x = c(-300, -200, -200, -100)
+             ) +
+    scale_x_date(date_breaks = "2 months",date_labels="%b '%y",limits=c(as.Date("2022-06-01"),as.Date("2023-07-02")))+
+      theme(axis.text.x= element_text(size=size_gplot2*2.692),
+          axis.text.y= element_text(size=size_gplot2*2.692),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        title = element_blank(),
+        legend.title =  element_blank(),
+        legend.text =  element_blank(),
+        plot.caption = element_text(hjust=0, size=size_gplot2*2.308),
+        legend.position=c(.83,.8)#,
+   # panel.grid.minor = element_blank(), 
+   # panel.grid.major = element_blank(),
+   # panel.grid.major.x = element_blank(),
+  #  panel.background = element_blank()
+  )+
+  labs(caption="MM= Mariel Mateo; AGS= Andrés González")
+
+ggsave(paste0(sub("$\\/","",sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2)),"/_figs/gantt.png"),ggant2, width = 8, height = 2, dpi = 400)
+ggant
+```
+
+]
+
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- TEÖRICO: Familiarizarnos con terminología jurídica, modalidades de condena, etc.
+- Note. Rel.= Relationships or the combination of a victim (Vic), an offender (Imp), a judicial cause (RUC).
+- Definir una unidad de análisis: ¿la relación (combinación específica de una determinada víctima, un imputado y para una determinada causa), la causa judicial (desde la cual se inician procedimientos y que agrupa relaciones)?
+- Para ello es necesario estar seguro si distintas relaciones conllevan a distintas condenas, y si en una causa se puede figurar y discriminar entre el rol de un usuario como imputado y como víctima.
+- Teniendo eso, podemos vincular las bases de datos adecuadamente,
+- Refinar la agrupación entre crímines violentos, relacionados con drogas, etc.
+- Ver si es factible la superposición de eventos (e.g., con pena aflictiva con sanción de presidio mientras se está completando un tratamiento cuyo motivo de ingreso no es el sistema judicial)
+- Revisión de la literatura: tratamientos, resultados, efectividad, evaluación de impacto, análisis de supervivencia
+- Definir el modelo de supervivencia a utilizar
+
+---
+class: partial-bg inverse
+
+background-image: linear-gradient(45deg, #21177A, #FE4A17)
+
+## Datos exploratorios
+
+
+---
+### Resumen descriptivo a la base
+
+.details-code[
+
+```{r tab-comp, echo=T, cache= T, paged.print=TRUE, message=F, error=T, warning=F}
+db_ser_2022<-
+ db_ser_2022 %>%  
+   dplyr::mutate(tipo_de_plan_res=dplyr::case_when(tipo_de_plan_res=="0"~"Ambulatorio",tipo_de_plan_res=="1"~"Residencial",T~as.character(tipo_de_plan_res))) %>% 
+   dplyr::mutate(sus_principal_mod=dplyr::case_when(sus_principal_mod=="Cocaine hydrochloride"~"Cocaina",sus_principal_mod=="Marijuana"~"Marihuana",sus_principal_mod=="Other"~"Otros",sus_principal_mod=="Cocaine paste"~"Pasta base",T~as.character(sus_principal_mod))) %>% 
+   dplyr::mutate(sus_ini_mod_mvv=dplyr::case_when(sus_ini_mod_mvv=="Cocaine hydrochloride"~"Cocaina",sus_ini_mod_mvv=="Marijuana"~"Marihuana",sus_ini_mod_mvv=="Other"~"Otros",sus_ini_mod_mvv=="Cocaine paste"~"Pasta base",T~as.character(sus_ini_mod_mvv))) %>% 
+   dplyr::mutate(estado_conyugal_2=dplyr::case_when(estado_conyugal_2=="Married/Shared living arrangements"~"Casado/conviviendo",estado_conyugal_2=="Separated/Divorced"~"Separado/Divorciado",estado_conyugal_2=="Single"~"Soltero/a",estado_conyugal_2=="Widower"~"Viudo/a",T~as.character(estado_conyugal_2))) %>% 
+   dplyr::mutate(origen_ingreso_mod=dplyr::case_when(origen_ingreso_mod=="Spontaneous"~"Consulta espontánea",origen_ingreso_mod=="Assisted Referral"~ "Referido", origen_ingreso_mod=="Other"~ "Otros", origen_ingreso_mod=="Justice Sector"~ "Sector justicia", origen_ingreso_mod=="Health Sector"~ "Sector salud", T~as.character(origen_ingreso_mod))) %>% 
+   dplyr::mutate(dg_cie_10_rec=factor(dplyr::case_when(as.character(dg_cie_10_rec)== "Diagnosis unknown (under study)"~"Diagnóstico desconocido (en estudio)", as.character(dg_cie_10_rec)== 'Without psychiatric comorbidity' ~ "Sin comorbilidad", as.character(dg_cie_10_rec)== 'With psychiatric comorbidity'~ "Con comorbilidad psiquiátrica", T~ NA_character_)))%>%#~"Sin trastorno"~
+  dplyr::mutate(dg_trs_fis_rec=factor(dplyr::case_when(as.character(diagnostico_trs_fisico)=="En estudio"~"Desconocido (en estudio)",as.character(diagnostico_trs_fisico)=="Sin trastorno"~'Sin comorbilidad',cnt_diagnostico_trs_fisico>0 ~'Con comorbilidad física',
+                                             TRUE~NA_character_)))%>%
+  dplyr::mutate(sexo_2=factor(dplyr::case_when(as.character(sexo_2)== "Men"~ "Hombre", as.character(sexo_2)== 'Women' ~ "Mujer", T~ NA_character_)))%>%
+  dplyr::mutate(tenencia_de_la_vivienda_mod=factor(dplyr::case_when(as.character(tenencia_de_la_vivienda_mod)== "Illegal Settlement"~"Ocupación ilegal", as.character(tenencia_de_la_vivienda_mod)== 'Owner/Transferred dwellings/Pays Dividend' ~ "Propietario/Transferido/Paga dividendo", as.character(tenencia_de_la_vivienda_mod)== 'Stays temporarily with a relative'~ "Allegado", as.character(tenencia_de_la_vivienda_mod)== 'Renting'~ "Arrienda", as.character(tenencia_de_la_vivienda_mod)== 'Others'~ "Otros", T~ NA_character_)))%>%#~"Sin trastorno"~,
+  dplyr::mutate(evaluacindelprocesoteraputico=factor(as.character(evaluacindelprocesoteraputico), levels= c("1-High Achievement", "2-Medium Achievement", "3-Minimum Achievement"), labels= c("1- Logro alto", "2- Logro intermedio", "3- Logro mínimo")))%>%#~"Sin trastorno"~,
+  dplyr::mutate(escolaridad_rec=factor(as.character(escolaridad_rec),levels=c('3-Completed primary school or less', '2-Completed high school or less', '1-More than high school'), ordered=T, labels= c("3- Completó escuela primaria", "2- Completó escuela secundaria", "1- Mayor a escuela secundaria"))) %>%  
+  dplyr::mutate(condicion_ocupacional_corr=factor(as.character(condicion_ocupacional_corr),levels=c('Employed', 'Unemployed', 'Inactive', 'Looking for a job for the first time', 'No activity', 'Not seeking for work'), ordered=T, labels= c("Empleado", "Desempleado", "Inactivo", "Buscando empleo por primera vez", "Sin actividad", "No busca trabajo"))) %>%    
+  dplyr::mutate(freq_cons_sus_prin=factor(as.character(freq_cons_sus_prin),levels=c('Did not use', 'Less than 1 day a week','1 day a week or more','2 to 3 days a week','4 to 6 days a week','Daily'), labels= c("No consume semanalmente", "< de 1 vez sem.", "1 día sem. o +", "2-3 d. sem.", "4-6 d. sem.","Diariamente"), ordered=T)) %>% 
+  dplyr::mutate(joined= factor(ifelse(is.na( perc_imp),0,1),labels=c("No","Sí"))) %>%
+  dplyr::mutate(criminal_rcds=dplyr::case_when(hash_key %in% rut_enc_saf_jun22~"Sí",T~"No")) %>% 
+  dplyr::mutate(sum_otras_sus=dplyr::case_when(sum_otras_sus>0~"1-Más de una", sum_otras_sus==0~"0-Sólo una",T~NA_character_)) %>% 
+  dplyr::mutate(duplicates_filtered=dplyr::case_when(duplicates_filtered>3~"3-Más de 3", duplicates_filtered %in% c(2,3)~"Dos o tres registros", duplicates_filtered==1~"1-Sólo uno",T~NA_character_)) %>% 
+  dplyr::mutate(duplicates_filtered=factor(duplicates_filtered, levels=c("1-Sólo una","Dos o tres registros","3-Más de 3")))
+  
+attr(db_ser_2022$sus_principal_mod,"label")<-"Sustancia principal a la admisión"
+attr(db_ser_2022$sus_ini_mod_mvv,"label")<-"Sustancia de inicio"
+attr(db_ser_2022$estado_conyugal_2,"label")<-"Estatus marital"
+attr(db_ser_2022$escolaridad_rec,"label")<-"Nivel educacional"
+attr(db_ser_2022$edad_ini_cons,"label")<-"Edad de inicio de cosumo"
+attr(db_ser_2022$freq_cons_sus_prin,"label")<-"Frecuencia de consumo sustancia principal"
+attr(db_ser_2022$origen_ingreso_mod,"label")<-"Origen de ingreso"
+attr(db_ser_2022$dg_cie_10_rec,"label")<-"Comorbilidad psiquiátrica"
+attr(db_ser_2022$dg_trs_fis_rec,"label")<-"Comorbilidad física"
+attr(db_ser_2022$nombre_region,"label")<-"Región del centro"
+attr(db_ser_2022$tipo_centro_pub,"label")<-"Tipo de centro (Public)"
+attr(db_ser_2022$sexo_2,"label")<-"Sexo"
+attr(db_ser_2022$edad_al_ing,"label")<-"Edad de ingreso"
+attr(db_ser_2022$fech_ing_num,"label")<-"Fecha de ingreso"
+attr(db_ser_2022$abandono_temprano_rec,"label")<-"Abandono temprano"
+attr(db_ser_2022$tipo_de_plan_res,"label")<-"Modalidad de plan (Residencial)"
+attr(db_ser_2022$duplicates_filtered,"label")<-"N° tratamientos en la base de datos"
+attr(db_ser_2022$dg_trs_cons_sus_or,"label")<-"Diagnóstico de dependencia (CIE-10)"
+attr(db_ser_2022$evaluacindelprocesoteraputico,"label")<-"Evaluación del proceso terapéutico"
+attr(db_ser_2022$condicion_ocupacional_corr,"label")<-"Estatus ocupacional"
+attr(db_ser_2022$tenencia_de_la_vivienda_mod,"label")<-"Tenencia de la vivienda"
+attr(db_ser_2022$perc_accused,"label")<-"% de registros en Fiscalía en los que se le imputa un crimen"
+attr(db_ser_2022$tr_completion,"label")<-"Completar tratamientos a la base"
+attr(db_ser_2022$drug_related_crime,"label")<-"N° registros en los que se le acusa de crímenes relacionados con drogas"
+attr(db_ser_2022$violent_crime,"label")<-"N° registros en los que se le acusa de crímenes violentos"
+attr(db_ser_2022$other_charges,"label")<-"N° registros en los que se le acusa de otros cargos"
+attr(db_ser_2022$joined,"label")<-"Ha tenido contactos con el sistema judicial"
+attr(db_ser_2022$sum_otras_sus,"label")<-"Suma de otras sustancias por las que ingresa a la admisión"
+attr(db_ser_2022$tipo_de_plan_res,"label")<-"Tratamientos residenciales"
+attr(db_ser_2022$criminal_rcds,"label")<-"Registros criminales como imputado"
+
+
+table1_all <- suppressWarnings(compareGroups(tr_completion ~ tipo_de_plan_res+ sus_principal_mod+ sum_otras_sus+ sus_ini_mod_mvv+ estado_conyugal_2+ escolaridad_rec+ edad_ini_cons+ freq_cons_sus_prin+ origen_ingreso_mod+ dg_cie_10_rec+ dg_trs_fis_rec+ nombre_region+ tipo_centro_pub+ sexo_2+ dg_trs_cons_sus_or+ edad_al_ing+ fech_ing_num+  duplicates_filtered+ dg_trs_cons_sus_or+ evaluacindelprocesoteraputico+ condicion_ocupacional_corr+ tenencia_de_la_vivienda_mod+ perc_accused+ drug_related_crime+ violent_crime+ other_charges+ joined+ criminal_rcds, method= c(
+                                      tipo_de_plan_res=3,
+                                      sus_principal_mod=3,
+                                      sum_otras_sus=3,
+                                      sus_ini_mod_mvv=3,
+                                      estado_conyugal_2=3,
+                                      escolaridad_rec=3,
+                                      edad_ini_cons=3,
+                                      freq_cons_sus_prin=3,
+                                      origen_ingreso_mod=3,
+                                      dg_cie_10_rec=3,
+                                      dg_trs_fis_rec=3,
+                                      dg_trs_cons_sus_or=3,
+                                      nombre_region=3,
+                                      tipo_centro_pub=3,
+                                      sexo_2=3,
+                                      edad_al_ing=2,
+                                      fech_ing_num=2,
+                                      duplicates_filtered=3,
+                                      evaluacindelprocesoteraputico=3,
+                                      perc_accused=2,
+                                      other_charges=2,
+                                      violent_crime=2,
+                                      drug_related_crime=2,
+                                      joined=3,
+                                      criminal_rcds=3),
+ data = db_ser_2022,
+   include.miss = T,
+   var.equal=T)
+)
+
+restab1_all <- createTable(table1_all, show.p.overall = T)
+
+pvals1 <- getResults(table1_all)
+#p.adjust(pvals, method = "BH")
+ export2md(restab1_all, size=11, first.strip=T, hide.no="no", position="center",
+           format="html",caption= "Según estatus primer tratamiento a la base, Tratamientos 2010-2019", col.names=c("Variables","Tratamiento en curso","Completa", "No completa", "valor-p"))%>%#
+  kableExtra::add_footnote(c("Nota. Variables continuas se muestran en Medianas y percentiles 25 y 75;", "Variables categóricas se presentan como recuentos (%);","Fechas medidas en días desde 1° Enero de 1970"), notation = "none")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px") %>% 
+   kableExtra::kable_classic()
+```
+
+]
+
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- Sólo mencionaré las principales o que me llamaron más la atención
+- Todavía no hay una interpretación del mecanismo que produce estas asociaciones y todavía son de carácter muy descriptivo y muy ingenuo (ignora confusión, sesgos, etc.).
++ Quienes no-completan tratamiento a la base:
+  - Menos en tratamientos residenciales
+  - Menos ingresan por alcohol como la principal, más pasta base
+  - Más policonsumo (ingresan por más de una sustancia)
+  - Más señalan sustancia de inicio marihuana, menos alcohol
+  - Más son solteros, menos casados
+  - Menor educación superior  
+  - Levemente más consume diariamente
+  - Levemente menos sector justicia
+  - Los registros son más antiguos
+  - Ingresan antes al tratamiento
+  - Más resulta readmitido entre el 2010-2019
+  - Más con diagnóstico de dependencia (CIE-10)
+  - Más desempleados
+  - Más viven de allegados
+  - Más con contactos con el sistema judicial
+  - Más con al menos 1 registro como imputado
+
+---
+### Encontrado como imputado
+
+.pull-left[
+
+.details-code[
+
+```{r fig-imputado1, echo=T, cache= T, paged.print=TRUE, message=F, fig.align="center",error=T, warning=F, fig.cap="Fecha de nacimiento y estatus de imputado",fig.showtext=T}
+#https://coolors.co/0a1128-001f54-034078-1282a2-c1dbe3
+#c("pais", "encontrado_como_victima", "gls_tipo_sujeto_vic", "gls_tipo_imputado", "gls_region", "familia_delito", "agrupa_terminos", "sexo", "edad_comision", "region_delito")
+i<- "encontrado_como_imputado"
+min_plot<-1957
+max_plot<-2002
+casos_no_cubiertos<-
+  Base_fiscalia_v5 %>% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(imp_birth_date)) %>%
+  dplyr::mutate(grupo_var=get(i))%>%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%>%
+  dplyr::summarise(n_2_grupos=n())%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(fec_nacimiento_qrt)%>%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%>%
+  dplyr::filter(fec_nacimiento_qrt<min_plot|fec_nacimiento_qrt>=max_plot) %>%
+  dplyr::ungroup()%>%
+  dplyr::summarise(sum_total=sum(n_2_grupos))%>%
+  unlist()
+#colorspace::diverge_hcl(length(table(Base_fiscalia_v5[[i]])),h=c(0,-100),l=c(75,30),c=c(40,80),power=1)
+Base_fiscalia_v5 %>% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(imp_birth_date)) %>%
+  dplyr::mutate(grupo_var=get(i))%>%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%>%
+  dplyr::summarise(n_2_grupos=n())%>%
+  dplyr::ungroup()%>% 
+  dplyr::group_by(fec_nacimiento_qrt)%>%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%>%
+  dplyr::filter(fec_nacimiento_qrt>=min_plot) %>%
+  ggplot2::ggplot(aes(x = fec_nacimiento_qrt, y = freq,fill=grupo_var))+
+  geom_area(alpha=0.6 , size=.5, colour="white") +
+  scale_fill_manual(values= c("#21177A", "#aaaaaa", "#FE4A17"))+# colorspace::rainbow_hcl(length(table(Base_fiscalia_v5[[i]])))) +
+  sjPlot::theme_sjplot2() +
+  zoo::scale_x_yearqtr(format="%YQ%q", n=15,
+                  limits=c(zoo::as.yearqtr(paste0(min_plot,"-01-01")), 
+                           max=zoo::as.yearqtr(paste0(max_plot,"-01-01"))))+
+  scale_y_continuous(limits=c(0,1),labels = scales::percent)+
+  labs(x="",y="Porcentajes",
+       caption= paste0("Nota. Registros entre ",min_plot," y ",max_plot,", e ignorando el resto: ", format(casos_no_cubiertos,big.mark="."),";\n", "Porcentajes por año y trimestre; Q= Trimestre"))+
+  #ylim(0,101)+
+  # scale_y_continuous(limits=c(0,1),labels = scales::percent) +
+  theme(legend.position="bottom")+
+  guides(fill=guide_legend(ncol=3))+
+  theme(legend.text = element_text(size=9))+
+  theme(legend.title = element_blank(),
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        axis.title.x = element_blank())+
+  theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+```
+]
+] 
+
+
+.pull-right[
+
+.details-code[
+
+```{r fig-imputado2, echo=T, cache= T, paged.print=TRUE, message=F, fig.align="center",error=T, warning=F, fig.cap="Fecha de comisión de delito y estatus de imputado", fig.showtext=T}
+i<- "encontrado_como_imputado"
+min_plot<-2005
+max_plot<-2020
+casos_no_cubiertos<-
+  Base_fiscalia_v5 %>% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(fec_comision_simple)) %>%
+  dplyr::mutate(grupo_var=get(i))%>%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%>%
+  dplyr::summarise(n_2_grupos=n())%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(fec_nacimiento_qrt)%>%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%>%
+  dplyr::filter(fec_nacimiento_qrt<min_plot|fec_nacimiento_qrt>=max_plot) %>%
+  dplyr::ungroup()%>%
+  dplyr::summarise(sum_total=sum(n_2_grupos))%>%
+  unlist()
+#colorspace::diverge_hcl(length(table(Base_fiscalia_v5[[i]])),h=c(0,-100),l=c(75,30),c=c(40,80),power=1)
+Base_fiscalia_v5 %>% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(fec_comision_simple)) %>%
+  dplyr::mutate(grupo_var=get(i))%>%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%>%
+  dplyr::summarise(n_2_grupos=n())%>%
+  dplyr::ungroup()%>% 
+  dplyr::group_by(fec_nacimiento_qrt)%>%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%>%
+  dplyr::filter(fec_nacimiento_qrt>=min_plot) %>%
+  ggplot2::ggplot(aes(x = fec_nacimiento_qrt, y = freq,fill=grupo_var))+
+  geom_area(alpha=0.6 , size=.5, colour="white") +
+  scale_fill_manual(values= c("#21177A", "#aaaaaa", "#FE4A17"))+# colorspace::rainbow_hcl(length(table(Base_fiscalia_v5[[i]])))) +
+  sjPlot::theme_sjplot2() +
+  zoo::scale_x_yearqtr(format="%YQ%q", n=18,
+                  limits=c(zoo::as.yearqtr(paste0(min_plot,"-01-01")), 
+                           max=zoo::as.yearqtr(paste0(max_plot,"-01-01"))))+
+  scale_y_continuous(limits=c(0,1),labels = scales::percent)+
+  labs(x="",y="Porcentajes",
+       caption= paste0("Nota. Registros entre ",min_plot," y ",max_plot,", e ignorando el resto: ", format(casos_no_cubiertos,big.mark="."),";\n", "Porcentajes por año y trimestre; Q= Trimestre"))+
+  #ylim(0,101)+
+  # scale_y_continuous(limits=c(0,1),labels = scales::percent) +
+  theme(legend.position="bottom")+
+  guides(fill=guide_legend(ncol=3))+
+  theme(legend.text = element_text(size=9))+
+  theme(legend.title = element_blank(),
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        axis.title.x = element_blank())+
+  theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+```
+]
+]
+
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- A medida que aumenta la fecha de nacimiento, aumenta el porcentaje de registros en los que el usuario figura como imputado, aunque disminuye después del año 1995.
+- Todavía es necesario limpiar la base de datos en términos de fechas de comisión del delito (hay algunas mal ingresadas, etc., pero también causas que todavía no han cerrado o cerraron al inicio del seguimiento, ej., 2010)
+- Podemos ver en el segundo gráfico que las causas cuyo delito fue cometido antes del 2010 corresponde a mayor proporción a registros en los que el usuario figura como imputado, mientras que desde el año 2018 se puede apreciar un leve aumento del porcentaje de causas en las que el usuario figura como víctima. **De nuevo, todo esto es exploratorio**
+
+---
+### Tipo de crimen cometido
+
+.pull-left[
+
+.details-code[
+
+```{r fig-fam-delito1, echo=T, cache= T, paged.print=TRUE, message=F, fig.align="center",error=T, warning=F, fig.cap="Fecha de nacimiento y tipo de crimen (imputados y víctimas)", fig.showtext=T}
+#https://coolors.co/0a1128-001f54-034078-1282a2-c1dbe3
+#c("pais", "encontrado_como_victima", "gls_tipo_sujeto_vic", "gls_tipo_imputado", "gls_region", "familia_delito", "agrupa_terminos", "sexo", "edad_comision", "region_delito")
+i<- "familia_delito_rec"
+min_plot<-1957
+max_plot<-2002
+casos_no_cubiertos<-
+  Base_fiscalia_v5 %>% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(imp_birth_date)) %>%
+  dplyr::mutate(grupo_var=get(i))%>%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%>%
+  dplyr::summarise(n_2_grupos=n())%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(fec_nacimiento_qrt)%>%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%>%
+  dplyr::filter(fec_nacimiento_qrt<min_plot|fec_nacimiento_qrt>=max_plot) %>%
+  dplyr::ungroup()%>%
+  dplyr::summarise(sum_total=sum(n_2_grupos))%>%
+  unlist()
+#colorspace::diverge_hcl(length(table(Base_fiscalia_v5[[i]])),h=c(0,-100),l=c(75,30),c=c(40,80),power=1)
+Base_fiscalia_v5 %>% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(imp_birth_date)) %>%
+  dplyr::mutate(grupo_var=get(i))%>%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%>%
+  dplyr::summarise(n_2_grupos=n())%>%
+  dplyr::ungroup()%>% 
+  dplyr::group_by(fec_nacimiento_qrt)%>%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%>%
+  dplyr::filter(fec_nacimiento_qrt>=min_plot) %>%
+  ggplot2::ggplot(aes(x = fec_nacimiento_qrt, y = freq,fill=grupo_var))+
+  geom_area(alpha=0.6 , size=.5, colour="white") +
+  scale_fill_manual(values= c("#FE4A17", "#aaaaaa", "#21177A"), labels=c("Relacionados con drogas", "Otros","Violentos"))+# colorspace::rainbow_hcl(length(table(Base_fiscalia_v5[[i]])))) +
+  sjPlot::theme_sjplot2() +
+  zoo::scale_x_yearqtr(format="%YQ%q", n=15,
+                  limits=c(zoo::as.yearqtr(paste0(min_plot,"-01-01")), 
+                           max=zoo::as.yearqtr(paste0(max_plot,"-01-01"))))+
+  scale_y_continuous(limits=c(0,1),labels = scales::percent)+
+  labs(x="",y="Porcentajes",
+       caption= paste0("Nota. Casos nacidos entre ",min_plot," y ",max_plot,", e ignorando el resto: ", casos_no_cubiertos,";\n","Porcentajes por año y trimestre; Q= Trimestre"))+
+  #ylim(0,101)+
+  # scale_y_continuous(limits=c(0,1),labels = scales::percent) +
+  theme(legend.position="bottom")+
+  guides(fill=guide_legend(ncol=3))+
+  theme(legend.text = element_text(size=9))+
+  theme(legend.title = element_blank(),
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        axis.title.x = element_blank())+
+  theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+```
+]
+] 
+
+
+.pull-right[
+
+.details-code[
+
+```{r fig-fam-delito2, echo=T, cache= T, paged.print=TRUE, message=F, fig.align="center",error=T, warning=F, fig.cap="Fecha de comisión de delito y tipo de crimen (imputados y víctimas)", fig.showtext=T}
+i<- "familia_delito_rec"
+min_plot<-2005
+max_plot<-2020
+casos_no_cubiertos<-
+  Base_fiscalia_v5 %>% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(fec_comision_simple)) %>%
+  dplyr::mutate(grupo_var=get(i))%>%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%>%
+  dplyr::summarise(n_2_grupos=n())%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(fec_nacimiento_qrt)%>%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%>%
+  dplyr::filter(fec_nacimiento_qrt<min_plot|fec_nacimiento_qrt>=max_plot) %>%
+  dplyr::ungroup()%>%
+  dplyr::summarise(sum_total=sum(n_2_grupos))%>%
+  unlist()
+#colorspace::diverge_hcl(length(table(Base_fiscalia_v5[[i]])),h=c(0,-100),l=c(75,30),c=c(40,80),power=1)
+Base_fiscalia_v5 %>% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(fec_comision_simple)) %>%
+  dplyr::mutate(grupo_var=get(i))%>%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%>%
+  dplyr::summarise(n_2_grupos=n())%>%
+  dplyr::ungroup()%>% 
+  dplyr::group_by(fec_nacimiento_qrt)%>%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%>%
+  dplyr::filter(fec_nacimiento_qrt>=min_plot) %>%
+  ggplot2::ggplot(aes(x = fec_nacimiento_qrt, y = freq,fill=grupo_var))+
+  geom_area(alpha=0.6 , size=.5, colour="white") +
+  scale_fill_manual(values= c("#FE4A17", "#aaaaaa", "#21177A"), labels=c("Relacionados con drogas", "Otros","Violentos"))+# colorspace::rainbow_hcl(length(table(Base_fiscalia_v5[[i]])))) +
+  sjPlot::theme_sjplot2() +
+  zoo::scale_x_yearqtr(format="%YQ%q", n=18,
+                  limits=c(zoo::as.yearqtr(paste0(min_plot,"-01-01")), 
+                           max=zoo::as.yearqtr(paste0(max_plot,"-01-01"))))+
+  scale_y_continuous(limits=c(0,1),labels = scales::percent)+
+  labs(x="",y="Porcentajes",
+       caption= paste0("Note. Crímenes cometidos entre ",min_plot," y ",max_plot,", e ignorando el resto: ", format(casos_no_cubiertos,big.mark="."), ";\n", "Porcentajes por año y trimestre; Q= Trimestre"))+
+  #ylim(0,101)+
+  # scale_y_continuous(limits=c(0,1),labels = scales::percent) +
+  theme(legend.position="bottom")+
+  guides(fill=guide_legend(ncol=3))+
+  theme(legend.text = element_text(size=9))+
+  theme(legend.title = element_blank(),
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        axis.title.x = element_blank())+
+  theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+```
+]
+]
+
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- Ante todo, reconocer que nuestra clasificación preliminar de delitos de drogas es preliminar y por tanto un tanto literal e ingenua. Al margen de esto...
+- Se puede apreciar que tanto en fecha de comisión como en fecha de nacimiento, el % de delitos relacionados con drogas permanece constante y menor. La proporción es tan baja que no permite hacer comparaciones por año.
+- En relación a la fecha de nacimiento, pareceser que quierenes nacen posterior al 93 empiezan a registrar en mayor proporción registros en los que figuran como imputados por un delito violento.
+- No vale la pena pronnciarse mucho por los delitos antes del 2009 porque están sometidos a mucha variación dado que son muy pocos casos por trimestre. De nuevo, necesitamos limpiar todavía estas fechas que pueden deberse a errores de tipeo.
+
+---
+### Distribución geográfica (político-administrativa)
+
+.pull-left[
+
+.details-code[
+
+```{r fig7_image-map_chile_regiones, echo=T, error=T, fig.align='center', fig.showtext=T, message=F, warning=F, fig.show='hide', results='hide'}
+#, results='asis'
+#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_
+
+data(admin1.map, package="choroplethrAdmin1")
+#get_admin1_regions("chile") # falta ñuble po la cresta
+chile.map = admin1.map[admin1.map$admin == "chile" & admin1.map$long > -80, ]
+#ggplot(chile.map, aes(long, lat, group=group)) + geom_polygon() + coord_map()
+
+arica <- list(v ="01", n = "region de arica y parinacota")
+tarapaca <- list(v = "02", n= "region de tarapaca")
+antofagasta <- list(v = "6.24",n = "region de antofagasta")
+atacama <- list(v = 6.66, n = "region de atacama")
+coquimbo <- list(v = 6.93, n = "region de coquimbo")
+valparaiso <- list(v = 7.19,n = "region de valparaiso")
+metropolitana <- list(v = 6.33, n = "region metropolitana de santiago")
+ohiggins <- list(v = 5.27, n = "region del libertador general bernardo o'higgins")
+maule <- list(v = 5.99, n = "region del maule")
+nuble <- list(v = 5.99, n = "region de ñuble")
+biobio <- list(v = 8.07, n = "region del biobio")
+araucania <- list(v = 6.07, n = "region de la araucania")
+losrios <- list(v = 4.72, n = "region de los rios")
+loslagos <- list(v = 3.82, n = "region de los lagos")
+aysen <- list(v = 3.84, n = "region aisen del general carlos ibanez del campo")
+magallanes <- list(v = 2.63, n = "region de magallanes y de la antartica chilena")
+
+dat2 <- data.frame(
+  region = c(arica$n,tarapaca$n,antofagasta$n,atacama$n,coquimbo$n,valparaiso$n,
+             metropolitana$n,ohiggins$n,maule$n,nuble$n, biobio$n,araucania$n,losrios$n,
+             loslagos$n,aysen$n,magallanes$n)
+)
+
+datos_region <- chilemapas::generar_regiones(mapa = chilemapas::mapa_comunas)
+
+casos_region<-db_ser_2022 %>%
+    group_by(nombre_region)%>%
+    summarise(n=n(), perc= sum(criminal_rcds=="Sí")/n)%>%
+    dplyr::mutate(cod.V1= str_sub(nombre_region, -3, -2))
+    
+dat2<-datos_region %>%
+  dplyr:::left_join(as_tibble(casos_region), by=c("codigo_region"="cod.V1")) %>%
+  dplyr::mutate(tooltip=paste0(`nombre_region`,"=",formatC(as.numeric(n), format="f", big.mark=",", digits=0)," (", scales::percent(perc, accuracy = 0.1),")")) %>% 
+  dplyr::mutate(n_cut=cut(as.numeric(`perc`),4))
+
+gg2<-ggplot(data=dat2) +
+  #geom_sf(aes(fill=as.numeric(dat2$value))) +
+  theme_minimal() +
+  geom_sf_interactive(aes(fill = n_cut, tooltip = tooltip, data_id = codigo_region))+
+  scale_fill_manual(values=c("#5243DB","#9AA98D", "#C2CAD6","#FE805D"),na.value="white") +
+  labs(fill="% registros\ncriminales")# geom_sf(data = dat2, aes(fill = value)) +
+#  coord_sf( expand = T)
+tooltip_css <- "background-color:gray;color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;"
+
+gg2_plot<-ggiraph(code = {print(gg2)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75,zoom_max = 5 )
+htmlwidgets::saveWidget(gg2_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/regional1.html"))
+girafe_options(gg2_plot, opts_tooltip(placement="auto"), opts_sizing(rescale = T, width=.75))
+#<iframe src="./_figs/regional1.html" width = "600px", height = "300px" frameBorder="0"></iframe> 
+```
+]
+
+`r knitr::include_url("./_figs/regional1.html", height = "400px")`
+
+]
+]
+
+.pull-right[
+
+.details-code[
+
+```{r fig7_image-map_chile_comunas, echo=T, error=T, fig.align='center', fig.cap="% registros criminales por comuna (Metropolitana)", fig.showtext=T, message=FALSE, warning=FALSE, fig.show='hide', results='hide'}
+#results='asis'
+mapa_comunas = chilemapas::mapa_comunas
+
+codigo_comunas<-
+db_ser_2022%>%
+    dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","comuna_residencia_cod")), by="hash_key")%>% 
+    dplyr::filter(grepl("Metropolitana",nombre_region))%>%
+    dplyr::group_by(comuna_residencia_cod)%>%
+    summarise(n=n(), perc= sum(criminal_rcds=="Sí")/n)%>%
+    dplyr::mutate(cod.V1= str_sub(comuna_residencia_cod, -6, -2))%>%
+   # dplyr::select(-comuna_residencia_cod)%>%
+    dplyr::mutate(cod.V1= stringr::str_replace(cod.V1, "\\(", "0"))
+
+    
+dat3<-mapa_comunas %>%
+  dplyr:::left_join(as_tibble(codigo_comunas), by=c("codigo_comuna"="cod.V1")) %>%
+  dplyr::filter(codigo_region=="13")%>%
+  dplyr::mutate(tooltip=paste0(`comuna_residencia_cod`,"=",formatC(as.numeric(n), format="f", big.mark=",", digits=0)," (", scales::percent(perc, accuracy = 0.1),")")) %>% 
+  dplyr::mutate(n_cut=cut(as.numeric(`perc`),4))
+
+dat3 <- as_tibble(dat3)
+gg3<-
+  ggplot(data=dat3) +
+ # geom_sf(aes(fill=factor(n),geometry=geometry)) +
+  theme_minimal() +
+  geom_sf_interactive(aes(fill = n_cut, tooltip = tooltip, data_id = codigo_comuna, geometry= geometry))+
+  scale_fill_manual(values=c("#5243DB","#859776", "#C2CAD6","#FE805D"),na.value="white") +
+  
+  #scale_colour_brewer(breaks = rev(levels(dsamp$clarity)))+
+  labs(fill="% registros\ncriminales")# geom_sf(data = dat2, aes(fill = value)) +
+#  coord_sf( expand = T)
+
+
+tooltip_css <- "background-color:gray;color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;"
+
+gg3_plot<-ggiraph(code = {print(gg3)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75 )
+htmlwidgets::saveWidget(gg3_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/comunal1.html"))
+girafe_options(gg3_plot, opts_tooltip(placement="auto"), opts_sizing(rescale = T, width=.75))
+#<iframe src= width = "600px", height = "300px" frameBorder="0"></iframe> 
+```
+]
+
+`r knitr::include_url("./_figs/comunal1.html", height = "400px")`
+
+]
+
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- A continuación, 2 figuras que muestran la distribución geográfica a nivel nacional y comunal (siempre más complicado, porque está sujeto a la oferta de centros y por tanto los números pueden ser engañosos)
+- Llama la atención que en el norte, de las personas que registran tratamientos a la base en centros en Arica, Tarapacá, Antofagasta y Atacama, entre el 78 y el 82% tiene al menos un registro de fiscalía en el que figura como imputado. 
+- Por otra parte, en el gráfico de la región metropolitana, se puede observar que La Pintana, La Granja, Lo Espejo, Pudahuel, Renca y Lo Barnechea tienen un porcentaje mayor de personas que tienen al menos un registro en fiscalía en el que figuran como imputado por algún delito. Se contrapone a esto Vitacura. No vale la pena mencionar San Pedro porque tiene sólo 8 usuarios (posiblemente un centro que cerró y que por eso no ha tenido muchos registros históricamente).
+
+---
+class: center, middle
+
+# Gracias!
+
+<br>
+
+<div class="centered"> Contacto: mdmateo@uc.cl 
+& 
+gonzalez.santacruz.andres@gmail.com </div>
+
+<br>
+
+<br>
+
+<br>
+
+```{r, echo=FALSE,  fig.align="center", out.width=300, error=T}
+
+knitr::include_graphics(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_style/Logo nDP_color_hz_en.png"))
+
+```
+<br>
+
+---
+## Referencias
+
+```{r refs1, echo=FALSE, results="asis"}
+PrintBibliography(myBib, start= 1, end= 7)
+#https://github.com/ropensci/RefManageR/blob/master/R/rmdCite.R
+```
+
+---
+## Referencias (2)
+
+```{r refs2, echo=FALSE, results="asis"}
+PrintBibliography(myBib, start= 8, end= 15)
+#https://github.com/ropensci/RefManageR/blob/master/R/rmdCite.R
+```
+
+---
+## Referencias (3)
+
+```{r refs3, echo=FALSE, results="asis"}
+PrintBibliography(myBib, start= 16, end= 24)
+#https://github.com/ropensci/RefManageR/blob/master/R/rmdCite.R
+```
+
+```{r exp, eval=F,echo=F, results="asis"}
+library(pagedown)
+
+pagedown::chrome_print(gsub(".Rmd",".html",rstudioapi::getSourceEditorContext()$path),output="pres_2022_3.pdf")
+xaringanBuilder::build_pdf(gsub(".Rmd",".Rmd",rstudioapi::getSourceEditorContext()$path),complex_slides = TRUE,output_file="pres_2022_4.pdf")
+xaringanBuilder::build_pdf(gsub(".Rmd",".Rmd",rstudioapi::getSourceEditorContext()$path),complex_slides = TRUE,output_file="pres_2022_5.pdf")
+```
+
+
+---
+## Referencias (4)
+
+.footnote[
+<a href="http://www.onlinewebfonts.com">oNline Web Fonts</a>
+]

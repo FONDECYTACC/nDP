@@ -1,0 +1,86 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+<<<<<<< HEAD
+desktop.ini
+.Rproj
+=======
+desktop.ini
+**/desktop.ini
+*.ini
+**.ini
+# SublimeText project files
+*.sublime-workspace
+# mercurial dev
+/.hg/*
+*/.hg/*
+.hgignore
+# svn dev
+.svn/
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+# Folder config file
+Desktop.ini
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+# project files
+/build/*
+/tmp/*
+/docs/*
+# History files
+.Rhistory
+.Rapp.history
+# Output files from R CMD build
+/*.tar.gz
+# Output files from R CMD check
+/*.Rcheck/
+# produced vignettes
+vignettes/*.html
+vignettes/*.pdf
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+.httr-oauth
+# knitr and R markdown default cache directories
+/*_cache/
+/cache/
+# Temporary files created by R markdown
+*.utf8.md
+*.knit.md
+# Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
+rsconnect/
+>>>>>>> 90dc9833b7a051530628d488b50a759bfbcc08c4
+#dejar fuera
+_CONS_C1_df_dup.csv
+_CONS_C1_df_dup
+_CONS_C1_df_dup_ENE_2020.csv
+'~$reunion con Maureen.xlsx'
+'reunion con Maureen.xlsx'
+/*.Rdata/
+.RData
+3.RData
+3.Rdata
+2.RData
+CONS_C1_df_dup_ENE_2020.csv
+CONS_TOP_df_dup_ENE_2020.csv
+# exclude everything IN CHECKPOINT
+dedup/*
+_matches_feb_2020
+_overlaps_feb_2020
+_matches_feb_2020
+CONS_C1_df_dup_FEB_2020.csv
+_CONS_C1_df_match70_2020_02_20.dta
+CONS_C1_df_dup_FEB_2020.dta
+CONS_C1_df_dup_FEB_2020.*
+_outputs/*
+*.RData
+*cache*
+renv/*
+*docx
+renv.lock
+*.dta
+*.txt

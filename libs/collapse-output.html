@@ -1,0 +1,14 @@
+<script>
+(function() {
+  var divHTML = document.querySelectorAll(".details-code");
+  divHTML.forEach(function (el) {
+    var preNodes = el.getElementsByTagName("pre");
+    if (preNodes.length < 2) return;
+    var outputNode = preNodes[0];
+    outputNode.outerHTML = "<details " +
+      (el.classList.contains("open") ? "open " : "") +
+      "class='output'><summary>Output</summary>" +
+      outputNode.outerHTML + "</details>";
+  })
+})();
+</script>
