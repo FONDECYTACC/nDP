@@ -1107,12 +1107,11 @@ tooltip_css <- "background-color:gray;color:white;font-style:italic;padding:10px
 gg2_plot<-ggiraph(code = {print(gg2)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75,zoom_max = 5 )
 htmlwidgets::saveWidget(gg2_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/regional1.html"))
 girafe_options(gg2_plot, opts_tooltip(placement="auto"), opts_sizing(rescale = T, width=.75))
-#<iframe src="./_figs/regional1.html" width = "600px", height = "300px" frameBorder="0"></iframe> 
+#`r knitr::include_url("_figs/regional1.html", height = "400px")`
+
 ```
 ]
-
-`r knitr::include_url("_figs/regional1.html", height = "400px")`
-
+<iframe src="./_figs/regional1.html" width = "600px", height = "300px" frameBorder="0"></iframe>
 ]
 ]
 
@@ -1158,12 +1157,13 @@ tooltip_css <- "background-color:gray;color:white;font-style:italic;padding:10px
 
 gg3_plot<-ggiraph(code = {print(gg3)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75 )
 htmlwidgets::saveWidget(gg3_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/comunal1.html"))
-girafe_options(gg3_plot, opts_tooltip(placement="auto"), opts_sizing(rescale = T, width=.75))
+girafe_options(gg3_plot, opts_sizing(rescale = T, width=.75))
 #<iframe src= width = "600px", height = "300px" frameBorder="0"></iframe> 
+#`r knitr::include_url("_figs/comunal1.html", height = "400px")`
 ```
 ]
 
-`r knitr::include_url("_figs/comunal1.html", height = "400px")`
+<iframe src="./_figs/comunal1.html" width = "600px", height = "300px" frameBorder="0"></iframe> 
 
 ]
 
