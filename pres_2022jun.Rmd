@@ -40,7 +40,8 @@ local({r <- getOption("repos")
 })
 
 if(!require(pacman)){install.packages("pacman")}
-pacman::p_load(devtools, here, showtext, ggpattern, RefManageR, pagedown, magick, bibtex, DiagrammeR, xaringan, xaringanExtra, xaringanthemer, fontawesome, widgetframe, datapasta, tidyverse, psych, cowplot, coxphw, future, timereg, flexsurv, pdftools, mstate, showtext, compareGroups, chilemapas, choroplethrAdmin1,  choroplethr, choroplethrMaps, ggiraph, sf, install=F)
+pacman::p_load(devtools, here, showtext, ggpattern, RefManageR, pagedown, magick, bibtex, DiagrammeR, xaringan, xaringanExtra, xaringanthemer, fontawesome, widgetframe, datapasta, tidyverse, psych, cowplot, coxphw, future, timereg, flexsurv, pdftools, mstate, showtext, compareGroups, chilemapas, choroplethrAdmin1,  choroplethr, choroplethrMaps, ggiraph, sf,
+               widgetframe, install=F)
 
 if(!require(xaringanBuilder)){devtools::install_github("jhelvy/xaringanBuilder",upgrade = "never")}
 if(!require(icons)){remotes::install_github("mitchelloharawild/icons",upgrade = "never")}
@@ -185,17 +186,22 @@ style_duo(
   )
 )
 
+options(htmltools.preserve.raw = FALSE)
+
+
 #knitr::opts_chunk$set(comment = NA) # lo saqué pa probar por si
-knitr::opts_chunk$set(dpi=1500)
+knitr::opts_chunk$set(dpi=720)
 #options(htmltools.preserve.raw = FALSE)#A recent update to rmarkdown (in version 2.6) changed how HTML widgets are included in the output file to use pandoc's raw HTML blocks. Unfortunately, this feature isn't compatible with the JavaScript markdown library used by xaringan. You can disable this feature and resolve the issue with htmlwidgets in xaringan slides by setting
 #https://stackoverflow.com/questions/65766516/xaringan-presentation-not-displaying-html-widgets-even-when-knitting-provided-t/65768952#65768952
 
 xaringanExtra::use_fit_screen()
 #xaringanExtra::use_progress_bar(color = "#12636B", location = "top")#, height = "550px")
 xaringanExtra::use_animate_css()
-xaringanExtra::use_scribble()
+xaringanExtra::use_scribble() #son los lapices
 xaringanExtra::use_tile_view()
-#xaringanExtra::use_webcam()
+xaringanExtra::use_panelset()
+xaringanExtra::use_editable(expires = 1)
+
 #https://gist.github.com/gadenbuie/61b27108ceec6c7a55cd9966609128d7
 
 # padding-top: 0.4em;
@@ -1045,14 +1051,14 @@ Base_fiscalia_v5 %>%
 - No vale la pena pronnciarse mucho por los delitos antes del 2009 porque están sometidos a mucha variación dado que son muy pocos casos por trimestre. De nuevo, necesitamos limpiar todavía estas fechas que pueden deberse a errores de tipeo.
 
 ---
-### Distribución geográfica (político-administrativa)
+### Distribución geográfica (político-administrativa) (% promedio de registros como imputado)
 
-.pull-left[
+.panelset[
+.panel[.panel-name[Regional]
 
 .details-code[
-
-```{r fig7_image-map_chile_regiones, echo=T, error=T, fig.align='center', fig.showtext=T, message=F, warning=F, fig.show='hide', results='hide'}
-#, results='asis'
+```{r fig7_image-map_chile_regiones, echo=T, error=T, fig.align='center', out.width="30%", out.height="30%", message=F, warning=F, fig.show='hide', results='hide'}
+#, results='asis' , fig.show='hide', results='hide' fig.showtext=T,
 #_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_
 
 data(admin1.map, package="choroplethrAdmin1")
@@ -1105,22 +1111,28 @@ gg2<-ggplot(data=dat2) +
 tooltip_css <- "background-color:gray;color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;"
 
 gg2_plot<-ggiraph(code = {print(gg2)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75,zoom_max = 5 )
-htmlwidgets::saveWidget(gg2_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/regional1.html"))
-girafe_options(gg2_plot, opts_tooltip(placement="auto"), opts_sizing(rescale = T, width=.75))
+suppressWarnings(htmlwidgets::saveWidget(gg2_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/regional1.html")))
 #`r knitr::include_url("_figs/regional1.html", height = "400px")`
-
+#<iframe src="./_figs/regional1.html" width = "600px", height = "300px" frameBorder="0"></iframe>
+# 
+# htmltools::tagList(gg2_plot)
+# girafe_options(gg2_plot, opts_sizing(rescale = T, width=.5))
 ```
 ]
-<iframe src="./_figs/regional1.html" width = "600px", height = "300px" frameBorder="0"></iframe>
-]
+
+```{r, echo=F, fig.align="center", warning=F, message=F}
+frameWidget(girafe_options(gg2_plot, opts_sizing(rescale = T, width=.75), opts_zoom(min = .7, max = 5)), width='50%', height='50%')
+
+```
+
 ]
 
-.pull-right[
+.panel[.panel-name[RM]
 
 .details-code[
 
-```{r fig7_image-map_chile_comunas, echo=T, error=T, fig.align='center', fig.cap="% registros criminales por comuna (Metropolitana)", fig.showtext=T, message=FALSE, warning=FALSE, fig.show='hide', results='hide'}
-#results='asis'
+```{r fig7_image-map_chile_comunas1, echo=T, error=T, fig.align='center', out.width="30%", out.height="30%", message=FALSE, warning=FALSE,  fig.show='hide', results='hide'}
+#results='asis'< fig.showtext=T, 
 mapa_comunas = chilemapas::mapa_comunas
 
 codigo_comunas<-
@@ -1152,21 +1164,141 @@ gg3<-
   labs(fill="% registros\ncriminales")# geom_sf(data = dat2, aes(fill = value)) +
 #  coord_sf( expand = T)
 
-
-tooltip_css <- "background-color:gray;color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;"
-
 gg3_plot<-ggiraph(code = {print(gg3)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75 )
-htmlwidgets::saveWidget(gg3_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/comunal1.html"))
-girafe_options(gg3_plot, opts_sizing(rescale = T, width=.75))
+suppressWarnings(htmlwidgets::saveWidget(gg3_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/comunal1.html")))
+
 #<iframe src= width = "600px", height = "300px" frameBorder="0"></iframe> 
 #`r knitr::include_url("_figs/comunal1.html", height = "400px")`
+#<iframe src="./_figs/comunal1.html" width = "600px", height = "300px" frameBorder="0"></iframe> 
+#girafe_options(, opts_sizing(rescale = T, width=.5))
+# frameWidget(gg3_plot, width='60%', height='40%')
+# htmltools::tagList(gg3_plot)
+# girafe_options(gg3_plot, opts_sizing(rescale = T, width=.5))
 ```
 ]
 
-<iframe src="./_figs/comunal1.html" width = "600px", height = "300px" frameBorder="0"></iframe> 
+```{r, echo=F, fig.align="center", warning=F, message=F}
+frameWidget(girafe_options(gg3_plot, opts_sizing(rescale = T, width=.75), opts_zoom(min = .7, max = 5)), width='50%', height='50%')
+```
 
 ]
 
+.panel[.panel-name[Valparaíso]
+
+.details-code[
+
+```{r fig7_image-map_chile_comunas2, echo=T, error=T, fig.align='center', fig.show='hide', message=FALSE, warning=FALSE, out.height="30%", out.width="30%", results='hide'}
+#results='asis'< fig.showtext=T, 
+mapa_comunas = chilemapas::mapa_comunas
+
+codigo_comunas2<-
+db_ser_2022%>%
+    dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","comuna_residencia_cod")), by="hash_key")%>% 
+    dplyr::filter(grepl("Valparaíso",nombre_region))%>%
+    dplyr::group_by(comuna_residencia_cod)%>%
+    summarise(n=n(), perc= sum(criminal_rcds=="Sí")/n)%>%
+    dplyr::mutate(cod.V1= str_sub(comuna_residencia_cod, -6, -2))%>%
+   # dplyr::select(-comuna_residencia_cod)%>%
+    dplyr::mutate(cod.V1= stringr::str_replace(cod.V1, "\\(", "0"))
+
+    
+dat4<-mapa_comunas %>%
+  dplyr:::left_join(as_tibble(codigo_comunas2), by=c("codigo_comuna"="cod.V1")) %>%
+  dplyr::filter(codigo_region=="05")%>%
+  dplyr::mutate(tooltip=paste0(`comuna_residencia_cod`,"=",formatC(as.numeric(n), format="f", big.mark=",", digits=0)," (", scales::percent(perc, accuracy = 0.1),")")) %>% 
+  dplyr::mutate(n_cut=cut(as.numeric(`perc`),4))
+
+dat4 <- as_tibble(dat4)
+gg4<-
+  ggplot(data=dat4) +
+ # geom_sf(aes(fill=factor(n),geometry=geometry)) +
+  theme_minimal() +
+  geom_sf_interactive(aes(fill = n_cut, tooltip = tooltip, data_id = codigo_comuna, geometry= geometry),lwd =.08)+
+  scale_fill_manual(values=c("#5243DB","#859776", "#C2CAD6","#FE805D"),na.value="white") +
+  
+  #scale_colour_brewer(breaks = rev(levels(dsamp$clarity)))+
+  labs(fill="% registros\ncriminales")# geom_sf(data = dat2, aes(fill = value)) +
+#  coord_sf( expand = T)
+
+gg4_plot<-ggiraph(code = {print(gg4)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75 )
+suppressWarnings(htmlwidgets::saveWidget(gg4_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/comunal2.html")))
+
+#<iframe src= width = "600px", height = "300px" frameBorder="0"></iframe> 
+#`r knitr::include_url("_figs/comunal1.html", height = "400px")`
+#<iframe src="./_figs/comunal1.html" width = "600px", height = "300px" frameBorder="0"></iframe> 
+#girafe_options(, opts_sizing(rescale = T, width=.5))
+# frameWidget(gg3_plot, width='60%', height='40%')
+# htmltools::tagList(gg3_plot)
+# girafe_options(gg3_plot, opts_sizing(rescale = T, width=.5))
+```
+]
+
+```{r, echo=F, fig.align="center", warning=F, message=F}
+frameWidget(girafe_options(gg4_plot, opts_sizing(rescale = T, width=.75), opts_zoom(min = .7, max = 9)))#, width='40%', height='40%')
+```
+
+]
+
+
+.panel[.panel-name[Concepción]
+
+.details-code[
+
+```{r fig7_image-map_chile_comunas3, echo=T, error=T, fig.align='center', out.width="30%", out.height="30%", message=FALSE, warning=FALSE,  fig.show='hide', results='hide'}
+#results='asis'< fig.showtext=T, 
+mapa_comunas = chilemapas::mapa_comunas
+
+codigo_comunas3<-
+db_ser_2022%>%
+    dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","comuna_residencia_cod")), by="hash_key")%>% 
+    dplyr::filter(grepl("Biobío",nombre_region))%>%
+    dplyr::group_by(comuna_residencia_cod)%>%
+    summarise(n=n(), perc= sum(criminal_rcds=="Sí")/n)%>%
+    dplyr::mutate(cod.V1= str_sub(comuna_residencia_cod, -6, -2))%>%
+   # dplyr::select(-comuna_residencia_cod)%>%
+    dplyr::mutate(cod.V1= stringr::str_replace(cod.V1, "\\(", "0"))
+
+    
+dat5<-mapa_comunas %>%
+  dplyr:::left_join(as_tibble(codigo_comunas3), by=c("codigo_comuna"="cod.V1")) %>%
+  dplyr::filter(codigo_region=="08")%>%
+  dplyr::mutate(tooltip=paste0(`comuna_residencia_cod`,"=",formatC(as.numeric(n), format="f", big.mark=",", digits=0)," (", scales::percent(perc, accuracy = 0.1),")")) %>% 
+  dplyr::mutate(n_cut=cut(as.numeric(`perc`),4))
+
+dat5 <- as_tibble(dat5)
+gg5<-
+  ggplot(data=dat5) +
+ # geom_sf(aes(fill=factor(n),geometry=geometry)) +
+  theme_minimal() +
+  geom_sf_interactive(aes(fill = n_cut, tooltip = tooltip, data_id = codigo_comuna, geometry= geometry))+
+  scale_fill_manual(values=c("#5243DB","#859776", "#C2CAD6","#FE805D"),na.value="white") +
+  
+  #scale_colour_brewer(breaks = rev(levels(dsamp$clarity)))+
+  labs(fill="% registros\ncriminales")# geom_sf(data = dat2, aes(fill = value)) +
+#  coord_sf( expand = T)
+
+
+tooltip_css <- "background-color:gray;color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;"
+
+gg5_plot<-ggiraph(code = {print(gg5)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75 )
+suppressWarnings(htmlwidgets::saveWidget(gg5_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/comunal3.html")))
+
+#<iframe src= width = "600px", height = "300px" frameBorder="0"></iframe> 
+#`r knitr::include_url("_figs/comunal1.html", height = "400px")`
+#<iframe src="./_figs/comunal1.html" width = "600px", height = "300px" frameBorder="0"></iframe> 
+#girafe_options(, opts_sizing(rescale = T, width=.5))
+# frameWidget(gg3_plot, width='60%', height='40%')
+# htmltools::tagList(gg3_plot)
+# girafe_options(gg3_plot, opts_sizing(rescale = T, width=.5))
+```
+]
+
+```{r, echo=F, fig.align="center", warning=F, message=F}
+frameWidget(girafe_options(gg5_plot, opts_sizing(rescale = T, width=.75), opts_zoom(min = .7, max = 5)), width='50%', height='50%')
+```
+
+]
+]
 
 ???
 *#_#_#_#_#_#_#_#_#_#_
@@ -1179,6 +1311,22 @@ girafe_options(gg3_plot, opts_sizing(rescale = T, width=.75))
 ---
 class: center, middle
 
+
+.text_180[
+.darkred[
+Su comentario es nuestro trabajo
+]
+]
+
+.pull_l_70[
+.can-edit.key-likes[
+- 
+- 
+]
+]
+
+---
+class: center, middle
 # Gracias!
 
 <br>
@@ -1195,7 +1343,7 @@ gonzalez.santacruz.andres@gmail.com </div>
 
 ```{r, echo=FALSE,  fig.align="center", out.width=300, error=T}
 
-knitr::include_graphics(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_style/Logo nDP_color_hz_en.png"))
+knitr::include_graphics(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_style/Logo_nDP_color_hz_en.png"))
 
 ```
 <br>
