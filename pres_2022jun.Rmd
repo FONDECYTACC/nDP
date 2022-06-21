@@ -1051,7 +1051,7 @@ Base_fiscalia_v5 %>%
 - No vale la pena pronnciarse mucho por los delitos antes del 2009 porque están sometidos a mucha variación dado que son muy pocos casos por trimestre. De nuevo, necesitamos limpiar todavía estas fechas que pueden deberse a errores de tipeo.
 
 ---
-### Distribución geográfica (político-administrativa) (% promedio de registros como imputado)
+### Distribución geográfica (político-administrativa) (% de tratados con 1o+ registros como imputado)
 
 .panelset[
 .panel[.panel-name[Regional]
