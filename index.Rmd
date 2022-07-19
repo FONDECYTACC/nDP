@@ -7,7 +7,7 @@ author:
   - first_name: "Andrés"
     last_name: "González-Santa Cruz"
     url: https://github.com/nDP
-    affiliation: Núcleo Milenio de Drogas
+    affiliation: Technical Staff of Núcleo Milenio de Drogas; Ph.D. student (School of Public Health, Universidad de Chile).
     affiliation_url: 
     email: gonzalez.santacruz.andres@gmail.com
     orcid_id: 0000-0002-5166-9121
@@ -21,5 +21,7 @@ output:
 ---
 
 - [Presentation at nDP Extended Meeting](pres_2022jun.html)
+
+- [Chilean prosecutor’s office Data merge (Step 2)](Fiscalia_merge.html)
 
 - [Chilean prosecutor’s office Data merge (Step 2)](Fiscalia_merge2.html)

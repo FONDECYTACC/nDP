@@ -1,12 +1,9 @@
 theme: jekyll-theme-minimal
-title : Repositorio
+title : nDP Repository
 author : Andrés González Santa Cruz,
 email : gonzalez.santacruz.andres@gmail.com
 description: |
-  Tesis
 navbar:
   right:
     - text: "Home"
       href: index.html
-    - text: "About"
-      href: about.html
