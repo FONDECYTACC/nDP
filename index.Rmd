@@ -1,0 +1,25 @@
+---
+name: "repositorio_dsp_ags"
+title: "nDP Repository"
+lang: es-ES
+subject: R Markdown
+author:
+  - first_name: "Andrés"
+    last_name: "González-Santa Cruz"
+    url: https://github.com/nDP
+    affiliation: Núcleo Milenio de Drogas
+    affiliation_url: 
+    email: gonzalez.santacruz.andres@gmail.com
+    orcid_id: 0000-0002-5166-9121
+description: |
+ Descripción preliminar. En construcción. 
+base_url: https://beta.rstudioconnect.com/content/3776/
+creative_commons: CC BY
+output: 
+  distill::distill_article:
+    theme: theme.css
+---
+
+- [Presentation at nDP Extended Meeting](pres_2022jun.html)
+
+- [Chilean prosecutor’s office Data merge (Step 2)](Fiscalia_merge2.html)
