@@ -12,7 +12,7 @@ author:
     email: gonzalez.santacruz.andres@gmail.com
     orcid_id: 0000-0002-5166-9121
 description: |
- Descripción preliminar. En construcción. 
+ Part of the research done and available in https://www.nucleondp.cl/ 
 base_url: https://beta.rstudioconnect.com/content/3776/
 creative_commons: CC BY
 output: 
