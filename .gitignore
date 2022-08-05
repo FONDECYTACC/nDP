@@ -87,3 +87,5 @@ renv.lock
 *ssh*
 *id_rsa_*
 *.rar
+*.xlsx
+*.rda

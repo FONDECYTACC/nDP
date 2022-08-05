@@ -1,0 +1,2380 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Assessing the impact of Substance abuse treatment (SUT) on the justice system contact prevention in Chile</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Mariel Mateo &amp; Andrés González" />
+    <script src="libs/header-attrs-2.14/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/ninjutsu.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen-0.2.6/fit-screen.js"></script>
+    <link href="libs/animate.css-3.7.2/animate.xaringan.css" rel="stylesheet" />
+    <script src="libs/fabric-4.3.1/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble-0.0.1/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble-0.0.1/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30,"palette":[]}) })</script>
+    <link href="libs/tile-view-0.2.6/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view-0.2.6/tile-view.js"></script>
+    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x3eb87bc7c5c4864af9fab68516b35f0","expires":1}</script>
+    <script src="libs/himalaya-1.1.0/himalaya.js"></script>
+    <script src="libs/js-cookie-3.0.0/js.cookie.js"></script>
+    <link href="libs/editable-0.2.6/editable.css" rel="stylesheet" />
+    <script src="libs/editable-0.2.6/editable.js"></script>
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+    <script src="libs/pymjs-1.3.2/pym.v1.js"></script>
+    <script src="libs/widgetframe-binding-0.3.1/widgetframe.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="animate.min.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+
+
+
+class: title-slide, middle
+
+
+background-image: url(_style/Logo_nDP_monotono_vertical_en.png)
+background-position: top right
+background-size: 20%
+
+&lt;br&gt;
+
+## .text_80[Assessing the impact of Substance abuse treatment (SUT) on the justice system contact prevention in Chile]
+
+&lt;br&gt;
+
+.line_space_11[
+
+
+&lt;br&gt;
+
+.text_70[[Code available in: <svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>](https://github.com/FONDECYTACC/SUD_health_Chile.github.io)]
+
+.text_110[Propuesta - Concurso Fondo de Investigación Intramural nDP]
+
+]
+
+.bg-text[
+&lt;hr /&gt;
+
+July 28, 2022
+
+
+.text_100[Mariel Mateo Piñones &amp; Andrés González Santa Cruz]
+
+.text_70[mdmateo@uc.cl]
+.text_70[gonzalez.santacruz.andres@gmail.com] [<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>](https://github.com/AGSCL) [<svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:green;overflow:visible;position:relative;"><path d="M294.75 188.19h-45.92V342h47.47c67.62 0 83.12-51.34 83.12-76.91 0-41.64-26.54-76.9-84.67-76.9zM256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm-80.79 360.76h-29.84v-207.5h29.84zm-14.92-231.14a19.57 19.57 0 1 1 19.57-19.57 19.64 19.64 0 0 1-19.57 19.57zM300 369h-81V161.26h80.6c76.73 0 110.44 54.83 110.44 103.85C410 318.39 368.38 369 300 369z"/></svg>](https://orcid.org/0000-0002-5166-9121)
+]
+
+&lt;br&gt;
+
+&lt;img src="./_style/blank_space.png" width="15%" /&gt;
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+
+- Mi nombre es andrés gonzález. Soy asistente de investigación del proyecto que lidera Alvaro Castillo
+- En esta instancia haré un resumen de una idea de investigación que dirige mi compañera Mariel Mateo, que en esta instancia no se encuentra disponible debido a diferencias de horario. Se encuentra en Australia.
+
+---
+layout: true
+class: animated, fadeIn
+---
+## Antecedentes
+
+- Los trastornos por uso de sustancias (TUS) requieren un abordaje **multidimensional** `\(^{[1; 2]}\)`.
+
+- Reducir el uso se asocia a una reducción de la actividad criminal `\(^{[3]}\)`.
+
+- **“puerta giratoria”** `\(^{[4; 5; 6]}\)`.
+
+- **Evidencia:** Países desarrollados, muestras pequeñas, modalidades específicas de tratamiento, determinados perfiles de usuarios de drogas, etc. `\(^{[7; 8; 9]}\)`
+
+- Completar el tratamiento: Uno de los criterios más utilizados para evaluar efectividad `\(^{[10; 11]}\)`.
+
+
+.center[
+.darkred[
+**¿Mismo contexto que en nuestro país /región?**
+]
+]
+
+---
+## Antecedentes (2)
+
+- Perfiles de consumo distintos  `\(^{[12; 13; 14]}\)` 
+
+- Chile, caso de interés, sistemas de monitoreo de tratamientos más antiguos en la región `\(^{[15]}\)` 
+
+- Cambios en patrones de contactos con el sistema de justicia y tratamiento TUS `\(^{[16]}\)`
+
+- Los tratamientos no sobran: Brecha de acceso: 1:10 usuarios tratados por TUS (13° Estudio Nacional de uso de Sustancias en Población General 2018) `\(^{[17]}\)`.
+
+- Chile, desafíos en materia de **evaluación efectividad de tratamientos** `\(^{[18]}\)`. (DIPRES-ISUC, 2020)
+
+- Completar tratamiento ~ readmisión tratamientos TUS (Chile) `\(^{[19]}\)`.
+
+
+.center[
+.darkgreen[
+**¿qué ocurre con los contactos con el sistema de justicia?**
+]
+]
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+
+
+---
+class: center, middle
+
+## Objetivos
+
+Examinar el impacto de tratamientos por uso de sustancias en la prevención del contacto con el sistema judicial en Chile, en el corto (3 a 6 meses), medio (1 año) y largo plazo (3 años)
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- Nuestra hipótesis es que los pacientes que completan tendrán una probabilidad más baja de contactos con el sistema judicial en comparación con los que no completan, aunque este efecto disminuya a medida que el tiempo pasa.
+
+---
+## Estructura de datos
+
+- Estructura hipotética
+
+.details-code[
+
+
+```r
+# Libraries
+library(ggplot2)
+
+set.seed(2125)
+# Create data
+data &lt;- data.frame(
+  y=abs(rpois(1:250,15)),
+  y2=abs(rpois(1:250,15))
+) %&gt;% 
+  dplyr::filter(y2&gt;y, y&gt;=8, y2&lt;=22) %&gt;%
+  dplyr::mutate(Paciente=row_number()) %&gt;% 
+  #filtrar tratamientos más largos que 3 años
+  dplyr::mutate(diff_treat=y2-y) %&gt;% 
+  dplyr::filter(diff_treat&lt;=3)
+
+for (i in 1:nrow(data)){
+   data$y3[i]&lt;-base::sample(x=seq(from=data$y2[i]+1,to=22),1)
+   data$y3[i]&lt;-ifelse(data$y3[i]&lt;=data$y2[i],22,data$y3[i])
+   data$y3[i]&lt;-ifelse(data$y3[i]&gt;=23,22,data$y3[i])
+   data$y4[i]&lt;-ifelse(!is.na(data$y3[i]),base::sample(x=seq(from=data$y3[i]+1,to=22),1),22)
+   data$y4[i]&lt;-ifelse(data$y4[i]&lt;=data$y3[i],22,data$y4[i])
+   data$y4[i]&lt;-ifelse(data$y4[i]&gt;=23,22,data$y4[i])
+}
+
+
+set.seed(2125)
+pac_aleatorio1&lt;-sample(1:max(data$Paciente),40)
+pac_aleatorio2&lt;-setdiff(sample(1:max(data$Paciente),40), pac_aleatorio1)
+# Horizontal version, antes era 1985
+end_plot&lt;-20
+
+fig_trans&lt;-ggplot(data) 
+  ###&gt;=10
+  #datos de tratamiento en periodo de seguimiento, posterior al 2010
+fig_trans&lt;-try(fig_trans+geom_segment(data=dplyr::filter(data,y&gt;=10,y2&lt;=end_plot), aes(x=Paciente, xend=Paciente, y=y, yend=y2), color="#21177A", alpha=.6, size=.8))
+  #datos de tratamiento en periodo de seguimiento, exceden el seguiemiento. linea entera hasta el 2020
+fig_trans&lt;-try(fig_trans+ geom_segment(data=dplyr::filter(data,y&gt;=10,y2&gt;end_plot), aes(x=Paciente, xend=Paciente, y=y, yend=end_plot), color="#21177A", alpha=.6, size=.8))
+  #datos de tratamiento en periodo de seguimiento, exceden el seguiemiento. linea entrecortada despues del 2020
+fig_trans&lt;-try(fig_trans+geom_segment(data=dplyr::filter(data,y&gt;=10,y2&gt;end_plot), aes(x=Paciente, xend=Paciente, y=end_plot, yend=y2), color="#21177A", alpha=.6, linetype="dotted", size=.8))
+  ###&lt;10
+  #datos de tratamiento en periodo de seguimiento, exceden el seguiemiento. linea entrecortada despues del 2020
+fig_trans&lt;-try(fig_trans+geom_segment(data=dplyr::filter(data,y&lt;10), aes(x=Paciente, xend=Paciente, y=y, yend=10), color="#21177A", alpha=.6, linetype="dotted", size=.8))
+  #datos de tratamiento en periodo de seguimiento, menos de 2010 pero sólo y1
+fig_trans&lt;-try(fig_trans+geom_segment(data=dplyr::filter(data,y&lt;10,y2&gt;=10,y2&lt;=end_plot), aes(x=Paciente, xend=Paciente, y=10, yend=y2), color="#21177A", alpha=.6,  size=.8))
+  #datos de tratamiento en periodo de seguimiento, exceden el seguiemiento. linea entera hasta el 2020
+# fig_trans&lt;-try(fig_trans+geom_segment(data=dplyr::filter(data,y&lt;10,y2&gt;end_plot), aes(x=Paciente, xend=Paciente, y=10, yend=end_plot), color="#21177A", alpha=.6, size=.8))
+# CONTACTO: VICTIMARIO: debo saber si y3 está dentro o no del seguimiento
+  ###&gt;=10
+  #datos de justicia en periodo de seguimiento, linea solida
+fig_trans&lt;-try(fig_trans+geom_segment(data=dplyr::filter(data,y3&lt;=end_plot, y4&lt;=end_plot, Paciente%in% pac_aleatorio1), aes(x=Paciente, xend=Paciente, y=y3, yend=y4), color="#FE4A17", alpha=.6, size=.8))
+  #datos de justicia en periodo de seguimiento, exceden el seguiemiento pero parten en él. linea solida hasta el 2020
+fig_trans&lt;-try(fig_trans+geom_segment(data=dplyr::filter(data,y3&lt;=end_plot, y4&gt;end_plot, Paciente%in% pac_aleatorio1), aes(x=Paciente, xend=Paciente, y=y3, yend=end_plot), color="#FE4A17", alpha=.6, size=.8))
+#si estoy dentro de los datos en y, peroen end plot no, tengo q hacer el interlineado afuera
+fig_trans&lt;-try(fig_trans+geom_segment(data=dplyr::filter(data,y3&lt;=end_plot, y4&gt;end_plot, Paciente%in% pac_aleatorio1), aes(x=Paciente, xend=Paciente, y=end_plot, yend=y4), color="#FE4A17", alpha=.6,linetype="dotted",  size=.8))
+  #datos de tratamiento en periodo de seguimiento, exceden el seguiemiento. linea entrecortada despues del 2020
+ fig_trans&lt;-try(fig_trans+geom_segment(data=dplyr::filter(data,y3&gt;end_plot, y4&gt;end_plot, Paciente%in% pac_aleatorio1), aes(x=Paciente, xend=Paciente, y=y3, yend=y4), color="#FE4A17", alpha=.6, linetype="dotted", size=.8))
+
+ fig_trans_final&lt;-
+   #Puntos
+fig_trans+
+     #Tratamientos completados
+    geom_point(data=dplyr::filter(data,Paciente%in% sample(c(pac_aleatorio1,pac_aleatorio2),15)), aes(x=Paciente, y=y2), color="#21177A", size=3, alpha=.6) +
+     #Victimario
+    geom_point(data=dplyr::filter(data,Paciente%in% pac_aleatorio1), aes(x=Paciente, y=y3), color="#FE4A17", size=3, alpha=.6, shape=15)+
+    #víctima (no necesita tiempo de seguimiento)
+     geom_point(data=dplyr::filter(data,Paciente%in% pac_aleatorio2), aes(x=Paciente, y=y3), color="#FE4A17", size=3, alpha=.6, shape=17)+
+    theme_light() +
+    coord_flip() +
+    #fechas donde yo tomo gente
+     annotate("rect", xmin=-Inf, xmax=Inf, ymin=10, ymax=10.5,
+          alpha = .2, fill="blue")+
+    annotate("rect", xmin=-Inf, xmax=Inf, ymin=19.5, ymax=20,
+          alpha = .2, fill="blue")+
+    theme(
+      panel.grid.major.y = element_blank(),
+      panel.border = element_blank(),
+      axis.ticks.y = element_blank()
+    )+
+    scale_x_continuous(breaks=seq(1,max(data$Paciente),by=10))+
+    scale_y_continuous(breaks=seq(min(data$y),max(data$y4),by=2), labels=seq(min(data$y),max(data$y4),by=2)+2000)+
+   labs(y="Tiempo de seguimiento (en trimestres)", x="Individuos (ID)")+
+  #labs(y="Follow-up (in quarters)",x="Individual(ID)", caption="Note. Dot= Complete treatment;\nSquare= Contact w/ justice system (imputed);\nTriangle= Contact w/ justice system (victim);\nBlue line= Time in treatment;\nOrange line= Time in conctact w/justice system;\nShared area=Follow-up window")+
+  theme(plot.caption = element_text(hjust = 0, face= "italic"))
+ 
+
+ ggsave(paste0(sub("$\\/","",sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2)),"/_figs/situacion_hipotética.png"),fig_trans_final,width = 7, height = 5, dpi = 600)
+
+fig_trans_final
+```
+
+&lt;img src="pres_2022jun_5_files/figure-html/p1-est-1.png" width="50%" height="50%" style="display: block; margin: auto;" /&gt;
+
+]
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+
+- La figura muestra distintas trayectorias de la cohorte. Incluye personas con y sin contactos con el sistema judicial. La entrada de paciente a la cohorte retrospectiva empieza a la fecha en que es admitido por primera vez en un tratamiento por uso de sustancias enn el período de 2010-2019 y figura en las listas anuales del SENDA al 2010 al 2019 (independientemente si tienen tratamientos previos).
+
+- **Punto**= Completa tratamiento;**Cuadrado**= Contacto con el sistema judicial como imputado;**Triángulo**= Contacto con el sistema judicial como víctima;**Area sombreada**: Ventana de seguimiento;**Línea Naranja**=Tiempo de contacto con el sistema judicial;**Azul**=Tiempo en tratamiento
+
+- **Censura administrativa**: entrega información SENDA (2019-11-13), 
+- Otra censura ocurre después que se produce un evento de resultado competidor
+- Cuando un paciente deja la cohorte sin experimentar resultados (ej, si se va fuera del país). 
+- **Eventuales competidores**: tiempo en tratamiento (especialmente residenciales) o una sentencia **aunque debemos ver si es posible conocer este tiempo de censura**
+
+---
+# Métodos
+
++ SENDA, más cobertura tratamientos por TUS 
+  - Define estándares
+  - Compra
+  - Supervisa `\(^{[20]}\)`
++ ~15.000 adultos/año y monitorea trat. públicos (~73%) `\(^{[21; 22]}\)`
++ 2009, SISTRAT
+
++ 2010-2019, ~85.000 usuarios (n~ 110.000 registros)
+
++ Pareado con datos de fiscalía (~560,000 registros), para ~75.000 usuarios
+
++ Análisis de supervivencia
+
+  - Modelos de aceleración (AFT)
+
+`$$logT=-\beta X+W$$` 
+
+`$$log\lambda(t|z)=log\lambda_0(te^{-z^T\beta})$$`
+
+
+
+.superbigimage[
+.text_50[
+`$$readmisión\,|\,contacto\,con\,el\,sistema\,de\,justicia\sim \alpha+ X_{1 (Completa\,el\,tratamiento\,por\,uso\,de\,sustancias)}+X_{2 (Covariables)}+\epsilon$$`
+
+]
+]
+
+&lt;br&gt;
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+
+ (si es imputado, se buscará condena y se asumirá como riesgo competidor )
+- https://journals.sagepub.com/doi/full/10.1177/09622802211041759
+- Pang M, Platt RW, Schuster T, Abrahamowicz M. Flexible extension of the accelerated failure time model to account for nonlinear and time-dependent effects of covariates on the hazard. Statistical Methods in Medical Research. 2021;30(11):2526-2542. doi:10.1177/09622802211041759
+
+- **factor de aceleración** Los modelos AFT asumen que los efectos de las covariables son constantes y multiplicativos en la escala de tiempo. Ese efecto se denomina factor de aceleración, que representa la razón de supervivencia correspondiente a cualquier valor fijado de tiempo de supervivencia.
+- De otra manera, TR/AFT puede verse como el tiempo de supervivencia esperado, o el tiempo mediano de supervivencia de la población 2 es c veces lo mismo que el de la población 1. O razón de sobrevida calculada bajo distintas condiciones, para cualquier tiempo fijo t.
+
+- **La velocidad en que dura libre de un evento, por lo que menor a 1 es malo si el evento es indeseado y viceversa**
+- **No asume que los riesgos son proporcionales en el tiempo en los distintos grupos**
+
+- Se ejemplifica con un modelo Lognormal: `\(log\lambda(t|z)=log\lambda_0(te^{-z^T\beta})\)`
+
+**Plan de análisis**
+- Se imputarán algunas variables con casos perdidos.
+- Es necesario tener en cuenta que en algunos casos no se tendrá información exacta del tiempo en que se produce el evento y las características de él (¿Cuándo empieza a regir?, ¿Se podrá aplicar?)
+- Puede existir un período de incubación que haga menos informativa una determinada forma de supervivencia.
+
+---
+## Planificación
+
+&lt;br&gt;
+
+.details-code[
+
+
+```r
+if(isTRUE(getOption('knitr.in.progress'))==T){
+  path&lt;-path2
+} else {
+  #path&lt;-ifelse(!grepl("$\\/",path2),paste0(path2,"/"),path2)
+}
+
+#"Progress report"
+tasks &lt;- c("Review literature", "Mung data (linkage &amp; standardization)", "Stats analysis", "Progress report", "Final arrangements", "Manuscript ready for submission", "Presentation in scientific meetings")
+
+tasks &lt;- c("Revisión de la literatura", "Vinculación y estandarización de datos", "Análisis estadístico", "Reporte de progreso", "Arreglos finales", "Manuscrito publicable", "Presentación en congresos/seminarios")
+
+invisible(Sys.setlocale(category = "LC_ALL", locale = "spanish"))
+
+dfr &lt;- data.frame(
+  name        = factor(tasks, levels = tasks),
+  start.date  = as.Date(c("2022-06-12", "2022-06-12", "2022-10-01", "2023-01-01", "2023-04-01","2023-04-01","2023-04-01")),
+  end.date    = as.Date(c("2022-09-30", "2022-10-31", "2023-02-28", "2023-03-30","2023-06-30","2023-06-30","2023-06-30")),
+  Critical = c("Yes", "No", "Yes", "Yes", "No", "Yes", "Yes"),
+  Actor= factor(c("MM &amp; AGS","AGS","AGS &amp; MM", "MM &amp; AGS", "MM &amp; AGS", "MM &amp; AGS", "MM &amp; AGS"))
+)
+for (i in 1:nrow(dfr)){
+  dfr$mean_date[i]&lt;-as.Date(mean(c(as.numeric(dfr$start.date[i]),as.numeric(dfr$end.date[i])),na.rm=T),origin="1970-01-01")
+} 
+dfr$mean_date&lt;-as.Date(dfr$mean_date, origin="1970-01-01")
+
+size_gplot&lt;- 13/3
+
+
+ggant&lt;-
+ggplot(dfr, aes(x =start.date, xend= end.date, y=factor(name, levels = rev(levels(name))), yend = factor(name, levels = rev(levels(name))))) +
+  geom_segment(size = size_gplot*3.5,colour="#45503B") +
+  #scale_color_manual(values=c("gray70","gray30"))+# #FE4A17 ##21177A
+  scale_color_manual(values="#FE4A17")+# #FE4A17 ##21177A
+  scale_fill_manual(values="#FE4A17")+# #FE4A17 ##21177A
+  xlab(NULL) + ylab(NULL)+
+  theme_minimal()+
+  geom_label(data=dfr, aes(x=mean_date, y=factor(name, levels = rev(levels(name))),  label = Actor), size=size_gplot*1, color="gray40",show.legend=F#,
+             #nudge_x = c(-300, -200, -200, -100)
+             ) +
+    scale_x_date(date_breaks = "2 months",date_labels="%b '%y",limits=c(as.Date("2022-06-01"),as.Date("2023-07-02")))+
+      theme(axis.text.x= element_text(size=size_gplot*2.692),
+          axis.text.y= element_text(size=size_gplot*2.692),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        title = element_blank(),
+        legend.title =  element_blank(),
+        legend.text =  element_blank(),
+        plot.caption = element_text(hjust=0, size=size_gplot*2.308),
+        legend.position=c(.83,.8)#,
+   # panel.grid.minor = element_blank(), 
+   # panel.grid.major = element_blank(),
+   # panel.grid.major.x = element_blank(),
+  #  panel.background = element_blank()
+  )+
+  labs(caption="MM= Mariel Mateo; AGS= Andrés González")
+
+invisible("Para exportar a formato .png")
+
+size_gplot2&lt;- 13
+
+ggant2&lt;-
+ggplot(dfr, aes(x =start.date, xend= end.date, y=factor(name, levels = rev(levels(name))), yend = factor(name, levels = rev(levels(name))), pattern_fill = Actor, label=Actor)) +
+  geom_segment(size = size_gplot2*1.2) +
+  #scale_color_manual(values=c("gray70","gray30"))+# #FE4A17 ##21177A
+  scale_color_manual(values=,"#FE4A17")+# #FE4A17 ##21177A
+  xlab(NULL) + ylab(NULL)+
+  theme_minimal()+
+  geom_label(data=dfr, aes(x=mean_date, y=factor(name, levels = rev(levels(name))),  label = Actor), size=size_gplot2, color="gray20",show.legend=F#,
+             #nudge_x = c(-300, -200, -200, -100)
+             ) +
+    scale_x_date(date_breaks = "2 months",date_labels="%b '%y",limits=c(as.Date("2022-06-01"),as.Date("2023-07-02")))+
+      theme(axis.text.x= element_text(size=size_gplot2*2.692),
+          axis.text.y= element_text(size=size_gplot2*2.692),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        title = element_blank(),
+        legend.title =  element_blank(),
+        legend.text =  element_blank(),
+        plot.caption = element_text(hjust=0, size=size_gplot2*2.308),
+        legend.position=c(.83,.8)#,
+   # panel.grid.minor = element_blank(), 
+   # panel.grid.major = element_blank(),
+   # panel.grid.major.x = element_blank(),
+  #  panel.background = element_blank()
+  )+
+  labs(caption="MM= Mariel Mateo; AGS= Andrés González")
+
+ggsave(paste0(sub("$\\/","",sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2)),"/_figs/gantt.png"),ggant2, width = 8, height = 2, dpi = 400)
+ggant
+```
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="pres_2022jun_5_files/figure-html/fig-gantt-1.png" alt="Figure. Gantt" width="50%" height="50%" /&gt;
+&lt;p class="caption"&gt;Figure. Gantt&lt;/p&gt;
+&lt;/div&gt;
+
+]
+
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- TEÖRICO: Familiarizarnos con terminología jurídica, modalidades de condena, etc.
+- Note. Rel.= Relationships or the combination of a victim (Vic), an offender (Imp), a judicial cause (RUC).
+- Definir una unidad de análisis: ¿la relación (combinación específica de una determinada víctima, un imputado y para una determinada causa), la causa judicial (desde la cual se inician procedimientos y que agrupa relaciones)?
+- Para ello es necesario estar seguro si distintas relaciones conllevan a distintas condenas, y si en una causa se puede figurar y discriminar entre el rol de un usuario como imputado y como víctima.
+- Teniendo eso, podemos vincular las bases de datos adecuadamente,
+- Refinar la agrupación entre crímines violentos, relacionados con drogas, etc.
+- Ver si es factible la superposición de eventos (e.g., con pena aflictiva con sanción de presidio mientras se está completando un tratamiento cuyo motivo de ingreso no es el sistema judicial)
+- Revisión de la literatura: tratamientos, resultados, efectividad, evaluación de impacto, análisis de supervivencia
+- Definir el modelo de supervivencia a utilizar
+
+---
+class: partial-bg inverse
+
+background-image: linear-gradient(45deg, #21177A, #FE4A17)
+
+## Datos exploratorios
+
+
+---
+### Resumen descriptivo a la base
+
+.details-code[
+
+
+```r
+db_ser_2022&lt;-
+ db_ser_2022 %&gt;%  
+   dplyr::mutate(tipo_de_plan_res=dplyr::case_when(tipo_de_plan_res=="0"~"Ambulatorio",tipo_de_plan_res=="1"~"Residencial",T~as.character(tipo_de_plan_res))) %&gt;% 
+   dplyr::mutate(sus_principal_mod=dplyr::case_when(sus_principal_mod=="Cocaine hydrochloride"~"Cocaina",sus_principal_mod=="Marijuana"~"Marihuana",sus_principal_mod=="Other"~"Otros",sus_principal_mod=="Cocaine paste"~"Pasta base",T~as.character(sus_principal_mod))) %&gt;% 
+   dplyr::mutate(sus_ini_mod_mvv=dplyr::case_when(sus_ini_mod_mvv=="Cocaine hydrochloride"~"Cocaina",sus_ini_mod_mvv=="Marijuana"~"Marihuana",sus_ini_mod_mvv=="Other"~"Otros",sus_ini_mod_mvv=="Cocaine paste"~"Pasta base",T~as.character(sus_ini_mod_mvv))) %&gt;% 
+   dplyr::mutate(estado_conyugal_2=dplyr::case_when(estado_conyugal_2=="Married/Shared living arrangements"~"Casado/conviviendo",estado_conyugal_2=="Separated/Divorced"~"Separado/Divorciado",estado_conyugal_2=="Single"~"Soltero/a",estado_conyugal_2=="Widower"~"Viudo/a",T~as.character(estado_conyugal_2))) %&gt;% 
+   dplyr::mutate(origen_ingreso_mod=dplyr::case_when(origen_ingreso_mod=="Spontaneous"~"Consulta espontánea",origen_ingreso_mod=="Assisted Referral"~ "Referido", origen_ingreso_mod=="Other"~ "Otros", origen_ingreso_mod=="Justice Sector"~ "Sector justicia", origen_ingreso_mod=="Health Sector"~ "Sector salud", T~as.character(origen_ingreso_mod))) %&gt;% 
+   dplyr::mutate(dg_cie_10_rec=factor(dplyr::case_when(as.character(dg_cie_10_rec)== "Diagnosis unknown (under study)"~"Diagnóstico desconocido (en estudio)", as.character(dg_cie_10_rec)== 'Without psychiatric comorbidity' ~ "Sin comorbilidad", as.character(dg_cie_10_rec)== 'With psychiatric comorbidity'~ "Con comorbilidad psiquiátrica", T~ NA_character_)))%&gt;%#~"Sin trastorno"~
+  dplyr::mutate(dg_trs_fis_rec=factor(dplyr::case_when(as.character(diagnostico_trs_fisico)=="En estudio"~"Desconocido (en estudio)",as.character(diagnostico_trs_fisico)=="Sin trastorno"~'Sin comorbilidad',cnt_diagnostico_trs_fisico&gt;0 ~'Con comorbilidad física',
+                                             TRUE~NA_character_)))%&gt;%
+  dplyr::mutate(sexo_2=factor(dplyr::case_when(as.character(sexo_2)== "Men"~ "Hombre", as.character(sexo_2)== 'Women' ~ "Mujer", T~ NA_character_)))%&gt;%
+  dplyr::mutate(tenencia_de_la_vivienda_mod=factor(dplyr::case_when(as.character(tenencia_de_la_vivienda_mod)== "Illegal Settlement"~"Ocupación ilegal", as.character(tenencia_de_la_vivienda_mod)== 'Owner/Transferred dwellings/Pays Dividend' ~ "Propietario/Transferido/Paga dividendo", as.character(tenencia_de_la_vivienda_mod)== 'Stays temporarily with a relative'~ "Allegado", as.character(tenencia_de_la_vivienda_mod)== 'Renting'~ "Arrienda", as.character(tenencia_de_la_vivienda_mod)== 'Others'~ "Otros", T~ NA_character_)))%&gt;%#~"Sin trastorno"~,
+  dplyr::mutate(evaluacindelprocesoteraputico=factor(as.character(evaluacindelprocesoteraputico), levels= c("1-High Achievement", "2-Medium Achievement", "3-Minimum Achievement"), labels= c("1- Logro alto", "2- Logro intermedio", "3- Logro mínimo")))%&gt;%#~"Sin trastorno"~,
+  dplyr::mutate(escolaridad_rec=factor(as.character(escolaridad_rec),levels=c('3-Completed primary school or less', '2-Completed high school or less', '1-More than high school'), ordered=T, labels= c("3- Completó escuela primaria", "2- Completó escuela secundaria", "1- Mayor a escuela secundaria"))) %&gt;%  
+  dplyr::mutate(condicion_ocupacional_corr=factor(as.character(condicion_ocupacional_corr),levels=c('Employed', 'Unemployed', 'Inactive', 'Looking for a job for the first time', 'No activity', 'Not seeking for work'), ordered=T, labels= c("Empleado", "Desempleado", "Inactivo", "Buscando empleo por primera vez", "Sin actividad", "No busca trabajo"))) %&gt;%    
+  dplyr::mutate(freq_cons_sus_prin=factor(as.character(freq_cons_sus_prin),levels=c('Did not use', 'Less than 1 day a week','1 day a week or more','2 to 3 days a week','4 to 6 days a week','Daily'), labels= c("No consume semanalmente", "&lt; de 1 vez sem.", "1 día sem. o +", "2-3 d. sem.", "4-6 d. sem.","Diariamente"), ordered=T)) %&gt;% 
+  dplyr::mutate(joined= factor(ifelse(is.na( perc_imp),0,1),labels=c("No","Sí"))) %&gt;%
+  dplyr::mutate(criminal_rcds=dplyr::case_when(hash_key %in% rut_enc_saf_jun22~"Sí",T~"No")) %&gt;% 
+  dplyr::mutate(sum_otras_sus=dplyr::case_when(sum_otras_sus&gt;0~"1-Más de una", sum_otras_sus==0~"0-Sólo una",T~NA_character_)) %&gt;% 
+  dplyr::mutate(duplicates_filtered=dplyr::case_when(duplicates_filtered&gt;3~"3-Más de 3", duplicates_filtered %in% c(2,3)~"Dos o tres registros", duplicates_filtered==1~"1-Sólo uno",T~NA_character_)) %&gt;% 
+  dplyr::mutate(duplicates_filtered=factor(duplicates_filtered, levels=c("1-Sólo una","Dos o tres registros","3-Más de 3")))
+  
+attr(db_ser_2022$sus_principal_mod,"label")&lt;-"Sustancia principal a la admisión"
+attr(db_ser_2022$sus_ini_mod_mvv,"label")&lt;-"Sustancia de inicio"
+attr(db_ser_2022$estado_conyugal_2,"label")&lt;-"Estatus marital"
+attr(db_ser_2022$escolaridad_rec,"label")&lt;-"Nivel educacional"
+attr(db_ser_2022$edad_ini_cons,"label")&lt;-"Edad de inicio de cosumo"
+attr(db_ser_2022$freq_cons_sus_prin,"label")&lt;-"Frecuencia de consumo sustancia principal"
+attr(db_ser_2022$origen_ingreso_mod,"label")&lt;-"Origen de ingreso"
+attr(db_ser_2022$dg_cie_10_rec,"label")&lt;-"Comorbilidad psiquiátrica"
+attr(db_ser_2022$dg_trs_fis_rec,"label")&lt;-"Comorbilidad física"
+attr(db_ser_2022$nombre_region,"label")&lt;-"Región del centro"
+attr(db_ser_2022$tipo_centro_pub,"label")&lt;-"Tipo de centro (Public)"
+attr(db_ser_2022$sexo_2,"label")&lt;-"Sexo"
+attr(db_ser_2022$edad_al_ing,"label")&lt;-"Edad de ingreso"
+attr(db_ser_2022$fech_ing_num,"label")&lt;-"Fecha de ingreso"
+attr(db_ser_2022$abandono_temprano_rec,"label")&lt;-"Abandono temprano"
+attr(db_ser_2022$tipo_de_plan_res,"label")&lt;-"Modalidad de plan (Residencial)"
+attr(db_ser_2022$duplicates_filtered,"label")&lt;-"N° tratamientos en la base de datos"
+attr(db_ser_2022$dg_trs_cons_sus_or,"label")&lt;-"Diagnóstico de dependencia (CIE-10)"
+attr(db_ser_2022$evaluacindelprocesoteraputico,"label")&lt;-"Evaluación del proceso terapéutico"
+attr(db_ser_2022$condicion_ocupacional_corr,"label")&lt;-"Estatus ocupacional"
+attr(db_ser_2022$tenencia_de_la_vivienda_mod,"label")&lt;-"Tenencia de la vivienda"
+attr(db_ser_2022$perc_accused,"label")&lt;-"% de registros en Fiscalía en los que se le imputa un crimen"
+attr(db_ser_2022$tr_completion,"label")&lt;-"Completar tratamientos a la base"
+attr(db_ser_2022$drug_related_crime,"label")&lt;-"N° registros en los que se le acusa de crímenes relacionados con drogas"
+attr(db_ser_2022$violent_crime,"label")&lt;-"N° registros en los que se le acusa de crímenes violentos"
+attr(db_ser_2022$other_charges,"label")&lt;-"N° registros en los que se le acusa de otros cargos"
+attr(db_ser_2022$joined,"label")&lt;-"Ha tenido contactos con el sistema judicial"
+attr(db_ser_2022$sum_otras_sus,"label")&lt;-"Suma de otras sustancias por las que ingresa a la admisión"
+attr(db_ser_2022$tipo_de_plan_res,"label")&lt;-"Tratamientos residenciales"
+attr(db_ser_2022$criminal_rcds,"label")&lt;-"Registros criminales como imputado"
+
+
+table1_all &lt;- suppressWarnings(compareGroups(tr_completion ~ tipo_de_plan_res+ sus_principal_mod+ sum_otras_sus+ sus_ini_mod_mvv+ estado_conyugal_2+ escolaridad_rec+ edad_ini_cons+ freq_cons_sus_prin+ origen_ingreso_mod+ dg_cie_10_rec+ dg_trs_fis_rec+ nombre_region+ tipo_centro_pub+ sexo_2+ dg_trs_cons_sus_or+ edad_al_ing+ fech_ing_num+  duplicates_filtered+ dg_trs_cons_sus_or+ evaluacindelprocesoteraputico+ condicion_ocupacional_corr+ tenencia_de_la_vivienda_mod+ perc_accused+ drug_related_crime+ violent_crime+ other_charges+ joined+ criminal_rcds, method= c(
+                                      tipo_de_plan_res=3,
+                                      sus_principal_mod=3,
+                                      sum_otras_sus=3,
+                                      sus_ini_mod_mvv=3,
+                                      estado_conyugal_2=3,
+                                      escolaridad_rec=3,
+                                      edad_ini_cons=3,
+                                      freq_cons_sus_prin=3,
+                                      origen_ingreso_mod=3,
+                                      dg_cie_10_rec=3,
+                                      dg_trs_fis_rec=3,
+                                      dg_trs_cons_sus_or=3,
+                                      nombre_region=3,
+                                      tipo_centro_pub=3,
+                                      sexo_2=3,
+                                      edad_al_ing=2,
+                                      fech_ing_num=2,
+                                      duplicates_filtered=3,
+                                      evaluacindelprocesoteraputico=3,
+                                      perc_accused=2,
+                                      other_charges=2,
+                                      violent_crime=2,
+                                      drug_related_crime=2,
+                                      joined=3,
+                                      criminal_rcds=3),
+ data = db_ser_2022,
+   include.miss = T,
+   var.equal=T)
+)
+
+restab1_all &lt;- createTable(table1_all, show.p.overall = T)
+
+pvals1 &lt;- getResults(table1_all)
+#p.adjust(pvals, method = "BH")
+ export2md(restab1_all, size=11, first.strip=T, hide.no="no", position="center",
+           format="html",caption= "Según estatus primer tratamiento a la base, Tratamientos 2010-2019", col.names=c("Variables","Tratamiento en curso","Completa", "No completa", "valor-p"))%&gt;%#
+  kableExtra::add_footnote(c("Nota. Variables continuas se muestran en Medianas y percentiles 25 y 75;", "Variables categóricas se presentan como recuentos (%);","Fechas medidas en días desde 1° Enero de 1970"), notation = "none")%&gt;%
+  kableExtra::scroll_box(width = "100%", height = "375px") %&gt;% 
+   kableExtra::kable_classic()
+```
+
+&lt;div style='border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:375px; overflow-x: scroll; width:100%;  font-family: "Arial Narrow", "Source Sans Pro", sans-serif; margin-left: auto; margin-right: auto;' class=" lightable-classic"&gt;&lt;table class="table table-striped table-condensed" style="font-size: 11px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+&lt;caption style="font-size: initial !important;"&gt;Según estatus primer tratamiento a la base, Tratamientos 2010-2019&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"&gt; Variables &lt;/th&gt;
+   &lt;th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;"&gt; Tratamiento en curso &lt;/th&gt;
+   &lt;th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;"&gt; Completa &lt;/th&gt;
+   &lt;th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;"&gt; No completa &lt;/th&gt;
+   &lt;th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;"&gt; valor-p &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-style: italic;border-bottom: 1px solid grey"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;font-style: italic;border-bottom: 1px solid grey"&gt; N=5521 &lt;/td&gt;
+   &lt;td style="text-align:center;font-style: italic;border-bottom: 1px solid grey"&gt; N=19278 &lt;/td&gt;
+   &lt;td style="text-align:center;font-style: italic;border-bottom: 1px solid grey"&gt; N=60249 &lt;/td&gt;
+   &lt;td style="text-align:center;font-style: italic;border-bottom: 1px solid grey"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Tratamientos residenciales: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; . &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Ambulatorio &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5042 (91.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 15607 (81.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 51618 (85.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Residencial &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 479 (8.68%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3656 (19.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8571 (14.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 15 (0.08%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 60 (0.10%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sustancia principal a la admisión: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; . &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Alcohol &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2235 (40.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8522 (44.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18102 (30.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Cocaina &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1413 (25.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3279 (17.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 11459 (19.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Marihuana &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 399 (7.23%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1326 (6.88%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4046 (6.72%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Otros &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 110 (1.99%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 516 (2.68%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 959 (1.59%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Pasta base &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1364 (24.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5635 (29.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25682 (42.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Suma de otras sustancias por las que ingresa a la admisión: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 0-Sólo una &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1974 (35.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6401 (33.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 14168 (23.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3547 (64.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 12877 (66.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 46081 (76.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sustancia de inicio: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Alcohol &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3588 (65.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 11794 (61.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 31241 (51.9%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Cocaina &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 245 (4.44%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 566 (2.94%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2351 (3.90%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Marihuana &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1351 (24.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4123 (21.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17517 (29.1%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Otros &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 133 (2.41%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 480 (2.49%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1374 (2.28%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Pasta base &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 150 (2.72%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 631 (3.27%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3083 (5.12%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 54 (0.98%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1684 (8.74%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4683 (7.77%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Estatus marital: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Casado/conviviendo &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1758 (31.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 7250 (37.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 20108 (33.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Separado/Divorciado &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 620 (11.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2402 (12.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6027 (10.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Soltero/a &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3060 (55.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 9269 (48.1%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 33387 (55.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Viudo/a &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 73 (1.32%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 318 (1.65%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 612 (1.02%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 10 (0.18%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 39 (0.20%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 115 (0.19%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Nivel educacional: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 3- Completó escuela primaria &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1273 (23.1%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4997 (25.9%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17673 (29.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 2- Completó escuela secundaria &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2954 (53.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 10272 (53.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 33427 (55.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 1- Mayor a escuela secundaria &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1273 (23.1%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3927 (20.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8868 (14.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 21 (0.38%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 82 (0.43%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 281 (0.47%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Frecuencia de consumo sustancia principal: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; No consume semanalmente &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 120 (2.17%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 300 (1.56%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 762 (1.26%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; &amp;lt; de 1 vez sem. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 210 (3.80%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 762 (3.95%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2024 (3.36%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 1 día sem. o + &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 383 (6.94%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1488 (7.72%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3739 (6.21%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 2-3 d. sem. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1537 (27.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5502 (28.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16677 (27.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 4-6 d. sem. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 953 (17.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3035 (15.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 9935 (16.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Diariamente &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2305 (41.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8103 (42.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26792 (44.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13 (0.24%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 88 (0.46%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 320 (0.53%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Origen de ingreso: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Consulta espontánea &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2558 (46.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8137 (42.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 27333 (45.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Otros &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 188 (3.41%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1117 (5.79%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3209 (5.33%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Referido &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 450 (8.15%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1758 (9.12%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5759 (9.56%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Sector justicia &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 606 (11.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2282 (11.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5088 (8.44%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Sector salud &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1719 (31.1%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5984 (31.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18860 (31.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Comorbilidad psiquiátrica: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Con comorbilidad psiquiátrica &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2398 (43.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 9673 (50.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 24541 (40.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Diagnóstico desconocido (en estudio) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1084 (19.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 353 (1.83%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 14662 (24.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Sin comorbilidad &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2039 (36.9%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 9252 (48.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 21046 (34.9%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Comorbilidad física: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Con comorbilidad física &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 590 (10.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2130 (11.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5361 (8.90%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Desconocido (en estudio) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2858 (51.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 9805 (50.9%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 33229 (55.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Sin comorbilidad &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2073 (37.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 7286 (37.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 21412 (35.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 57 (0.30%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 247 (0.41%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Tipo de centro (Public): &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; . &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; FALSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1175 (21.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5941 (30.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16954 (28.1%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4346 (78.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13334 (69.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 43278 (71.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3 (0.02%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 (0.03%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sexo: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Hombre &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3920 (71.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 14152 (73.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 45553 (75.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Mujer &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1601 (29.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5126 (26.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 14696 (24.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Diagnóstico de dependencia (CIE-10): &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; . &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; FALSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1625 (29.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5876 (30.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 15710 (26.1%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3896 (70.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13402 (69.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 44538 (73.9%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Edad de ingreso &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 36.7 [28.8;46.4] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 37.5 [29.5;47.2] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 33.0 [26.7;41.4] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Fecha de ingreso &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18039 [17919;18116] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16507 [15581;17208] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16378 [15558;17154] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; N° tratamientos en la base de datos: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Dos o tres registros &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3276 (17.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13039 (21.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 3-Más de 3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 220 (1.14%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1229 (2.04%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5521 (100%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 15782 (81.9%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 45981 (76.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Diagnóstico de dependencia (CIE-10): &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; . &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; FALSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1625 (29.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5876 (30.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 15710 (26.1%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3896 (70.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13402 (69.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 44538 (73.9%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Evaluación del proceso terapéutico: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 1- Logro alto &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 33 (0.60%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13737 (71.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3157 (5.24%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 2- Logro intermedio &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 166 (3.01%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4744 (24.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 21082 (35.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 3- Logro mínimo &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 86 (1.56%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 797 (4.13%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 36001 (59.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5236 (94.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 9 (0.01%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Estatus ocupacional: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; . &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Empleado &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2786 (50.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 9789 (50.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 28832 (47.9%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Desempleado &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1776 (32.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5876 (30.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 21537 (35.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Inactivo &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 621 (11.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2364 (12.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5940 (9.86%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Buscando empleo por primera vez &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 10 (0.18%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 49 (0.25%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 134 (0.22%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Sin actividad &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 300 (5.43%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 986 (5.11%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3215 (5.34%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; No busca trabajo &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 28 (0.51%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 214 (1.11%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 590 (0.98%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1 (0.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Tenencia de la vivienda: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Allegado &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2128 (38.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6674 (34.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 23807 (39.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Arrienda &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 982 (17.8%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3283 (17.0%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 10301 (17.1%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Ocupación ilegal &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 62 (1.12%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 193 (1.00%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 651 (1.08%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Otros &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 131 (2.37%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 518 (2.69%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1705 (2.83%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; 'Missing' &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2218 (40.2%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8610 (44.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 23785 (39.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; % de registros en Fiscalía en los que se le imputa un crimen &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 57.1 [25.0;92.3] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 59.1 [20.0;95.7] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 66.7 [37.5;93.8] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; N° registros en los que se le acusa de crímenes relacionados con drogas &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.00 [0.00;0.00] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.00 [0.00;0.00] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.00 [0.00;0.00] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; N° registros en los que se le acusa de crímenes violentos &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.00 [0.00;1.00] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.00 [0.00;1.00] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.00 [0.00;2.00] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; N° registros en los que se le acusa de otros cargos &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.00 [1.00;4.00] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.00 [1.00;4.00] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.00 [1.00;6.00] &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Ha tenido contactos con el sistema judicial: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt;0.001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1019 (18.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3583 (18.6%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6207 (10.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Sí &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4502 (81.5%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 15695 (81.4%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 54042 (89.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Registros criminales como imputado: &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1951 (35.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6887 (35.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13099 (21.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;padding-left: 2em;" indentlevel="1"&gt; Sí &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3570 (64.7%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 12391 (64.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 47150 (78.3%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;
+&lt;td style="padding: 0; border:0;" colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Nota. Variables continuas se muestran en Medianas y percentiles 25 y 75;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding: 0; border:0;" colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Variables categóricas se presentan como recuentos (%);&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding: 0; border:0;" colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Fechas medidas en días desde 1° Enero de 1970&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;&lt;/div&gt;
+
+]
+
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- Sólo mencionaré las principales o que me llamaron más la atención
+- Todavía no hay una interpretación del mecanismo que produce estas asociaciones y todavía son de carácter muy descriptivo y muy ingenuo (ignora confusión, sesgos, etc.).
++ Quienes no-completan tratamiento a la base:
+  - Menos en tratamientos residenciales
+  - Menos ingresan por alcohol como la principal, más pasta base
+  - Más policonsumo (ingresan por más de una sustancia)
+  - Más señalan sustancia de inicio marihuana, menos alcohol
+  - Más son solteros, menos casados
+  - Menor educación superior  
+  - Levemente más consume diariamente
+  - Levemente menos sector justicia
+  - Los registros son más antiguos
+  - Ingresan antes al tratamiento
+  - Más resulta readmitido entre el 2010-2019
+  - Más con diagnóstico de dependencia (CIE-10)
+  - Más desempleados
+  - Más viven de allegados
+  - Más con contactos con el sistema judicial
+  - Más con al menos 1 registro como imputado
+
+---
+### Encontrado como imputado
+
+.pull-left[
+
+.details-code[
+
+
+```r
+#https://coolors.co/0a1128-001f54-034078-1282a2-c1dbe3
+#c("pais", "encontrado_como_victima", "gls_tipo_sujeto_vic", "gls_tipo_imputado", "gls_region", "familia_delito", "agrupa_terminos", "sexo", "edad_comision", "region_delito")
+i&lt;- "encontrado_como_imputado"
+min_plot&lt;-1957
+max_plot&lt;-2002
+casos_no_cubiertos&lt;-
+  Base_fiscalia_v5 %&gt;% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(imp_birth_date)) %&gt;%
+  dplyr::mutate(grupo_var=get(i))%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%&gt;%
+  dplyr::summarise(n_2_grupos=n())%&gt;%
+  dplyr::ungroup()%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt)%&gt;%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%&gt;%
+  dplyr::filter(fec_nacimiento_qrt&lt;min_plot|fec_nacimiento_qrt&gt;=max_plot) %&gt;%
+  dplyr::ungroup()%&gt;%
+  dplyr::summarise(sum_total=sum(n_2_grupos))%&gt;%
+  unlist()
+#colorspace::diverge_hcl(length(table(Base_fiscalia_v5[[i]])),h=c(0,-100),l=c(75,30),c=c(40,80),power=1)
+Base_fiscalia_v5 %&gt;% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(imp_birth_date)) %&gt;%
+  dplyr::mutate(grupo_var=get(i))%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%&gt;%
+  dplyr::summarise(n_2_grupos=n())%&gt;%
+  dplyr::ungroup()%&gt;% 
+  dplyr::group_by(fec_nacimiento_qrt)%&gt;%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%&gt;%
+  dplyr::filter(fec_nacimiento_qrt&gt;=min_plot) %&gt;%
+  ggplot2::ggplot(aes(x = fec_nacimiento_qrt, y = freq,fill=grupo_var))+
+  geom_area(alpha=0.6 , size=.5, colour="white") +
+  scale_fill_manual(values= c("#21177A", "#aaaaaa", "#FE4A17"))+# colorspace::rainbow_hcl(length(table(Base_fiscalia_v5[[i]])))) +
+  sjPlot::theme_sjplot2() +
+  zoo::scale_x_yearqtr(format="%YQ%q", n=15,
+                  limits=c(zoo::as.yearqtr(paste0(min_plot,"-01-01")), 
+                           max=zoo::as.yearqtr(paste0(max_plot,"-01-01"))))+
+  scale_y_continuous(limits=c(0,1),labels = scales::percent)+
+  labs(x="",y="Porcentajes",
+       caption= paste0("Nota. Registros entre ",min_plot," y ",max_plot,", e ignorando el resto: ", format(casos_no_cubiertos,big.mark="."),";\n", "Porcentajes por año y trimestre; Q= Trimestre"))+
+  #ylim(0,101)+
+  # scale_y_continuous(limits=c(0,1),labels = scales::percent) +
+  theme(legend.position="bottom")+
+  guides(fill=guide_legend(ncol=3))+
+  theme(legend.text = element_text(size=9))+
+  theme(legend.title = element_blank(),
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        axis.title.x = element_blank())+
+  theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+```
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="pres_2022jun_5_files/figure-html/fig-imputado1-1.png" alt="Fecha de nacimiento y estatus de imputado"  /&gt;
+&lt;p class="caption"&gt;Fecha de nacimiento y estatus de imputado&lt;/p&gt;
+&lt;/div&gt;
+]
+] 
+
+
+.pull-right[
+
+.details-code[
+
+
+```r
+i&lt;- "encontrado_como_imputado"
+min_plot&lt;-2005
+max_plot&lt;-2020
+casos_no_cubiertos&lt;-
+  Base_fiscalia_v5 %&gt;% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(fec_comision_simple)) %&gt;%
+  dplyr::mutate(grupo_var=get(i))%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%&gt;%
+  dplyr::summarise(n_2_grupos=n())%&gt;%
+  dplyr::ungroup()%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt)%&gt;%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%&gt;%
+  dplyr::filter(fec_nacimiento_qrt&lt;min_plot|fec_nacimiento_qrt&gt;=max_plot) %&gt;%
+  dplyr::ungroup()%&gt;%
+  dplyr::summarise(sum_total=sum(n_2_grupos))%&gt;%
+  unlist()
+#colorspace::diverge_hcl(length(table(Base_fiscalia_v5[[i]])),h=c(0,-100),l=c(75,30),c=c(40,80),power=1)
+Base_fiscalia_v5 %&gt;% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(fec_comision_simple)) %&gt;%
+  dplyr::mutate(grupo_var=get(i))%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%&gt;%
+  dplyr::summarise(n_2_grupos=n())%&gt;%
+  dplyr::ungroup()%&gt;% 
+  dplyr::group_by(fec_nacimiento_qrt)%&gt;%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%&gt;%
+  dplyr::filter(fec_nacimiento_qrt&gt;=min_plot) %&gt;%
+  ggplot2::ggplot(aes(x = fec_nacimiento_qrt, y = freq,fill=grupo_var))+
+  geom_area(alpha=0.6 , size=.5, colour="white") +
+  scale_fill_manual(values= c("#21177A", "#aaaaaa", "#FE4A17"))+# colorspace::rainbow_hcl(length(table(Base_fiscalia_v5[[i]])))) +
+  sjPlot::theme_sjplot2() +
+  zoo::scale_x_yearqtr(format="%YQ%q", n=18,
+                  limits=c(zoo::as.yearqtr(paste0(min_plot,"-01-01")), 
+                           max=zoo::as.yearqtr(paste0(max_plot,"-01-01"))))+
+  scale_y_continuous(limits=c(0,1),labels = scales::percent)+
+  labs(x="",y="Porcentajes",
+       caption= paste0("Nota. Registros entre ",min_plot," y ",max_plot,", e ignorando el resto: ", format(casos_no_cubiertos,big.mark="."),";\n", "Porcentajes por año y trimestre; Q= Trimestre"))+
+  #ylim(0,101)+
+  # scale_y_continuous(limits=c(0,1),labels = scales::percent) +
+  theme(legend.position="bottom")+
+  guides(fill=guide_legend(ncol=3))+
+  theme(legend.text = element_text(size=9))+
+  theme(legend.title = element_blank(),
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        axis.title.x = element_blank())+
+  theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+```
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="pres_2022jun_5_files/figure-html/fig-imputado2-1.png" alt="Fecha de comisión de delito y estatus de imputado"  /&gt;
+&lt;p class="caption"&gt;Fecha de comisión de delito y estatus de imputado&lt;/p&gt;
+&lt;/div&gt;
+]
+]
+
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- A medida que aumenta la fecha de nacimiento, aumenta el porcentaje de registros en los que el usuario figura como imputado, aunque disminuye después del año 1995.
+- Todavía es necesario limpiar la base de datos en términos de fechas de comisión del delito (hay algunas mal ingresadas, etc., pero también causas que todavía no han cerrado o cerraron al inicio del seguimiento, ej., 2010)
+- Podemos ver en el segundo gráfico que las causas cuyo delito fue cometido antes del 2010 corresponde a mayor proporción a registros en los que el usuario figura como imputado, mientras que desde el año 2018 se puede apreciar un leve aumento del porcentaje de causas en las que el usuario figura como víctima. **De nuevo, todo esto es exploratorio**
+
+---
+### Tipo de crimen cometido
+
+.pull-left[
+
+.details-code[
+
+
+```r
+#https://coolors.co/0a1128-001f54-034078-1282a2-c1dbe3
+#c("pais", "encontrado_como_victima", "gls_tipo_sujeto_vic", "gls_tipo_imputado", "gls_region", "familia_delito", "agrupa_terminos", "sexo", "edad_comision", "region_delito")
+i&lt;- "familia_delito_rec"
+min_plot&lt;-1957
+max_plot&lt;-2002
+casos_no_cubiertos&lt;-
+  Base_fiscalia_v5 %&gt;% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(imp_birth_date)) %&gt;%
+  dplyr::mutate(grupo_var=get(i))%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%&gt;%
+  dplyr::summarise(n_2_grupos=n())%&gt;%
+  dplyr::ungroup()%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt)%&gt;%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%&gt;%
+  dplyr::filter(fec_nacimiento_qrt&lt;min_plot|fec_nacimiento_qrt&gt;=max_plot) %&gt;%
+  dplyr::ungroup()%&gt;%
+  dplyr::summarise(sum_total=sum(n_2_grupos))%&gt;%
+  unlist()
+#colorspace::diverge_hcl(length(table(Base_fiscalia_v5[[i]])),h=c(0,-100),l=c(75,30),c=c(40,80),power=1)
+Base_fiscalia_v5 %&gt;% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(imp_birth_date)) %&gt;%
+  dplyr::mutate(grupo_var=get(i))%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%&gt;%
+  dplyr::summarise(n_2_grupos=n())%&gt;%
+  dplyr::ungroup()%&gt;% 
+  dplyr::group_by(fec_nacimiento_qrt)%&gt;%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%&gt;%
+  dplyr::filter(fec_nacimiento_qrt&gt;=min_plot) %&gt;%
+  ggplot2::ggplot(aes(x = fec_nacimiento_qrt, y = freq,fill=grupo_var))+
+  geom_area(alpha=0.6 , size=.5, colour="white") +
+  scale_fill_manual(values= c("#FE4A17", "#aaaaaa", "#21177A"), labels=c("Relacionados con drogas", "Otros","Violentos"))+# colorspace::rainbow_hcl(length(table(Base_fiscalia_v5[[i]])))) +
+  sjPlot::theme_sjplot2() +
+  zoo::scale_x_yearqtr(format="%YQ%q", n=15,
+                  limits=c(zoo::as.yearqtr(paste0(min_plot,"-01-01")), 
+                           max=zoo::as.yearqtr(paste0(max_plot,"-01-01"))))+
+  scale_y_continuous(limits=c(0,1),labels = scales::percent)+
+  labs(x="",y="Porcentajes",
+       caption= paste0("Nota. Casos nacidos entre ",min_plot," y ",max_plot,", e ignorando el resto: ", casos_no_cubiertos,";\n","Porcentajes por año y trimestre; Q= Trimestre"))+
+  #ylim(0,101)+
+  # scale_y_continuous(limits=c(0,1),labels = scales::percent) +
+  theme(legend.position="bottom")+
+  guides(fill=guide_legend(ncol=3))+
+  theme(legend.text = element_text(size=9))+
+  theme(legend.title = element_blank(),
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        axis.title.x = element_blank())+
+  theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+```
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="pres_2022jun_5_files/figure-html/fig-fam-delito1-1.png" alt="Fecha de nacimiento y tipo de crimen (imputados y víctimas)"  /&gt;
+&lt;p class="caption"&gt;Fecha de nacimiento y tipo de crimen (imputados y víctimas)&lt;/p&gt;
+&lt;/div&gt;
+]
+] 
+
+
+.pull-right[
+
+.details-code[
+
+
+```r
+i&lt;- "familia_delito_rec"
+min_plot&lt;-2005
+max_plot&lt;-2020
+casos_no_cubiertos&lt;-
+  Base_fiscalia_v5 %&gt;% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(fec_comision_simple)) %&gt;%
+  dplyr::mutate(grupo_var=get(i))%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%&gt;%
+  dplyr::summarise(n_2_grupos=n())%&gt;%
+  dplyr::ungroup()%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt)%&gt;%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%&gt;%
+  dplyr::filter(fec_nacimiento_qrt&lt;min_plot|fec_nacimiento_qrt&gt;=max_plot) %&gt;%
+  dplyr::ungroup()%&gt;%
+  dplyr::summarise(sum_total=sum(n_2_grupos))%&gt;%
+  unlist()
+#colorspace::diverge_hcl(length(table(Base_fiscalia_v5[[i]])),h=c(0,-100),l=c(75,30),c=c(40,80),power=1)
+Base_fiscalia_v5 %&gt;% 
+  dplyr::mutate(fec_nacimiento_qrt=zoo::as.yearqtr(fec_comision_simple)) %&gt;%
+  dplyr::mutate(grupo_var=get(i))%&gt;%
+  dplyr::group_by(fec_nacimiento_qrt, grupo_var)%&gt;%
+  dplyr::summarise(n_2_grupos=n())%&gt;%
+  dplyr::ungroup()%&gt;% 
+  dplyr::group_by(fec_nacimiento_qrt)%&gt;%
+  dplyr::mutate(freq = (n_2_grupos / sum(n_2_grupos)))%&gt;%
+  dplyr::filter(fec_nacimiento_qrt&gt;=min_plot) %&gt;%
+  ggplot2::ggplot(aes(x = fec_nacimiento_qrt, y = freq,fill=grupo_var))+
+  geom_area(alpha=0.6 , size=.5, colour="white") +
+  scale_fill_manual(values= c("#FE4A17", "#aaaaaa", "#21177A"), labels=c("Relacionados con drogas", "Otros","Violentos"))+# colorspace::rainbow_hcl(length(table(Base_fiscalia_v5[[i]])))) +
+  sjPlot::theme_sjplot2() +
+  zoo::scale_x_yearqtr(format="%YQ%q", n=18,
+                  limits=c(zoo::as.yearqtr(paste0(min_plot,"-01-01")), 
+                           max=zoo::as.yearqtr(paste0(max_plot,"-01-01"))))+
+  scale_y_continuous(limits=c(0,1),labels = scales::percent)+
+  labs(x="",y="Porcentajes",
+       caption= paste0("Note. Crímenes cometidos entre ",min_plot," y ",max_plot,", e ignorando el resto: ", format(casos_no_cubiertos,big.mark="."), ";\n", "Porcentajes por año y trimestre; Q= Trimestre"))+
+  #ylim(0,101)+
+  # scale_y_continuous(limits=c(0,1),labels = scales::percent) +
+  theme(legend.position="bottom")+
+  guides(fill=guide_legend(ncol=3))+
+  theme(legend.text = element_text(size=9))+
+  theme(legend.title = element_blank(),
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        axis.title.x = element_blank())+
+  theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+```
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="pres_2022jun_5_files/figure-html/fig-fam-delito2-1.png" alt="Fecha de comisión de delito y tipo de crimen (imputados y víctimas)"  /&gt;
+&lt;p class="caption"&gt;Fecha de comisión de delito y tipo de crimen (imputados y víctimas)&lt;/p&gt;
+&lt;/div&gt;
+]
+]
+
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- Ante todo, reconocer que nuestra clasificación preliminar de delitos de drogas es preliminar y por tanto un tanto literal e ingenua. Al margen de esto...
+- Se puede apreciar que tanto en fecha de comisión como en fecha de nacimiento, el % de delitos relacionados con drogas permanece constante y menor. La proporción es tan baja que no permite hacer comparaciones por año.
+- En relación a la fecha de nacimiento, pareceser que quierenes nacen posterior al 93 empiezan a registrar en mayor proporción registros en los que figuran como imputados por un delito violento.
+- No vale la pena pronnciarse mucho por los delitos antes del 2009 porque están sometidos a mucha variación dado que son muy pocos casos por trimestre. De nuevo, necesitamos limpiar todavía estas fechas que pueden deberse a errores de tipeo.
+
+---
+### Distribución geográfica (político-administrativa) (% de tratados con 1o+ registros como imputado)
+
+.panelset[
+.panel[.panel-name[Regional]
+
+.details-code[
+
+```r
+#, results='asis' , fig.show='hide', results='hide' fig.showtext=T,
+#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_
+
+data(admin1.map, package="choroplethrAdmin1")
+```
+
+```
+## Error in find.package(package, lib.loc, verbose = verbose): there is no package called 'choroplethrAdmin1'
+```
+
+```r
+#get_admin1_regions("chile") # falta ñuble po la cresta
+chile.map = admin1.map[admin1.map$admin == "chile" &amp; admin1.map$long &gt; -80, ]
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'admin1.map' not found
+```
+
+```r
+#ggplot(chile.map, aes(long, lat, group=group)) + geom_polygon() + coord_map()
+
+arica &lt;- list(v ="01", n = "region de arica y parinacota")
+tarapaca &lt;- list(v = "02", n= "region de tarapaca")
+antofagasta &lt;- list(v = "6.24",n = "region de antofagasta")
+atacama &lt;- list(v = 6.66, n = "region de atacama")
+coquimbo &lt;- list(v = 6.93, n = "region de coquimbo")
+valparaiso &lt;- list(v = 7.19,n = "region de valparaiso")
+metropolitana &lt;- list(v = 6.33, n = "region metropolitana de santiago")
+ohiggins &lt;- list(v = 5.27, n = "region del libertador general bernardo o'higgins")
+maule &lt;- list(v = 5.99, n = "region del maule")
+nuble &lt;- list(v = 5.99, n = "region de ñuble")
+biobio &lt;- list(v = 8.07, n = "region del biobio")
+araucania &lt;- list(v = 6.07, n = "region de la araucania")
+losrios &lt;- list(v = 4.72, n = "region de los rios")
+loslagos &lt;- list(v = 3.82, n = "region de los lagos")
+aysen &lt;- list(v = 3.84, n = "region aisen del general carlos ibanez del campo")
+magallanes &lt;- list(v = 2.63, n = "region de magallanes y de la antartica chilena")
+
+dat2 &lt;- data.frame(
+  region = c(arica$n,tarapaca$n,antofagasta$n,atacama$n,coquimbo$n,valparaiso$n,
+             metropolitana$n,ohiggins$n,maule$n,nuble$n, biobio$n,araucania$n,losrios$n,
+             loslagos$n,aysen$n,magallanes$n)
+)
+
+datos_region &lt;- chilemapas::generar_regiones(mapa = chilemapas::mapa_comunas)
+
+casos_region&lt;-db_ser_2022 %&gt;%
+    group_by(nombre_region)%&gt;%
+    summarise(n=n(), perc= sum(criminal_rcds=="Sí")/n)%&gt;%
+    dplyr::mutate(cod.V1= str_sub(nombre_region, -3, -2))
+    
+dat2&lt;-datos_region %&gt;%
+  dplyr:::left_join(as_tibble(casos_region), by=c("codigo_region"="cod.V1")) %&gt;%
+  dplyr::mutate(tooltip=paste0(`nombre_region`,"=",formatC(as.numeric(n), format="f", big.mark=",", digits=0)," (", scales::percent(perc, accuracy = 0.1),")")) %&gt;% 
+  dplyr::mutate(n_cut=cut(as.numeric(`perc`),4))
+
+gg2&lt;-ggplot(data=dat2) +
+  #geom_sf(aes(fill=as.numeric(dat2$value))) +
+  theme_minimal() +
+  geom_sf_interactive(aes(fill = n_cut, tooltip = tooltip, data_id = codigo_region))+
+  scale_fill_manual(values=c("#5243DB","#9AA98D", "#C2CAD6","#FE805D"),na.value="white") +
+  labs(fill="% registros\ncriminales")# geom_sf(data = dat2, aes(fill = value)) +
+#  coord_sf( expand = T)
+tooltip_css &lt;- "background-color:gray;color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;"
+
+gg2_plot&lt;-ggiraph(code = {print(gg2)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75,zoom_max = 5 )
+suppressWarnings(htmlwidgets::saveWidget(gg2_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/regional1.html")))
+#`r knitr::include_url("_figs/regional1.html", height = "400px")`
+#&lt;iframe src="./_figs/regional1.html" width = "600px", height = "300px" frameBorder="0"&gt;&lt;/iframe&gt;
+# 
+# htmltools::tagList(gg2_plot)
+# girafe_options(gg2_plot, opts_sizing(rescale = T, width=.5))
+```
+]
+
+<div id="htmlwidget-6957a7763a91702130e9" style="width:50%;height:50%;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6957a7763a91702130e9">{"x":{"url":"pres_2022jun_5_files/figure-html//widgets/widget_unnamed-chunk-2.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+
+]
+
+.panel[.panel-name[RM]
+
+.details-code[
+
+
+```r
+#results='asis'&lt; fig.showtext=T, 
+mapa_comunas = chilemapas::mapa_comunas
+
+codigo_comunas&lt;-
+db_ser_2022%&gt;%
+    dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","comuna_residencia_cod")), by="hash_key")%&gt;% 
+    dplyr::filter(grepl("Metropolitana",nombre_region))%&gt;%
+    dplyr::group_by(comuna_residencia_cod)%&gt;%
+    summarise(n=n(), perc= sum(criminal_rcds=="Sí")/n)%&gt;%
+    dplyr::mutate(cod.V1= str_sub(comuna_residencia_cod, -6, -2))%&gt;%
+   # dplyr::select(-comuna_residencia_cod)%&gt;%
+    dplyr::mutate(cod.V1= stringr::str_replace(cod.V1, "\\(", "0"))
+
+    
+dat3&lt;-mapa_comunas %&gt;%
+  dplyr:::left_join(as_tibble(codigo_comunas), by=c("codigo_comuna"="cod.V1")) %&gt;%
+  dplyr::filter(codigo_region=="13")%&gt;%
+  dplyr::mutate(tooltip=paste0(`comuna_residencia_cod`,"=",formatC(as.numeric(n), format="f", big.mark=",", digits=0)," (", scales::percent(perc, accuracy = 0.1),")")) %&gt;% 
+  dplyr::mutate(n_cut=cut(as.numeric(`perc`),4))
+
+dat3 &lt;- as_tibble(dat3)
+gg3&lt;-
+  ggplot(data=dat3) +
+ # geom_sf(aes(fill=factor(n),geometry=geometry)) +
+  theme_minimal() +
+  geom_sf_interactive(aes(fill = n_cut, tooltip = tooltip, data_id = codigo_comuna, geometry= geometry))+
+  scale_fill_manual(values=c("#5243DB","#859776", "#C2CAD6","#FE805D"),na.value="white") +
+  
+  #scale_colour_brewer(breaks = rev(levels(dsamp$clarity)))+
+  labs(fill="% registros\ncriminales")# geom_sf(data = dat2, aes(fill = value)) +
+#  coord_sf( expand = T)
+
+gg3_plot&lt;-ggiraph(code = {print(gg3)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75 )
+suppressWarnings(htmlwidgets::saveWidget(gg3_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/comunal1.html")))
+
+#&lt;iframe src= width = "600px", height = "300px" frameBorder="0"&gt;&lt;/iframe&gt; 
+#`r knitr::include_url("_figs/comunal1.html", height = "400px")`
+#&lt;iframe src="./_figs/comunal1.html" width = "600px", height = "300px" frameBorder="0"&gt;&lt;/iframe&gt; 
+#girafe_options(, opts_sizing(rescale = T, width=.5))
+# frameWidget(gg3_plot, width='60%', height='40%')
+# htmltools::tagList(gg3_plot)
+# girafe_options(gg3_plot, opts_sizing(rescale = T, width=.5))
+```
+]
+
+<div id="htmlwidget-7a751480f9ea40fd9603" style="width:50%;height:50%;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7a751480f9ea40fd9603">{"x":{"url":"pres_2022jun_5_files/figure-html//widgets/widget_unnamed-chunk-3.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+
+]
+
+.panel[.panel-name[Valparaíso]
+
+.details-code[
+
+
+```r
+#results='asis'&lt; fig.showtext=T, 
+mapa_comunas = chilemapas::mapa_comunas
+
+codigo_comunas2&lt;-
+db_ser_2022%&gt;%
+    dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","comuna_residencia_cod")), by="hash_key")%&gt;% 
+    dplyr::filter(grepl("Valparaíso",nombre_region))%&gt;%
+    dplyr::group_by(comuna_residencia_cod)%&gt;%
+    summarise(n=n(), perc= sum(criminal_rcds=="Sí")/n)%&gt;%
+    dplyr::mutate(cod.V1= str_sub(comuna_residencia_cod, -6, -2))%&gt;%
+   # dplyr::select(-comuna_residencia_cod)%&gt;%
+    dplyr::mutate(cod.V1= stringr::str_replace(cod.V1, "\\(", "0"))
+
+    
+dat4&lt;-mapa_comunas %&gt;%
+  dplyr:::left_join(as_tibble(codigo_comunas2), by=c("codigo_comuna"="cod.V1")) %&gt;%
+  dplyr::filter(codigo_region=="05")%&gt;%
+  dplyr::mutate(tooltip=paste0(`comuna_residencia_cod`,"=",formatC(as.numeric(n), format="f", big.mark=",", digits=0)," (", scales::percent(perc, accuracy = 0.1),")")) %&gt;% 
+  dplyr::mutate(n_cut=cut(as.numeric(`perc`),4))
+
+dat4 &lt;- as_tibble(dat4)
+gg4&lt;-
+  ggplot(data=dat4) +
+ # geom_sf(aes(fill=factor(n),geometry=geometry)) +
+  theme_minimal() +
+  geom_sf_interactive(aes(fill = n_cut, tooltip = tooltip, data_id = codigo_comuna, geometry= geometry),lwd =.08)+
+  scale_fill_manual(values=c("#5243DB","#859776", "#C2CAD6","#FE805D"),na.value="white") +
+  
+  #scale_colour_brewer(breaks = rev(levels(dsamp$clarity)))+
+  labs(fill="% registros\ncriminales")# geom_sf(data = dat2, aes(fill = value)) +
+#  coord_sf( expand = T)
+
+gg4_plot&lt;-ggiraph(code = {print(gg4)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75 )
+suppressWarnings(htmlwidgets::saveWidget(gg4_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/comunal2.html")))
+
+#&lt;iframe src= width = "600px", height = "300px" frameBorder="0"&gt;&lt;/iframe&gt; 
+#`r knitr::include_url("_figs/comunal1.html", height = "400px")`
+#&lt;iframe src="./_figs/comunal1.html" width = "600px", height = "300px" frameBorder="0"&gt;&lt;/iframe&gt; 
+#girafe_options(, opts_sizing(rescale = T, width=.5))
+# frameWidget(gg3_plot, width='60%', height='40%')
+# htmltools::tagList(gg3_plot)
+# girafe_options(gg3_plot, opts_sizing(rescale = T, width=.5))
+```
+]
+
+<div id="htmlwidget-1ec8ba63c96daa7a4aa0" style="width:100%;height:5040px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1ec8ba63c96daa7a4aa0">{"x":{"url":"pres_2022jun_5_files/figure-html//widgets/widget_unnamed-chunk-4.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+
+]
+
+
+.panel[.panel-name[Concepción]
+
+.details-code[
+
+
+```r
+#results='asis'&lt; fig.showtext=T, 
+mapa_comunas = chilemapas::mapa_comunas
+
+codigo_comunas3&lt;-
+db_ser_2022%&gt;%
+    dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","comuna_residencia_cod")), by="hash_key")%&gt;% 
+    dplyr::filter(grepl("Biobío",nombre_region))%&gt;%
+    dplyr::group_by(comuna_residencia_cod)%&gt;%
+    summarise(n=n(), perc= sum(criminal_rcds=="Sí")/n)%&gt;%
+    dplyr::mutate(cod.V1= str_sub(comuna_residencia_cod, -6, -2))%&gt;%
+   # dplyr::select(-comuna_residencia_cod)%&gt;%
+    dplyr::mutate(cod.V1= stringr::str_replace(cod.V1, "\\(", "0"))
+
+    
+dat5&lt;-mapa_comunas %&gt;%
+  dplyr:::left_join(as_tibble(codigo_comunas3), by=c("codigo_comuna"="cod.V1")) %&gt;%
+  dplyr::filter(codigo_region=="08")%&gt;%
+  dplyr::mutate(tooltip=paste0(`comuna_residencia_cod`,"=",formatC(as.numeric(n), format="f", big.mark=",", digits=0)," (", scales::percent(perc, accuracy = 0.1),")")) %&gt;% 
+  dplyr::mutate(n_cut=cut(as.numeric(`perc`),4))
+
+dat5 &lt;- as_tibble(dat5)
+gg5&lt;-
+  ggplot(data=dat5) +
+ # geom_sf(aes(fill=factor(n),geometry=geometry)) +
+  theme_minimal() +
+  geom_sf_interactive(aes(fill = n_cut, tooltip = tooltip, data_id = codigo_comuna, geometry= geometry))+
+  scale_fill_manual(values=c("#5243DB","#859776", "#C2CAD6","#FE805D"),na.value="white") +
+  
+  #scale_colour_brewer(breaks = rev(levels(dsamp$clarity)))+
+  labs(fill="% registros\ncriminales")# geom_sf(data = dat2, aes(fill = value)) +
+#  coord_sf( expand = T)
+
+
+tooltip_css &lt;- "background-color:gray;color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;"
+
+gg5_plot&lt;-ggiraph(code = {print(gg5)}, tooltip_extra_css = tooltip_css, tooltip_opacity = .75 )
+suppressWarnings(htmlwidgets::saveWidget(gg5_plot, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path2),"/_figs/comunal3.html")))
+
+#&lt;iframe src= width = "600px", height = "300px" frameBorder="0"&gt;&lt;/iframe&gt; 
+#`r knitr::include_url("_figs/comunal1.html", height = "400px")`
+#&lt;iframe src="./_figs/comunal1.html" width = "600px", height = "300px" frameBorder="0"&gt;&lt;/iframe&gt; 
+#girafe_options(, opts_sizing(rescale = T, width=.5))
+# frameWidget(gg3_plot, width='60%', height='40%')
+# htmltools::tagList(gg3_plot)
+# girafe_options(gg3_plot, opts_sizing(rescale = T, width=.5))
+```
+]
+
+<div id="htmlwidget-5d9428a86cf7060ce737" style="width:50%;height:50%;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5d9428a86cf7060ce737">{"x":{"url":"pres_2022jun_5_files/figure-html//widgets/widget_unnamed-chunk-5.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+
+]
+]
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- A continuación, 2 figuras que muestran la distribución geográfica a nivel nacional y comunal (siempre más complicado, porque está sujeto a la oferta de centros y por tanto los números pueden ser engañosos)
+- Llama la atención que en el norte, de las personas que registran tratamientos a la base en centros en Arica, Tarapacá, Antofagasta y Atacama, entre el 78 y el 82% tiene al menos un registro de fiscalía en el que figura como imputado. 
+- Por otra parte, en el gráfico de la región metropolitana, se puede observar que La Pintana, La Granja, Lo Espejo, Pudahuel, Renca y Lo Barnechea tienen un porcentaje mayor de personas que tienen al menos un registro en fiscalía en el que figuran como imputado por algún delito. Se contrapone a esto Vitacura. No vale la pena mencionar San Pedro porque tiene sólo 8 usuarios (posiblemente un centro que cerró y que por eso no ha tenido muchos registros históricamente).
+
+---
+class: center, middle
+
+
+.text_180[
+.darkred[
+Su comentario es nuestro trabajo
+]
+]
+
+.pull_l_70[
+.can-edit.key-likes[
+- 
+- 
+]
+]
+
+---
+class: center, middle
+# Gracias!
+
+&lt;br&gt;
+
+&lt;div class="centered"&gt; Contacto: mdmateo@uc.cl 
+&amp; 
+gonzalez.santacruz.andres@gmail.com &lt;/div&gt;
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+&lt;img src="_style/Logo_nDP_color_hz_en.png" width="300" style="display: block; margin: auto;" /&gt;
+&lt;br&gt;
+
+---
+## Referencias
+
+[1] S. T. Tiffany, L. Friedman, S. F. Greenfield, et al. "Beyond drug use: a systematic consideration of
+other outcomes in evaluations of treatments for substance use disorders". In: _Addiction (Abingdon,
+England)_ 107.4 (2012), pp. 709-718. ISSN: 1360-0443 0965-2140. DOI:
+[10.1111/j.1360-0443.2011.03581.x](https://doi.org/10.1111%2Fj.1360-0443.2011.03581.x). URL:
+[https://pubmed.ncbi.nlm.nih.gov/21981638
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3257402/](https://pubmed.ncbi.nlm.nih.gov/21981638
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3257402/).
+
+[2] S. Abuse and ental Health Services Administration(US). "Early intervention, treatment and management of
+substance use disorders".  (2016). URL:
+[https://www.ncbi.nlm.nih.gov/books/NBK424859/](https://www.ncbi.nlm.nih.gov/books/NBK424859/).
+
+[3] M. Prendergast, D. Podus, E. Chang, et al. "Erratum to “The effectiveness of drug abuse treatment: a
+meta-analysis of comparison group studies” [Drug Alcohol Depend. 67 (2002) 53–72]". In: _Drug and Alcohol
+Dependence - DRUG ALCOHOL DEPENDENCE_ 84 (sep. 2006), pp. 133-133. DOI:
+[10.1016/j.drugalcdep.2006.02.002](https://doi.org/10.1016%2Fj.drugalcdep.2006.02.002).
+
+[4] W. White. _Recovery/remission from substance use disorders: an analysis of reported outcomes in 415
+scientific reports, 1868–2011_. Report. Philadelphia Department of Behavioral Health and Intellectual
+disAbility Services and the Great Lakes Addiction Technology Transfer Center, 2012. URL:
+[https://www.naadac.org/assets/2416/whitewl2012_recoveryremission_from_substance_abuse_disorders.pdf](https://www.naadac.org/assets/2416/whitewl2012_recoveryremission_from_substance_abuse_disorders.pdf).
+
+[5] E. Valenzuela. "Política de drogas: en búsqueda de un equilibrio". In: _Temas de la agenda política_ 37
+(2010), pp. 1-15. URL:
+[https://politicaspublicas.uc.cl/wp-content/uploads/2015/02/politica-de-drogas-en-busqyeda-de-un-equilibrio.pdf](https://politicaspublicas.uc.cl/wp-content/uploads/2015/02/politica-de-drogas-en-busqyeda-de-un-equilibrio.pdf).
+
+[6] E. Sullivan, S. Ward, R. Zeki, et al. "Recidivism, health and social functioning following release to
+the community of NSW prisoners with problematic drug use: study protocol of the population-based
+retrospective cohort study on the evaluation of the Connections Program". In: _BMJ Open_ 9.7 (2019). ISSN:
+2044-6055. DOI: [10.1136/bmjopen-2019-030546](https://doi.org/10.1136%2Fbmjopen-2019-030546). eprint:
+https://bmjopen.bmj.com/content/9/7/e030546.full.pdf. URL:
+[https://bmjopen.bmj.com/content/9/7/e030546](https://bmjopen.bmj.com/content/9/7/e030546).
+
+[7] C. P. Krebs, K. J. Strom, W. H. Koetse, et al. "The Impact of Residential and Nonresidential Drug
+Treatment on Recidivism Among Drug-Involved Probationers: A Survival Analysis". In: _Crime &amp; Delinquency_
+55.3 (2008), pp. 442-471. ISSN: 0011-1287. DOI:
+[10.1177/0011128707307174](https://doi.org/10.1177%2F0011128707307174). URL:
+[https://doi.org/10.1177/0011128707307174](https://doi.org/10.1177/0011128707307174).
+
+---
+## Referencias (2)
+
+[8] W. Burdon, J. Dang, M. Prendergast, et al. "Differential effectiveness of residential versus outpatient
+aftercare for parolees from prison-based therapeutic community treatment programs". In: _Treat Prev Policy_
+15 (2007), pp. 2-16. DOI: [10.1186/1747-597X-2-16](https://doi.org/10.1186%2F1747-597X-2-16).
+
+[9] M. Teesson, C. Marel, S. Darke, et al. "Long-term mortality, remission, criminality and psychiatric
+comorbidity of heroin dependence: 11 year findings from the Australian Treatment Outcome Study". In:
+_Addiction_ 110 (ene. 2015). DOI: [10.1111/add.12860](https://doi.org/10.1111%2Fadd.12860).
+
+[10] B. Eastwood, J. Strang, and J. Marsden. "Continuous opioid substitution treatment over five years:
+Heroin use trajectories and outcomes". In: _Drug and Alcohol Dependence_ 188 (2018), pp. 200-208. ISSN:
+0376-8716. DOI:
+[https://doi.org/10.1016/j.drugalcdep.2018.03.052](https://doi.org/https%3A%2F%2Fdoi.org%2F10.1016%2Fj.drugalcdep.2018.03.052).
+URL:
+[https://www.sciencedirect.com/science/article/pii/S0376871618302655](https://www.sciencedirect.com/science/article/pii/S0376871618302655).
+
+[11] H. H. Brorson, E. Ajo Arnevik, K. Rand-Hendriksen, et al. "Drop-out from addiction treatment: A
+systematic review of risk factors". In: _Clinical Psychology Review_ 33.8 (2013), pp. 1010-1024. ISSN:
+0272-7358. DOI:
+[https://doi.org/10.1016/j.cpr.2013.07.007](https://doi.org/https%3A%2F%2Fdoi.org%2F10.1016%2Fj.cpr.2013.07.007).
+URL:
+[https://www.sciencedirect.com/science/article/pii/S0272735813001050](https://www.sciencedirect.com/science/article/pii/S0272735813001050).
+
+[12] S. F. Pacurucu-Castillo, J. M. Ordóñez-Mancheno, A. Hernández-Cruz, et al. "World Opioid and Substance
+Use Epidemic: A Latin American Perspective". In: _Psychiatric Research and Clinical Practice_ (2019), pp.
+32-38. DOI: [10.1176/appi.prcp.20180009](https://doi.org/10.1176%2Fappi.prcp.20180009).
+
+[13] J. Reyes, P. Cynthia, C. Hector, et al. "Prevalence and Patterns of Polydrug Use in Latin America:
+Analysis of Population-based Surveys in Six Countries". In: _Review of European Studies_ 5 (2013). DOI:
+[10.5539/res.v5n1p10](https://doi.org/10.5539%2Fres.v5n1p10).
+
+[14] J. d. Silva, C. A. A. Ventura, O. M. d. C. Vargens, et al. "Illicit drug use in seven Latin American
+countries: critical perspectives of families and familiars". In: _Revista Latino-Americana de Enfermagem_ 17
+(2009), pp. 763-769. ISSN: 0104-1169. URL:
+[http://www.scielo.br/scielo.php?script=sci_arttext&amp;pid=S0104-11692009000700002&amp;nrm=iso](http://www.scielo.br/scielo.php?script=sci_arttext&amp;pid=S0104-11692009000700002&amp;nrm=iso).
+
+[15] R. Marín-Navarrete, M. Medina-Mora, A. Pérez-López, et al. "Development and evaluation of addiction
+treatment programs in Latin America". In: _Current opinion in psychiatry_ 31.4 (2018), pp. 306-314. DOI:
+[https://doi.org/10.1097/YCO.0000000000000434](https://doi.org/https%3A%2F%2Fdoi.org%2F10.1097%2FYCO.0000000000000434).
+
+---
+## Referencias (3)
+
+
+```
+## Warning in `[[.BibEntry`(x, ind): subscript out of bounds
+```
+
+[16] Á. Castillo-Carniglia, J. D. Marín, G. Soto-Brandt, et al. "Adaptation and Validation of the Instrument
+Treatment Outcomes Profile to the Chilean Population". In: _Journal of Substance Abuse Treatment_ (2015).
+DOI: [10.1016/j.jsat.2015.03.002](https://doi.org/10.1016%2Fj.jsat.2015.03.002).
+
+[17] Centro de Estudios Justicia y Sociedad (CJS) and Instituto de Sociología UC (ISUC). _Evaluación de
+resultados de los programas de tratamiento y rehabilitación del Servicio nacional para la prevención y
+rehabilitación del consumo de drogas y alcohol, SENDA_. Generic. 2020. URL:
+[http://www.dipres.gob.cl/597/w3-article-214465.html](http://www.dipres.gob.cl/597/w3-article-214465.html).
+
+[18] Observatorio Chileno de Drogas. _Décimo Tercer Estudio Nacional de Drogas en Población General, 2018_.
+Report. 2019. URL:
+[https://www.senda.gob.cl/wp-content/uploads/2020/02/ENPEG-2018.pdf](https://www.senda.gob.cl/wp-content/uploads/2020/02/ENPEG-2018.pdf).
+
+[19] C. F. Olivari, A. González-Santa Cruz, P. M. Mauro, et al. "Treatment outcome and readmission risk
+among women in women-only versus mixed-gender drug treatment programs in Chile".  (2021). DOI:
+[10.1016/j.jsat.2021.108616](https://doi.org/10.1016%2Fj.jsat.2021.108616).
+
+[20] A. Pérez-Gómez and J. Mejía-Trujillo. "The Evolution of Alcohol and Drug Prevention Strategies in Latin
+America". In: _The Cambridge Handbook of International Prevention Science_. Ed. by J. L. Romano and M.
+Israelashvili. Cambridge Handbooks in Psychology. Cambridge: Cambridge University Press, 2016, pp. 753-779.
+ISBN: 9781107087972. DOI: [DOI:
+10.1017/9781316104453.033](https://doi.org/DOI%3A%2010.1017%2F9781316104453.033). URL:
+[https://www.cambridge.org/core/books/cambridge-handbook-of-international-prevention-science/evolution-of-alcohol-and-drug-prevention-strategies-in-latin-america/D5388B39AE929D5E91DA5DC78D7F06F0](https://www.cambridge.org/core/books/cambridge-handbook-of-international-prevention-science/evolution-of-alcohol-and-drug-prevention-strategies-in-latin-america/D5388B39AE929D5E91DA5DC78D7F06F0).
+
+[21] Ministerio de Salud[MINSAL]. _Norma y orientaciones técnicas de los planes de tratamiento y
+rehabilitación para personas adultas con problemas derivados del consumo de drogas_. Legal Rule or
+Regulation. 2012. URL:
+[https://www.senda.gob.cl/wp-content/uploads/2012/08/OrientacionesTecnicas_CentrosdeTratamiento.pdf](https://www.senda.gob.cl/wp-content/uploads/2012/08/OrientacionesTecnicas_CentrosdeTratamiento.pdf).
+
+[22] Fondo Nacional de Salud[FONASA]. _Boletín estadístico 2017-2018_. Government Document. URL:
+[https://www.fonasa.cl/sites/fonasa/adjuntos/boletin_estadistico_20172018](https://www.fonasa.cl/sites/fonasa/adjuntos/boletin_estadistico_20172018).
+
+
+
+
+---
+## Referencias (4)
+
+.footnote[
+&lt;a href="http://www.onlinewebfonts.com"&gt;Formato texto: oNline Web Fonts&lt;/a&gt;
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"slideNumberFormat": "%current%",
+"countIncrementalSlides": false,
+"ratio": "16:9",
+"navigation": {
+"scroll": false
+}
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+(function(time) {
+  var d2 = function(number) {
+    return ('0' + number).slice(-2); // left-pad 0 to minutes/seconds
+  },
+
+  time_format = function(total) {
+    var secs = Math.abs(total) / 1000;
+    var h = Math.floor(secs / 3600);
+    var m = Math.floor(secs % 3600 / 60);
+    var s = Math.round(secs % 60);
+    var res = d2(m) + ':' + d2(s);
+    if (h > 0) res = h + ':' + res;
+    return res;  // [hh:]mm:ss
+  },
+
+  slide_number_div = function(i) {
+    return document.getElementsByClassName('remark-slide-number').item(i);
+  },
+
+  current_page_number = function(i) {
+    return slide_number_div(i).firstChild.textContent;  // text "i / N"
+  };
+
+  var timer = document.createElement('span'); timer.id = 'slide-time-left';
+  var time_left = time, k = slideshow.getCurrentSlideIndex(),
+      last_page_number = current_page_number(k);
+
+  setInterval(function() {
+    time_left = time_left - 1000;
+    timer.innerHTML = ' ' + time_format(time_left);
+    if (time_left < 0) timer.style.color = 'red';
+  }, 1000);
+
+  slide_number_div(k).appendChild(timer);
+
+  slideshow.on('showSlide', function(slide) {
+    var i = slide.getSlideIndex(), n = current_page_number(i);
+    // reset timer when a new slide is shown and the page number is changed
+    if (last_page_number !== n) {
+      time_left = time; last_page_number = n;
+      timer.innerHTML = ' ' + time_format(time); timer.style.color = null;
+    }
+    slide_number_div(i).appendChild(timer);
+  });
+})(90000);
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<script>
+(function() {
+  var divHTML = document.querySelectorAll(".details-open-code");
+  divHTML.forEach(function (el) {
+    var preNodes = el.getElementsByTagName("pre");
+    var outputNode = preNodes[0];
+    outputNode.outerHTML = "<details open class='output'><summary>código</summary>" + outputNode.outerHTML + "]</details>";
+  })
+})();
+(function() {
+  var divHTML = document.querySelectorAll(".details-code");
+  divHTML.forEach(function (el) {
+    var preNodes = el.getElementsByTagName("pre");
+    var outputNode = preNodes[0];
+    outputNode.outerHTML = "<details class='output'><summary>código</summary>" + outputNode.outerHTML + "]</details>";
+  })
+})();
+(function() {
+  var divHTML = document.querySelectorAll(".details-open");
+  divHTML.forEach(function (el) {
+    var preNodes = el.getElementsByTagName("pre");
+    var outputNode = preNodes[1];
+    outputNode.outerHTML = "<details open class='output'><summary>salida</summary>" + outputNode.outerHTML + "]</details>";
+  })
+})();
+(function() {
+  var divHTML = document.querySelectorAll(".details");
+  divHTML.forEach(function (el) {
+    var preNodes = el.getElementsByTagName("pre");
+    var outputNode = preNodes[1];
+    outputNode.outerHTML = "<details class='output'><summary>salida</summary>" + outputNode.outerHTML + "]</details>";
+  })
+})();
+</script>
+$(document).ready(function() {    
+	$chunks = $('.fold');    
+	$chunks.each(function () {      // add button to source code chunks     
+	if ( $(this).hasClass('s') ) {       
+		$('pre.r', this).prepend("<div class=\"showopt\">Show Source</div><br style=\"line-height:22px;\"/>");
+       		$('pre.r', this).children('code').attr('class', 'folded');     }      // add button to output chunks     
+		if ( $(this).hasClass('o') ) {       
+			$('pre:not(.r)', this).has('code').prepend("<div class=\"showopt\">Show Output</div><br style=\"line-height:22px;\"/>");       
+			$('pre:not(.r)', this).children('code:not(r)').addClass('folded');        // add button to plots       
+			$(this).find('img').wrap('<pre class=\"plot\"></pre>');       
+			$('pre.plot', this).prepend("<div class=\"showopt\">Show Plot</div><br style=\"line-height:22px;\"/>");       
+			$('pre.plot', this).children('img').addClass('folded');      }   
+});    // hide all chunks when document is loaded   
+	$('.folded').css('display', 'none')    // function to toggle the visibility   
+	$('.showopt').click(function() {     
+			var label = $(this).html();     
+			if (label.indexOf("Show") >= 0) {       
+				$(this).html(label.replace("Show", "Hide"));     
+			} else {
+			       $(this).html(label.replace("Hide", "Show"));     
+			}     
+	$(this).siblings('code, img').slideToggle('fast', 'swing');   
+	}); 
+}); 
+<script src="https://lab.hakim.se/zoom-js/js/zoom.js" type="text/javascript"></script>
+<script type="text/javascript">
+	slideshow.on( "beforeHideSlide", function( slide ) {
+		zoom.out();
+	} );
+	slideshow.on( "afterShowSlide", function( slide ) {
+		document.querySelector( ".remark-visible" ).addEventListener( "dblclick", function( event ) {
+			event.preventDefault();
+			zoom.to( {element: event.target} );
+		} );
+	} );
+</script>
+<!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
+<script>
+function myFunction1() {
+    var x = document.getElementById("myDIV");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<script>
+function myFunction2() {
+    var x = document.getElementById("myDIV2");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<script>
+function myFunction3() {
+    var x = document.getElementById("myDIV2");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<script>
+function myFunction4() {
+    var x = document.getElementById("myDIV2");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

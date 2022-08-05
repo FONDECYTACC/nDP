@@ -27,7 +27,7 @@ output:
 rm(list=ls());gc()
 if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
 
-load(paste0(sub("$\\/","",sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",here::here())),"/11_pres.RData"))
+load(paste0(sub("$\\/","",sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",dirname(rstudioapi::getSourceEditorContext()$path))),"/11_pres.RData"))
 options(servr.daemon = TRUE)
 rm(list=setdiff(ls(), c("CONS_C1_df_dup_SEP_2020", "Base_fiscalia_v5", "db_ser_2022", "rut_enc_saf_jun22")))
 
@@ -43,7 +43,7 @@ if(!require(pacman)){install.packages("pacman")}
 pacman::p_load(devtools, here, showtext, ggpattern, RefManageR, pagedown, magick, bibtex, DiagrammeR, xaringan, xaringanExtra, xaringanthemer, fontawesome, widgetframe, datapasta, tidyverse, psych, cowplot, coxphw, future, timereg, flexsurv, pdftools, mstate, showtext, compareGroups, chilemapas, choroplethrAdmin1,  choroplethr, choroplethrMaps, ggiraph, sf,
                widgetframe, install=F)
 
-if(!require(xaringanBuilder)){devtools::install_github("jhelvy/xaringanBuilder",upgrade = "never")}
+if(!require(xaringanBuilder)){devtools::install_github("jhelvy/renderthis",upgrade = "never")}
 if(!require(icons)){remotes::install_github("mitchelloharawild/icons",upgrade = "never")}
 
 test_fontawesome<- function(x="github"){
@@ -1352,7 +1352,7 @@ knitr::include_graphics(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)
 ## Referencias
 
 ```{r refs1, echo=FALSE, results="asis"}
-PrintBibliography(myBib, start= 1, end= 7)
+suppressWarnings(PrintBibliography(myBib, start= 1, end= 7))
 #https://github.com/ropensci/RefManageR/blob/master/R/rmdCite.R
 ```
 
@@ -1360,7 +1360,7 @@ PrintBibliography(myBib, start= 1, end= 7)
 ## Referencias (2)
 
 ```{r refs2, echo=FALSE, results="asis"}
-PrintBibliography(myBib, start= 8, end= 15)
+suppressWarnings(PrintBibliography(myBib, start= 8, end= 15))
 #https://github.com/ropensci/RefManageR/blob/master/R/rmdCite.R
 ```
 
@@ -1368,16 +1368,17 @@ PrintBibliography(myBib, start= 8, end= 15)
 ## Referencias (3)
 
 ```{r refs3, echo=FALSE, results="asis"}
-PrintBibliography(myBib, start= 16, end= 24)
+suppressWarnings(PrintBibliography(myBib, start= 16, end= 24))
 #https://github.com/ropensci/RefManageR/blob/master/R/rmdCite.R
 ```
 
 ```{r exp, eval=F,echo=F, results="asis"}
 library(pagedown)
 
-pagedown::chrome_print(gsub(".Rmd",".html",rstudioapi::getSourceEditorContext()$path),output="pres_2022_3.pdf")
-xaringanBuilder::build_pdf(gsub(".Rmd",".Rmd",rstudioapi::getSourceEditorContext()$path),complex_slides = TRUE,output_file="pres_2022_4.pdf")
+pagedown::chrome_print(gsub(".Rmd",".html",rstudioapi::getSourceEditorContext()$path),output="pres_2022jun_3.pdf")
+renderthis::to_pdf(gsub(".Rmd",".Rmd",rstudioapi::getSourceEditorContext()$path),complex_slides = TRUE,"pres_2022jun_5.pdf")
 xaringanBuilder::build_pdf(gsub(".Rmd",".Rmd",rstudioapi::getSourceEditorContext()$path),complex_slides = TRUE,output_file="pres_2022_5.pdf")
+
 ```
 
 
@@ -1385,5 +1386,5 @@ xaringanBuilder::build_pdf(gsub(".Rmd",".Rmd",rstudioapi::getSourceEditorContext
 ## Referencias (4)
 
 .footnote[
-<a href="http://www.onlinewebfonts.com">oNline Web Fonts</a>
+<a href="http://www.onlinewebfonts.com">Formato texto: oNline Web Fonts</a>
 ]

@@ -1,0 +1,1790 @@
+---
+title: "Chilean prosecutor's office Data merge"
+date: "`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`"
+output:
+  html_document:
+    code_folding: hide  
+    toc: true # table of content true
+    toc_depth: 5  # upto three depths of headings (specified by #, ## and ###)
+    toc_float: true
+    theme: flatly
+---
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+ $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+```
+
+```{=html}
+<style type="text/css">
+.tablelines table, .tablelines td, .tablelines th {
+        border: 1px solid black;
+        }
+.centrado {
+    text-align: center;
+}
+.table.center {
+    margin-left:auto; 
+    margin-right:auto;
+  }
+.table_wrapper{
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+code.r{
+  font-size: 8px;
+}
+body{ /* Normal  */
+      text-align: justify;
+  }
+.superbigimage{
+    overflow-y:scroll;
+    white-space: nowrap;
+}
+.superbigimage img{
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+</style>
+```
+```{=html}
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px; text-align: justify;}
+</style>
+```
+```{r prev_setup, include = FALSE, cache=T}
+rm(list=ls());gc()
+if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
+paste0("The folder od the markdown is in: ",dirname(rstudioapi::getSourceEditorContext()$path))
+
+path_dir<-dirname(rstudioapi::getSourceEditorContext()$path)
+
+if (grepl("CISS Fondecyt",path_dir)==T){
+    setwd("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2019 (github)/SUD_CL/");load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2019 (github)/8.Rdata")
+  } else if (grepl("andre",path_dir)==T){
+    setwd('C:/Users/andre/Desktop/SUD_CL/');load("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/8.Rdata")
+  } else if (grepl("E:",path_dir)==T){
+    setwd("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/SUD_CL/");load("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/8.Rdata")
+  } else {
+    setwd(paste0(path_dir,"/"));load(paste0(path_dir,"/8.Rdata"))
+  }
+rm(list=setdiff(ls(), c("CONS_C1_df_dup_SEP_2020_match","CONS_C1_df_dup_SEP_2020","CONS_C1","C1_fech_nac_nas","CONS_C1_df_dup_FEB_2020_prev25b", "CONS_TOP", "path_dir")))
+```
+
+```{r setup, include = FALSE, cache=T, error=T, echo=T}
+#Libraries used in the routine. Dont change the order
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
+  if(class(ungroup(x))[1]=="tbl_df"){
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)    
+        }
+  } else {
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)       
+  }
+ }
+}  
+
+if(!require(pacman)){install.packages("pacman")}
+pacman::p_load(withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MarchIt, cobalt, eha, igraph, Amelia, DiagrammeR, mstate, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot,compareGroups,job)
+
+options(scipen=999) #display numbers rather scientific number
+
+#remotes::install_github("chjackson/flexsurv-dev", upgrade = "never")
+#devtools::install_github("stulacy/multistateutils", build_vignettes=TRUE, upgrade = "never")
+#devtools::install_github("hputter/mstate", upgrade = "never")
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#GET LOCAL
+#dir.create(paste0(getwd(),"/renv_local"))
+#Sys.setenv(RENV_PATHS_LOCAL = paste0(getwd(),"/renv_local"))
+#install.packages(paste0(getwd(),"/renv_local/gurobi_9.1-0.zip"), repos = NULL, type="source")
+#install.packages(paste0("G:/Mi unidad/Alvacast/SISTRAT 2019 (github)/renv_local/gurobi_9.1-0.zip"), repos = NULL, type="source")
+#Sys.getenv("R_LIBS_USER")
+
+fitstats.flexsurvreg = function(x){
+  ll = x$loglik
+  aic = x$AIC
+  k = length(x$coefficients)
+  n = sum(x$data$m["(weights)"])
+  aicc = aic + ((2 * k) * (k + 1) / (n - k - 1))
+  bic = - 2 * ll + (k * log(n))
+  data.frame(
+   Df = k,
+    "n2ll" = -2 * ll,
+    AIC = aic,
+    AICc = aicc,
+    BIC = bic
+  )
+}
+
+
+if(.Platform$OS.type == "windows") withAutoprint({
+  memory.size()
+  memory.size(TRUE)
+  memory.limit()
+})
+memory.limit(size=56000)
+```
+
+<br>
+
+# Obtain the database
+
+<br>
+
+We recoded the region to lower letters for Metropolitan Region sectors. Additionally, we generated the `_simple` columns with the dates with a more common format.
+
+<br>
+
+::: {style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%"}
+
+```{r traer_base, message=F, error=T, eval=T, echo=T}
+`%>%`<-magrittr:: `%>%`
+
+library(readxl)
+base_fiscalia_orig <- read_excel(gsub("/SUD_CL","/BASE.xlsx",path_dir), 
+    sheet = "BASE", skip = 4, guess_max = min(1000000, Inf)) %>% janitor::clean_names() %>% 
+  dplyr::mutate(gls_region=dplyr::case_when(gls_region=="REGION METROPOLITANA CENTRO NORTE"~ "RM Centro Norte",
+                                            gls_region=="REGION METROPOLITANA OCCIDENTE"~ "RM Occidente",
+                                            gls_region=="REGION METROPOLITANA ORIENTE"~ "RM Oriente",
+                                            gls_region=="REGION METROPOLITANA SUR"~ "RM Sur",
+                                            T~gls_region)) %>% 
+  dplyr::mutate(region_delito=dplyr::case_when(region_delito=="REGION METROPOLITANA CENTRO NORTE"~ "RM Centro Norte",
+                                            region_delito=="REGION METROPOLITANA OCCIDENTE"~ "RM Occidente",
+                                            region_delito=="REGION METROPOLITANA ORIENTE"~ "RM Oriente",
+                                            region_delito=="REGION METROPOLITANA SUR"~ "RM Sur",
+                                            T~region_delito)) %>% 
+  dplyr::mutate(fec_comision_simple=as.Date(stringr::str_extract(as.character(fec_comision), "^.{10}"))) %>% 
+  dplyr::mutate(fec_cbiorelacion_simple=as.Date(stringr::str_extract(as.character(fec_cbiorelacion), "^.{10}"))) %>%
+  dplyr::mutate(termino_relacion_simple=as.Date(stringr::str_extract(as.character(termino_relacion), "^.{10}")))
+   
+
+
+library(readxl)
+Base_fiscalia_v2 <- read_excel(gsub("/SUD_CL","/Base_v3_dic_2021.xlsx",path_dir), 
+sheet = "Base", skip = 4, guess_max = min(1000000, Inf))%>% janitor::clean_names() %>% 
+  dplyr::mutate(gls_region=dplyr::case_when(gls_region=="REGION METROPOLITANA CENTRO NORTE"~ "RM Centro Norte",
+                                            gls_region=="REGION METROPOLITANA OCCIDENTE"~ "RM Occidente",
+                                            gls_region=="REGION METROPOLITANA ORIENTE"~ "RM Oriente",
+                                            gls_region=="REGION METROPOLITANA SUR"~ "RM Sur",
+                                            T~gls_region)) %>% 
+  dplyr::mutate(region_delito=dplyr::case_when(region_delito=="REGION METROPOLITANA CENTRO NORTE"~ "RM Centro Norte",
+                                            region_delito=="REGION METROPOLITANA OCCIDENTE"~ "RM Occidente",
+                                            region_delito=="REGION METROPOLITANA ORIENTE"~ "RM Oriente",
+                                            region_delito=="REGION METROPOLITANA SUR"~ "RM Sur",
+                                            T~region_delito)) %>% 
+  dplyr::mutate(fec_comision_simple=as.Date(stringr::str_extract(as.character(fec_comision), "^.{10}")))%>% 
+  dplyr::mutate(fec_cbiorelacion_simple=as.Date(stringr::str_extract(as.character(fec_cbiorelacion), "^.{10}")))%>%
+  dplyr::mutate(fec_nacimiento_simple=as.Date(stringr::str_extract(as.character(fec_nacimiento), "^.{10}")))%>%
+  dplyr::mutate(termino_relacion_simple=as.Date(stringr::str_extract(as.character(termino_relacion), "^.{10}")))%>% 
+  dplyr::rename("marca_suspension_43"="marca_suspension_46","marca_pena_44"="marca_pena_47","marca_multa_45"="marca_multa_48","medida_alternativa_46"="medida_alternativa_49","clasificacion_pena_47"="clasificacion_pena_50","tramos_condena_48"="tramos_condena","clasificacion_penarpa_1_49"="clasificacion_penarpa_1_52","clasificacion_penarpa_2_50"="clasificacion_penarpa_2_53","marca_suspension_51"="marca_suspension_54","marca_pena_52"="marca_pena_55","marca_multa_53"="marca_multa_56","medida_alternativa_54"="medida_alternativa_57","clasificacion_pena_55"="clasificacion_pena_58","tramos_condena_56"="tramos_condena_2","clasificacion_penarpa_1_57"="clasificacion_penarpa_1_60","clasificacion_penarpa_2_58"="clasificacion_penarpa_2_61")%>% 
+    dplyr::mutate(edad_comision=(unclass(fec_comision_simple)-unclass(fec_nacimiento_simple))/365.25,
+                  edad_ter_rel=(unclass(termino_relacion_simple)-unclass(fec_nacimiento_simple))/365.25)
+
+
+ifelse(nrow(base_fiscalia_orig)==nrow(Base_fiscalia_v2),"There are no differences in the length of the databases","There are differences in the length of the databases")
+
+paste0("The original database had only missing rows in 'tramos_condena_48' and 'clasificacion_penarpa_1_49'")
+
+names_comparison<-
+data.frame(db1=names(Base_fiscalia_v2)) %>% 
+  dplyr::full_join(cbind.data.frame(db1=names(base_fiscalia_orig),db2=names(base_fiscalia_orig)), by="db1")
+
+#comp_data<-diff_data(base_fiscalia_orig,Base_fiscalia_v2,id=c("rut_enc_saf ","rut_enc_saf"))
+#V8 FATAL ERROR in CALL_AND_RETRY_LAST ===== C stack trace ======
+```
+:::
+
+```{r tab1_descr_c1_baseline_vs_type_treatd, message=F, error=T, eval=T, warnings=F, echo=T}
+library(compareGroups)
+
+base_fiscalia<-
+  base_fiscalia_orig
+
+no_mostrar=1
+if(no_mostrar==0){
+CONS_C1_df_dup_SEP_2020_match<-
+  CONS_C1_df_dup_SEP_2020 %>% 
+  dplyr::filter(dup==1) %>% #, tipo_de_plan_2 %in% c("PG-PR","M-PR","PG-PAI","M-PAI","PG-PAB","M-PAB")
+  dplyr::mutate(tipo_de_plan_res=dplyr::case_when(grepl("PR",as.character(tipo_de_plan_2))~1,
+                                                  grepl("PAI",as.character(tipo_de_plan_2))~0,
+                                                  grepl("PAB",as.character(tipo_de_plan_2))~0,
+                                                  TRUE~NA_real_)) %>% 
+  dplyr::mutate(tipo_de_plan_res=factor(tipo_de_plan_res)) %>% 
+  dplyr::mutate(abandono_temprano_rec=factor(if_else(as.character(motivodeegreso_mod_imp)=="Early Drop-out",TRUE,FALSE,NA))) %>% 
+  dplyr::mutate(dg_trs_cons_sus_or=factor(if_else(as.character(dg_trs_cons_sus_or)=="Drug dependence",TRUE,FALSE,NA))) %>% 
+  dplyr::mutate(tipo_centro_pub=factor(if_else(as.character(tipo_centro)=="Public",TRUE,FALSE,NA))) %>% 
+  dplyr::mutate(condicion_ocupacional_corr=factor(condicion_ocupacional_corr),cat_ocupacional_corr=factor(cat_ocupacional_corr)) %>% 
+  dplyr::mutate(dg_trs_fis_rec=factor(dplyr::case_when(as.character(diagnostico_trs_fisico)=="En estudio"~"Diagnosis unknown (under study)",as.character(diagnostico_trs_fisico)=="Sin trastorno"~'Without physical comorbidity',cnt_diagnostico_trs_fisico>0 ~'With physical comorbidity',
+                                             TRUE~NA_character_)))%>%
+    dplyr::mutate(escolaridad_rec=parse_factor(as.character(escolaridad_rec),levels=c('3-Completed primary school or less', '2-Completed high school or less', '1-More than high school'), ordered=T,trim_ws=T,include_na =F, locale=locale(encoding = "Latin1"))) %>%   
+dplyr::mutate(freq_cons_sus_prin=parse_factor(as.character(freq_cons_sus_prin),levels=c('Did not use', 'Less than 1 day a week','2 to 3 days a week','4 to 6 days a week','1 day a week or more','Daily'), ordered =T,trim_ws=T,include_na =F, locale=locale(encoding = "UTF-8"))) %>% 
+  dplyr::mutate(evaluacindelprocesoteraputico=dplyr::case_when(grepl("1",as.character(evaluacindelprocesoteraputico))~'1-High Achievement',grepl("2",as.character(evaluacindelprocesoteraputico))~'2-Medium Achievement',grepl("3",as.character(evaluacindelprocesoteraputico))~'3-Minimum Achievement', TRUE~as.character(evaluacindelprocesoteraputico))) %>% 
+  dplyr::mutate(evaluacindelprocesoteraputico=parse_factor(as.character(evaluacindelprocesoteraputico),levels=c('1-High Achievement', '2-Medium Achievement','3-Minimum Achievement'), ordered =T,trim_ws=T,include_na =F, locale=locale(encoding = "UTF-8"))) %>% 
+  dplyr::select_(.dots = match.on_tot) %>% 
+  dplyr::mutate(more_one_treat=factor(ifelse(duplicates_filtered>1,1,0))) %>% 
+  data.table::data.table()
+#attr(CONS_C1_df_dup_SEP_2020_match$sus_ini_mod_mvv,"label")<-"Starting Substance"
+}
+
+invisible("Comentarios")
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+kableone <- function(x, caption=NULL, col.names=NA, smd=T, test=T, varLabels=T, noSpaces=T, printToggle=T, dropEqual=F, ...) {
+  capture.output(x <- print(x, smd=T, test=test, varLabels=varLabels,noSpaces=noSpaces, printToggle=printToggle, dropEqual=dropEqual, ...))
+  knitr::kable(x,format= "html", format.args= list(decimal.mark= ".", big.mark= ","),
+               caption= caption, col.names= col.names)
+}
+as.data.frame.TableOne <- function(x, ...) {
+    capture.output(print(x, showAllLevels = TRUE, test=T, varLabels=T,...) -> x)
+    y <- as.data.frame(x)
+    y$characteristic <- na_if(rownames(x), "")
+    y <- y %>%
+        #fill(characteristic, .direction = "down") %>%
+        dplyr::select(characteristic, everything())
+    rownames(y) <- NULL
+    y 
+}
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+options(knitr.kable.NA = '')
+
+## 
+cat("Vector of variables to summarize")
+
+#obtener las columnas así nos permite descartar nombres errróneos
+myVars <-dput(names(dplyr::select(base_fiscalia, -c("rut_enc_saf","ruc","idrelacion","cod_delito","cod_lugarocurrencia","cod_parentescoimputado","cod_mottermino","cod_motsuspension","cod_proctermino","idsujeto_imputado","idsujeto_victima","impcod_tiposujeto","cod_lugarocurrencia","cod_sitiosuceso","cod_comunadelito","cod_region","iddelito"))))
+
+cat("Vector of categorical variables that need transformation")
+
+catVars <- dput(names(dplyr::select(base_fiscalia,c("encontrado_como_victima", "encontrado_como_imputado", "gls_tipo_sujeto_vic", "gls_region","tipo_termino","reg", "agrupa_terminos","gls_materia","familia_delito","relacion_vifsaf","gls_parentesco","gls_mottermino","gls_motsuspension","gls_proctermino","gls_tipo_imputado","lugar_ocurrencia","gls_sitiosuceso","gls_comuna","region_delito","medidas_155","medidas_pp","medidas_ip","marca_suspension_43","marca_pena_44","marca_multa_45","medida_alternativa_46","clasificacion_pena_47","tramos_condena_48","clasificacion_penarpa_1_49","clasificacion_penarpa_2_50","marca_suspension_51","marca_pena_52","marca_multa_53","medida_alternativa_54","clasificacion_pena_55","tramos_condena_56","clasificacion_penarpa_1_57","clasificacion_penarpa_2_58"))))
+
+myVars_nva <-dput(names(dplyr::select(Base_fiscalia_v2, -c("rut_enc_saf","ruc","idrelacion","cod_delito","fec_nacimiento","cod_lugarocurrencia","cod_parentescoimputado","cod_mottermino","cod_motsuspension","cod_proctermino","idsujeto_imputado","idsujeto_victima","impcod_tiposujeto","cod_lugarocurrencia","cod_sitiosuceso","cod_comunadelito","cod_region"))))
+catVars_bd_nva <- dput(names(dplyr::select(Base_fiscalia_v2,c("encontrado_como_victima", "encontrado_como_imputado", "gls_tipo_sujeto_vic", "gls_region","tipo_termino","pais", "sexo","reg", "agrupa_terminos","gls_materia","familia_delito","relacion_vifsaf","gls_parentesco","gls_mottermino","gls_motsuspension","gls_proctermino","gls_tipo_imputado","lugar_ocurrencia","gls_sitiosuceso","gls_comuna","region_delito","medidas_155","medidas_pp","medidas_ip","marca_suspension_43","marca_pena_44","marca_multa_45","medida_alternativa_46","clasificacion_pena_47","tramos_condena_48","clasificacion_penarpa_1_49","clasificacion_penarpa_2_50","marca_suspension_51","marca_pena_52","marca_multa_53","medida_alternativa_54","clasificacion_pena_55","tramos_condena_56","clasificacion_penarpa_1_57","clasificacion_penarpa_2_58"))))
+```
+
+```{r tab2_descr_c1_baseline_vs_type_treatd, message=F, error=T,eval=T, warnings=F, echo=T}
+tab2 <- as.data.frame.TableOne(CreateTableOne(vars = myVars, data = base_fiscalia[,myVars], factorVars = catVars, smd=T, strata="encontrado_como_imputado", addOverall = T, includeNA=T,test=T), smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level))
+
+tab2 %>%
+      dplyr::select(-characteristic) %>% 
+    # dplyr::full_join(tab2b, by=c("char2",c("level"="level2"))) %>% 
+    # dplyr::select(-char2,-characteristic.x,-level) %>% 
+    # dplyr::select(characteristic.y, level.y,  everything()) %>% 
+#fec_nacimiento_simple
+kable(size=11, format="html",caption= "Table 1. Summary descriptives, by accused status",smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F, col.names=c("Variable ","Level",rep(c("Total (%)","No", "Yes", "p-value","test", "SMD"),1)))%>%
+  #kableExtra::add_header_above(c("First attempt" = 3, "Second attempt" = 1), bold=T) %>%
+  kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
+  row_spec(1, bold=T, italic=T,color="black",hline_after=T,extra_latex_after="\\arrayrulecolor{white}",font_size= 11) %>%
+  kableExtra::add_footnote(c("Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown;", "Categorical variables are presented as number (%)"), notation = "none")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+```{r tab3, message=F, error=T,eval=T, warnings=F, echo=T}
+rbind(
+cbind(cat="Date of comission of the crime",
+base_fiscalia %>% 
+  dplyr::summarise(min = min(fec_comision_simple, na.rm=T),
+                   p025=as.Date(quantile(unclass(fec_comision_simple), .025, na.rm=T), origin = "1970-01-01"),
+                   p25=as.Date(quantile(unclass(fec_comision_simple), .25, na.rm=T), origin = "1970-01-01"),
+                   p50=as.Date(quantile(unclass(fec_comision_simple), .5, na.rm=T), origin = "1970-01-01"),
+                   p75=as.Date(quantile(unclass(fec_comision_simple), .75, na.rm=T), origin = "1970-01-01"),
+                   p975=as.Date(quantile(unclass(fec_comision_simple), .975, na.rm=T), origin = "1970-01-01"),
+            max = max(fec_comision_simple, na.rm=T))),
+cbind(cat="Date of termination of the relationship",
+base_fiscalia %>% 
+  dplyr::summarise(min = min(termino_relacion_simple, na.rm=T),
+                   p025=as.Date(quantile(unclass(termino_relacion_simple), .025, na.rm=T), origin = "1970-01-01"),
+                   p25=as.Date(quantile(unclass(termino_relacion_simple), .25, na.rm=T), origin = "1970-01-01"),
+                   p50=as.Date(quantile(unclass(termino_relacion_simple), .5, na.rm=T), origin = "1970-01-01"),
+                   p75=as.Date(quantile(unclass(termino_relacion_simple), .75, na.rm=T), origin = "1970-01-01"),
+                   p975=as.Date(quantile(unclass(termino_relacion_simple), .975, na.rm=T), origin = "1970-01-01"),
+            max = max(termino_relacion_simple, na.rm=T))),
+cbind(cat="Date of cbiorelacion",
+base_fiscalia %>% 
+  dplyr::summarise(min = min(fec_cbiorelacion_simple, na.rm=T),
+                   p025=as.Date(quantile(unclass(fec_cbiorelacion_simple), .025, na.rm=T), origin = "1970-01-01"),
+                   p25=as.Date(quantile(unclass(fec_cbiorelacion_simple), .25, na.rm=T), origin = "1970-01-01"),
+                   p50=as.Date(quantile(unclass(fec_cbiorelacion_simple), .5, na.rm=T), origin = "1970-01-01"),
+                   p75=as.Date(quantile(unclass(fec_cbiorelacion_simple), .75, na.rm=T), origin = "1970-01-01"),
+                   p975=as.Date(quantile(unclass(fec_cbiorelacion_simple), .975, na.rm=T), origin = "1970-01-01"),
+            max = max(fec_cbiorelacion_simple, na.rm=T))),
+
+cbind(cat="Date of comission of the crime",
+Base_fiscalia_v2 %>% 
+  dplyr::summarise(min = min(fec_comision_simple, na.rm=T),
+                   p025=as.Date(quantile(unclass(fec_comision_simple), .025, na.rm=T), origin = "1970-01-01"),
+                   p25=as.Date(quantile(unclass(fec_comision_simple), .25, na.rm=T), origin = "1970-01-01"),
+                   p50=as.Date(quantile(unclass(fec_comision_simple), .5, na.rm=T), origin = "1970-01-01"),
+                   p75=as.Date(quantile(unclass(fec_comision_simple), .75, na.rm=T), origin = "1970-01-01"),
+                   p975=as.Date(quantile(unclass(fec_comision_simple), .975, na.rm=T), origin = "1970-01-01"),
+            max = max(fec_comision_simple, na.rm=T))),
+cbind(cat="Date of termination of the relationship",
+Base_fiscalia_v2 %>% 
+  dplyr::summarise(min = min(termino_relacion_simple, na.rm=T),
+                   p025=as.Date(quantile(unclass(termino_relacion_simple), .025, na.rm=T), origin = "1970-01-01"),
+                   p25=as.Date(quantile(unclass(termino_relacion_simple), .25, na.rm=T), origin = "1970-01-01"),
+                   p50=as.Date(quantile(unclass(termino_relacion_simple), .5, na.rm=T), origin = "1970-01-01"),
+                   p75=as.Date(quantile(unclass(termino_relacion_simple), .75, na.rm=T), origin = "1970-01-01"),
+                   p975=as.Date(quantile(unclass(termino_relacion_simple), .975, na.rm=T), origin = "1970-01-01"),
+            max = max(termino_relacion_simple, na.rm=T))),
+cbind(cat="Date of cbiorelacion",
+Base_fiscalia_v2 %>% 
+  dplyr::summarise(min = min(fec_cbiorelacion_simple, na.rm=T),
+         p025=as.Date(quantile(unclass(fec_cbiorelacion_simple), .025, na.rm=T), origin = "1970-01-01"),
+         p25=as.Date(quantile(unclass(fec_cbiorelacion_simple), .25, na.rm=T), origin = "1970-01-01"),
+         p50=as.Date(quantile(unclass(fec_cbiorelacion_simple), .5, na.rm=T), origin = "1970-01-01"),
+         p75=as.Date(quantile(unclass(fec_cbiorelacion_simple), .75, na.rm=T), origin = "1970-01-01"),
+         p975=as.Date(quantile(unclass(fec_cbiorelacion_simple), .975, na.rm=T), origin = "1970-01-01"),
+         max = max(fec_cbiorelacion_simple, na.rm=T))),
+cbind(cat="Date of birth",
+Base_fiscalia_v2 %>% 
+  dplyr::summarise(min = min(fec_nacimiento_simple, na.rm=T),
+         p025=as.Date(quantile(unclass(fec_nacimiento_simple), .025, na.rm=T), origin = "1970-01-01"),
+         p25=as.Date(quantile(unclass(fec_nacimiento_simple), .25, na.rm=T), origin = "1970-01-01"),
+         p50=as.Date(quantile(unclass(fec_nacimiento_simple), .5, na.rm=T), origin = "1970-01-01"),
+         p75=as.Date(quantile(unclass(fec_nacimiento_simple), .75, na.rm=T), origin = "1970-01-01"),
+         p975=as.Date(quantile(unclass(fec_nacimiento_simple), .975, na.rm=T), origin = "1970-01-01"),
+         max = max(fec_nacimiento_simple, na.rm=T)))) %>% 
+knitr::kable(format="html",caption= "Table 2. Summary of Dates") %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
+    kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>% 
+  kableExtra::group_rows("Original database",1,3) %>% 
+  kableExtra::group_rows("Corrected database",4,7)
+```
+
+<br>
+
+# Missingness
+
+```{r miss, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center"}
+cols<-Base_fiscalia_v2[,myVars_nva] %>%
+     names() #si fuera desde SPSS, sería p47_demo_medio_transp_otr
+
+tot<-
+Base_fiscalia_v2 %>%
+  # dplyr::filter(resp_status=="partial") %>% 
+  nrow()
+#Ordenar variables
+missing.values <- 
+  Base_fiscalia_v2 %>%
+    tidyr::gather() %>%
+    dplyr::mutate(is.missing = is.na(value)) %>%
+    dplyr::group_by(key, is.missing) %>%
+    dplyr::summarise(num.missing = n()) %>%
+    dplyr::filter(is.missing==T) %>%
+    dplyr::mutate(perc_miss=num.missing/tot) %>% 
+    dplyr::mutate(label_text=paste0("%= ", scales::percent(num.missing/tot, accuracy=1L),"\n N= ", format(num.missing,big.mark=","))) %>% 
+    dplyr::select(-is.missing) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::group_by(key) %>% 
+    dplyr::slice(1) %>% 
+    dplyr::ungroup()
+
+
+plot_miss<-
+missing.values %>%
+  dplyr::ungroup() %>% 
+  # slice(1:29) %>% 
+  ggplot() +
+  geom_bar(aes(x=forcats::fct_reorder(key, perc_miss), y=perc_miss, label=label_text), stat = 'identity') +
+  labs(x='variable', y="Porcentaje de perdidos", caption=paste0("Nota. Porcentaje de perdidos del total (",format(tot, big.mark=","),")")) +
+  #theme(axis.text.x = element_text(angle = 45, hjust = 1, size=6))+
+  theme(axis.text.x = element_blank())+
+  scale_y_continuous(limits=c(0,1))+
+  sjPlot::theme_sjplot()+
+  coord_flip()
+
+
+   ggplotly(plot_miss, tooltip = c("label_text"))%>% layout(xaxis= list(showticklabels = T), height = 600, width=800) %>%   layout(xaxis = list(tickformat='%',  range = c(0, 1)))
+
+```
+
+<br>
+
+# Near Zero Variance
+
+Check variables that only had one unique value (i.e. are zero variance) or predictors that have both of the following characteristics: few unique values given the sample size, and the frequency of the most common value is much more big than the second most common value.
+
+```{r nearZeroVar, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center"}
+nzv_vals <- nearZeroVar(Base_fiscalia_v2, saveMetrics = TRUE)
+nzv_sorted <- dplyr::arrange(nzv_vals, desc(freqRatio))
+
+kable(as.data.frame.TableOne(nzv_sorted), size=11, format="html",
+    caption= "Table 4. Near Zero Variance",
+    col.names=c("Variable", "freqRatio", "% of Unique values", "Zero Variance", "Near Zero Variance")) %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
+    kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
+    kableExtra::add_footnote(c("Note. freqRatio= ratio of frequencies for the most common value over the second most common value for that variable"), notation = "none")%>%
+    kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+<br>
+
+## Times as accused
+
+-   `r table(Base_fiscalia_v2$encontrado_como_victima,Base_fiscalia_v2$encontrado_como_imputado)[4]` people that is found as accused and as a victim at the same time. Meanwhile, we considered them as accused.
+
+```{r fig1, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Figure 1. Distribution of records in which a user is declared as an accused", fig.height=6}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+base_fiscalia_acc_imp<-
+Base_fiscalia_v2 %>% 
+  dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                 encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                 T~"VICTIMA")) %>% 
+  dplyr::filter(accused=="IMPUTADO") %>% 
+  dplyr::group_by(rut_enc_saf) %>% 
+  dplyr::count() %>% 
+  ungroup()
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+p<-
+base_fiscalia_acc_imp %>% 
+  dplyr::left_join(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")] %>% distinct(hash_key, .keep_all = T),by=c("rut_enc_saf"="hash_key")) %>% ggplot(aes(x=n), alpha=.7)+
+  geom_histogram_interactive(bins=120)+
+  geom_vline(aes(xintercept=median(base_fiscalia_acc_imp$n)), color="darkred", linetype="dashed")+
+  geom_vline(aes(xintercept=quantile(base_fiscalia_acc_imp$n, .99)), color="darkmagenta", linetype="solid")+
+  geom_vline(aes(xintercept=quantile(base_fiscalia_acc_imp$n, .95)), color="darkblue", linetype="dotted")+
+  sjPlot::theme_sjplot2() +
+  #facet_wrap(~motivodeegreso_mod_imp)+
+labs(y = "Frequency",x="Records as an imputed", caption= paste0("Blue dotted line=", quantile(base_fiscalia_acc_imp$n, .95)," records; Violet solid line=",quantile(base_fiscalia_acc_imp$n, .99)," records; Red dashed line= Median=",median(base_fiscalia_acc_imp$n)," records; Maximum=",max(base_fiscalia_acc_imp$n)," records")) 
+
+p
+```
+
+```{r perc_accused, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
+paste0("Percentage of HASHs that have records as accused: ",
+scales::percent(
+base_fiscalia_acc_imp %>% 
+    dplyr::left_join(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")] %>% distinct(hash_key, .keep_all = T),by=c("rut_enc_saf"="hash_key")) %>%  distinct(rut_enc_saf) %>% nrow()/CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")] %>% distinct(hash_key, .keep_all = T) %>% nrow(),
+  accuracy=.01
+  )
+  )
+```
+
+<br>
+
+## Times as victim
+
+```{r fig2, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Figure 2. Distribution of records in which a user is declared as a Victim", fig.height=6}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+base_fiscalia_acc_vic<-
+Base_fiscalia_v2 %>% 
+  dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                 encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                 T~"VICTIMA")) %>% 
+  dplyr::filter(accused=="VICTIMA") %>% 
+  dplyr::group_by(rut_enc_saf) %>% 
+  dplyr::count() %>% 
+  ungroup()
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+
+p2<-
+base_fiscalia_acc_vic %>% 
+  dplyr::left_join(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")] %>% distinct(hash_key, .keep_all = T),by=c("rut_enc_saf"="hash_key")) %>% ggplot(aes(x=n), alpha=.7)+
+  geom_histogram_interactive(bins=120)+
+  geom_vline(aes(xintercept=median(base_fiscalia_acc_vic$n)), color="darkred", linetype="dashed")+
+  geom_vline(aes(xintercept=quantile(base_fiscalia_acc_vic$n, .99)), color="darkmagenta", linetype="solid")+
+  geom_vline(aes(xintercept=quantile(base_fiscalia_acc_vic$n, .95)), color="darkblue", linetype="dotted")+
+  sjPlot::theme_sjplot2() +
+  #facet_wrap(~motivodeegreso_mod_imp)+
+labs(y = "Frequency",x="Records as a victim", caption= paste0("Blue dotted line=", quantile(base_fiscalia_acc_vic$n, .95)," records; Violet solid line=",quantile(base_fiscalia_acc_vic$n, .99)," records; Red dashed line= Median=",median(base_fiscalia_acc_vic$n)," records; Maximum=",max(base_fiscalia_acc_vic$n)," records"))
+# xlim(c(-1,2000))
+
+p2
+```
+
+```{r perc_vic, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
+paste0("Percentage of HASHs that have records as victims: ",
+scales::percent(
+base_fiscalia_acc_vic %>% 
+    dplyr::left_join(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")] %>% distinct(hash_key, .keep_all = T),by=c("rut_enc_saf"="hash_key")) %>%  distinct(rut_enc_saf) %>% nrow()/CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")] %>% distinct(hash_key, .keep_all = T) %>% nrow(),
+accuracy=.01
+  )
+)
+```
+
+<br>
+
+# Structure
+
+The hypothetized structure would be HASHs (`rut_enc_saf`), RUCs (`ruc`), the combination of an specific accused (`idsujeto_imputado`) and victim (`idsujeto_victima`), ending with a relationship (`idrelacion`) as the result of this combination with an specific type of crime/offence (`id_delito`) in a determined court case.
+
+<br>
+
+Some counts of different values by each variable.
+
+<br>
+
+```{r s1, echo=T, error=T, paged.print=TRUE}
+id_suj_vic<-
+cbind(cat="Number of entries by ID of victim",
+Base_fiscalia_v2 %>%
+    count(idsujeto_victima) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n), median=median(n), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975)))
+#podría agrupar al resto. De hecho, hay un ID que agrupa a 18,045 filas, que es el id sujeto ==0
+
+if(no_mostrar==0){
+Base_fiscalia_v2 %>%
+    dplyr::filter(ruc %in% as.character(unlist(base_fiscalia %>%
+                                                 dplyr::filter(idsujeto_victima==0) %>%
+                                                 dplyr::select(ruc)))) %>% 
+    dplyr::group_by(idrelacion) %>% 
+    summarise(n=n()) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n), median=median(n), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975))
+  
+invisible("2021-12-17, se envió consulta a fiscalía")
+  Base_fiscalia_v2 %>%
+    dplyr::filter(ruc %in% as.character(unlist(base_fiscalia %>%
+                                                   dplyr::filter(idsujeto_victima==0) %>%
+                                                   dplyr::select(ruc)))) %>% 
+    dplyr::arrange(ruc) %>% 
+    dplyr::select(ruc,everything()) %>% 
+    dplyr::slice(300:330) %>% 
+    copiar_nombres()
+}
+
+id_suj_imp<-
+cbind(cat="Number of entries by ID of accused",
+Base_fiscalia_v2 %>%
+    group_by(idsujeto_imputado) %>% 
+    summarise(n=n()) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n), median=median(n), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975)))
+#agrupa al resto, me da la impresión, tiene hasta 129 filas con el mismo id sujeto imputado
+
+ruc<-
+cbind(cat="Number of entries by RUC",
+Base_fiscalia_v2 %>%
+    group_by(ruc) %>% 
+    summarise(n=n()) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n), median=median(n), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975)))
+
+ # 1 0810024146-4   129
+ # 2 0901135475-8   106
+ # 3 1000499758-7    56
+ # 4 1000241245-K    49
+
+#El ruc no es específico, tiene hasta 129 filas. Ver si tienen relación con los ID's sjeto imputado o víctima
+
+id_delito<-
+cbind(cat="Number of entries by ID delito",
+Base_fiscalia_v2 %>%
+    group_by(iddelito) %>% 
+    summarise(n=n()) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n), median=median(n), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975)))
+# algo específica, tiene como máximo 82 filas con el mismo id delito
+
+id_rel<-
+cbind(cat="Number of entries by ID relación",
+Base_fiscalia_v2 %>%
+    group_by(idrelacion) %>% 
+    summarise(n=n()) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n, na.rm=T), median=median(n, na.rm=T), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975)))
+# más específica, tiene como máximo 2 filas con el mismo id relación
+
+no_mostrar=1
+if(no_mostrar==0){
+invisible("Para ver casos posiblemente duplicados")
+invisible("2021-12-17, enviado a fiscalía")
+Base_fiscalia_v2 %>%
+  dplyr::mutate(combinacion=paste0(ruc,"_",rut_enc_saf)) %>%
+  dplyr::filter(combinacion %in% as.character(unlist(agrupacion_base %>% 
+  dplyr::filter(max>1) %>%dplyr::mutate(combinacion=paste0(ruc,"_",rut_enc_saf)) %>% dplyr::select(combinacion)))) %>% View()
+}
+
+ruts<-cbind(cat="Number of entries by Ruts",
+Base_fiscalia_v2 %>%
+    group_by(rut_enc_saf) %>% 
+    summarise(n=n()) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n, na.rm=T), median=median(n, na.rm=T), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975)))
+
+ruc_por_rut<-
+cbind(cat="Number of different Causes(RUCs) by RUT",
+Base_fiscalia_v2 %>%
+    group_by(rut_enc_saf) %>% 
+    summarise(n=n_distinct(ruc)) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n, na.rm=T), median=median(n, na.rm=T), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975))) #%>% copiar_nombres()
+
+
+del_por_ruc<-
+cbind(cat="Number of different Crimes by RUT",
+Base_fiscalia_v2 %>%
+    group_by(rut_enc_saf) %>% 
+    summarise(n=n_distinct(gls_materia)) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n, na.rm=T), median=median(n, na.rm=T), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975)))
+
+rel_por_ruc<-
+cbind(cat="Number of different relatonships by RUT",
+Base_fiscalia_v2 %>%
+    group_by(rut_enc_saf) %>% 
+    summarise(n=n_distinct(idrelacion)) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n, na.rm=T), median=median(n, na.rm=T), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975)))# %>% copiar_nombres()
+
+rel_por_ruc<-
+cbind(cat="Number of different relatonships by Causes(RUC)",
+Base_fiscalia_v2 %>%
+    group_by(ruc) %>% 
+    summarise(n=n_distinct(idrelacion)) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n, na.rm=T), median=median(n, na.rm=T), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975)))
+
+delitos_ruc<-
+cbind(cat="Number of different crimes by Causes(RUC)",base_fiscalia %>%
+    group_by(ruc) %>% 
+    summarise(n=n_distinct(gls_materia)) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n, na.rm=T), median=median(n, na.rm=T), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975)))
+
+
+invisible("Exploremos algunos")
+  # base_fiscalia %>%
+  #   dplyr::filter(ruc %in% c("0810024146-4","0901135475-8")) %>% View()
+
+invisible("ID sujeto imputado, RUC")
+# base_fiscalia %>%
+#     group_by(ruc,idsujeto_imputado) %>% 
+#     summarise(n=n()) %>% 
+#     summarise(min=min(n), max=max(n), mean=mean(n), median=median(n), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975))
+# No correr, entrega 494,929 casos
+
+invisible("ID sujeto víctima, RUC")
+# base_fiscalia %>%
+#     group_by(idsujeto_victima,ruc) %>% 
+#     summarise(n=n()) %>% 
+#     summarise(min=min(n), max=max(n), mean=mean(n), median=median(n), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975))
+#no correr. son 514,344 casos
+#si pongo al revés, con el RUC primero, 
+      # Error: Problem with `summarise()` column `p75`.
+      # i `p75 = quantile(n, 0.75)`.
+      # x argument is not interpretable as logical
+      # i The error occurred in group 40782: ruc = "1000495180-3".
+      # Backtrace:
+      #   1. `%>%`(...)
+      #   9. base::.handleSimpleError(...)
+      #  10. dplyr:::h(simpleError(msg, call))
+      # In addition: Warning message:
+      # In if (na.rm) x <- x[!is.na(x)] else if (anyNA(x)) stop("missing values and NaN's not allowed if 'na.rm' is FALSE") :
+      #   the condition has length > 1 and only the first element will be used
+
+
+bind_rows(ruts,
+id_suj_vic, 
+id_suj_imp,
+ruc,
+id_delito,
+id_rel,
+ruc_por_rut, 
+del_por_ruc,
+rel_por_ruc,
+delitos_ruc) %>% 
+  dplyr::select(cat, everything()) %>% 
+  knitr::kable(size=11, first.strip=T, hide.no="no",
+           format="html",caption= "Table 5. Counts of entries by different groups",
+         smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F) %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
+    kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 12) %>%
+  # kableExtra::add_footnote(c("Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown;", "Categorical variables are presented as number (%)"), notation = "none")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+<br>
+
+We looked for the percentage of entries with the ID for the victim equal to 0 (missing or does not apply) for each quarter, and the number of entries in which the crime is commited.
+
+<br>
+
+```{r s2, echo=T, error=T, paged.print=TRUE}
+#sería RUT/Hash → RUC → relaciones
+#
+#fec_cbiorelacion
+#fec_comision  
+#termino_relacion 
+
+invisible("¿Hay algún patrón por año?, ver el recuento de id_victimas==0 por cada trimestre y sacar un gráfico de densidad de eso")
+require(zoo)
+require(ggrepel)
+
+vic_trim_id_suj_0<-
+Base_fiscalia_v2 %>% 
+    dplyr::arrange(rut_enc_saf, ruc, idrelacion) %>% 
+    dplyr::mutate(fech_ing_qrt=zoo::as.yearqtr(fec_comision)) %>%
+    dplyr::mutate(idsujeto_victima_0=ifelse(idsujeto_victima==0,1,0)) %>% 
+    dplyr::group_by(fech_ing_qrt) %>% #%>% janitor::tabyl(sus_ini)
+    dplyr::summarise(n=n(),
+                     sum_0 = length(n[idsujeto_victima_0==1]),
+                     perc = sum_0/n) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::mutate(label_text= paste0("Year/Quarter= ",fech_ing_qrt,"\nTotal Entries= ",n,"\n %= ",scales::percent(perc, accuracy=1L),"\nEntries w/ NNs= ", sum_0)) %>% 
+    dplyr::filter(fech_ing_qrt>=2000) %>% 
+    dplyr::arrange(desc(fech_ing_qrt)) %>% 
+    ggplot2::ggplot(aes(x = fech_ing_qrt, y = perc, label = label_text)) +
+    geom_line(color = "#0076A8", size=1) +
+    #geom_text_repel(aes(x = fech_ing_qrt, y = perc, label = paste0("Rows=",n,"\nNN victims= ", sum_0)), vjust = -1,hjust = 0, angle=45, #size=3, arrow = arrow(length = unit(0.01, 'npc'))) +
+    sjPlot::theme_sjplot2() +
+    labs(y="% of Missing Data of the Victim",x="Years & Quarters, Date of commission of the crime",caption="Note. Some crimes were commited before 1960 (n= 246), and in 1900 (n=241)") + 
+    scale_y_continuous(labels = scales::percent) +
+    scale_x_yearqtr(format="%YQ%q", n=15) +
+    theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+
+ggplotly(vic_trim_id_suj_0, tooltip="label_text")
+```
+
+```{r s202, echo=T, error=T, paged.print=TRUE, eval=T}
+vic_trim_id_suj_0_b<-
+Base_fiscalia_v2 %>% 
+  dplyr::arrange(rut_enc_saf, ruc, idrelacion) %>% 
+  dplyr::mutate(fech_ing_qrt=zoo::as.yearqtr(termino_relacion)) %>%
+   dplyr::mutate(idsujeto_victima_0=ifelse(idsujeto_victima==0,1,0)) %>% 
+    dplyr::group_by(fech_ing_qrt) %>% #%>% janitor::tabyl(sus_ini)
+   dplyr::summarise(n=n(),
+                  sum_0 = length(n[idsujeto_victima_0==1]),
+                  perc = sum_0/n) %>% 
+  dplyr::ungroup() %>% 
+    dplyr::mutate(label_text= paste0("Year/Quarter= ",fech_ing_qrt,"\nTotal Entries= ",n,"\n %= ",scales::percent(perc, accuracy=1L),"\nEntries w/ NNs= ", sum_0)) %>% 
+  dplyr::filter(fech_ing_qrt>=2000) %>% 
+  dplyr::arrange(desc(fech_ing_qrt)) %>% 
+  ggplot2::ggplot(aes(x = fech_ing_qrt, y = perc, label = label_text)) +
+  geom_line(color = "#0076A8", size=1) +
+    # geom_text_repel(aes(x = fech_ing_qrt, y = perc, label = paste0("Rows=",n,"\nNN victims= ", sum_0)), vjust = -1,hjust = 0, angle=45, size=3, arrow = arrow(length = unit(0.01, 'npc'))) +
+  sjPlot::theme_sjplot2() +
+  labs(y="% of Missing Data of the Victim",x="Years & Quarters, Date of termination of the relationship") + 
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_yearqtr(format="%YQ%q", n=30) +
+  theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+
+ggplotly(vic_trim_id_suj_0_b, tooltip="label_text")
+
+```
+
+<br>
+
+## Some questions
+
+<br>
+
+```{r s25, echo=T, error=T, paged.print=TRUE, eval=T}
+# invisible("¿Puede que el RUC se repita para un mismo HASH?, ¿en qué situaciones?")
+# base_fiscalia %>%
+#   dplyr::mutate(combinacion=paste0(ruc,"_",rut_enc_saf)) %>%
+#   dplyr::filter(combinacion %in% as.character(unlist(agrupacion_base %>% 
+#   dplyr::filter(max>1) %>%dplyr::mutate(combinacion=paste0(ruc,"_",rut_enc_saf)) %>% dplyr::select(combinacion)))) %>% View()
+
+cat("Entries with accused and victim status")
+invisible("2021-12-17, enviado a fiscalía")
+
+format(Base_fiscalia_v2 %>%
+  dplyr::filter(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI") %>% nrow(), big.mark=",")
+
+cat("Differences between date of termination of cbiorelacion (fec_cbiorelacion) and termination of relationship (termino_relacion)")
+invisible("¿Hay diferencias en la fecha biorelacion y la de término de relación")
+Base_fiscalia_v2 %>% 
+    dplyr::filter(termino_relacion!=fec_cbiorelacion) %>% 
+    dplyr::mutate(diff_en_dias=as.numeric((termino_relacion-fec_cbiorelacion)/(60*24))) %>% 
+    select(diff_en_dias) %>% 
+    summarise(n=n(),min=min(diff_en_dias), max=max(diff_en_dias), mean=mean(diff_en_dias), median=median(diff_en_dias), p025=quantile(diff_en_dias, .025), p25=quantile(diff_en_dias, .25), p75=quantile(diff_en_dias,.75), p975=quantile(diff_en_dias, .975)) %>% copiar_nombres()
+
+cat("Entries in which the RUT is found as accused and victim (distinct RUTs & distinct RUCs)")
+invisible("Casos en que hay filas en que un rut es imputado y víctima")
+Base_fiscalia_v2 %>%
+    dplyr::filter(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI") %>% 
+    summarise(n=n_distinct(rut_enc_saf), n2=n_distinct(ruc))
+
+cat("Entries in which an accused commits a crime with distinct cause (RUC) in the same date")
+invisible("Casos en que una persona comete un delito con distinta causa en la misma fecha")
+format(Base_fiscalia_v2 %>%
+    dplyr::mutate(comb=paste0(rut_enc_saf,"_",fec_comision)) %>% 
+                    dplyr::add_count(comb, .keep=T) %>% filter(n > 1) %>% 
+    dplyr::group_by(comb) %>% 
+                      dplyr::mutate(n=n_distinct(ruc)) %>% 
+    dplyr::filter(n>1) %>%
+  nrow(), big.mark=",")
+  # dplyr::ungroup() %>% 
+  # dplyr::arrange(rut_enc_saf, ruc) %>% 
+  # dplyr::select(rut_enc_saf, ruc, idrelacion, gls_materia, fec_comision)
+
+# Ejemplo de un caso
+
+# 0007678b8b35fa0961d1e8110fbf9620	SI	NO	6	VICTIMA	47350754	5	V Región de Valparaíso	16913947	1400066420-1	SALIDA NO JUDICIAL	DECISI¿N DE NO PERSEVERAR	525	AMENAZAS CONDIC. CONTRA PERSONAS Y PROP. ART. 296 1 y 2, 297	DELITOS CONTRA LA LIBERTAD E INTIMIDAD DE LAS PERSONAS	SI	16	CONVIVIENTE	5	Decisión de no perseverar en el proced	0	NA	1	ORDINARIO	47350753	3	IMPUTADO	12909542	18-01-2014 19:40	16-04-2014	2	LUGAR HABITADO O DESTINADO A LA HABITACION Y SUS DEPENDENCIAS	1	VIVIENDA	310	VALPARAISO	5	V Región de Valparaíso	16-04-2014	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+
+# 0007678b8b35fa0961d1e8110fbf9620	SI	NO	6	VICTIMA	47359056	5	V Región de Valparaíso	16916932	1400068650-7	SALIDA NO JUDICIAL	ARCHIVO PROVISIONAL	524	AMENAZAS SIMPLES CONTRA PERSONAS Y PROPIEDADES ART. 296 Nº3.	DELITOS CONTRA LA LIBERTAD E INTIMIDAD DE LAS PERSONAS	SI	16	CONVIVIENTE	1	Archivo Provisional	0	NA	0	SIN PROCEDIMIENTO	47359057	3	IMPUTADO	12911972	18-01-2014 19:40	27-01-2014	2	LUGAR HABITADO O DESTINADO A LA HABITACION Y SUS DEPENDENCIAS	1	VIVIENDA	310	VALPARAISO	5	V Región de Valparaíso	27-01-2014	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+
+cat("Entries that have different relationship ID for the same combination of an ID of the victim and the ID of the accused")
+invisible("Gente que tendría distinto id de relación para una misma combianción de id víctima e id imputado")
+format(Base_fiscalia_v2 %>%
+    dplyr::mutate(comb=paste0(idsujeto_victima,"_",idsujeto_imputado)) %>% 
+    dplyr::add_count(comb, .keep=T) %>% filter(n > 1) %>% 
+    dplyr::group_by(comb) %>% 
+    dplyr::summarise(n=n_distinct(idrelacion)) %>% 
+    dplyr::filter(!grepl("^0_", comb)) %>% 
+    dplyr::filter(n>1) %>%  nrow(), big.mark=",")
+
+cat("Example")
+Base_fiscalia_v2 %>%
+    dplyr::mutate(comb=paste0(idsujeto_victima,"_",idsujeto_imputado)) %>% 
+    arrange(rut_enc_saf,fec_comision,ruc,idrelacion) %>% 
+    dplyr::filter(comb=="10760610_10760611") %>%
+    dplyr::select(rut_enc_saf, ruc, idsujeto_victima, idsujeto_imputado, idrelacion, gls_materia) %>%  print()
+
+
+cat("Cases with date of crime comission are posterior to the date that the relationship ended")
+format(Base_fiscalia_v2 %>%
+  dplyr::mutate(fec_comision_simple=as.Date(stringr::str_extract(as.character(fec_comision), "^.{10}"))) %>% 
+  dplyr::mutate(termino_relacion_simple=as.Date(stringr::str_extract(as.character(termino_relacion), "^.{10}"))) %>%
+  dplyr::mutate(diff_en_dias=as.numeric((termino_relacion_simple-fec_comision_simple))) %>% 
+  dplyr::filter(diff_en_dias<0) %>% 
+  nrow(), big.mark=",")
+   #dplyr::select(rut_enc_saf,ruc, fec_comision, termino_relacion, diff_en_dias) %>%  
+  #     select(diff_en_dias) %>% 
+  #     summarise(n=n(),min=min(diff_en_dias), max=max(diff_en_dias), mean=mean(diff_en_dias), median=median(diff_en_dias), p025=quantile(diff_en_dias, .025), p25=quantile(diff_en_dias, .25), p75=quantile(diff_en_dias,.75), p975=quantile(diff_en_dias, .975)) %>% copiar_nombres()
+
+cat("Are gls_materia and cod_delito distinct (differences in the number of categories contained)?")
+ifelse(Base_fiscalia_v2 %>%
+    dplyr::group_by(cod_delito) %>% 
+    summarise(n=n_distinct(gls_materia)) %>% 
+    dplyr::filter(n>1) %>% nrow()>0,"Yes","No")
+
+cat("And viceversa?")
+
+ifelse(Base_fiscalia_v2 %>%
+    dplyr::group_by(gls_materia) %>% 
+    summarise(n=n_distinct(cod_delito)) %>% 
+    dplyr::filter(n>1) %>% nrow(), "Yes","No")
+
+cat("Cases in which the same RUC has 2 or more RUTs")
+format(Base_fiscalia_v2 %>%
+    dplyr::group_by(ruc) %>% 
+    summarise(n=n_distinct(rut_enc_saf)) %>% 
+    dplyr::filter(n>1) %>% 
+  nrow(), big.mark=",")
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+
+cat("Number of different relationships within a RUC by each RUT")
+invisible("ID's de relación por RUCs en RUTs")
+agrupacion_base<-
+Base_fiscalia_v2 %>%
+    group_by(ruc,rut_enc_saf,idrelacion) %>% 
+    summarise(n=n()) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n, na.rm=T), median=median(n, na.rm=T), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975))
+
+
+rel_ruc_rut<-
+cbind("More than one relationship within a RUC by each RUT",
+agrupacion_base %>% 
+    dplyr::filter(max>1) %>% nrow())
+invisible("Casos en que agrupados las relaciones por rucs y a su vez por cada rut, resultan tener 2 relaciones")
+invisible("ruc=='1101216380-2' tiene todo igual con la otra fila")
+invisible("ruc=='1200110540-8' tiene todo igual con la otra fila")
+invisible("ruc=='1200685456-5' tiene todo igual con la otra fila")
+invisible("ruc=='1200685456-5' tiene todo igual con la otra fila")
+# ruc          rut_enc_saf                        min   max  mean median  p025   p25   p75  p975
+# 1 1101216380-2 6a72664c6071e9728753279c9e9719e5     2     2   2      2    2     2     2     2   
+# 2 1200110540-8 471b17aece44998caa6f83fee6b3b483     2     2   2      2    2     2     2     2   
+# 3 1200685456-5 f1966360761b422b7e826bab2e1a38dc     2     2   2      2    2     2     2     2   
+# 4 1200771867-3 a2aee30c6c0693a9c13f39e3520f666c     2     2   2      2    2     2     2     2   
+# 5 1201254538-8 2d3bec94a94304a0b786ab83f7d1021a     2     2   2      2    2     2     2     2   
+# 6 1300390161-5 f336b9f3e4097cfe736239a8bb937596     1     2   1.5    1.5  1.02  1.25  1.75  1.98
+# 7 1600027649-2 bfc39f93fe4e0958c4e0ec16dddec275     2     2   2      2    2     2     2     2   
+
+del_por_rel_ruc<-
+  cbind(cat="Delitos por relación y RUC",
+Base_fiscalia_v2 %>%
+    group_by(ruc, idrelacion, gls_materia) %>% 
+    summarise(n=n()) %>% 
+    summarise(min=min(n), max=max(n), mean=mean(n, na.rm=T), median=median(n, na.rm=T), p025=quantile(n, .025), p25=quantile(n, .25), p75=quantile(n,.75), p975=quantile(n, .975)))
+```
+
+<br>
+
+Entries with the same data
+
+<br>
+
+```{r s35, echo=T, error=T, paged.print=TRUE}
+options(knitr.kable.NA = '')
+
+#quienes tienen más de uno, son los mismos datos
+Base_fiscalia_v2 %>%
+dplyr::filter(idrelacion %in% c(12935546, 13290172, 14124442, 14248963, 14953586, 15559264, 20446792)) %>% 
+  dplyr::arrange(rut_enc_saf, ruc, idrelacion, id_delito) %>% 
+knitr::kable(size=11, first.strip=T, hide.no="no",
+           format="html",caption= "Table 6. Cases with duplicated entries",
+         smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F) %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
+    kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
+  # kableExtra::add_footnote(c("Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown;", "Categorical variables are presented as number (%)"), notation = "none")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+<br>
+
+# Merge with SENDAs database
+
+```{r merge_distinct_ruts, echo=T, error=T, paged.print=TRUE}
+invisible("¿Hay RUTs de fiscalía que no existen en la base de datos SENDA?")
+invisible("Ver cuántos calzan con la Base anterior (datos descartados en etapas del proceso de limpieza de datos)")
+rbind(
+cbind(cat="RUTs in P.O. that are not in SENDA's most recent database (accused)",
+#Sólo el recuento de los RUTs
+base_fiscalia_acc_imp %>% 
+    #sólo dejo RUT únicos en la de septiembre, cosa que no me aumenten las filas originales
+  dplyr::left_join(distinct(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")],hash_key, .keep_all = T),by=c("rut_enc_saf"="hash_key")) %>% 
+  dplyr::distinct(rut_enc_saf, .keep_all = T) %>% 
+      dplyr::summarise(n=n(),
+                     sum_na = length(n[is.na(dup)]),
+                     perc = scales::percent(sum_na/n, accuracy=.01))),
+cbind(cat="RUTs in P.O. that are not in SENDA's most recent database (victims)",
+base_fiscalia_acc_vic %>% 
+    #sólo dejo RUT únicos en la de septiembre, cosa que no me aumenten las filas originales
+  dplyr::left_join(distinct(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")],hash_key, .keep_all = T),by=c("rut_enc_saf"="hash_key")) %>% 
+  dplyr::distinct(rut_enc_saf, .keep_all = T) %>% 
+      dplyr::summarise(n=n(),
+                     sum_na = length(n[is.na(dup)]),
+                     perc = scales::percent(sum_na/n, accuracy=.01))),
+
+cbind(cat="RUTs that matches with the original SENDA's database (accused)",
+#Sólo el recuento de los RUTs
+base_fiscalia_acc_imp %>% 
+    #sólo dejo RUT únicos en la de septiembre, cosa que no me aumenten las filas originales
+  dplyr::left_join(distinct(CONS_C1[,c("HASH_KEY","row")],HASH_KEY, .keep_all = T),by=c("rut_enc_saf"="HASH_KEY")) %>% 
+  dplyr::distinct(rut_enc_saf, .keep_all = T) %>% 
+      dplyr::summarise(n=n(),
+                     sum_na = length(n[is.na(row)]),
+                     perc = scales::percent(sum_na/n, accuracy=.01))),
+
+cbind(cat="RUTs that matches with the original SENDA's database (victims)",
+base_fiscalia_acc_vic %>% 
+    #sólo dejo RUT únicos en la de septiembre, cosa que no me aumenten las filas originales
+  dplyr::left_join(distinct(CONS_C1[,c("HASH_KEY","row")],HASH_KEY, .keep_all = T),by=c("rut_enc_saf"="HASH_KEY")) %>% 
+  dplyr::distinct(rut_enc_saf, .keep_all = T) %>% 
+      dplyr::summarise(n=n(),
+                     sum_na = length(n[is.na(row)]),
+                     perc = scales::percent(sum_na/n, accuracy=.01)))
+) %>% 
+knitr::kable(size=11, first.strip=T, hide.no="no",
+           format="html",caption= "Table 7. Comparison of availability of RUTs") %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
+    kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 12)
+```
+
+<br>
+
+# Estimate EGA
+
+```{r paso_ega_1,eval=T, echo=T, paged.print=TRUE, eval=T, include=T, error=T}
+#https://towardsdatascience.com/exploratory-graph-analysis-3d4f9c63e92f
+library(devtools)
+#devtools::install_github('hfgolino/EGAnet')
+library(EGAnet)
+#lid_des_eam naq_eam
+#Base_fiscalia_v2$pais encontrado_como_victima gls_tipo_sujeto_vic gls_tipo_imputado gls_region familia_delito relacion_vifsaf gls_parentesco agrupa_terminos sexo edad_comision region_delito
+set.seed(2125)
+ega_data <- EGA(
+               data.matrix(Base_fiscalia_v2[c("pais", "encontrado_como_victima", "gls_tipo_sujeto_vic", "gls_tipo_imputado", "gls_region", "familia_delito", "agrupa_terminos", "sexo", "edad_comision", "region_delito")]), #sacamos el ítem 3
+               uni.method = "LE", #es la última opción que eligió el autor
+               corr = "cor_auto", #elige entre spearman y pearson
+               model = "glasso",
+               algorithm = "walktrap",
+               plot.EGA = TRUE,
+               plot.type = "qgraph"
+               )
+```
+
+We captured 4 clusters. The types we finish each judiciary process (`agrupa_terminos`) are much related to the age when a crime was committed by/against the patient (`edad_comision`) and the sex of the patient (`sex`).
+
+<br>
+
+```{r paso_ega_2,eval=T, echo=T, paged.print=TRUE, eval=T, include=T, error=T}
+boot_data <- bootEGA(
+                    data.matrix(Base_fiscalia_v2[c("pais", "encontrado_como_victima", "gls_tipo_sujeto_vic", "gls_tipo_imputado", "gls_region", "familia_delito", "relacion_vifsaf", "gls_parentesco", "agrupa_terminos", "sexo", "edad_comision", "region_delito")]),
+                    iter= 1000, 
+                    type = "resampling" #no-paramétrico
+                    )
+
+dplyr::bind_rows(cbind(model="DLS",boot_data$summary.table))%>% 
+knitr::kable("html", caption="Tabla. Información sobre las dimensiones en el remuestreo") %>% 
+  kableExtra::kable_classic()
+```
+
+A partir de la tabla anterior, podemos observar que la escala de Liderazgo Destructivo está compuesta por 2 dimensiones. En cambio, el NAQ-R tiene una mediana de 4 (95% IC: 1,64- 6,35).
+
+<br>
+
+```{r paso_ega_3,eval=T, echo=T, paged.print=TRUE, eval=T, include=T, error=T}
+ic.naq <- itemStability(boot_naq)
+ic.dls <- itemStability(boot_dls)
+```
+
+Los ítems menos replicables para el modelo de 4 factores, son el 11, 20, 14, 22 y 17. Por ejemplo, el ítem 11 se replica un 35%.
+
+<br>
+
+# Preliminary Analyses for SER 2022
+
+```{r 1_ser, echo=T, error=T, paged.print=TRUE}
+if(no_mostrar==0){
+load("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/10.RData")
+load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2019 (github)/10.RData")
+
+if(!require(tidyr)){install.packages("tidyr")}
+if(!require(DataExplorer)){install.packages("DataExplorer")}
+if(!require(stringi)){install.packages("stringi")}
+if(!require(stringr)){install.packages("stringr")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if(!require(Hmisc)){install.packages("Hmisc")}
+if(!require(kableExtra)){install.packages("kableExtra")}
+if(!require(plotly)){install.packages("plotly")}
+if(!require(rbokeh)){install.packages("rbokeh")}
+if(!require(altair)){install.packages("altair")}
+if(!require(zoo)){install.packages("zoo")}
+if(!require(codebook)){install.packages("codebook")}
+if(!require(broom)){install.packages("broom")}
+if(!require(sqldf)){install.packages("sqldf")} 
+if(!require(devtools)){install.packages("devtools")}
+if(!require(Statamarkdown)){install_github("hemken/Statamarkdown")}
+if(!require(data.table)){install.packages("data.table")}
+if(!require(boot)){install.packages("boot")}
+if(!require(plyr)){install.packages("plyr")}
+  if(!require(dplyr)){install.packages("dplyr")}
+if(!require(matrixStats)){install.packages("matrixStats")}
+  if(!require(janitor)){install.packages("janitor")}
+if(!require(explore)){devtools::install_github("rolkra/explore",upgrade ="never")}
+}
+#We described the cumulative incidence rate of readmission and its variation by treatment outcome (i.e., early and late withdrawal from treatment vs. therapeutic discharge) and main substance of abuse at admission. Early withdraw was defined as withdraw within the first 90 days of treatment.
+
+#There were 111,526 admissions from 81,923 people during 2010 and 2019. Seventy five percent were male and the average age at admission was 35. The main substance at admission was cocaine paste base (43.6%), followed by alcohol (30.5%), snort cocaine (18.3%), and marihuana (5.8%%). Among those with discharge information (N=103,723), the 22.6% had a therapeutic discharge, 34.1% had early withdraw, 16.9% had late withdraw, and 9.1% were expelled. The incidence rate of treatment readmission was 197 per 1,000 patients-year and the average time outside treatment (among readmitted patients) was 2.3 years. Compared with those with therapeutic discharge, the incidence rate ratio (IRR) for people with early and late withdraw was 2.85 (95%CI: 2.69, 3.01) and 1.72 (95%CI: 1.64, 1.80), respectively. Compared with those using alcohol as main substance at admission, the IRR for snort cocaine was 1.28 (IC95%: 1.22, 1.34) and for cocaine paste base was 1.53 (95%CI: 1.47, 1.58); no difference was observed for those using marijuana (IRR=1.03; 95%CI: 0.96, 1.10).
+
+#Conclusions. Readmissions to SUD treatment were high, particularly among early withdrawers and those using cocaine paste at admission. Individual risk assessment at admission seems to be a crucial component of treatment to prevent early withdrawal and subsequent problems, such treatment readmission.
+invisible("Una de las limitaciones del estudio preliminar es que tiene todos los RUT, incluso los 370 y algo que no calzan con la base de datos actual, y algunas entradas que debieron ser anuladas por error de digitación. Lo anterior, para tener en cuenta")
+
+paste0("Drug treatment patients: ", length(unique(CONS_C1_df_dup_SEP_2020$hash_key)))
+
+paste0("Treatment episodes: ",length(CONS_C1_df_dup_SEP_2020$hash_key))
+
+paste0("Drug treatment patients: ", length(unique(CONS_C1_df_dup_SEP_2020$hash_key)))
+
+print("percentages")
+round(prop.table(table(ifelse(grepl("PR",CONS_C1_df_dup_SEP_2020$tipo_de_plan_2),"Residential","Ambulatory"))),3)*100
+
+paste0("Mean length per treatment: ", round(mean(CONS_C1_df_dup_SEP_2020$dias_treat_imp_sin_na),1), " days")
+
+round(prop.table(table(ifelse(grepl("Therapeutic",CONS_C1_df_dup_SEP_2020$motivodeegreso_mod_imp),"Therapeutic","Else"))),3)*100
+
+paste0("Entries of imputed relationships (crime, accused, victim and RUC): ",
+       Base_fiscalia_v2 %>% 
+         dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+         dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+  dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                 encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                 T~"VICTIMA")) %>% 
+      dplyr::filter(accused=="IMPUTADO") %>% nrow() %>%  format(big.mark=","))
+
+
+paste0("Criminal processes (RUCs) that had an imputed in which a SENDAs patient participated as an accused: ",
+       Base_fiscalia_v2 %>% 
+         dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+         dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+         dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                                  T~"VICTIMA")) %>% 
+         dplyr::filter(accused=="IMPUTADO") %>%
+         #slice(1:500) %>% 
+         dplyr::distinct(ruc) %>% 
+         nrow() %>% format(big.mark=","))
+#324,858 casos distintos
+
+invisible("son como 326299/63537=5.15 por rut")
+
+paste0("Percentage of patients involved in criminal process (RUCs) as accused: ",
+       scales::percent(
+         Base_fiscalia_v2 %>% 
+          dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+          dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+          dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                                  T~"VICTIMA")) %>% 
+         dplyr::filter(accused=="IMPUTADO") %>% 
+         dplyr::distinct(rut_enc_saf) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key))
+       )
+)
+#63158 envueltos
+
+cat("Grouped distinct combinations of  RUTs, RUCs (criminal processes) & type of crime (gls_materia) that they were charged")
+
+paste0("[CALCULATED WRONGLY]Percentage of patients involved in criminal processes (RUCs) as accused that were charged for violent crimes: ",
+         Base_fiscalia_v2 %>% 
+         dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+        dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+         dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                                  T~"VICTIMA")) %>% 
+         dplyr::filter(accused=="IMPUTADO") %>% 
+        # dplyr::slice(1:1000) %>% 
+         dplyr::distinct(rut_enc_saf, ruc, gls_materia, .keep_all = T) %>% 
+         dplyr::mutate(familia_delito_rec=dplyr::case_when(grepl("LESA HUMANIDAD",familia_delito)~"VIOLENT CRIME",
+                                                           grepl("SEXUALES",familia_delito)~"VIOLENT CRIME",
+                                                           grepl("ROBOS$",familia_delito)~"VIOLENT CRIME",
+                                                           grepl("LESIONES$",familia_delito)~"VIOLENT CRIME",
+                                                           grepl("HOMICIDIOS$",familia_delito)~"VIOLENT CRIME",
+                                                           grepl("DROGAS$",familia_delito)~"DRUG-RELATED CRIME",
+                                                           grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
+                                                           grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
+                                                           grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
+                                                           T~"OTHER CHARGES")) %>% 
+         #janitor::tabyl(familia_delito,familia_delito_rec)
+         janitor::tabyl(familia_delito_rec) %>% 
+         dplyr::filter(familia_delito_rec=="VIOLENT CRIME") %>% 
+         dplyr::mutate(percent=round(percent*100,1)) %>% 
+         dplyr::select(percent) %>% 
+         as.numeric(),"%"
+)
+#El problema es que este porcentaje no está hecho de personas, sino de casos distintos. Para hacerlo por personas debo reagrupar por persona y contar si ha tenido delito de algun tipo.
+
+paste0("[CALCULATED WRONGLY]Percentage of patients involved in criminal processes as accused that were charged for drug-related crimes: ",
+         Base_fiscalia_v2 %>% 
+         dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+        dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+         dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                                  T~"VICTIMA")) %>% 
+         dplyr::filter(accused=="IMPUTADO") %>% 
+        # dplyr::slice(1:1000) %>% 
+         dplyr::distinct(rut_enc_saf, ruc, gls_materia, .keep_all = T) %>% 
+         dplyr::mutate(familia_delito_rec=dplyr::case_when(grepl("LESA HUMANIDAD",familia_delito)~"VIOLENT CRIME",
+                                                           grepl("SEXUALES",familia_delito)~"VIOLENT CRIME",
+                                                           grepl("ROBOS$",familia_delito)~"VIOLENT CRIME",
+                                                           grepl("LESIONES$",familia_delito)~"VIOLENT CRIME",
+                                                           grepl("HOMICIDIOS$",familia_delito)~"VIOLENT CRIME",
+                                                           grepl("DROGAS$",familia_delito)~"DRUG-RELATED CRIME",
+                                                           grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
+                                                           grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
+                                                           grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
+                                                           T~"OTHER CHARGES")) %>% 
+         #janitor::tabyl(familia_delito,familia_delito_rec)
+         janitor::tabyl(familia_delito_rec) %>% 
+         dplyr::filter(familia_delito_rec=="DRUG-RELATED CRIME") %>% 
+         dplyr::mutate(percent=round(percent*100,1)) %>% 
+         dplyr::select(percent) %>% 
+         as.numeric(),"%"
+)         
+#E:\Mi unidad\Alvacast\SISTRAT 2019 (github)\SER 2022 analyses.xlsx         
+  
+paste0("[CALCULATED WRONGLY] Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration: ",
+         100-Base_fiscalia_v2 %>% 
+         dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+        dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+         dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                                  T~"VICTIMA")) %>% 
+         dplyr::filter(accused=="IMPUTADO") %>%   
+          dplyr::distinct(rut_enc_saf, ruc, gls_materia, .keep_all = T) %>% 
+         #https://www.youtube.com/watch?v=wvb9WXMKQ1g
+         janitor::tabyl(clasificacion_pena_47) %>% #clasificacion_pena_55)
+      #  dplyr::filter(gls_mottermino=="Sentencia definitiva condenatoria") %>% 
+       #  gls_proctermino 
+        data.frame() %>% 
+        dplyr::mutate(percent=round(percent*100,1)) %>% 
+        dplyr::filter(is.na(clasificacion_pena_47)) %>% 
+        dplyr::select(percent) %>% 
+        as.numeric(),
+      "%")
+
+print("They were CALCULATED WRONGLY because the frequencies and percentages were not done by the percentage of patients, but by the percentage of combinations of different crimes, criminal process and patients")
+```
+
+```{r 2_ser, echo=T, error=T, paged.print=TRUE}
+cat("Generate a database with the count of charges by user")          
+          
+charges_by_patients<-
+Base_fiscalia_v2 %>% 
+      dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+      dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+      #563810
+      dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                             encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                             T~"VICTIMA")) %>% 
+      dplyr::filter(accused=="IMPUTADO") %>% 
+      # dplyr::slice(1:1000) %>% 
+      dplyr::distinct(rut_enc_saf, ruc, gls_materia, .keep_all = T) %>% 
+      dplyr::mutate(familia_delito_rec=dplyr::case_when(grepl("LESA HUMANIDAD",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("SEXUALES",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("ROBOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("LESIONES$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("HOMICIDIOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("DROGAS$",familia_delito)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
+                                                        T~"OTHER CHARGES")) %>% 
+      dplyr::group_by(rut_enc_saf,familia_delito_rec) %>% 
+      dplyr::count() %>% 
+      tidyr::pivot_wider(names_from= familia_delito_rec, values_from= n, values_fill= 0) %>% 
+      janitor::clean_names() %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(tot_charges=base::rowSums(dplyr::select(., 2:4)))
+
+  #Un ejemplo
+Base_fiscalia_v2 %>% 
+    dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+    dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+    #563810
+    dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                           encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                           T~"VICTIMA")) %>% 
+    dplyr::filter(accused=="IMPUTADO") %>% 
+    # dplyr::slice(1:1000) %>% 
+    dplyr::distinct(rut_enc_saf, ruc, gls_materia, .keep_all = T) %>% 
+    dplyr::mutate(familia_delito_rec=dplyr::case_when(grepl("LESA HUMANIDAD",familia_delito)~"VIOLENT CRIME",
+                                                      grepl("SEXUALES",familia_delito)~"VIOLENT CRIME",
+                                                      grepl("ROBOS$",familia_delito)~"VIOLENT CRIME",
+                                                      grepl("LESIONES$",familia_delito)~"VIOLENT CRIME",
+                                                      grepl("HOMICIDIOS$",familia_delito)~"VIOLENT CRIME",
+                                                      grepl("DROGAS$",familia_delito)~"DRUG-RELATED CRIME",
+                                                      grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
+                                                      grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
+                                                      grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
+                                                      T~"OTHER CHARGES")) %>% 
+    dplyr::filter(rut_enc_saf=="002c979e254773f17812d9bff13996dc") %>% 
+    dplyr::select(rut_enc_saf, ruc, familia_delito_rec, gls_materia) %>% 
+knitr::kable(format="html",caption="Table 8. An example of distinct combination of charges by different criminal processes") %>% 
+  kableExtra::kable_classic(font_size = 11) %>% 
+  kableExtra::scroll_box(width = "100%", height = "350px")
+```
+
+```{r 3_ser, echo=T, error=T, paged.print=TRUE}
+cases_by_patients<-
+Base_fiscalia_v2 %>% 
+      dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+      dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+      #563810
+      dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                             encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                             T~"VICTIMA")) %>% 
+      dplyr::filter(accused=="IMPUTADO") %>% 
+      # dplyr::slice(1:1000) %>% 
+      dplyr::distinct(rut_enc_saf, ruc, gls_materia, .keep_all = T) %>% 
+      dplyr::mutate(familia_delito_rec=dplyr::case_when(grepl("LESA HUMANIDAD",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("SEXUALES",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("ROBOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("LESIONES$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("HOMICIDIOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("DROGAS$",familia_delito)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
+                                                        T~"OTHER CHARGES")) %>% 
+      dplyr::group_by(rut_enc_saf,ruc) %>% 
+      dplyr::count() 
+
+paste0("Patients involved in criminal processes (RUCs) as accused were charged with an average of ",
+       round(mean(charges_by_patients$tot_charges),1)," charged with an average of ", round(mean(cases_by_patients$n),1), " RUCs")
+
+paste0("[CORRECTED]Percentage of patients involved in criminal processes (RUCs) as accused that have been charged for violent crimes: ",
+       charges_by_patients %>% 
+         dplyr::mutate(violent_crime_bin=ifelse(violent_crime>0,1,0)) %>% 
+         janitor::tabyl(violent_crime_bin) %>% 
+       data.frame() %>% 
+        dplyr::filter(violent_crime_bin==1) %>% 
+        dplyr::mutate(percent=round(percent*100,1)) %>% 
+        dplyr::select(percent) %>% 
+         as.numeric(),"%")
+
+paste0("[CORRECTED]Percentage of patients involved in criminal processes as accused that have been charged for drug-related crimes: ",
+       charges_by_patients %>% 
+         dplyr::mutate(drug_related_crime_bin=ifelse(drug_related_crime>0,1,0)) %>% 
+         janitor::tabyl(drug_related_crime_bin) %>% 
+       data.frame() %>% 
+        dplyr::filter(drug_related_crime_bin==1) %>% 
+        dplyr::mutate(percent=round(percent*100,1)) %>% 
+        dplyr::select(percent) %>% 
+         as.numeric(),"%")       
+       
+paste0("[CORRECTED]Percentage of patients involved in criminal processes as accused that have been charged for other crimes: ",
+              charges_by_patients %>% 
+         dplyr::mutate(other_charges_bin=ifelse(other_charges>0,1,0)) %>% 
+         janitor::tabyl(other_charges_bin) %>% 
+       data.frame() %>% 
+        dplyr::filter(other_charges_bin==1) %>% 
+        dplyr::mutate(percent=round(percent*100,1)) %>% 
+        dplyr::select(percent) %>% 
+         as.numeric(),"%")       
+
+charges_by_patients_perc_pena<-
+Base_fiscalia_v2 %>% 
+      dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+      dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+      #563810
+      dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                             encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                             T~"VICTIMA")) %>% 
+      dplyr::filter(accused=="IMPUTADO") %>% 
+      #The only difference that had with the other count
+      dplyr::filter(!is.na(clasificacion_pena_47)) %>% 
+      # dplyr::slice(1:1000) %>% 
+      dplyr::distinct(rut_enc_saf, ruc, gls_materia, .keep_all = T) %>% 
+      dplyr::mutate(familia_delito_rec=dplyr::case_when(grepl("LESA HUMANIDAD",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("SEXUALES",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("ROBOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("LESIONES$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("HOMICIDIOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("DROGAS$",familia_delito)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
+                                                        T~"OTHER CHARGES")) %>% 
+      dplyr::group_by(rut_enc_saf,familia_delito_rec) %>% 
+      dplyr::count() %>% 
+      tidyr::pivot_wider(names_from= familia_delito_rec, values_from= n, values_fill= 0) %>% 
+      janitor::clean_names() %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(tot_charges=base::rowSums(dplyr::select(., 2:4)))
+
+hist(charges_by_patients$tot_charges, breaks=100, xlim=c(0,50), main="N of different Charges in RUCs", xlab=NULL)
+mtext("Limited to the first 50 combinations of patients, criminal processes & crimes")
+```
+
+<br>
+
+Only a `r scales::percent(janitor::tabyl(ifelse(charges_by_patients$tot_charges>=10,"Ten or more",charges_by_patients$tot_charges))[3][[1]][1])` had only one charge throughout Prosecutor's office records.
+
+<br>
+
+```{r 3_5_ser, echo=T, error=T, paged.print=TRUE, eval=T}
+
+paste0("[CORRECTED] Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration: ",
+       scales::percent(nrow(charges_by_patients_perc_pena)/nrow(charges_by_patients), accuracy=0.1),
+       "")
+scales::percent(
+charges_by_patients_perc_pena %>% 
+    dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>% 
+  janitor::tabyl(motivodeegreso_mod_imp)%>% 
+  dplyr::filter(motivodeegreso_mod_imp=="Therapeutic discharge") %>% 
+  dplyr::select(n) %>% 
+  as.numeric()/
+charges_by_patients %>% 
+    dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>% 
+  janitor::tabyl(motivodeegreso_mod_imp)%>% 
+  dplyr::filter(motivodeegreso_mod_imp=="Therapeutic discharge") %>% 
+  dplyr::select(n) %>% 
+  as.numeric() 
+)
+
+paste0("Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration of those who Completed their first treatment (percentage discarded ongoing treatments): ",
+scales::percent(
+charges_by_patients_perc_pena %>% 
+    dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>% 
+  dplyr::mutate(motivodeegreso_mod_imp_rec=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)) %>% 
+  dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  janitor::tabyl(motivodeegreso_mod_imp_rec)%>% 
+  dplyr::filter(motivodeegreso_mod_imp_rec==1) %>% 
+  dplyr::select(n) %>% 
+  as.numeric()/
+charges_by_patients %>% 
+    dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>% 
+  dplyr::mutate(motivodeegreso_mod_imp_rec=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)) %>% 
+  dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  janitor::tabyl(motivodeegreso_mod_imp_rec)%>% 
+  dplyr::filter(motivodeegreso_mod_imp_rec==1) %>%  
+  dplyr::select(n) %>% 
+  as.numeric() 
+))
+
+
+paste0("Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration of those who did not Complete their first treatment (percentage discarded ongoing treatments): ",
+scales::percent(
+charges_by_patients_perc_pena %>% 
+    dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>% 
+  dplyr::mutate(motivodeegreso_mod_imp_rec=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)) %>% 
+  dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  janitor::tabyl(motivodeegreso_mod_imp_rec)%>% 
+  dplyr::filter(motivodeegreso_mod_imp_rec==0) %>% 
+  dplyr::select(n) %>% 
+  as.numeric()/
+charges_by_patients %>% 
+    dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>% 
+  dplyr::mutate(motivodeegreso_mod_imp_rec=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)) %>% 
+  dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  janitor::tabyl(motivodeegreso_mod_imp_rec)%>% 
+  dplyr::filter(motivodeegreso_mod_imp_rec==0) %>% 
+  dplyr::select(n) %>% 
+  as.numeric() 
+))
+```
+
+```{r 3_5_ser_wrong, echo=T, error=T, paged.print=TRUE, eval=T}
+
+paste0("[CORRECTED] Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration: ",
+       scales::percent(nrow(charges_by_patients_perc_pena)/nrow(charges_by_patients), accuracy=0.1),
+       "")
+
+
+invisible("Diferencia cargos criminales")
+paste0("On average, people that completed their first treatment had a difference of XX in criminal charges (discarding Ongoing treatments)")
+t.test(tot_charges~factor(tr_comp),
+charges_by_patients %>% 
+  dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
+  #janitor::tabyl(motivodeegreso_mod_imp) %>% 
+  dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  dplyr::mutate(tr_comp=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)))
+round(6.011362-4.215663,2) #1.8
+
+paste0("On average, people that completed their first treatment had a difference of XX in criminal charges [w/ ongoing treatments as non-completion]")
+t.test(tot_charges~factor(tr_comp),
+charges_by_patients %>% 
+  dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
+  #janitor::tabyl(motivodeegreso_mod_imp) %>% 
+  #dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  dplyr::mutate(tr_comp=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)))
+round(5.877325-4.215663,2) #1.66
+
+
+invisible("Diferencia cargos criminales violentos")
+paste0("On average, people that completed their first treatment had a difference of XX in violent criminal charges (discarding Ongoing treatments)")
+t.test(violent_crime~factor(tr_comp),
+charges_by_patients %>% 
+  dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
+  #janitor::tabyl(motivodeegreso_mod_imp) %>% 
+  dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  dplyr::mutate(tr_comp=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)))
+round(1.1451374-0.8469231,2) #0.3
+
+paste0("On average, people that completed their first treatment had a difference of XX in violent criminal charges [w/ ongoing treatments as non-completion]")
+t.test(violent_crime~factor(tr_comp),
+charges_by_patients %>% 
+  dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
+  #janitor::tabyl(motivodeegreso_mod_imp) %>% 
+  #dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  dplyr::mutate(tr_comp=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)))
+round(1.1284284-0.8469231,2) #0.28
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+invisible("% cargos criminales con condena")
+paste0("incarceration resulted in X% of the times vs. X%, respectively")
+t.test(tot_charges~factor(tr_comp),
+charges_by_patients_perc_pena%>% 
+  dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
+  #janitor::tabyl(motivodeegreso_mod_imp) %>% 
+  dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  dplyr::mutate(tr_comp=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)))
+
+paste0("Not completed treatment: ", scales::percent(2.505486/6.011362))
+paste0("Completed treatment: ", scales::percent(2.095522/4.215663))
+
+t.test(tot_charges~factor(tr_comp),
+charges_by_patients_perc_pena%>% 
+  dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
+  #janitor::tabyl(motivodeegreso_mod_imp) %>% 
+  #dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  dplyr::mutate(tr_comp=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)))
+print("w/ ongoing treatments")
+paste0("Not completed treatment: ", scales::percent(2.476806/5.877325))
+paste0("Completed treatment: ", scales::percent(2.095522/4.215663))
+
+invisible("% cargos criminales violentos con condena")
+t.test(violent_crime~factor(tr_comp),
+charges_by_patients_perc_pena%>% 
+  dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
+  #janitor::tabyl(motivodeegreso_mod_imp) %>% 
+  dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  dplyr::mutate(tr_comp=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)))
+# mean in group 0 mean in group 1 
+#        2.476806        2.095522 
+paste0("Not completed treatment: ", scales::percent(0.3563281/1.1451374))
+paste0("Completed treatment: ", scales::percent(0.2743555 /0.8469231))
+
+
+t.test(violent_crime~factor(tr_comp),
+charges_by_patients_perc_pena%>% 
+  dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
+  #janitor::tabyl(motivodeegreso_mod_imp) %>% 
+  #dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
+  dplyr::mutate(tr_comp=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)))
+print("w/ ongoing treatments")
+paste0("Not completed treatment: ", scales::percent(0.3544252/1.1284284))
+paste0("Completed treatment: ", scales::percent(0.2743555 /0.8469231))
+
+#round(6.011362-4.215663,2) #1.8 && round(5.877325-4.215663,2) #1.66 && round(1.1451374-0.8469231,2) #0.3 && round(1.1284284-0.8469231,2) #0.28
+
+#_#_#_#_#_#_#_#_#_#_#_
+
+# charges_by_patients %>% 
+#     dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) 
+```
+
+```{r 4_ser_descartado_por_mientras, echo=T, error=T, paged.print=TRUE, eval=F}
+#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_
+
+#casos con +1 relación --> si siempre hay sólo una sentencia o una pena, para ver si tiene sentido agrupar hasta casi relación o si no sólo por RUC
+
+charges_by_patients2<-
+Base_fiscalia_v2 %>% 
+      dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+      dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+      #563810
+      dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO", encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO", T~"VICTIMA")) %>% 
+      dplyr::filter(accused=="IMPUTADO") %>% 
+       #dplyr::slice(1:10000) %>% 
+      dplyr::distinct(rut_enc_saf, ruc, gls_materia, .keep_all = T) %>% 
+      dplyr::mutate(familia_delito_rec=dplyr::case_when(grepl("LESA HUMANIDAD",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("SEXUALES",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("ROBOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("LESIONES$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("HOMICIDIOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("DROGAS$",familia_delito)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
+                                                        T~"OTHER CHARGES")) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::group_by(rut_enc_saf, ruc) %>% 
+  dplyr::summarise(n_dis_pena= dplyr::n_distinct(clasificacion_pena_47)) %>% 
+  dplyr::summarise(n_dis_pena= dplyr::n_distinct(clasificacion_pena_47))
+
+if(no_mostrar==0){
+charges_by_patients2 %>% 
+    dplyr::filter(n_dis_pena>1)
+  #0132d51e61c2c776cb2474011e232c87 0900581579-4
+  #1f3eba4d3bce03d07b1b8e3d6f8179a0 0910018335-5
+  
+#Ejemplos
+  Base_fiscalia_v2 %>% 
+      dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+      dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+      #563810
+      dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO", encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO", T~"VICTIMA")) %>% 
+      dplyr::filter(accused=="IMPUTADO") %>% 
+       #dplyr::slice(1:10000) %>% 
+      dplyr::distinct(rut_enc_saf, ruc, gls_materia, .keep_all = T) %>% 
+      dplyr::mutate(familia_delito_rec=dplyr::case_when(grepl("LESA HUMANIDAD",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("SEXUALES",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("ROBOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("LESIONES$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("HOMICIDIOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("DROGAS$",familia_delito)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
+                                                        T~"OTHER CHARGES")) %>% 
+  dplyr::filter(rut_enc_saf=="1f3eba4d3bce03d07b1b8e3d6f8179a0", ruc=="0910018335-5") %>% View()
+  
+invisible(paste0("De 330,097 casos, sólo 3,618 obtuvieron más de 1 pena distinta (1,09%)"))
+}
+
+#_#_#_#_#_#_#_#_#_
+if(no_mostrar==0){
+ Base_fiscalia_v2 %>% 
+      dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
+      dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
+      #563810
+      dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO", encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO", T~"VICTIMA")) %>% 
+      dplyr::filter(accused=="IMPUTADO") %>% 
+      #dplyr::slice(1:10000) %>% 
+      dplyr::distinct(rut_enc_saf, ruc, gls_materia, .keep_all = T) %>% 
+      dplyr::mutate(familia_delito_rec=dplyr::case_when(grepl("LESA HUMANIDAD",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("SEXUALES",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("ROBOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("LESIONES$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("HOMICIDIOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("DROGAS$",familia_delito)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
+                                                        T~"OTHER CHARGES")) %>% 
+  dplyr::distinct(rut_enc_saf, ruc, gls_materia, .keep_all = T) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::group_by(rut_enc_saf, ruc) %>% 
+  dplyr::mutate(n_dis_pena= dplyr::n_distinct(clasificacion_pena_47)) %>% 
+   dplyr::ungroup() %>% 
+  dplyr::filter(dplyr::case_when(n_dis_pena>1 & gls_mottermino!="Sentencia definitiva condenatoria"~F,
+                   T ~ T)) %>% 
+   dplyr::select(rut_enc_saf, ruc, gls_materia, n_dis_pena, gls_mottermino, fec_cbiorelacion) %>% 
+   dplyr::group_by(rut_enc_saf, ruc) %>%
+   dplyr::add_count(name="n_cases") %>% 
+   dplyr::ungroup() %>%
+   dplyr::filter(n_cases>1) %>% View()
+invisible("Casos con el mismo RUT y RUC, pero con distinto motivo de término en el mismo caso, incluso habiendo echo el filtro")
+}
+ 
+ #350,660 
+ 
+ 
+#_#_#_#_#_#_#_#_#_
+
+      # dplyr::add_count(name="n_") %>% 
+      # tidyr::pivot_wider(names_from= familia_delito_rec, values_from= n, values_fill= 0) %>% 
+      # janitor::clean_names() %>%
+      # dplyr::ungroup() %>%
+      # dplyr::mutate(tot_charges=base::rowSums(dplyr::select(., 2:4)))
+```
+
+<br>
+
+<!-- Base_fiscalia_v2[,c("encontrado_como_victima","sexo", "gls_tipo_sujeto_vic", "tipo_termino", "familia_delito", "gls_proctermino")] %>% explain_tree(target = tipo_termino) -->
+
+# Codebook
+
+```{r codebook, echo=T, error=T, paged.print=TRUE}
+knitr::opts_chunk$set(
+  warning = TRUE, # show warnings during codebook generation
+  message = TRUE, # show messages during codebook generation
+  error = TRUE, # do not interrupt codebook generation in case of errors,
+                # usually better for debugging
+  echo = TRUE  # show R code
+)
+ggplot2::theme_set(ggplot2::theme_bw())
+pander::panderOptions("table.split.table", Inf)
+
+if(!require(codebook)){install.packages("codebook")}
+if(!require(future)){install.packages("future")}
+if(!require(dplyr)){install.packages("dplyr")}
+```
+
+```{r prepare_codebook, include=T, echo=T, paged.print=T}
+
+codebook_data <- dplyr::select(Base_fiscalia_v2, -c("rut_enc_saf","ruc","idrelacion","cod_delito","cod_lugarocurrencia","cod_parentescoimputado","cod_mottermino","cod_motsuspension","cod_proctermino","idsujeto_imputado","impcod_tiposujeto","cod_lugarocurrencia","cod_sitiosuceso","cod_comunadelito","cod_region", "iddelito"))
+
+muestra=0
+if(muestra==1){
+# omit the following lines, if your missing values are already properly labelled
+codebook_data <- detect_missing(codebook_data,
+    only_labelled = TRUE, # only labelled values are autodetected as
+                                   # missing
+    negative_values_are_missing = FALSE, # negative values are missing values
+    ninety_nine_problems = FALSE,   # 99/999 are missing values, if they
+                                   # are more than 5 MAD from the median
+    )
+}
+# If you are not using formr, the codebook package needs to guess which items
+# form a scale. The following line finds item aggregates with names like this:
+# scale = scale_1 + scale_2R + scale_3R
+# identifying these aggregates allows the codebook function to
+# automatically compute reliabilities.
+# However, it will not reverse items automatically.
+#codebook_data <- detect_scales(codebook_data)
+```
+
+<br>
+
+In the following Tables and graphics, there is a summary of the variables and documentation of their characteristics. This high-level summary may permit us find errors on coding, help us to understand missingness and guide us towards an objective, or lead us to more questions. If a variable contains the symbol `(*)`, it means that this variable has a concatenation of values among continuous entries in treatments.
+
+<br>
+
+```{r codebook_display, echo=T, paged.print=T}
+  metadata(codebook_data)$name <- "Prosecutor Support System (SAF), database of the Public Prosecutor's Office."
+  metadata(codebook_data)$description <- "The information was extracted and processed from the Prosecutor Support System (SAF) database in accordance with the criteria established in the methodological document 'Criteria for Extracting Information from the SAF - 11_04_2018', prepared and updated in 2018 by the Studies, Evaluation, Control and Management Development Division. Data obtained at 2021-08-13; Period= 2010 to 2019; Unit of measurement= Relationships; Offenses considered= All; Date to consider= Date of termination of the case; National Coverage; Detail or summary= Detail; In the search for victims, only direct victims were considered; The RUTs indicated are searched only in cases terminated or suspended in the period 2010 - 2019;
+The following types of accused are considered: COMPLAINED, ACCUSED, QUERELLED, WITNESS, SUSPECTED AND INVESTIGATED"
+
+codebook(codebook_data)
+```
+
+<br>
+
+# Session Info
+
+```{r session_info, echo=T, error=T, paged.print=TRUE}
+Sys.getenv("R_LIBS_USER")
+
+if (grepl("CISS Fondecyt",path_dir)==T){
+    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2019 (github)/10.RData")
+  } else if (grepl("andre",path_dir)==T){
+    save.image("C:/Users/andre/Desktop/SUD_CL/10.RData")
+  } else if (grepl("E:",path_dir)==T){
+    save.image("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/10.RData")
+  } else {
+    save.image(paste0(sub("SUD_CL","",path_dir),"10.RData"))
+  }
+```
+
+```{r}
+sessionInfo()
+
+sesion_info <- devtools::session_info()
+dplyr::select(
+  tibble::as_tibble(sesion_info$packages),
+  c(package, loadedversion, source)
+) %>% 
+  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Variable' = 2, 'Percentage'= 3),
+              caption = htmltools::tags$caption(
+        style = 'caption-side: top; text-align: left;',
+        '', htmltools::em('Paquetes estadísticos utilizados')),
+      options=list(
+initComplete = htmlwidgets::JS(
+      "function(settings, json) {",
+      "$(this.api().tables().body()).css({'font-size': '80%'});",
+      "}")))
+```
+
+# Exportar
+
+```{r export, warning=FALSE, echo=T}
+if(no_mostrar==0){
+  codebook::var_label(surveymonkey_accionsalududp_df2_cor_sel_2) <-
+  var_labels_df%>% 
+    codebook::dict_to_list()
+    
+  attr(surveymonkey_accionsalududp_df2_cor_sel_2$rn,"label")<-'Número de Fila'  
+    
+  for (i in 1:length(surveymonkey_accionsalududp_df2_cor_table)){
+      x<-names(surveymonkey_accionsalududp_df2_cor_table)[i]
+      attr(surveymonkey_accionsalududp_df2_cor_sel_2[[x]],"label")<- attr(surveymonkey_accionsalududp_df2_cor_table[[x]],"label")
+  
+  var_labels_df<-data.frame()
+  for (i in 1:length(surveymonkey_accionsalududp_df2_cor_sel_2)){
+    x<-names(surveymonkey_accionsalududp_df2_cor_sel_2)[i]
+  var_labels_df<-rbind.data.frame(var_labels_df, cbind(x, attr(surveymonkey_accionsalududp_df2_cor_sel_2[[x]],"label")))
+    }
+  }
+}
+
+  base_fiscalia %>% 
+  dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                 encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                 T~"VICTIMA")) %>% 
+  dplyr::filter(accused=="VICTIMA") %>% 
+    rio::export(file = gsub("SUD_CL","fiscalia_mariel_ago_2021.dta",path_dir))
+```

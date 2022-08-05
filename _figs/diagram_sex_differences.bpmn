@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1msn6hl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="9.0.2">
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1msn6hl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="9.3.1">
   <bpmn:process id="Process_03gj6v6" isExecutable="false">
-    <bpmn:task id="Activity_0vd1rhm" name="Paired SENDA patients w/ P.O. data&#10;(n=74,786;&#10;100%; 88%)">
+    <bpmn:task id="Activity_0vd1rhm" name="Paired SENDA patients w/ P.O. data (v5, after cleaning)&#10;(n=74,745;&#10;100%; 88%)">
       <bpmn:outgoing>Flow_1ryu67q</bpmn:outgoing>
     </bpmn:task>
     <bpmn:exclusiveGateway id="Gateway_1culghf" name="Discrepancies w/ P.O. data">
@@ -10,12 +10,12 @@
       <bpmn:outgoing>Flow_0igesrk</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1ryu67q" sourceRef="Activity_0vd1rhm" targetRef="Gateway_1culghf" />
-    <bpmn:task id="Activity_1lbnufl" name="Keep one sex&#10;(n= 1,324;&#10;2%; 2%)">
+    <bpmn:task id="Activity_1lbnufl" name="Keep one sex&#10;(p= 1,274;&#10;n= 25,961)">
       <bpmn:incoming>Flow_0v4zfr4</bpmn:incoming>
       <bpmn:outgoing>Flow_0w2v8sq</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0v4zfr4" name="Yes (22_2_a)" sourceRef="Gateway_1culghf" targetRef="Activity_1lbnufl" />
-    <bpmn:task id="Activity_0lqxlrt" name="No changes needed&#10;(n= 73,462;&#10;98%; 86%)">
+    <bpmn:task id="Activity_0lqxlrt" name="No changes needed&#10;(p= 73,471;&#10;n= 556,089)">
       <bpmn:incoming>Flow_0igesrk</bpmn:incoming>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0igesrk" name="No (22_2_b)" sourceRef="Gateway_1culghf" targetRef="Activity_0lqxlrt" />
@@ -28,8 +28,8 @@
     <bpmn:exclusiveGateway id="Gateway_0iwxg3u">
       <bpmn:incoming>Flow_14hmbaw</bpmn:incoming>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_14hmbaw" name="Yes [22_2_a1]&#10;(n= 1,233; 2%; 1%)" sourceRef="Gateway_0xi4bhy" targetRef="Gateway_0iwxg3u" />
-    <bpmn:sequenceFlow id="Flow_03sqz94" name="No [22_2_a2] (n=91)" sourceRef="Gateway_0xi4bhy" targetRef="Gateway_13l2c5g" />
+    <bpmn:sequenceFlow id="Flow_14hmbaw" name="No [22_2_a1]&#10;(n= 21,066; p=1,183)" sourceRef="Gateway_0xi4bhy" targetRef="Gateway_0iwxg3u" />
+    <bpmn:sequenceFlow id="Flow_03sqz94" name="Yes [22_2_a2] (n=4,895; p=91)" sourceRef="Gateway_0xi4bhy" targetRef="Gateway_13l2c5g" />
     <bpmn:exclusiveGateway id="Gateway_13l2c5g">
       <bpmn:incoming>Flow_03sqz94</bpmn:incoming>
     </bpmn:exclusiveGateway>
@@ -45,7 +45,7 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_03gj6v6">
       <bpmndi:BPMNShape id="TextAnnotation_1kds7zs_di" bpmnElement="TextAnnotation_1kds7zs">
-        <dc:Bounds x="220" y="630" width="660" height="98" />
+        <dc:Bounds x="200" y="650" width="660" height="98" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_03sqz94_di" bpmnElement="Flow_03sqz94">
@@ -53,7 +53,7 @@
         <di:waypoint x="630" y="510" />
         <di:waypoint x="815" y="510" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="685" y="498" width="66" height="27" />
+          <dc:Bounds x="679" y="498" width="79" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_14hmbaw_di" bpmnElement="Flow_14hmbaw">
@@ -61,7 +61,7 @@
         <di:waypoint x="630" y="110" />
         <di:waypoint x="815" y="110" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="682" y="98" width="74" height="40" />
+          <dc:Bounds x="686" y="98" width="67" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0w2v8sq_di" bpmnElement="Flow_0w2v8sq">

@@ -781,7 +781,7 @@ flow_fech_nac_fisc_vs_senda %>%
 ```
 
 
-```{r bpmn, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, results="hide"}
+```{r bpmn, echo=T, cache= T, paged.print=TRUE, dev.args = list(bg = 'white'), eval=T, error=T, results="hide"}
 paste0("Paired SENDA patients with POs\n(22_1)\n(p= ", format(length(unique(Base_fiscalia_v3$rut_enc_saf)),big.mark=","),";n= ", format(nrow(Base_fiscalia_v3),big.mark=","),"; ",scales::percent(length(unique(Base_fiscalia_v3$rut_enc_saf))/length(unique(CONS_C1_df_dup_SEP_2020$hash_key))),")")
 
 paste0("Paired w/ discrepancies \n(22_1_a)\n(p= ",format(nrow(fech_nac_fisc_vs_senda2),big.mark=","),";\n",
@@ -902,8 +902,7 @@ paste0("(22_1_a2b_b_1)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_2
 paste0("(22_1_a2b_b_2)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)>2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)>2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)>2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
 ```
 
-
-```{r bpmn2, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center"}
+```{r bpmn2, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center", dev.args = list(bg = 'white')}
 #Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ
 #Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ++++++
 knitr::include_graphics(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_age_differences.svg"))
