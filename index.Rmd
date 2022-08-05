@@ -7,10 +7,17 @@ author:
   - first_name: "Andrés"
     last_name: "González-Santa Cruz"
     url: https://github.com/nDP
-    affiliation: Technical Staff of Núcleo Milenio de Drogas; Ph.D. student (School of Public Health, Universidad de Chile).
+    affiliation: Technical Staff of Núcleo Milenio de Drogas; Ph.D. student, School of Public Health, Universidad de Chile
     affiliation_url: 
     email: gonzalez.santacruz.andres@gmail.com
     orcid_id: 0000-0002-5166-9121
+  - first_name: "Mariel"
+    last_name: "Mateo Piñones"
+    url: https://github.com/nDP
+    affiliation: Ph.D. student, Griffith University, Australia
+    affiliation_url: 
+    email: mdmateo@uc.cl
+    orcid_id: 0000-0002-9607-7541
 description: |
  Part of the research done and available in https://www.nucleondp.cl/ 
 base_url: https://beta.rstudioconnect.com/content/3776/
