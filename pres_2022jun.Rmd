@@ -283,7 +283,7 @@ background-size: 20%
 .text_100[Mariel Mateo Piñones & Andrés González Santa Cruz]
 
 .text_70[mdmateo@uc.cl] [`r fontawesome::fa(name = "orcid", fill="green")`](https://orcid.org/0000-0002-9607-7541)
-]
+
 .text_70[gonzalez.santacruz.andres@gmail.com] [`r fontawesome::fa(name = "github")`](https://github.com/AGSCL) [`r fontawesome::fa(name = "orcid", fill="green")`](https://orcid.org/0000-0002-5166-9121)
 ]
 
@@ -329,6 +329,21 @@ class: animated, fadeIn
 ]
 ]
 
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+- Los trastornos por uso de sustnacias son un problema no sólo regional sino mundial. El uso de alcohol y drogas se encuentra entre las 15 causas de riesgo más importantes según el global burden of disease, por ejemplo.
+- Se ha mostrado que reducir el uso se asocia a una reducción de contactos con el sistema de justicia
+- Tanto los tratamientos como los contactos con el sistema de justicia son recurrentes, de ahí que se hablé laxamente de "puerta giratoria"
+
+- No obstante, hay poca evidencia en latinoamérica, muy local y específica.
+
+- COn todo, se ha visto que el completar el tratamiento es uno de los predictores de desenlaces positivos con mayor evidencia
+
+- **Ocurre lo mismo en chile?**
+
 ---
 ## Antecedentes (2)
 
@@ -355,11 +370,10 @@ class: animated, fadeIn
 *#_#_#_#_#_#_#_#_#_#_
 **NOTA**
 *#_#_#_#_#_#_#_#_#_#_
-- Los trastornos por uso de sustnacias son un problema no sólo regional sino mundial. El uso de alcohol y drogas se encuentra entre las 15 causas de riesgo más importantes según el global burden of disease, por ejemplo.
-- No obstante, hay poca evidencia en latinoamérica
-- Latinoamérica tiene distintos patrones de uso/abuso de sustancias a los países desarrollados y de altos ingresos tradicionales: mayor uso de alcohol y de pasta base, non-injected drug use (NIDU). Por tanto, al ser un perfil epidemiológico distinto
+
+- Latinoamérica tiene distintos patrones de uso/abuso de sustancias a los países desarrollados y de altos ingresos tradicionales: mayor uso de alcohol y de pasta base, non-injected drug use (NIDU). Por tanto, al ser un perfil epidemiológico distinto a los países en que se consume opioides, por ejemplo.
 - Se sabe que Uno de los criterios para evaluar resultados de tratamiento es relacionarlo con los conctactos con el sistema de justicia antes, a lo largo y posterior al tratamiento.
-- No obstante, por otro lado, Chile tiene muchos desafíos para evlauar la efectividad de estos (ISUC-PUC) y existe poca evidencia al respecto, muy local o con muy pocos datos, etc.
+- No obstante, por otro lado, Chile tiene muchos desafíos para evaluar la efectividad de estos (ISUC-PUC) y existe poca evidencia al respecto, muy local o con muy pocos datos, etc.
 
 ---
 class: center, middle
@@ -1069,11 +1083,6 @@ Base_fiscalia_v5 %>%
 ```{r fig7_image-map_chile_regiones, echo=T, error=T, fig.align='center', out.width="30%", out.height="30%", message=F, warning=F, fig.show='hide', results='hide'}
 #, results='asis' , fig.show='hide', results='hide' fig.showtext=T,
 #_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_#_#_#_#_
-
-data(admin1.map, package="choroplethrAdmin1")
-#get_admin1_regions("chile") # falta ñuble po la cresta
-chile.map = admin1.map[admin1.map$admin == "chile" & admin1.map$long > -80, ]
-#ggplot(chile.map, aes(long, lat, group=group)) + geom_polygon() + coord_map()
 
 arica <- list(v ="01", n = "region de arica y parinacota")
 tarapaca <- list(v = "02", n= "region de tarapaca")
