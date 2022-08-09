@@ -389,6 +389,62 @@ Examinar el impacto de tratamientos por uso de sustancias en la prevención del 
 - Nuestra hipótesis es que los pacientes que completan tendrán una probabilidad más baja de contactos con el sistema judicial en comparación con los que no completan, aunque este efecto disminuya a medida que el tiempo pasa.
 
 ---
+# Métodos
+
++ SENDA, más cobertura tratamientos por TUS 
+  - Define estándares
+  - Compra
+  - Supervisa $`r Cite(myBib,"RN143")`$
++ ~15.000 adultos/año y monitorea trat. públicos (~73%) $`r Cite(myBib,c("RN155","RN216"))`$
++ 2009, SISTRAT
+
++ 2010-2019, ~85.000 usuarios (n~ 110.000 registros)
+
++ Pareado con datos de fiscalía (~555,000 registros), para ~75.000 usuarios
+
++ Análisis de supervivencia
+
+  - Modelos de aceleración (AFT)
+
+$$log\lambda(t|z)=log\lambda_0(te^{-z^T\beta})$$
+
+.superbigimage[
+.text_50[
+$$readmisión\,|\,contacto\,con\,el\,sistema\,de\,justicia\sim \alpha+ X_{1 (Completa\,el\,tratamiento\,por\,uso\,de\,sustancias)}+X_{2 (Covariables)}+\epsilon$$
+
+]
+]
+
+<br>
+
+???
+*#_#_#_#_#_#_#_#_#_#_
+**NOTA**
+*#_#_#_#_#_#_#_#_#_#_
+
+- SENDA define estándares, supervisa y compra tratamientos. Es la entidad que más proporciona tratamientos por drogas en Chile (el MINSAL, en cambio, muy pocos fuera del convenio). Atiende alrededor de 15.000 personas al año y desde el 2009 se habilitó un sistema de monitoreo nacional de tratamientos SISTRAT
+
+- Nosotros parearemos datos de este sistema de los tratamientos en población adulta del 2010 al 2019, con datos de fiscalía de contactos del sistema de justicia (como victima/imputados) por estos pacientes en el mismo periodo.
+
+ (si es imputado, se buscará condena y se asumirá como riesgo competidor )
+- https://journals.sagepub.com/doi/full/10.1177/09622802211041759
+- Pang M, Platt RW, Schuster T, Abrahamowicz M. Flexible extension of the accelerated failure time model to account for nonlinear and time-dependent effects of covariates on the hazard. Statistical Methods in Medical Research. 2021;30(11):2526-2542. doi:10.1177/09622802211041759
+
+- **factor de aceleración** Los modelos AFT asumen que los efectos de las covariables son constantes y multiplicativos en la escala de tiempo. Ese efecto se denomina factor de aceleración, que representa la razón de supervivencia correspondiente a cualquier valor fijado de tiempo de supervivencia.
+- De otra manera, TR/AFT puede verse como el tiempo de supervivencia esperado, o el tiempo mediano de supervivencia de la población 2 es c veces lo mismo que el de la población 1. O razón de sobrevida calculada bajo distintas condiciones, para cualquier tiempo fijo t.
+
+- **La velocidad en que dura libre de un evento, por lo que menor a 1 es malo si el evento es indeseado y viceversa**
+- **No asume que los riesgos son proporcionales en el tiempo en los distintos grupos**
+
+- Se ejemplifica con un modelo Lognormal: $log\lambda(t|z)=log\lambda_0(te^{-z^T\beta})$
+
+**Plan de análisis**
+- Se imputarán algunas variables con casos perdidos.
+- Es necesario tener en cuenta que en algunos casos no se tendrá información exacta del tiempo en que se produce el evento y las características de él (¿Cuándo empieza a regir?, ¿Se podrá aplicar?)
+- Puede existir un período de incubación que haga menos informativa una determinada forma de supervivencia.
+
+
+---
 ## Estructura de datos
 
 - Estructura hipotética
@@ -505,60 +561,6 @@ fig_trans_final
 - Cuando un paciente deja la cohorte sin experimentar resultados (ej, si se va fuera del país). 
 - **Eventuales competidores**: tiempo en tratamiento (especialmente residenciales) o una sentencia **aunque debemos ver si es posible conocer este tiempo de censura**
 
----
-# Métodos
-
-+ SENDA, más cobertura tratamientos por TUS 
-  - Define estándares
-  - Compra
-  - Supervisa $`r Cite(myBib,"RN143")`$
-+ ~15.000 adultos/año y monitorea trat. públicos (~73%) $`r Cite(myBib,c("RN155","RN216"))`$
-+ 2009, SISTRAT
-
-+ 2010-2019, ~85.000 usuarios (n~ 110.000 registros)
-
-+ Pareado con datos de fiscalía (~555,000 registros), para ~75.000 usuarios
-
-+ Análisis de supervivencia
-
-  - Modelos de aceleración (AFT)
-
-$$log\lambda(t|z)=log\lambda_0(te^{-z^T\beta})$$
-
-.superbigimage[
-.text_50[
-$$readmisión\,|\,contacto\,con\,el\,sistema\,de\,justicia\sim \alpha+ X_{1 (Completa\,el\,tratamiento\,por\,uso\,de\,sustancias)}+X_{2 (Covariables)}+\epsilon$$
-
-]
-]
-
-<br>
-
-???
-*#_#_#_#_#_#_#_#_#_#_
-**NOTA**
-*#_#_#_#_#_#_#_#_#_#_
-
-- SENDA define estándares, supervisa y compra tratamientos. Es la entidad que más proporciona tratamientos por drogas en Chile (el MINSAL, en cambio, muy pocos fuera del convenio). Atiende alrededor de 15.000 personas al año y desde el 2009 se habilitó un sistema de monitoreo nacional de tratamientos SISTRAT
-
-- Nosotros parearemos datos de este sistema de los tratamientos en población adulta del 2010 al 2019, con datos de fiscalía de contactos del sistema de justicia (como victima/imputados) por estos pacientes en el mismo periodo.
-
- (si es imputado, se buscará condena y se asumirá como riesgo competidor )
-- https://journals.sagepub.com/doi/full/10.1177/09622802211041759
-- Pang M, Platt RW, Schuster T, Abrahamowicz M. Flexible extension of the accelerated failure time model to account for nonlinear and time-dependent effects of covariates on the hazard. Statistical Methods in Medical Research. 2021;30(11):2526-2542. doi:10.1177/09622802211041759
-
-- **factor de aceleración** Los modelos AFT asumen que los efectos de las covariables son constantes y multiplicativos en la escala de tiempo. Ese efecto se denomina factor de aceleración, que representa la razón de supervivencia correspondiente a cualquier valor fijado de tiempo de supervivencia.
-- De otra manera, TR/AFT puede verse como el tiempo de supervivencia esperado, o el tiempo mediano de supervivencia de la población 2 es c veces lo mismo que el de la población 1. O razón de sobrevida calculada bajo distintas condiciones, para cualquier tiempo fijo t.
-
-- **La velocidad en que dura libre de un evento, por lo que menor a 1 es malo si el evento es indeseado y viceversa**
-- **No asume que los riesgos son proporcionales en el tiempo en los distintos grupos**
-
-- Se ejemplifica con un modelo Lognormal: $log\lambda(t|z)=log\lambda_0(te^{-z^T\beta})$
-
-**Plan de análisis**
-- Se imputarán algunas variables con casos perdidos.
-- Es necesario tener en cuenta que en algunos casos no se tendrá información exacta del tiempo en que se produce el evento y las características de él (¿Cuándo empieza a regir?, ¿Se podrá aplicar?)
-- Puede existir un período de incubación que haga menos informativa una determinada forma de supervivencia.
 
 ---
 ## Planificación
