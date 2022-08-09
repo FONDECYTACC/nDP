@@ -117,6 +117,8 @@ body{ /* Normal  */
 ```{=html}
 <style>
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px; text-align: justify;}
+div.red { background-color:#e6bab1; border-radius: 5px; padding: 20px; text-align: justify;}
+
 </style>
 ```
 
@@ -145,19 +147,19 @@ function myFunction2() {
 </script>
 ```
 
-```{r prev_setup, include = FALSE, cache=T}
+```{r prev-setup, include = FALSE, cache=T, error=T}
 rm(list=ls());gc()
 if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
 path<-getwd()
 #
 if (grepl("CISS Fondecyt",path)==T){
-    setwd("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)");load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/11.Rdata")
+    try(setwd("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)"));load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/11.Rdata")
   } else if (grepl("andre",path)==T){
-    setwd('C:/Users/andre/Desktop/SUD_CL/');load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/11.Rdata")
+    try(setwd('C:/Users/andre/Desktop/SUD_CL/'));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/11.Rdata")
   } else if (grepl("E:",path)==T){
-    setwd("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/SUD_CL/");load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/11.Rdata")
+    try(setwd("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/SUD_CL/"));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/11.Rdata")
   } else {
-    setwd(paste0(path));load(paste0(gsub("SUD_CL","",gsub("2022","2019",path)),"/10.Rdata"))
+    try(setwd(paste0(path)));load(paste0(gsub("SUD_CL","",gsub("2022","2019",path)),"/10.Rdata"))
   }
 ```
 
@@ -196,8 +198,10 @@ copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
 }  
 
 if(!require(pacman)){install.packages("pacman")}
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, install=F)
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, install=F)
 try(webshot::install_phantomjs())
+
+if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade =F))}
 
 options(scipen=999) #display numbers rather scientific number
 
@@ -263,6 +267,8 @@ Several issues were found in the first stage of the exploration of the matches.
  
  - Generate a category to define VIF `RELACION_VIFSAF` (domestic violence) (include mistreatment, femicide or parricide)
  
+ - Anulación de ingreso error de digitación	 & Agrupado -- gls_mottermino
+ 
  - Generate a narrative of IDs and their nested relationships
  <!---
   #"aquellos registros que terminaronpor ejemplo, con una sentencia absolutoria o en que no se pudo acreditar un hecho delictual". No tengo la bbdd para revisar si esto aplica a nosotros, pero prefiero dejarlo acá para que no se me olvide.
@@ -281,13 +287,13 @@ sex_nodef<-
 Base_fiscalia_v5%>% 
     dplyr::filter(rut_enc_saf %in% unlist(dplyr::distinct(dplyr::filter(Base_fiscalia_v5, sexo=="No Definido"), rut_enc_saf)))
 
-as.data.frame.TableOne(CreateTableOne(vars= setdiff(myVars, c("gls_comuna", "gls_sitiosuceso", "gls_materia", "reg")), data=  dplyr::mutate(Base_fiscalia_v5, sex_nodef=ifelse(sexo=="No Definido",1,0)), factorVars = catVars, smd=T, strata="sex_nodef", addOverall = T, includeNA=T,test=T), smd=T)%>% 
+as.data.frame.TableOne(CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac"), c("gls_comuna", "gls_sitiosuceso", "gls_materia", "reg")), data= dplyr::mutate(Base_fiscalia_v5, sex_nodef=ifelse(sexo=="No Definido",1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10))), factorVars = catVars, smd=T, strata="sex_nodef", addOverall = T, includeNA=T,test=T), smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
   tidyr::fill(char2) %>% 
   dplyr::select(char2,everything()) %>% 
   dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
   dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
-kable(size=11, format="html",caption= "Table. Summary descriptives, if sex is not defined",smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F#, #col.names=c("Variable ","Level",rep(c("Total (%)","No", "Yes", "p-value","test", "SMD"),1))
+kable(size=11, format="html",caption= "Table. Summary descriptives, if sex is not defined (1)",smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F#, #col.names=c("Variable ","Level",rep(c("Total (%)","No", "Yes", "p-value","test", "SMD"),1))
       )%>%
   #kableExtra::add_header_above(c("First attempt" = 3, "Second attempt" = 1), bold=T) %>%
   kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
@@ -296,333 +302,387 @@ kable(size=11, format="html",caption= "Table. Summary descriptives, if sex is no
   kableExtra::scroll_box(width = "100%", height = "375px")
 ```
 
-There are some cases that has a "Non definite" sex (n= `r (data.frame(janitor::tabyl(Base_fiscalia_v5$sexo)) %>% dplyr::filter(.[[1]]=="No Definido"))[[2]]`, p= `r dplyr::group_by(sex_nodef, rut_enc_saf) %>% summarise(n=n()) %>% nrow()`). Many of these cases did not have a date of birth and nationallity, and seem to have other characteristics that may differentiate them from cases that have a defined sex in the database. 
+Some records had a "undefined" value in sex (n= `r (data.frame(janitor::tabyl(Base_fiscalia_v5$sexo)) %>% dplyr::filter(.[[1]]=="No Definido"))[[2]]`, p= `r dplyr::group_by(sex_nodef, rut_enc_saf) %>% summarise(n=n()) %>% nrow()`). Many of these cases did not have a date of birth and nationallity, and seem to have other characteristics that may differentiate them from cases that have a defined sex in the database. In PO everyone had consistent values along their records. The criteria to replace values were based in the presence of records with values associated to pregnancy, stay in centers for women and treatments for women. Some of them include more "DELITOS ECONÓMICOS Y TRIBUTARIOS", "DELITOS LEY DE TRÁNSITO	 HOMICIDIOS", but less "OTROS DELITOS CONTRA LA PROPIEDAD	 FALTAS  LESIONES". In terms of finishing the proceedings, they had more "No Inicio Investigación",	"S Definit (vencim plazo suspens art 240)", "Sentencia definitiva absolutoria" (grouped in SUSPENSION CONDICIONAL DEL PROCEDIMIENTO	), but also	"Sentencia definitiva condenatoria". Less crimes were commited in the Metropolitan Region and less individuals were born before 1940.
 
 ```{r 1-sexo, echo=T, fig.align='center', message=T, error=T, eval=T}
+message(paste0("Missing values in P.O. not replaceable by SENDAs values (both missing)= ",
+Base_fiscalia_v5 %>% 
+  dplyr::mutate(sexo=dplyr::case_when(sexo=="No Definido"~NA_character_,T~sexo)) %>% 
+  dplyr::filter(is.na(sexo)) %>% 
+  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","nacionalidad","etnia_cor","sexo_2")),by=c("rut_enc_saf"="hash_key"))%>%
+  dplyr::filter(is.na(sexo_2)) %>% 
+  nrow())
+)
+
+message(
+paste0("Number of records that had a non definite sex= ",
+Base_fiscalia_v5 %>%   
+  dplyr::filter(rut_enc_saf %in% unlist(subset(Base_fiscalia_v5, sexo=="No Definido","rut_enc_saf"))) %>% 
+  dplyr::filter(sexo!="No Definido") %>%  nrow())
+)
+  
 cat("Users with different values in sex between SENDA and P.O.")
 differences_bet_sex_po<-
 Base_fiscalia_v5 %>% 
   dplyr::mutate(sexo=dplyr::case_when(sexo=="No Definido"~NA_character_,T~sexo)) %>% 
-  dplyr::left_join(CONS_C1_df_dup_SEP_2020[,c("hash_key","etnia_cor","sexo_2")],by=c("rut_enc_saf"="hash_key"))%>%
+  dplyr::group_by(rut_enc_saf) %>% 
+  dplyr::mutate(dist_sex=n_distinct(sexo), dist_ruc=n_distinct(ruc)) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","nacionalidad","etnia_cor","sexo_2")),by=c("rut_enc_saf"="hash_key"))%>%
   dplyr::mutate(sexo=dplyr::case_when(sexo=="FEMENINO"~"Women",sexo=="MASCULINO"~"Men",T~NA_character_))%>% 
-  dplyr::select("rut_enc_saf","sexo","sexo_2","etnia_cor", "ruc", "obs") %>% 
-  dplyr::left_join(dplyr::rename(CONS_C1_df_dup_FEB_2020_prev25b[,c("hash_key","obs")],"obs_FEB"="obs"),by=c("rut_enc_saf"="hash_key")) %>% 
-  dplyr::mutate(obs=dplyr::case_when(obs==obs_FEB~obs_FEB,
-                                     is.na(obs)~obs_FEB,
-                                     !is.na(obs)& grepl("^;",obs_FEB)~paste0(obs,obs_FEB),
-                                     !is.na(obs)& !grepl("^;",obs_FEB)~paste0(obs,";",obs_FEB),
-                                     T~obs)) %>% 
+  dplyr::select("rut_enc_saf","sexo","sexo_2","pais","nacionalidad", "etnia_cor", "ruc", "obs", "dist_sex", "dist_ruc") %>% 
+  dplyr::mutate(step0=dplyr::case_when(is.na(sexo) & is.na(sexo_2)~1,T~0)) %>% 
   dplyr::filter(sexo!=as.character(sexo_2))
 
+invisible("In PO everyone had consistent sexes in their records")
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
-# - Proporción de registros en los que figura como mujer (C1)
+# - Percentage of records as different sexes (C1)
 CONS_C1_res_sex<-
   CONS_C1 %>% 
   dplyr::filter(HASH_KEY %in% unlist(differences_bet_sex_po$rut_enc_saf)) %>% 
   dplyr::mutate(sexo=dplyr::case_when(Sexo=="Mujer"~"Women",Sexo=="Hombre"~"Men",T~NA_character_))%>% 
   dplyr::group_by(HASH_KEY) %>% 
-  dplyr::summarise(perc_women_center=grepl("Mujeres",`Nombre.Centro`)/n(),
-    length_women= sum(sexo=="Women"),
-                   length_men= sum(sexo=="Men"),
-                   perc_women=length_women/n())%>% 
+  dplyr::summarise(length_women_center=sum(grepl("Mujeres",`Nombre.Centro`), na.rm=T),length_preg= sum(`X.Se.trata.de.una.mujer.embarazada.`=="Si", na.rm=T), length_preg_egr= sum(`Ha.estado.embarazada.egreso.`=="si"), length_women= sum(sexo=="Women", na.rm=T), length_men= sum(sexo=="Men", na.rm=T), length_c1=n())%>% 
   dplyr::distinct(HASH_KEY,.keep_all = T)
 
-
+# - Percentage of records as different sexes (TOP)
 TOP_sex<-
   CONS_TOP%>% 
   dplyr::filter(HASH_KEY %in% unlist(differences_bet_sex_po$rut_enc_saf))  %>% 
   dplyr::mutate(sexo=dplyr::case_when(Sexo=="Mujer"~"Women",Sexo=="Hombre"~"Men",T~NA_character_))%>% 
   dplyr::group_by(HASH_KEY) %>% 
-  dplyr::summarise(perc_women_center_top=grepl("Mujeres",`Nombre.del.Centro`)/n(),
-                   length_women_top= sum(sexo=="Women"),
-                   length_men_top= sum(sexo=="Men"),
-                   perc_women_top=length_women_top/n()) %>% 
-  dplyr::distinct(HASH_KEY,.keep_all = T)
+  dplyr::summarise(length_women_center_top=sum(grepl("Mujeres",`Nombre.del.Centro`), na.rm=T), length_women_top= sum(sexo=="Women", na.rm=T), length_men_top= sum(sexo=="Men", na.rm=T), length_top=n())%>% dplyr::distinct(HASH_KEY,.keep_all = T)
+
+C1_centers_SEP_2020<-
+CONS_C1_df_dup_SEP_2020%>%
+      dplyr::filter(hash_key %in% unlist(differences_bet_sex_po$rut_enc_saf))  %>% 
+      dplyr::mutate(across(paste0("tipo_de_plan_2_",1:10),~dplyr::case_when(grepl("M\\-",as.character(.))~1,TRUE~0), .names="instudy_{col}")) %>% dplyr::mutate(sum_m_tipo_trat=base::rowSums(dplyr::select(.,paste0("instudy_tipo_de_plan_2_",1:10)), na.rm=T))%>%
+  dplyr::distinct(hash_key, .keep_all = T) %>% 
+      dplyr::select(hash_key, duplicates_filtered, sum_m_tipo_trat)
+
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
-dplyr::left_join(CONS_C1_res_sex,TOP_sex,by="HASH_KEY")
-
+#Integrate
+differences_bet_sex_po2<-
+  differences_bet_sex_po %>% 
+  #there are no duplicated hashes
+dplyr::left_join(dplyr::left_join(CONS_C1_res_sex,TOP_sex,by="HASH_KEY"), by=c("rut_enc_saf"="HASH_KEY"))%>%
+dplyr::left_join(C1_centers_SEP_2020, by=c("rut_enc_saf"="hash_key"))%>%  
+  
+  #generate a summary of records of C1 & TOP
+  dplyr::mutate(sum_n=rowSums(dplyr::select(.,length_c1,length_top),na.rm=T), perc_women_center= rowSums(dplyr::select(.,length_women_center,length_women_center_top),na.rm=T)/sum_n, perc_women= rowSums(dplyr::select(.,length_women_center,length_women_center_top),na.rm=T)/sum_n, perc_m_tipo_trat=sum_m_tipo_trat/duplicates_filtered) %>% 
+  dplyr::select("rut_enc_saf","sexo","sexo_2","pais","nacionalidad","etnia_cor","ruc", "dist_ruc","obs","sum_n","perc_women_center","perc_women", "length_preg", "length_preg_egr", "sum_m_tipo_trat") %>% 
+dplyr::mutate(step1=dplyr::case_when(grepl("2.6|3.03",obs)~1,T~0), step2a= dplyr::case_when(step1==0 & sum_n>2 & (perc_women_center>=.5| perc_women>=.5)~1,T~0), step2b=  dplyr::case_when(step1==0 & sum_n>1 & perc_women_center>=.5 & perc_women>=.5~1,T~0), step2c=  dplyr::case_when(step1==0 & sum_n>0 & (perc_women_center>=.5 & perc_women>=.5) & (length_preg>0|length_preg_egr>0)~1,T~0), step2d= dplyr::case_when(step1==0 & (perc_women_center>=.5 & perc_women>=.5) & sum_m_tipo_trat>0~1,T~0), step2e= dplyr::case_when(step1==0 & dist_ruc<2 & sum_m_tipo_trat>0~1, T~0), step2f=dplyr::case_when(step1==0 & step2a==0& step2b==0& step2c==0& step2d==0& step2e==0~1,T~0))
+ 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
 #_#_#_#_#_#_#_
-
-message(paste0('No discrepancies in sex\n(n = ',format(nrow(dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))),big.mark=","), 
+message(paste0('No discrepancies in sex (& missings) (22_2_b) \n(n = ',format(nrow(dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))),big.mark=","), 
         ';\nCauses= ',dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
         ';\nindividuals= ',dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
-
 #_#_#_#_#_#_#_
-
-message(paste0('Discrepancies in sex\n(n = ',format(nrow(differences_bet_sex_po),big.mark=","), 
+message(paste0('Discrepancies in sex (22_2_a) \n(n = ',format(nrow(differences_bet_sex_po),big.mark=","), 
         ';\nCauses= ',differences_bet_sex_po%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
         ';\nindividuals= ',differences_bet_sex_po%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
 #_#_#_#_#_#_#_
+message(paste0('Differences in sex w/ imputed earlier (22_2_a2) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
-message(paste0('Differences in sex w/ imputed earlier\n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+message(paste0('Differences in sex w/o imputed earlier (22_2_a1) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
-message(paste0('Differences in sex w/o imputed earlier\n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+message(paste0('Differences in sex w/o imputed earlier, >2 records in TOP or C1, >=50%  of records in a center for women or stated as a woman, but PO==man (22_2_a1a) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2a==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2a==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2a==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier,>1 records in TOP or C1, >=50% of records in a center for women and stated as a woman, but PO==man (22_2_a1b) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2b==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier,>1 records in TOP or C1, >=50% of records in a center for women and stated as a woman, but PO==man (22_2_a1b) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2b==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier, >=50% of records in a center for women or stated as a woman, at least one record pregnant at admission or discharge, but PO==man (22_2_a1c) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2c==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2c==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2c==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+
+message(paste0('Differences in sex w/o imputed earlier, >=50% of records in a center for women or stated as a woman, at least one record in women-only treatments, but PO==man (22_2_a1d) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2d==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2d==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2d==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier but PO==man, at least one record in women-only treatments  vs. <2 distinct causes in PO (22_2_a1d) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2e==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2e==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2e==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier but PO==man, else (22_2_a1f) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2f==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2f==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2f==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+differences_bet_sex_po3<-
+  differences_bet_sex_po2 %>% 
+  dplyr::distinct(rut_enc_saf, .keep_all=T) %>% 
+  dplyr::mutate(flowch_sex= dplyr::case_when(step1==1~"22_2_a2- discordant sex, but imputed previously", step1==0 & step2a==1~"22_2_a1a",step1==0 & step2a==0 & step2b==1~"22_2_a1b",step1==0 & step2a==0 & step2b==0 & step2c==1~"22_2_a1c",step1==0 & step2a==0 & step2b==0 & step2c==0 & step2d==1~"22_2_a1d", step1==0 & step2a==0 & step2b==0 & step2c==0 & step2d==0 & step2e==1~"22_2_a1e",T~"22_2_a1f"))
 
 #2.6.01.2b1.HASH w/ more than one distinct Sex. Recent db (>1)
 #"{obs};3.03.1.XX.HASH w/ more than one distinct Sex.2 cases, same yearly dataset.Neural network imputation"
 ```
 
-
-```{r bpmn, echo=T, cache= T, paged.print=TRUE, dev.args = list(bg = 'white'), eval=T, error=T, results="hide"}
-
-
-paste0("Invalid dates\n(22_1_a0a)\n(p= ",format(as.numeric(table(is.na(fech_nac_fisc_vs_senda2$diff))[2]),big.mark=","),";\nn= ", format(nrow(dplyr::filter(Base_fiscalia_v3, rut_enc_saf %in% fech_nac_fisc_vs_senda2$rut_enc_saf[is.na(fech_nac_fisc_vs_senda2$diff)])),big.mark=","),";\n",scales::percent(as.numeric(table(is.na(fech_nac_fisc_vs_senda2$diff))[2])/length(unique(Base_fiscalia_v3$rut_enc_saf))),"; ",scales::percent(as.numeric(table(is.na(fech_nac_fisc_vs_senda2$diff))[2])/length(unique(CONS_C1_df_dup_SEP_2020$hash_key))),")")
-
-paste0("<90 days differences\n(22_1_a0c)\n(p= ",format(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==1) %>% nrow(),big.mark=","),";\nn= ",format(nrow(dplyr::filter(Base_fiscalia_v3, rut_enc_saf %in% flow_fech_nac_fisc_vs_senda$rut_enc_saf[flow_fech_nac_fisc_vs_senda$c_22_1_a0cd==1])),big.mark=","),"; ",scales::percent(as.numeric(table(flow_fech_nac_fisc_vs_senda$c_22_1_a0cd)[2])/length(unique(Base_fiscalia_v3$rut_enc_saf))),"; ",scales::percent(as.numeric(table(flow_fech_nac_fisc_vs_senda$c_22_1_a0cd)[2])/length(unique(CONS_C1_df_dup_SEP_2020$hash_key))),")")
-
-paste0("Differences >=90d_22_1_a0d\n(n= ",format(flow_fech_nac_fisc_vs_senda%>%dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0)%>%nrow(),big.mark=","),";\n",scales::percent(flow_fech_nac_fisc_vs_senda%>%dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0)%>%nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf))),"; ",scales::percent(flow_fech_nac_fisc_vs_senda%>%dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0)%>%nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key))),")")
-
-paste0("Original C1 or TOP record did not matched age (22_1_a0ef)\n(n= ",format(flow_fech_nac_fisc_vs_senda%>%dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0)%>%nrow(),big.mark=","),";\n",scales::percent(flow_fech_nac_fisc_vs_senda%>%dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0)%>%nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)),accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda%>%dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0)%>%nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)),accuracy=0.1),")")
-
-paste0("Original C1 or TOP record matched age (22_1_a0ef)\n(n= ",format(flow_fech_nac_fisc_vs_senda%>%dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==1)%>%nrow(),big.mark=","),";\n", format(nrow(dplyr::filter(Base_fiscalia_v3, rut_enc_saf %in% as.character(unlist(flow_fech_nac_fisc_vs_senda%>%dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==1)%>%dplyr::select(rut_enc_saf))))),big.mark=","),";\n",scales::percent(flow_fech_nac_fisc_vs_senda%>%dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==1)%>%nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)),accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda%>%dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==1)%>%nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)),accuracy=0.1),")")
-
-paste0("(22_1_a1)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a1a)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-#keep senda= c_22_1_a1a_12_a (yrs_crime) c_22_1_a1a_12_b (adm_age) keep po= c_22_1_a1a_12_a2 c_22_1_a1a_12_b2
-paste0("(22_1_a1a_1)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1, grepl("both",c_22_1_a1a_1234)) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,grepl("both",c_22_1_a1a_1234)) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,grepl("both",c_22_1_a1a_1234)) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a1a_2)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1, grepl("PO",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)<2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,grepl("PO",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,grepl("PO",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a1a_3)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1, grepl("SENDA",c_22_1_a1a_1234)) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,grepl("SENDA",c_22_1_a1a_1234)) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,grepl("SENDA",c_22_1_a1a_1234)) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a1a_4)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1, nchar(c_22_1_a1a_1234)<2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a1a_4a)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1, nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)>2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a1a_4b)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1, nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a1b)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==0) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==0) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==0) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a1b_a)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)>2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a1b_b)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==1,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-invisible("mirar caso d36b9cd8f1aa0a07ad209b0006af1465, hace ruido por RPA pero edades muy bajas en edad SENDA")
-
-paste0("(22_1_a2)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2a)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2a_1)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("both",c_22_1_a1a_1234)) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("both",c_22_1_a1a_1234)) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("both",c_22_1_a1a_1234)) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2a_1a)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("both",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)>2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("both",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("both",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2a_1b)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("both",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)<2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("both",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("both",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2a_2)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("PO",c_22_1_a1a_1234)) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("PO",c_22_1_a1a_1234)) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("PO",c_22_1_a1a_1234)) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2a_2a)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("PO",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)>2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("PO",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("PO",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2a_2b)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("PO",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)<2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("PO",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("PO",c_22_1_a1a_1234),nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2a_3)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("SENDA",c_22_1_a1a_1234)) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("SENDA",c_22_1_a1a_1234)) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, grepl("SENDA",c_22_1_a1a_1234)) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("RPA cases involved in Rare admission & crime ages: ")
-flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, nchar(c_22_1_a1a_1234)>2) %>%  janitor::tabyl(clasificacion_penarpa_1_49)
-
-paste0("(22_1_a2a_4)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, nchar(c_22_1_a1a_1234)<2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("RPA cases involved in Rare admission & crime ages: ")
-flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, nchar(c_22_1_a1a_1234)<2) %>%  janitor::tabyl(clasificacion_penarpa_1_49)
-
-if(no_mostrar==0){
-  flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, nchar(c_22_1_a1a_1234)<2) %>%  dplyr::filter(!is.na(clasificacion_penarpa_1_49)) %>% dplyr::select(rut_enc_saf, fec_nacimiento_simple, fech_nac, fech_ing, edad_al_ing, po_edad_al_ing, years_crime_po, years_crime_senda, contains("c_22_1_")) %>% View()
-}
-
-paste0("(22_1_a2a_4a)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)>2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2a_4b)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2a_4b_1)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)<2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2,nchar(c_22_1_a2a_4b_12)<2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2,nchar(c_22_1_a2a_4b_12)<2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-#2947, antes era 2949, despues de que declaré a los missing se restaron?
-
-paste0("(22_1_a2a_4b_2)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1, nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2,nchar(c_22_1_a2a_4b_12)>2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2,nchar(c_22_1_a2a_4b_12)>2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==1,nchar(c_22_1_a1a_1234)<2, nchar(c_22_1_a1a_1234_ab)<2,nchar(c_22_1_a2a_4b_12)>2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2b)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",
-       scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2b_a)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)>2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)>2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2b_b)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2b_b_1)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)<2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)<2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)<2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-
-paste0("(22_1_a2b_b_2)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)>2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)>2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)>2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
-```
-
-```{r bpmn2, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center", dev.args = list(bg = 'white')}
+```{r bpmn2-sexo, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center", dev.args = list(bg = 'white')}
 #Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ
 #Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ++++++▼
-knitr::include_graphics(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_sex_differences.svg"))
+#knitr::include_graphics(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_sex_differences.bpmn"))
+
+bpmn_file <- system.file(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_sex_differences.bpmn"), package = "bpmn")
+bpmn::bpmn(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_sex_differences.bpmn"))
+
+library(xml2)
+elements <- bpmn::bpmn_get_elements(read_xml(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_sex_differences.bpmn")))
+#htmlTable(elements, align = "lll", rnames = FALSE, css.class = "table")
+
 ```
 
+<br>
+
+##### Replace values
+
+```{r 2-sexo, echo=T, fig.align='center', message=T, error=T, eval=T}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+CONS_C1_tr_sex<-
+  CONS_C1 %>% 
+  dplyr::filter(HASH_KEY %in% unlist(differences_bet_sex_po$rut_enc_saf)) %>% 
+  dplyr::group_by(HASH_KEY) %>% 
+  dplyr::mutate(sexo=dplyr::case_when(Sexo=="Mujer"~"Women",Sexo=="Hombre"~"Men",T~NA_character_))%>% 
+  dplyr::summarise(length_women_tr=sum(grepl("M\\-",`Tipo.de.Plan`)), length_c1=n(), perc_women_tr= length_women_tr/length_c1, length_women= sum(sexo=="Women"))%>% 
+  dplyr::distinct(HASH_KEY,.keep_all = T)
+
+#1b7e964a46082cca61540f18ef51ff07 es femenino pero sale como masculino
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+invisible("Users that must need to change")
+
+Base_fiscalia_v6<-
+Base_fiscalia_v5%>% 
+  dplyr::left_join(differences_bet_sex_po3[c("rut_enc_saf","flowch_sex")], by="rut_enc_saf")%>%
+  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","sexo_2")), by=c("rut_enc_saf"="hash_key"))%>%#22_2_b1
+  dplyr::mutate(sex_imp= dplyr::case_when(sexo=="FEMENINO"~"Women",sexo=="MASCULINO"~"Men",T~NA_character_))%>% 
+  dplyr::mutate(obs=case_when(is.na(sex_imp)& !is.na(obs)~ glue::glue("{obs};22_2_b1"),
+                               is.na(sex_imp)& is.na(obs)~ glue::glue("{flowch_sex}"),
+                               TRUE~obs)) %>% 
+  dplyr::mutate(sex_imp= dplyr::case_when(is.na(sex_imp)~ as.character(sexo_2), 
+                                          grepl("a1a|a1b|a1c1|a1d|a1e",flowch_sex)~ "Women",
+                                          grepl("a1f",flowch_sex)~ "Men",
+                                          T~  sex_imp)) %>% 
+   dplyr::mutate(obs=case_when(!is.na(flowch_sex)& !is.na(obs)~ glue::glue("{obs};{flowch_sex}"),
+                               !is.na(flowch_sex)& is.na(obs)~ glue::glue("{flowch_sex}"),
+                               TRUE~obs)) %>% 
+  dplyr::select(-flowch_sex, -sex_imp)
+
+#check if added rows
+if(nrow(Base_fiscalia_v6)-nrow(Base_fiscalia_v5)>0){
+  warning("Some rows were added in the imputation")}
+```
+
+
+<div class = "red">
+
+There are `r Base_fiscalia_v5%>% dplyr::left_join(dplyr::left_join(differences_bet_sex_po3[c("rut_enc_saf","sex_decisions")], CONS_C1_tr_sex, by=c("rut_enc_saf"="HASH_KEY")), by="rut_enc_saf") %>%  dplyr::filter(length_women_tr>0, grepl("22_2_a1f",sex_decisions))%>%  nrow() %>%  format(big.mark=",")` records (individuals= `r Base_fiscalia_v5%>% dplyr::left_join(dplyr::left_join(differences_bet_sex_po3[c("rut_enc_saf","sex_decisions")],CONS_C1_tr_sex, by=c("rut_enc_saf"="HASH_KEY")), by="rut_enc_saf") %>%dplyr::filter(length_women_tr>0,grepl("22_2_a1f",sex_decisions))%>%  dplyr::group_by(rut_enc_saf) %>% distinct(rut_enc_saf) %>% nrow() %>% format(big.mark=",")`) corresponding to men recieving women-only treatments. **These should be replaced once the merging is done**.
+
+</div>
+
+<br>
 
 #### Nationality
 
+```{r 0-nat, echo=T, fig.align='center', message=T, error=T, eval=T}
+message(paste0("Missing values in P.O. not replaceable by SENDAs values (both missing)= ",
+Base_fiscalia_v6 %>% 
+  dplyr::mutate(pais=dplyr::case_when(pais=="No Definido"~NA_character_,T~pais)) %>% 
+  dplyr::filter(is.na(pais)) %>% 
+  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","nacionalidad","etnia_cor")),by=c("rut_enc_saf"="hash_key"))%>%
+  dplyr::filter(is.na(nacionalidad)) %>% 
+  nrow())
+)
+#no definido
+nat_nodef<-
+Base_fiscalia_v6%>% 
+    dplyr::filter(rut_enc_saf %in% unlist(dplyr::distinct(dplyr::filter(Base_fiscalia_v6, pais=="No Definido"), rut_enc_saf)))
 
+message(
+paste0("Number of records that had a non definite sex= ",
+nat_nodef %>%  nrow())
+)
 
-
-<br>
-
-### Explore duplicates
-
-&nbsp;
-
-The code used in Stata is shown here: We selected matches in the rows with the same hash, treatment center ID, date of admission, type of plan, educational attainment, sex and ID, within ages and with a match score greater than or equal to 70.
-
-&nbsp;
-<br>
-
-<div class="superbigimage">
-```{r  stata_exp, include=T, echo=T, eval=T, cache=T}
-# use "G:\Mi unidad\Alvacast\SISTRAT 2019 (github)\CONS_C1_df_dup_FEB_2020_prev.dta", clear 
-# 
-# cap gen date_in = mdy(real_fech_ing_mes, real_fech_ing_dia, real_fech_ing_ano)
-# cap gen date_in = mdy(fech_ing_mes, fech_ing_dia, fech_ing_ano)
-# 
-# generate id_match = _n
-# cap drop _id
-# dtalink hash_key 25 -25 id_centro 10 0 date_in 30 -30 5 tipo_de_plan 7 -7 escolaridad 8 -8 sexo 10 -10 id 10 -10, block(edad) cutoff(70)
-# drop if missing(_score)
-# cap qui save "G:\Mi unidad\Alvacast\SISTRAT 2019 (github)\Stata Duplicates Match\_CONS_C1_df_match70_2020_02_29.dta"
-# cap qui save "G:\Mi unidad\Alvacast\SISTRAT 2019 (github)\Stata Duplicates Match\_CONS_C1_df_match70_2020_02_29.dta", replace
-
-export_post_dedup<-
- data.frame(final="clear all") %>% 
-  rbind("ssc install dtalink") %>% 
-  rbind(paste0('use "', gsub('/', '\\', path, fixed=T),'\\CONS_C1_df_dup_FEB_2020_prev.dta"'))%>%
-  dplyr::rename("*final"="final") %>% 
-  #rbind('delimiter(";") clear')%>%
-  rbind('cap gen date_in = mdy(real_fech_ing_mes, real_fech_ing_dia, real_fech_ing_ano)') %>% 
-  rbind('cap gen date_in = mdy(fech_ing_mes, fech_ing_dia, fech_ing_ano)') %>% 
-  rbind('generate id_match = _n') %>% 
-  rbind('cap drop _id') %>% 
-  rbind('dtalink hash_key 25 -25 id_centro 10 0 date_in 30 -30 5 tipo_de_plan 7 -7 escolaridad 8 -8 sexo 10 -10 id 10 -10, block(edad) cutoff(70)')%>%   
-  rbind('drop if missing(_score)')%>%
-  rbind(paste0('cap qui save "', gsub('/', '\\', path, fixed=T),'\\_CONS_C1_df_match70_2020_02_29.dta"')) %>% 
-  rbind(paste0('cap qui save "', gsub('/', '\\', path, fixed=T),'\\_CONS_C1_df_match70_2020_02_29.dta", replace'))
-
-export_post_dedup %>% knitr::kable("html") %>% 
-kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size =10) 
-
-write.table(export_post_dedup, file = paste0(path,"/SUD_CL/__stata_dtalink_post_dedup.do"), sep = "",row.names = FALSE, quote = FALSE,fileEncoding="UTF-8")
-```
-
-</div> 
-
-<br>
-
-```{stata do, collectcode=TRUE,results="hide", eval=T}
-*should be in the same folder of the .Rmd
-cap do __stata_dtalink_post_dedup.do
-```
-
-<br>
-
-```{r  tab6_matches_stata, include=T, echo=T, eval=T, cache=T}
-#Mayo 2019, saqué edad como criterio, pero incorporé tipo de plan
-matches_from_stata_c1_feb <- haven::read_dta(paste0(path,"/Stata Duplicates Match/_CONS_C1_df_match70_2020_02_29.dta"))
-matches_from_stata_c1_feb <-matches_from_stata_c1_feb %>% dplyr::rename(score = 3, matchID = 1, row_id=2)
-matches_from_stata_c1_feb  %>%
-dplyr::arrange(score,matchID,hash_key) %>%
-dplyr::group_by(matchID) %>%
-dplyr::mutate(previous_date_disch=dplyr::lead(fech_egres_imp)) %>%
-dplyr::select(score, matchID, hash_key, ano_bd, id_centro, fech_egres,fech_egres_imp, fech_ing,previous_date_disch, edad, dias_trat,motivodeegreso_mod_imp,senda) %>%
-as.data.frame() %>%
-  #guardar_tablas("match")
-knitr::kable(.,format = "html", format.args = list(decimal.mark = ".", big.mark = ","),
-caption="Table 6. View of Matches from Stata, once Deduplication and De-overlapping", align =rep('c', 100),
-col.names= c("Score", " Pair ID", "HASH Key", "Yearly Dataset", "Treatment Center ID", "Date of\nDischarge", "Date of\nDischarge (Imputed)","Date of\nAdmission","Previous Date of Discharge", "Age", "Days of\n Treatment","Cause of Discharge", "Financed By SENDA")) %>%
-kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 8) %>%
-kableExtra::scroll_box(width = "100%", height = "350px")
-
-min_max_matches_c1_feb<-matches_from_stata_c1_feb  %>%
-  dplyr::arrange(score,matchID,hash_key) %>%
-  dplyr::group_by(matchID) %>%
-  dplyr::mutate(previous_date_disch=dplyr::lead(fech_egres_imp)) %>%
-  dplyr::ungroup()%>%
-  dplyr::select(score, matchID, hash_key, ano_bd, id_centro, fech_egres,fech_egres_imp, fech_ing,previous_date_disch, edad, dias_trat,motivodeegreso_mod_imp,senda)%>%
-  dplyr::mutate(diff_adm_egres_anterior=as.numeric(as.Date(previous_date_disch)-as.Date(fech_ing),units="days")) %>%
-summarise(min=min(diff_adm_egres_anterior,na.rm=T),max=max(diff_adm_egres_anterior,na.rm=T))%>% unlist() %>% as.data.table()
-min_max_matches_c1_feb<-as.numeric(unlist(min_max_matches_c1_feb))
-```
-
-<br>
-
-As seen in Table 6, every case that Stata considered as a match, was in fact another treatment that lasted around 1 to 5 days in most cases, or it ended immediately before the next treatment. Of the above mentioned, none of them were considered as an overlap between treatments, showing differences from `r min_max_matches_c1_feb[1]` to `r min_max_matches_c1_feb[2]` days between the date of admission and the previous date of discharge.
-
-```{r comprobacion de overlap final, include=T, echo=T, eval=T, cache=T}
-CONS_C1_df_dup_intervals_FEB_2020_comprobacion<- 
-                  CONS_C1_df_dup_FEB_2020_prev19 %>%
-  #as.numeric(as.Date("2019-11-13")) #18213
-  dplyr::mutate(fech_ing_num2=as.numeric(as.Date(fech_ing))) %>%
-  dplyr::mutate(fech_egres_num2=as.numeric(as.Date(fech_egres_imp))) %>%
-  dplyr::mutate(fech_egres_num2=ifelse(is.na(fech_egres_imp),18213,fech_egres_num2)) %>% #equivalente a 2019-11-13
-  dplyr::rename("hash_key_2"="hash_key", "row2"="row") %>%
-  dplyr::select(row2,hash_key_2, ano_bd,fech_ing, fech_ing_num2,fech_egres,fech_egres_num2,edad, dias_trat,id_centro, motivodeegreso, senda) %>% 
-  #dplyr::filter(motivodeegreso!="Derivación") %>%
-  data.table::as.data.table()
-require(sqldf)
-require(gridExtra)
-  overlap_dates_C1_FEB_2020_comprobacion <- janitor::clean_names(sqldf("SELECT *
-                 FROM CONS_C1_df_dup_intervals_FEB_2020_comprobacion AS x  
-                 INNER JOIN CONS_C1_df_dup_intervals_FEB_2020_comprobacion AS y 
-                 ON x.hash_key_2 == y.hash_key_2 AND 
-                 x.fech_ing_num2 < y.fech_egres_num2 AND x.fech_egres_num2 > y.fech_ing_num2 AND x.row2 != y.row2")) 
-```
-
-`r   if(dim(overlap_dates_C1_FEB_2020_comprobacion)[1]>0){print(paste0("There are still",dim(overlap_dates_C1_FEB_2020_comprobacion)[1],"overlappings"))}`
-
-<br>
-
-### Explore missing values
-
-```{r 1, echo=T, fig.align='center', message=T, error=T, eval=T}
-#- Investigate 0's in `IDSUJETO_VICTIMA`. ¿Have they the same distributed crimes?
-#- Missing values in `TIPO_TERMINO`
-#- `AGRUPA_TERMINOS`, explore missing values
-
-as.data.frame.TableOne(CreateTableOne(vars= setdiff(myVars, c("gls_comuna", "gls_sitiosuceso", "gls_materia", "reg")), data=  dplyr::mutate(Base_fiscalia_v5, idsujeto_victima_0=ifelse(idsujeto_victima==0,1,0)), factorVars = catVars, smd=T, strata="idsujeto_victima", addOverall = T, includeNA=T,test=T), smd=T)%>% 
+as.data.frame.TableOne(CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac"), c("gls_comuna", "gls_sitiosuceso", "gls_materia", "reg")), data=  dplyr::mutate(Base_fiscalia_v6, nat_nodef=ifelse(pais=="No Definido",1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10))), factorVars = catVars, smd=T, strata="nat_nodef", addOverall = T, includeNA=T,test=T), smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
   tidyr::fill(char2) %>% 
   dplyr::select(char2,everything()) %>% 
   dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
   dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
-kable(size=11, format="html",caption= "Table. Summary descriptives, if sex is not defined",smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F)%>%
+kable(size=11, format="html",caption= "Table. Summary descriptives, if nationality is not defined (1)",smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F#, #col.names=c("Variable ","Level",rep(c("Total (%)","No", "Yes", "p-value","test", "SMD"),1))
+      )%>%
+  #kableExtra::add_header_above(c("First attempt" = 3, "Second attempt" = 1), bold=T) %>%
+  kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
+  row_spec(1, bold=T, italic=T,color="black",hline_after=T,extra_latex_after="\\arrayrulecolor{white}",font_size= 11) %>%
+  kableExtra::add_footnote(c("Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown;", "Categorical variables are presented as number (%)"), notation = "none")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+Some records had a "undefined" value in nationality (n= `r (data.frame(janitor::tabyl(Base_fiscalia_v5$pais)) %>% dplyr::filter(.[[1]]=="No Definido"))[[2]]`, p= `r dplyr::group_by(nat_nodef, rut_enc_saf) %>% summarise(n=n()) %>% nrow()`). This were more frequent in the Metropolitan Region, Bio Bio & Maule, occurred less in individuals with "SENTENCIA DEFINITIVA CONDENATORIA", but more in suspended finishings of the proceedings (e.g.,  ARCHIVO PROVISIONAL, FACULTAD PARA NO INVESTIGAR, SUSPENSION CONDICIONAL DEL PROCEDIMIENTO, and SOBRESEIMIENTO DEFINITIVO). Also, crimes were more frequent in "DELITOS CONTRA LA LIBERTAD E INTIMIDAD DE LAS PERSONAS", "DELITOS ECONÓMICOS Y TRIBUTARIOS", "DELITOS DE LEYES ESPECIALES", but less frequent in "FALTAS". The sentences concluded more in "presidio maenor grado máximo", but less in "Presidio Menor grado mínimo" and "Prisión". More of them were committed after 2010, and there are less people born in between  1957-09-25 and 1940-01-11, but those were born between 1936-12-21 and 1930-01-18 were more frequent.
+
+
+```{r 1-nat, echo=T, fig.align='center', message=T, error=T, eval=T}
+cat("Users with different values in nationality between SENDA and P.O.")
+differences_bet_nat_po<-
+Base_fiscalia_v6 %>% 
+  dplyr::mutate(pais=dplyr::case_when(pais=="No Definido"~NA_character_,T~pais)) %>% 
+  #IMPORTANTE, ACTUALIZAR
+  dplyr::mutate(pais= dplyr::case_when(pais=="CHECOLOVAQUIA"~"REPUBLICA CHECA")) %>% 
+  dplyr::group_by(rut_enc_saf) %>% 
+  dplyr::mutate(dist_nat= n_distinct(pais), dist_ruc= n_distinct(ruc)) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","nacionalidad","nacionalidad_2","etnia_cor")),by=c("rut_enc_saf"="hash_key"))%>%
+  dplyr::mutate(nacionalidad= toupper(stringi::stri_trans_general(as.character(nacionalidad),"Latin-ASCII"))) %>% 
+  dplyr::mutate(mix=paste0(pais,"-",nacionalidad)) %>% 
+  dplyr::select("rut_enc_saf","pais","nacionalidad", "etnia_cor", "ruc", "obs", "dist_nat", "dist_ruc", "mix")%>% 
+  dplyr::mutate(step0=dplyr::case_when(is.na(pais) & is.na(nacionalidad)~1,T~0)) %>% 
+  dplyr::filter(pais!=as.character(nacionalidad))
+
+message(paste0("Number of records with more than one nationality among POs= ", nrow(dplyr::filter(differences_bet_nat_po, dist_nat>1))))
+
+invisible("In PO everyone had consistent nationalities in their records")
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+print("**Work**: Search observation codes of previous replacements in nationality. The less frequent value here is  not being chilean. Try to see the ethnic factor")
+
+# - Percentage of records as different sexes (C1)
+CONS_C1_res_nat<-
+  CONS_C1 %>% 
+  dplyr::filter(HASH_KEY %in% unlist(differences_bet_nat_po$rut_enc_saf)) %>% 
+  dplyr::mutate(nacionalidad= toupper(stringi::stri_trans_general(as.character(Nacionalidad),"Latin-ASCII"))) %>% 
+  dplyr::group_by(HASH_KEY) %>% 
+  dplyr::summarise(length_diff_chile=sum(!grepl("CHILE",`Nacionalidad`)), length_etnia= sum(`Etnia`!="No pertenece", na.rm=T), length_c1=n())%>% 
+  dplyr::distinct(HASH_KEY,.keep_all = T)
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+#Integrate
+differences_bet_nat_po2<-
+  differences_bet_nat_po %>% 
+  #there are no duplicated hashes
+dplyr::left_join(CONS_C1_res_nat,by=c("rut_enc_saf"="HASH_KEY")) %>% 
+  #generate a summary of records of C1 & TOP
+  dplyr::mutate(sum_n=rowSums(dplyr::select(.,length_c1,length_top),na.rm=T), perc_women_center= rowSums(dplyr::select(.,length_women_center,length_women_center_top),na.rm=T)/sum_n, perc_women= rowSums(dplyr::select(.,length_women_center,length_women_center_top),na.rm=T)/sum_n, perc_m_tipo_trat=sum_m_tipo_trat/duplicates_filtered) %>% 
+  dplyr::select("rut_enc_saf","sexo","sexo_2","pais","nacionalidad","etnia_cor","ruc", "dist_ruc","obs","sum_n","perc_women_center","perc_women", "length_preg", "length_preg_egr", "sum_m_tipo_trat") %>% 
+dplyr::mutate(step1=dplyr::case_when(grepl("2.6|3.03",obs)~1,T~0), step2a= dplyr::case_when(step1==0 & sum_n>2 & (perc_women_center>=.5| perc_women>=.5)~1,T~0), step2b=  dplyr::case_when(step1==0 & sum_n>1 & perc_women_center>=.5 & perc_women>=.5~1,T~0), step2c=  dplyr::case_when(step1==0 & sum_n>0 & (perc_women_center>=.5 & perc_women>=.5) & (length_preg>0|length_preg_egr>0)~1,T~0), step2d= dplyr::case_when(step1==0 & (perc_women_center>=.5 & perc_women>=.5) & sum_m_tipo_trat>0~1,T~0), step2e= dplyr::case_when(step1==0 & dist_ruc<2 & sum_m_tipo_trat>0~1, T~0), step2f=dplyr::case_when(step1==0 & step2a==0& step2b==0& step2c==0& step2d==0& step2e==0~1,T~0))
+ 
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+message(paste0("People with undefined nationality (n=",nrow(nat_nodef) %>% format(big.mark=","),"\nindividuals= ",nat_nodef%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),")"))
+
+#_#_#_#_#_#_#_
+message(paste0('No discrepancies in sex (& missings) (22_2_b) \n(n = ',format(nrow(dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))),big.mark=","), 
+        ';\nCauses= ',dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
+        ';\nindividuals= ',dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+#_#_#_#_#_#_#_
+message(paste0('Discrepancies in sex (22_2_a) \n(n = ',format(nrow(differences_bet_sex_po),big.mark=","), 
+        ';\nCauses= ',differences_bet_sex_po%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
+        ';\nindividuals= ',differences_bet_sex_po%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+#_#_#_#_#_#_#_
+message(paste0('Differences in sex w/ imputed earlier (22_2_a2) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier (22_2_a1) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier, >2 records in TOP or C1, >=50%  of records in a center for women or stated as a woman, but PO==man (22_2_a1a) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2a==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2a==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2a==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier,>1 records in TOP or C1, >=50% of records in a center for women and stated as a woman, but PO==man (22_2_a1b) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2b==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier,>1 records in TOP or C1, >=50% of records in a center for women and stated as a woman, but PO==man (22_2_a1b) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2b==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier, >=50% of records in a center for women or stated as a woman, at least one record pregnant at admission or discharge, but PO==man (22_2_a1c) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2c==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2c==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2c==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+
+message(paste0('Differences in sex w/o imputed earlier, >=50% of records in a center for women or stated as a woman, at least one record in women-only treatments, but PO==man (22_2_a1d) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2d==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2d==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2d==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier but PO==man, at least one record in women-only treatments  vs. <2 distinct causes in PO (22_2_a1d) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2e==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2e==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2e==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+message(paste0('Differences in sex w/o imputed earlier but PO==man, else (22_2_a1f) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2f==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2f==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2f==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+differences_bet_sex_po3<-
+  differences_bet_sex_po2 %>% 
+  dplyr::distinct(rut_enc_saf, .keep_all=T) %>% 
+  dplyr::mutate(flowch_sex= dplyr::case_when(step1==1~"22_2_a2- discordant sex, but imputed previously", step1==0 & step2a==1~"22_2_a1a",step1==0 & step2a==0 & step2b==1~"22_2_a1b",step1==0 & step2a==0 & step2b==0 & step2c==1~"22_2_a1c",step1==0 & step2a==0 & step2b==0 & step2c==0 & step2d==1~"22_2_a1d", step1==0 & step2a==0 & step2b==0 & step2c==0 & step2d==0 & step2e==1~"22_2_a1e",T~"22_2_a1f"))
+
+```
+
+##### Replace values
+
+```{r 2-nat, echo=T, fig.align='center', message=T, error=T, eval=T}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+CONS_C1_tr_sex<-
+  CONS_C1 %>% 
+  dplyr::filter(HASH_KEY %in% unlist(differences_bet_sex_po$rut_enc_saf)) %>% 
+  dplyr::group_by(HASH_KEY) %>% 
+  dplyr::mutate(sexo=dplyr::case_when(Sexo=="Mujer"~"Women",Sexo=="Hombre"~"Men",T~NA_character_))%>% 
+  dplyr::summarise(length_women_tr=sum(grepl("M\\-",`Tipo.de.Plan`)), length_c1=n(), perc_women_tr= length_women_tr/length_c1, length_women= sum(sexo=="Women"))%>% 
+  dplyr::distinct(HASH_KEY,.keep_all = T)
+
+#1b7e964a46082cca61540f18ef51ff07 es femenino pero sale como masculino
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+invisible("Users that must need to change")
+
+Base_fiscalia_v7<-
+Base_fiscalia_v6%>% 
+  dplyr::left_join(differences_bet_sex_po3[c("rut_enc_saf","flowch_sex")], by="rut_enc_saf")%>%
+  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","sexo_2")), by=c("rut_enc_saf"="hash_key"))%>%#22_2_b1
+  dplyr::mutate(sex_imp= dplyr::case_when(sexo=="FEMENINO"~"Women",sexo=="MASCULINO"~"Men",T~NA_character_))%>% 
+  dplyr::mutate(obs=case_when(is.na(sex_imp)& !is.na(obs)~ glue::glue("{obs};22_2_b1"),
+                               is.na(sex_imp)& is.na(obs)~ glue::glue("{flowch_sex}"),
+                               TRUE~obs)) %>% 
+  dplyr::mutate(sex_imp= dplyr::case_when(is.na(sex_imp)~ as.character(sexo_2), 
+                                          grepl("a1a|a1b|a1c1|a1d|a1e",flowch_sex)~ "Women",
+                                          grepl("a1f",flowch_sex)~ "Men",
+                                          T~  sex_imp)) %>% 
+   dplyr::mutate(obs=case_when(!is.na(flowch_sex)& !is.na(obs)~ glue::glue("{obs};{flowch_sex}"),
+                               !is.na(flowch_sex)& is.na(obs)~ glue::glue("{flowch_sex}"),
+                               TRUE~obs)) %>% 
+  dplyr::select(-flowch_sex, -sex_imp)
+
+#check if added rows
+if(nrow(Base_fiscalia_v7)-nrow(Base_fiscalia_v6)>0){
+  warning("Some rows were added in the imputation")}
+```
+
+<br>
+
+### Explore missing/aberrant values
+
+```{r 1-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+#- Investigate 0's in `IDSUJETO_VICTIMA`. ¿Have they the same distributed crimes?
+#- Missing values in `TIPO_TERMINO`
+#- `AGRUPA_TERMINOS`, explore missing values
+tbone_idsujeto_victima_0<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac"), c("gls_comuna", "gls_sitiosuceso", "reg")), data=  dplyr::mutate(Base_fiscalia_v7, idsujeto_victima_0=ifelse(idsujeto_victima==0,1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg")), smd=T, strata="idsujeto_victima_0", addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_idsujeto_victima_0, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+kable(size=11, format="html",caption= "Table. Summary descriptives, missing values in ID of the victim (1)",smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F)%>%
   kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
   row_spec(1, bold=T, italic=T,color="black",hline_after=T,extra_latex_after="\\arrayrulecolor{white}",font_size= 11) %>%
   kableExtra::add_footnote(c("Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown;", "Categorical variables are presented as number (%)"), notation = "none")%>%
@@ -630,27 +690,69 @@ kable(size=11, format="html",caption= "Table. Summary descriptives, if sex is no
 ```
 
 
+```{r 2-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+#- Missing values in `TIPO_TERMINO`
+#- `AGRUPA_TERMINOS`, explore missing values
+tbone_tipo_termino_na<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac"), c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), data=  dplyr::mutate(Base_fiscalia_v7, tipo_termino_NA=ifelse(is.na(tipo_termino),1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="tipo_termino_NA", addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_tipo_termino_na, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+kable(size=11, format="html",caption= "Table. Summary descriptives, Missing values in Termination of the relationship(1)",smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F)%>%
+  kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
+  row_spec(1, bold=T, italic=T,color="black",hline_after=T,extra_latex_after="\\arrayrulecolor{white}",font_size= 11) %>%
+  kableExtra::add_footnote(c("Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown;", "Categorical variables are presented as number (%)"), notation = "none")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+
+```{r 3-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+#- Missing values in `TIPO_TERMINO`
+#- `AGRUPA_TERMINOS`, explore missing values
+tbone_agrupa_terminos_na<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac"), c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_NA=ifelse(is.na(agrupa_terminos),1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="agrupa_terminos_NA", addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_agrupa_terminos_na, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+kable(size=11, format="html",caption= "Table. Summary descriptives, Missing values in grouped termination of the relationship(1)",smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F)%>%
+  kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
+  row_spec(1, bold=T, italic=T,color="black",hline_after=T,extra_latex_after="\\arrayrulecolor{white}",font_size= 11) %>%
+  kableExtra::add_footnote(c("Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown;", "Categorical variables are presented as number (%)"), notation = "none")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+<br>
+
 ### Date of comission of the crime
 
 ```{r 1, echo=T, fig.align='center', message=T, error=T, eval=T}
-
+#6- 984 < 14 años fecha de comisión: las 144 son responsabilidad mía, las otras no. Las primeras porque las manipulé y elegí el mal menor pero seguía existiendo mal (tal vez que el problema ahí es la fecha de comisión y no la de nacimiento). Las segundas ver cuál es el origen, ahí probablemente la fecha de nac no esté mal porque SENDA y PO tienen la misma. En los 2 casos, hacer tablitas para ver la razón de término de la causa y ver anomalías
+#5- Investigar fechas de término <2010
 ```
 
 ```{r prevdefinecensorship, echo=T, fig.align='center', message=T, error=T, eval=T}
 #- `TIPO_SUJETO_VIC` that are victims and imputed at the same time
-Base_fiscalia_v5 %>% 
+Base_fiscalia_v7 %>% 
     dplyr::filter(encontrado_como_imputado=="NO")%>% 
     janitor::tabyl(gls_tipo_sujeto_vic)
 invisible("Those that were not imputed for a crime only have the value 'victim'")
 
-Base_fiscalia_v5 %>% 
+Base_fiscalia_v7 %>% 
     dplyr::filter(encontrado_como_imputado=="NO",gls_tipo_sujeto_vic=="IMPUTADO")%>% 
     janitor::tabyl(gls_tipo_sujeto_vic)
 invisible("Those that were not imputed for a crime only have the value 'victim'")  
 
 
 invisible("Ver si por cada caso(RUC), hay distintos ID de sujetos imputados, pero para un único RUT")  
-Base_fiscalia_v5%>% 
+Base_fiscalia_v7%>% 
     dplyr::group_by(ruc)%>% 
     dplyr::mutate(n_idsuj_imp= n_distinct(idsujeto_imputado), n_rut= n_distinct(rut_enc_saf)) %>% 
   dplyr::filter(n_idsuj_imp>1,n_rut==1)%>% dplyr::select(rut_enc_saf, idsujeto_imputado, encontrado_como_imputado, ruc, n_idsuj_imp, n_rut)%>%  View()
@@ -662,10 +764,7 @@ invisible("ej., ")
 # Label
 
 ```{r change-labels,echo=T, paged.print=TRUE, eval=F}
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-
-Base_fiscalia_v5%>%
+Base_fiscalia_v7%>%
 dplyr::mutate_at(c('dg_trs_psiq_cie_10_or','x2_dg_trs_psiq_cie_10_or','x3_dg_trs_psiq_cie_10_or','x2_dg_trs_psiq_sub_cie_10_or','x3_dg_trs_psiq_sub_cie_10_or','compromiso_biopsicosocial','pais_nacimiento','nacionalidad','dg_trs_psiq_sub_dsm_iv_or','x2_dg_trs_psiq_sub_dsm_iv_or','x3_dg_trs_psiq_sub_dsm_iv_or','dg_trs_psiq_sub_cie_10_or','etnia_cor_2','motivodeegreso_mod_imp','fecha_ultimo_tratamiento','fecha_ultimo_tratamiento','tiene_menores_de_edad_a_cargo'),~as.factor(.)) %>%
   dplyr::group_by(hash_key)%>%
   dplyr::mutate(at_least_one_cont_entry=sum(!is.na(diff_bet_treat)))%>%
@@ -854,7 +953,7 @@ at_least_one_cont_entry= "Casos de Usuarios con más de una entrada después de 
 
 # Session Info
 
-```{r session_info, echo=T, error=T, paged.print=TRUE}
+```{r session-info, echo=T, error=T, paged.print=TRUE}
 Sys.getenv("R_LIBS_USER")
 Sys.Date()
 paste0("Editor context: ", path)
@@ -888,12 +987,12 @@ initComplete = htmlwidgets::JS(
 # Export
 
 ```{r export, warning=FALSE, echo=T}
-  Base_fiscalia_v5 %>% 
+  Base_fiscalia_v7 %>% 
   dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  T~"VICTIMA")) %>% 
 #  dplyr::filter(accused=="VICTIMA") %>% 
-    rio::export(file = paste0("fiscalia_mariel_mar_2022.dta"))
+    rio::export(file = paste0("fiscalia_mariel_aug_2022.dta"))
 
 # ```{r label_to_stata, echo=T, paged.print=TRUE}
 # 

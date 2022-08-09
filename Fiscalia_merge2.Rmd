@@ -112,6 +112,9 @@ body{ /* Normal  */
     overflow-y: scroll;
     overflow-x: hidden;
 }
+.badCode {
+background-color: white;
+}
 </style>
 ```
 ```{=html}
@@ -151,13 +154,13 @@ if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
 path<-getwd()
 
 if (grepl("CISS Fondecyt",path)==T){
-    setwd("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2019 (github)/SUD_CL/");load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2019 (github)/10.Rdata")
+    load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/10.Rdata")
   } else if (grepl("andre",path)==T){
-    setwd('C:/Users/andre/Desktop/SUD_CL/');load("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/10.Rdata")
+    load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/10.Rdata")
   } else if (grepl("E:",path)==T){
-    setwd("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/SUD_CL/");load("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/10.Rdata")
+    load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/10.Rdata")
   } else {
-    setwd(paste0(path,"/"));load(paste0(gsub("SUD_CL","",gsub("2022","2019",path)),"/10.Rdata"))
+    load(paste0(gsub("SUD_CL","",gsub("2019","2022",path)),"/10.Rdata"))
   }
 ```
 
@@ -196,7 +199,7 @@ copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
 }  
 
 if(!require(pacman)){install.packages("pacman")}
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext,  install=F)
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, magick, install=F)
 try(webshot::install_phantomjs())
 
 options(scipen=999) #display numbers rather scientific number
@@ -235,11 +238,17 @@ memory.limit(size=56000)
 
 <div class = "blue">
 Several issues were found in the first stage of the exploration of the matches.
+
  - Duplicated entries (relationships) 
+ 
  - Cases that are victims and imputed at the same time
+ 
  - Unspecified dates
+ 
  - Originally imputed birth dates that must be corrected according to PO database
+ 
  - Define the a date of censorship
+ 
 </div>
  <br>
 
@@ -902,11 +911,22 @@ paste0("(22_1_a2b_b_1)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_2
 paste0("(22_1_a2b_b_2)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)>2) %>% nrow(),";\n", scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)>2) %>% nrow()/length(unique(Base_fiscalia_v3$rut_enc_saf)), accuracy=0.1),"; ",scales::percent(flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_22_1_a0ab==0,c_22_1_a0cd==0,c_22_1_a0ef==0,c_22_1_a12==0,c_22_1_a_12_ab==0,nchar(c_22_1_a1a_1234_ab)<2, nchar(c_22_1_a2a_4b_12)>2) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), accuracy=0.1),")")
 ```
 
-```{r bpmn2, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center", dev.args = list(bg = 'white')}
-#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ
-#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ++++++
-knitr::include_graphics(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_age_differences.svg"))
+<div class = "badCode">
+
+```{r bpmn2, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center", dev.args = list(bg = 'white'), class.source = "badCode", class.output = "badCode"}
+#knitr::include_graphics(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_age_differences.svg"))
+
+tiger <- image_read_svg(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_age_differences.svg"))#, width = 350
+
+image_fill(tiger,
+      color = "white", 
+      refcolor = "transparent", 
+      fuzz = 4,
+      point = "+1+1" # start at top left 1 pixel in
+      ) 
 ```
+
+</div>
 
 <br>
   
@@ -1211,7 +1231,14 @@ Base_fiscalia_v5<-
                         grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
                         grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
                         grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
-                        T~"OTHER CHARGES")) 
+                        T~"OTHER CHARGES")) %>% 
+    dplyr::left_join(dplyr::rename(CONS_C1_df_dup_FEB_2020_prev25b[,c("hash_key","obs")],"obs_FEB"="obs") %>% dplyr::group_by(hash_key) %>% dplyr::slice(1) %>% dplyr::ungroup(),by=c("rut_enc_saf"="hash_key")) %>% 
+  dplyr::mutate(obs=dplyr::case_when(obs==obs_FEB~obs_FEB,
+                                     is.na(obs)~obs_FEB,
+                                     !is.na(obs)& grepl("^;",obs_FEB)~paste0(obs,obs_FEB),
+                                     !is.na(obs)& !grepl("^;",obs_FEB)~paste0(obs,";",obs_FEB),
+                                     T~obs)) %>% 
+  dplyr::select(-obs_FEB)
 ```
 ```{r discardaberrantageofcomissionofcrimes2, message=F, error=T, eval=T, warnings=F, echo=T}
 invisible("Se eliminan las edades de las bases de datos que no calzan (<14 a), los reemplazos que hice en general no dejan mucha opción para reemplazar la fecha de nacimiento por otra mejor.")
@@ -2321,7 +2348,7 @@ export2xls(restab1_crim_rcds, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(git
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
-Base_fiscalia_v4%>%
+Base_fiscalia_v5%>%
 dplyr::mutate_at(c('dg_trs_psiq_cie_10_or','x2_dg_trs_psiq_cie_10_or','x3_dg_trs_psiq_cie_10_or','x2_dg_trs_psiq_sub_cie_10_or','x3_dg_trs_psiq_sub_cie_10_or','compromiso_biopsicosocial','pais_nacimiento','nacionalidad','dg_trs_psiq_sub_dsm_iv_or','x2_dg_trs_psiq_sub_dsm_iv_or','x3_dg_trs_psiq_sub_dsm_iv_or','dg_trs_psiq_sub_cie_10_or','etnia_cor_2','motivodeegreso_mod_imp','fecha_ultimo_tratamiento','fecha_ultimo_tratamiento','tiene_menores_de_edad_a_cargo'),~as.factor(.)) %>%
   dplyr::group_by(hash_key)%>%
   dplyr::mutate(at_least_one_cont_entry=sum(!is.na(diff_bet_treat)))%>%
@@ -2334,11 +2361,11 @@ dplyr::mutate_at(c('dg_trs_psiq_cie_10_or','x2_dg_trs_psiq_cie_10_or','x3_dg_trs
   dplyr::mutate(obs_cambios_ninguno= recode(as.character(obs_cambios_ninguno),"0"="At least 1 Change w/ the Next Entry","1"="No Changes w/ the Next Entry"))%>%
   dplyr::mutate(motivoegreso_derivacion= recode(as.character(motivoegreso_derivacion),"0"="Other causes of discharge","1"="Referral"))%>%
   dplyr::mutate_at(vars(at_least_one_cont_entry,menor_45_dias_diff,menor_60_dias_diff,obs_cambios_ninguno,motivoegreso_derivacion,obs_cambios),~as.factor(.))%>%
-  assign("Base_fiscalia_v2",., envir = .GlobalEnv)
+  assign("Base_fiscalia_v5",., envir = .GlobalEnv)
   
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_  
   
-codebook::var_label(Base_fiscalia_v2) <- list(
+codebook::var_label(Base_fiscalia_v5) <- list(
 row= 'Numerador de los eventos presentes en la Base de Datos/Events in the Dataset',
 table= 'Origen de los Datos (de los archivos por año)/Source of Data (of files per year)',
 hash_key= 'Codificación del RUN/Masked Identifier (RUN)',
@@ -2548,8 +2575,8 @@ initComplete = htmlwidgets::JS(
   dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  T~"VICTIMA")) %>% 
-  dplyr::filter(accused=="VICTIMA") %>% 
-    rio::export(file = paste0("fiscalia_mariel_mar_2022.dta"))
+  #dplyr::filter(accused=="VICTIMA") %>% 
+    rio::export(file = paste0("fiscalia_mariel_jun_2022.dta"))
 
 # ```{r label_to_stata, echo=T, paged.print=TRUE}
 # 

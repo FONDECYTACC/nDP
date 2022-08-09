@@ -2,12 +2,18 @@
 title: "Chilean prosecutor's office Data merge"
 date: "`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`"
 output:
-  html_document:
-    code_folding: hide  
-    toc: true # table of content true
-    toc_depth: 5  # upto three depths of headings (specified by #, ## and ###)
-    toc_float: true
+  distill::distill_article:
+    code_folding: true
+    fig_height: 6
+    fig_width: 8
     theme: flatly
+    toc: no
+    toc_depth: 5
+    toc_float: yes
+    output_dir: "docs"
+  toc_float:
+    collapsed: false
+    smooth_scroll: true
 ---
 
 ```{css zoom-lib-src, echo = FALSE}
@@ -27,10 +33,56 @@ script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
       $('.zoomDiv').css({opacity: '0', width: '0%'}); 
     });
   });
+  
+```
+
+
+```{css hideOutput-lib-src, echo = FALSE}
+<script src="hideOutput.js"></script> 
+```
+
+```{js hideOutput, echo = FALSE}
+$(document).ready(function() {    
+	$chunks = $('.fold');    
+	$chunks.each(function () {      // add button to source code chunks     
+	if ( $(this).hasClass('s') ) {       
+		$('pre.r', this).prepend("<div class=\"showopt\">Show Source</div><br style=\"line-height:22px;\"/>");
+       		$('pre.r', this).children('code').attr('class', 'folded');     
+       		}      // add button to output chunks     
+		if ( $(this).hasClass('o') ) {       
+			$('pre:not(.r)', this).has('code').prepend("<div class=\"showopt\">Show Output</div><br style=\"line-height:22px;\"/>");       
+			$('pre:not(.r)', this).children('code:not(r)').addClass('folded');        // add button to plots       
+			$(this).find('img').wrap('<pre class=\"plot\"></pre>');       
+			$('pre.plot', this).prepend("<div class=\"showopt\">Show Plot</div><br style=\"line-height:22px;\"/>");       
+			$('pre.plot', this).children('img').addClass('folded');      
+			}   
+});    // hide all chunks when document is loaded   
+	$('.folded').css('display', 'none')    // function to toggle the visibility   
+	$('.showopt').click(function() {     
+			var label = $(this).html();     
+			if (label.indexOf("Show") >= 0) {       
+				$(this).html(label.replace("Show", "Hide"));     
+			} else {
+			  $(this).html(label.replace("Hide", "Show"));     
+			}     
+	$(this).siblings('code, img').slideToggle('fast', 'swing');   
+	}); 
+}); 
+
 ```
 
 ```{=html}
 <style type="text/css">
+.showopt {   
+  background-color: #004c93;   color: #FFFFFF;    width: 100px;   height: 20px;   text-align: center;   vertical-align: middle !important;   float: right;   font-family: sans-serif;   border-radius: 8px; 
+  }  
+.showopt:hover {     
+        background-color: #dfe4f2;
+        color: #004c93; 
+        }  
+pre.plot {   
+        background-color: white !important; 
+        } 
 .tablelines table, .tablelines td, .tablelines th {
         border: 1px solid black;
         }
@@ -67,7 +119,32 @@ body{ /* Normal  */
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px; text-align: justify;}
 </style>
 ```
-```{r prev_setup, include = FALSE, cache=T}
+
+```{=html}
+<!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
+<script>
+function myFunction1() {
+    var x = document.getElementById("myDIV");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<script>
+function myFunction2() {
+    var x = document.getElementById("myDIV2");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+```
+```{r prev-setup, include = FALSE, cache=T}
 rm(list=ls());gc()
 if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
 paste0("The folder od the markdown is in: ",dirname(rstudioapi::getSourceEditorContext()$path))
@@ -83,7 +160,7 @@ if (grepl("CISS Fondecyt",path_dir)==T){
   } else {
     setwd(paste0(path_dir,"/"));load(paste0(path_dir,"/8.Rdata"))
   }
-rm(list=setdiff(ls(), c("CONS_C1_df_dup_SEP_2020_match","CONS_C1_df_dup_SEP_2020","CONS_C1","C1_fech_nac_nas","CONS_C1_df_dup_FEB_2020_prev25b", "CONS_TOP", "path_dir")))
+rm(list=setdiff(ls(), c("CONS_C1_df_dup_SEP_2020_match","CONS_C1_df_dup_SEP_2020","CONS_C1","C1_fech_nac_nas","CONS_C1_df_dup_FEB_2020_prev25b", "CONS_C1_df_dup_FEB_2020", "CONS_TOP", "path_dir")))
 ```
 
 ```{r setup, include = FALSE, cache=T, error=T, echo=T}
@@ -156,7 +233,6 @@ fitstats.flexsurvreg = function(x){
   )
 }
 
-
 if(.Platform$OS.type == "windows") withAutoprint({
   memory.size()
   memory.size(TRUE)
@@ -177,11 +253,11 @@ We recoded the region to lower letters for Metropolitan Region sectors. Addition
 
 ::: {style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%"}
 
-```{r traer_base, message=F, error=T, eval=T, echo=T}
+```{r traer-base, message=F, error=T, eval=T, echo=T}
 `%>%`<-magrittr:: `%>%`
 
 library(readxl)
-base_fiscalia_orig <- read_excel(gsub("/SUD_CL","/BASE.xlsx",path_dir), 
+base_fiscalia_orig <- read_excel(paste0(sub("2022 \\(github\\)","2019 \\(github\\)",path_dir),"/BASE.xlsx"), 
     sheet = "BASE", skip = 4, guess_max = min(1000000, Inf)) %>% janitor::clean_names() %>% 
   dplyr::mutate(gls_region=dplyr::case_when(gls_region=="REGION METROPOLITANA CENTRO NORTE"~ "RM Centro Norte",
                                             gls_region=="REGION METROPOLITANA OCCIDENTE"~ "RM Occidente",
@@ -200,7 +276,7 @@ base_fiscalia_orig <- read_excel(gsub("/SUD_CL","/BASE.xlsx",path_dir),
 
 
 library(readxl)
-Base_fiscalia_v2 <- read_excel(gsub("/SUD_CL","/Base_v3_dic_2021.xlsx",path_dir), 
+Base_fiscalia_v2 <- read_excel(paste0(sub("2022 \\(github\\)","2019 \\(github\\)",path_dir),"/Base_v3_dic_2021.xlsx"), 
 sheet = "Base", skip = 4, guess_max = min(1000000, Inf))%>% janitor::clean_names() %>% 
   dplyr::mutate(gls_region=dplyr::case_when(gls_region=="REGION METROPOLITANA CENTRO NORTE"~ "RM Centro Norte",
                                             gls_region=="REGION METROPOLITANA OCCIDENTE"~ "RM Occidente",
@@ -234,7 +310,7 @@ data.frame(db1=names(Base_fiscalia_v2)) %>%
 ```
 :::
 
-```{r tab1_descr_c1_baseline_vs_type_treatd, message=F, error=T, eval=T, warnings=F, echo=T}
+```{r tab1-descr-c1-baseline-vs-type-treatd, message=F, error=T, eval=T, warnings=F, echo=T}
 library(compareGroups)
 
 base_fiscalia<-
@@ -304,7 +380,7 @@ myVars_nva <-dput(names(dplyr::select(Base_fiscalia_v2, -c("rut_enc_saf","ruc","
 catVars_bd_nva <- dput(names(dplyr::select(Base_fiscalia_v2,c("encontrado_como_victima", "encontrado_como_imputado", "gls_tipo_sujeto_vic", "gls_region","tipo_termino","pais", "sexo","reg", "agrupa_terminos","gls_materia","familia_delito","relacion_vifsaf","gls_parentesco","gls_mottermino","gls_motsuspension","gls_proctermino","gls_tipo_imputado","lugar_ocurrencia","gls_sitiosuceso","gls_comuna","region_delito","medidas_155","medidas_pp","medidas_ip","marca_suspension_43","marca_pena_44","marca_multa_45","medida_alternativa_46","clasificacion_pena_47","tramos_condena_48","clasificacion_penarpa_1_49","clasificacion_penarpa_2_50","marca_suspension_51","marca_pena_52","marca_multa_53","medida_alternativa_54","clasificacion_pena_55","tramos_condena_56","clasificacion_penarpa_1_57","clasificacion_penarpa_2_58"))))
 ```
 
-```{r tab2_descr_c1_baseline_vs_type_treatd, message=F, error=T,eval=T, warnings=F, echo=T}
+```{r tab2-descr-c1-baseline-vs-type-treatd, message=F, error=T,eval=T, warnings=F, echo=T}
 tab2 <- as.data.frame.TableOne(CreateTableOne(vars = myVars, data = base_fiscalia[,myVars], factorVars = catVars, smd=T, strata="encontrado_como_imputado", addOverall = T, includeNA=T,test=T), smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
   tidyr::fill(char2) %>% 
@@ -401,7 +477,9 @@ knitr::kable(format="html",caption= "Table 2. Summary of Dates") %>% #,col.names
 
 # Missingness
 
-```{r miss, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center"}
+```{r miss, echo=T, error=T, paged.print=TRUE}
+#```{r miss, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center"}
+
 cols<-Base_fiscalia_v2[,myVars_nva] %>%
      names() #si fuera desde SPSS, sería p47_demo_medio_transp_otr
 
@@ -440,12 +518,9 @@ missing.values %>%
   coord_flip()
 
 
+
    ggplotly(plot_miss, tooltip = c("label_text"))%>% layout(xaxis= list(showticklabels = T), height = 600, width=800) %>%   layout(xaxis = list(tickformat='%',  range = c(0, 1)))
-
 ```
-
-<br>
-
 # Near Zero Variance
 
 Check variables that only had one unique value (i.e. are zero variance) or predictors that have both of the following characteristics: few unique values given the sample size, and the frequency of the most common value is much more big than the second most common value.
@@ -495,7 +570,7 @@ labs(y = "Frequency",x="Records as an imputed", caption= paste0("Blue dotted lin
 p
 ```
 
-```{r perc_accused, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
+```{r perc-accused, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
 paste0("Percentage of HASHs that have records as accused: ",
 scales::percent(
 base_fiscalia_acc_imp %>% 
@@ -538,7 +613,7 @@ labs(y = "Frequency",x="Records as a victim", caption= paste0("Blue dotted line=
 p2
 ```
 
-```{r perc_vic, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
+```{r perc-vic, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
 paste0("Percentage of HASHs that have records as victims: ",
 scales::percent(
 base_fiscalia_acc_vic %>% 
@@ -963,7 +1038,7 @@ knitr::kable(size=11, first.strip=T, hide.no="no",
 
 # Merge with SENDAs database
 
-```{r merge_distinct_ruts, echo=T, error=T, paged.print=TRUE}
+```{r merge-distinct-ruts, echo=T, error=T, paged.print=TRUE}
 invisible("¿Hay RUTs de fiscalía que no existen en la base de datos SENDA?")
 invisible("Ver cuántos calzan con la Base anterior (datos descartados en etapas del proceso de limpieza de datos)")
 rbind(
@@ -1011,59 +1086,9 @@ knitr::kable(size=11, first.strip=T, hide.no="no",
 
 <br>
 
-# Estimate EGA
-
-```{r paso_ega_1,eval=T, echo=T, paged.print=TRUE, eval=T, include=T, error=T}
-#https://towardsdatascience.com/exploratory-graph-analysis-3d4f9c63e92f
-library(devtools)
-#devtools::install_github('hfgolino/EGAnet')
-library(EGAnet)
-#lid_des_eam naq_eam
-#Base_fiscalia_v2$pais encontrado_como_victima gls_tipo_sujeto_vic gls_tipo_imputado gls_region familia_delito relacion_vifsaf gls_parentesco agrupa_terminos sexo edad_comision region_delito
-set.seed(2125)
-ega_data <- EGA(
-               data.matrix(Base_fiscalia_v2[c("pais", "encontrado_como_victima", "gls_tipo_sujeto_vic", "gls_tipo_imputado", "gls_region", "familia_delito", "agrupa_terminos", "sexo", "edad_comision", "region_delito")]), #sacamos el ítem 3
-               uni.method = "LE", #es la última opción que eligió el autor
-               corr = "cor_auto", #elige entre spearman y pearson
-               model = "glasso",
-               algorithm = "walktrap",
-               plot.EGA = TRUE,
-               plot.type = "qgraph"
-               )
-```
-
-We captured 4 clusters. The types we finish each judiciary process (`agrupa_terminos`) are much related to the age when a crime was committed by/against the patient (`edad_comision`) and the sex of the patient (`sex`).
-
-<br>
-
-```{r paso_ega_2,eval=T, echo=T, paged.print=TRUE, eval=T, include=T, error=T}
-boot_data <- bootEGA(
-                    data.matrix(Base_fiscalia_v2[c("pais", "encontrado_como_victima", "gls_tipo_sujeto_vic", "gls_tipo_imputado", "gls_region", "familia_delito", "relacion_vifsaf", "gls_parentesco", "agrupa_terminos", "sexo", "edad_comision", "region_delito")]),
-                    iter= 1000, 
-                    type = "resampling" #no-paramétrico
-                    )
-
-dplyr::bind_rows(cbind(model="DLS",boot_data$summary.table))%>% 
-knitr::kable("html", caption="Tabla. Información sobre las dimensiones en el remuestreo") %>% 
-  kableExtra::kable_classic()
-```
-
-A partir de la tabla anterior, podemos observar que la escala de Liderazgo Destructivo está compuesta por 2 dimensiones. En cambio, el NAQ-R tiene una mediana de 4 (95% IC: 1,64- 6,35).
-
-<br>
-
-```{r paso_ega_3,eval=T, echo=T, paged.print=TRUE, eval=T, include=T, error=T}
-ic.naq <- itemStability(boot_naq)
-ic.dls <- itemStability(boot_dls)
-```
-
-Los ítems menos replicables para el modelo de 4 factores, son el 11, 20, 14, 22 y 17. Por ejemplo, el ítem 11 se replica un 35%.
-
-<br>
-
 # Preliminary Analyses for SER 2022
 
-```{r 1_ser, echo=T, error=T, paged.print=TRUE}
+```{r 1-ser, echo=T, error=T, paged.print=TRUE}
 if(no_mostrar==0){
 load("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/10.RData")
 load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2019 (github)/10.RData")
@@ -1234,7 +1259,7 @@ paste0("[CALCULATED WRONGLY] Percentage of patients involved in criminal process
 print("They were CALCULATED WRONGLY because the frequencies and percentages were not done by the percentage of patients, but by the percentage of combinations of different crimes, criminal process and patients")
 ```
 
-```{r 2_ser, echo=T, error=T, paged.print=TRUE}
+```{r 2-ser, echo=T, error=T, paged.print=TRUE}
 cat("Generate a database with the count of charges by user")          
           
 charges_by_patients<-
@@ -1293,7 +1318,7 @@ knitr::kable(format="html",caption="Table 8. An example of distinct combination 
   kableExtra::scroll_box(width = "100%", height = "350px")
 ```
 
-```{r 3_ser, echo=T, error=T, paged.print=TRUE}
+```{r 3-ser, echo=T, error=T, paged.print=TRUE}
 cases_by_patients<-
 Base_fiscalia_v2 %>% 
       dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
@@ -1391,7 +1416,7 @@ Only a `r scales::percent(janitor::tabyl(ifelse(charges_by_patients$tot_charges>
 
 <br>
 
-```{r 3_5_ser, echo=T, error=T, paged.print=TRUE, eval=T}
+```{r 3-5-ser, echo=T, error=T, paged.print=TRUE, eval=T}
 
 paste0("[CORRECTED] Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration: ",
        scales::percent(nrow(charges_by_patients_perc_pena)/nrow(charges_by_patients), accuracy=0.1),
@@ -1453,7 +1478,7 @@ charges_by_patients %>%
 ))
 ```
 
-```{r 3_5_ser_wrong, echo=T, error=T, paged.print=TRUE, eval=T}
+```{r 3-5-ser-wrong, echo=T, error=T, paged.print=TRUE, eval=T}
 
 paste0("[CORRECTED] Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration: ",
        scales::percent(nrow(charges_by_patients_perc_pena)/nrow(charges_by_patients), accuracy=0.1),
@@ -1554,7 +1579,7 @@ paste0("Completed treatment: ", scales::percent(0.2743555 /0.8469231))
 #     dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) 
 ```
 
-```{r 4_ser_descartado_por_mientras, echo=T, error=T, paged.print=TRUE, eval=F}
+```{r 4-ser-descartado-por-mientras, echo=T, error=T, paged.print=TRUE, eval=F}
 #_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_
@@ -1684,7 +1709,7 @@ if(!require(future)){install.packages("future")}
 if(!require(dplyr)){install.packages("dplyr")}
 ```
 
-```{r prepare_codebook, include=T, echo=T, paged.print=T}
+```{r prepare-codebook, include=T, echo=T, paged.print=T}
 
 codebook_data <- dplyr::select(Base_fiscalia_v2, -c("rut_enc_saf","ruc","idrelacion","cod_delito","cod_lugarocurrencia","cod_parentescoimputado","cod_mottermino","cod_motsuspension","cod_proctermino","idsujeto_imputado","impcod_tiposujeto","cod_lugarocurrencia","cod_sitiosuceso","cod_comunadelito","cod_region", "iddelito"))
 
@@ -1714,7 +1739,7 @@ In the following Tables and graphics, there is a summary of the variables and do
 
 <br>
 
-```{r codebook_display, echo=T, paged.print=T}
+```{r codebook-display, echo=T, paged.print=T}
   metadata(codebook_data)$name <- "Prosecutor Support System (SAF), database of the Public Prosecutor's Office."
   metadata(codebook_data)$description <- "The information was extracted and processed from the Prosecutor Support System (SAF) database in accordance with the criteria established in the methodological document 'Criteria for Extracting Information from the SAF - 11_04_2018', prepared and updated in 2018 by the Studies, Evaluation, Control and Management Development Division. Data obtained at 2021-08-13; Period= 2010 to 2019; Unit of measurement= Relationships; Offenses considered= All; Date to consider= Date of termination of the case; National Coverage; Detail or summary= Detail; In the search for victims, only direct victims were considered; The RUTs indicated are searched only in cases terminated or suspended in the period 2010 - 2019;
 The following types of accused are considered: COMPLAINED, ACCUSED, QUERELLED, WITNESS, SUSPECTED AND INVESTIGATED"
@@ -1726,22 +1751,20 @@ codebook(codebook_data)
 
 # Session Info
 
-```{r session_info, echo=T, error=T, paged.print=TRUE}
+```{r session-info, echo=T, error=T, paged.print=TRUE}
 Sys.getenv("R_LIBS_USER")
+Sys.Date()
+paste0("Editor context: ", path_dir)
 
 if (grepl("CISS Fondecyt",path_dir)==T){
-    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2019 (github)/10.RData")
+    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/10.RData")
   } else if (grepl("andre",path_dir)==T){
     save.image("C:/Users/andre/Desktop/SUD_CL/10.RData")
   } else if (grepl("E:",path_dir)==T){
-    save.image("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/10.RData")
+    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/10.RData")
   } else {
     save.image(paste0(sub("SUD_CL","",path_dir),"10.RData"))
   }
-```
-
-```{r}
-sessionInfo()
 
 sesion_info <- devtools::session_info()
 dplyr::select(
@@ -1751,7 +1774,7 @@ dplyr::select(
   DT::datatable(filter = 'top', colnames = c('Row number' =1,'Variable' = 2, 'Percentage'= 3),
               caption = htmltools::tags$caption(
         style = 'caption-side: top; text-align: left;',
-        '', htmltools::em('Paquetes estadísticos utilizados')),
+        '', htmltools::em('Packages')),
       options=list(
 initComplete = htmlwidgets::JS(
       "function(settings, json) {",
@@ -1785,6 +1808,6 @@ if(no_mostrar==0){
   dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  T~"VICTIMA")) %>% 
-  dplyr::filter(accused=="VICTIMA") %>% 
-    rio::export(file = gsub("SUD_CL","fiscalia_mariel_ago_2021.dta",path_dir))
+  #dplyr::filter(accused=="VICTIMA") %>% 
+  rio::export(file = paste0(sub("2022 \\(github\\)","2019  \\(github\\)",path_dir),"/fiscalia_mariel_ago_2021.dta"))
 ```

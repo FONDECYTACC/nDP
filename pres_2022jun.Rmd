@@ -268,7 +268,7 @@ background-size: 20%
 
 <br>
 
-.text_70[[Code available in: `r fontawesome::fa(name = "github")`](https://github.com/FONDECYTACC/SUD_health_Chile.github.io)]
+.text_70[[Código disponible en: `r fontawesome::fa(name = "github")`](https://fondecytacc.github.io/nDP/)]
 
 .text_110[Propuesta - Concurso Fondo de Investigación Intramural nDP]
 
@@ -282,7 +282,8 @@ background-size: 20%
 
 .text_100[Mariel Mateo Piñones & Andrés González Santa Cruz]
 
-.text_70[mdmateo@uc.cl]
+.text_70[mdmateo@uc.cl] [`r fontawesome::fa(name = "orcid", fill="green")`](https://orcid.org/0000-0002-9607-7541)
+]
 .text_70[gonzalez.santacruz.andres@gmail.com] [`r fontawesome::fa(name = "github")`](https://github.com/AGSCL) [`r fontawesome::fa(name = "orcid", fill="green")`](https://orcid.org/0000-0002-5166-9121)
 ]
 
@@ -302,7 +303,8 @@ knitr::include_graphics('./_style/blank_space.png')
 *#_#_#_#_#_#_#_#_#_#_
 
 - Mi nombre es andrés gonzález. Soy asistente de investigación del proyecto que lidera Alvaro Castillo
-- En esta instancia haré un resumen de una idea de investigación que dirige mi compañera Mariel Mateo, que en esta instancia no se encuentra disponible debido a diferencias de horario. Se encuentra en Australia.
+- En esta instancia haré un resumen de una investigación que dirige mi compañera Mariel Mateo y en la que estamos trabajando en el contexto del núcleo milenio para la evaluación y análisis de políticas de drogas, ella se encuentra en Australia y por eso me ha tocado presentar principalmente a mí.
+- El proyecto se titula **"Midiendo el impacto de los tratamientos por uso de sustancias en la prevención de los contactos con el sistema de justicia en Chile"**
 
 ---
 layout: true
@@ -353,7 +355,11 @@ class: animated, fadeIn
 *#_#_#_#_#_#_#_#_#_#_
 **NOTA**
 *#_#_#_#_#_#_#_#_#_#_
-
+- Los trastornos por uso de sustnacias son un problema no sólo regional sino mundial. El uso de alcohol y drogas se encuentra entre las 15 causas de riesgo más importantes según el global burden of disease, por ejemplo.
+- No obstante, hay poca evidencia en latinoamérica
+- Latinoamérica tiene distintos patrones de uso/abuso de sustancias a los países desarrollados y de altos ingresos tradicionales: mayor uso de alcohol y de pasta base, non-injected drug use (NIDU). Por tanto, al ser un perfil epidemiológico distinto
+- Se sabe que Uno de los criterios para evaluar resultados de tratamiento es relacionarlo con los conctactos con el sistema de justicia antes, a lo largo y posterior al tratamiento.
+- No obstante, por otro lado, Chile tiene muchos desafíos para evlauar la efectividad de estos (ISUC-PUC) y existe poca evidencia al respecto, muy local o con muy pocos datos, etc.
 
 ---
 class: center, middle
@@ -474,6 +480,8 @@ fig_trans_final
 **NOTA**
 *#_#_#_#_#_#_#_#_#_#_
 
+- Para reflejar un poco la problemática, expondré este esquema de trayectorias de tratamiento.
+
 - La figura muestra distintas trayectorias de la cohorte. Incluye personas con y sin contactos con el sistema judicial. La entrada de paciente a la cohorte retrospectiva empieza a la fecha en que es admitido por primera vez en un tratamiento por uso de sustancias enn el período de 2010-2019 y figura en las listas anuales del SENDA al 2010 al 2019 (independientemente si tienen tratamientos previos).
 
 - **Punto**= Completa tratamiento;**Cuadrado**= Contacto con el sistema judicial como imputado;**Triángulo**= Contacto con el sistema judicial como víctima;**Area sombreada**: Ventana de seguimiento;**Línea Naranja**=Tiempo de contacto con el sistema judicial;**Azul**=Tiempo en tratamiento
@@ -495,17 +503,13 @@ fig_trans_final
 
 + 2010-2019, ~85.000 usuarios (n~ 110.000 registros)
 
-+ Pareado con datos de fiscalía (~560,000 registros), para ~75.000 usuarios
++ Pareado con datos de fiscalía (~555,000 registros), para ~75.000 usuarios
 
 + Análisis de supervivencia
 
   - Modelos de aceleración (AFT)
 
-$$logT=-\beta X+W$$ 
-
 $$log\lambda(t|z)=log\lambda_0(te^{-z^T\beta})$$
-
-
 
 .superbigimage[
 .text_50[
@@ -520,6 +524,10 @@ $$readmisión\,|\,contacto\,con\,el\,sistema\,de\,justicia\sim \alpha+ X_{1 (Com
 *#_#_#_#_#_#_#_#_#_#_
 **NOTA**
 *#_#_#_#_#_#_#_#_#_#_
+
+- SENDA define estándares, supervisa y compra tratamientos. Es la entidad que más proporciona tratamientos por drogas en Chile (el MINSAL, en cambio, muy pocos fuera del convenio). Atiende alrededor de 15.000 personas al año y desde el 2009 se habilitó un sistema de monitoreo nacional de tratamientos SISTRAT
+
+- Nosotros parearemos datos de este sistema de los tratamientos en población adulta del 2010 al 2019, con datos de fiscalía de contactos del sistema de justicia (como victima/imputados) por estos pacientes en el mismo periodo.
 
  (si es imputado, se buscará condena y se asumirá como riesgo competidor )
 - https://journals.sagepub.com/doi/full/10.1177/09622802211041759
@@ -644,8 +652,9 @@ ggant
 *#_#_#_#_#_#_#_#_#_#_
 **NOTA**
 *#_#_#_#_#_#_#_#_#_#_
+- Nuestro itinerario es el siguiente:
+
 - TEÖRICO: Familiarizarnos con terminología jurídica, modalidades de condena, etc.
-- Note. Rel.= Relationships or the combination of a victim (Vic), an offender (Imp), a judicial cause (RUC).
 - Definir una unidad de análisis: ¿la relación (combinación específica de una determinada víctima, un imputado y para una determinada causa), la causa judicial (desde la cual se inician procedimientos y que agrupa relaciones)?
 - Para ello es necesario estar seguro si distintas relaciones conllevan a distintas condenas, y si en una causa se puede figurar y discriminar entre el rol de un usuario como imputado y como víctima.
 - Teniendo eso, podemos vincular las bases de datos adecuadamente,
