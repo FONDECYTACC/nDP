@@ -7,7 +7,7 @@ output:
     fig_height: 6
     fig_width: 8
     theme: flatly
-    toc: no
+    toc: yes
     toc_depth: 5
     toc_float: yes
     output_dir: "docs"
@@ -200,7 +200,7 @@ copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
 if(!require(pacman)){install.packages("pacman")}
 pacman::p_load(withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MarchIt, cobalt, eha, igraph, Amelia, DiagrammeR, mstate, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot,compareGroups,job)
 
-options(scipen=999) #display numbers rather scientific number
+options(scipen=2) #display numbers rather scientific number
 
 #remotes::install_github("chjackson/flexsurv-dev", upgrade = "never")
 #devtools::install_github("stulacy/multistateutils", build_vignettes=TRUE, upgrade = "never")
@@ -299,7 +299,7 @@ sheet = "Base", skip = 4, guess_max = min(1000000, Inf))%>% janitor::clean_names
 
 ifelse(nrow(base_fiscalia_orig)==nrow(Base_fiscalia_v2),"There are no differences in the length of the databases","There are differences in the length of the databases")
 
-paste0("The original database had only missing rows in 'tramos_condena_48' and 'clasificacion_penarpa_1_49'")
+cat(paste0("The original database had only missing rows in 'tramos_condena_48' and 'clasificacion_penarpa_1_49'"), fill=T)
 
 names_comparison<-
 data.frame(db1=names(Base_fiscalia_v2)) %>% 
@@ -367,12 +367,12 @@ as.data.frame.TableOne <- function(x, ...) {
 options(knitr.kable.NA = '')
 
 ## 
-cat("Vector of variables to summarize")
+cat("Vector of variables to summarize", fill=T)
 
 #obtener las columnas así nos permite descartar nombres errróneos
 myVars <-dput(names(dplyr::select(base_fiscalia, -c("rut_enc_saf","ruc","idrelacion","cod_delito","cod_lugarocurrencia","cod_parentescoimputado","cod_mottermino","cod_motsuspension","cod_proctermino","idsujeto_imputado","idsujeto_victima","impcod_tiposujeto","cod_lugarocurrencia","cod_sitiosuceso","cod_comunadelito","cod_region","iddelito"))))
 
-cat("Vector of categorical variables that need transformation")
+cat("Vector of categorical variables that need transformation", fill=T)
 
 catVars <- dput(names(dplyr::select(base_fiscalia,c("encontrado_como_victima", "encontrado_como_imputado", "gls_tipo_sujeto_vic", "gls_region","tipo_termino","reg", "agrupa_terminos","gls_materia","familia_delito","relacion_vifsaf","gls_parentesco","gls_mottermino","gls_motsuspension","gls_proctermino","gls_tipo_imputado","lugar_ocurrencia","gls_sitiosuceso","gls_comuna","region_delito","medidas_155","medidas_pp","medidas_ip","marca_suspension_43","marca_pena_44","marca_multa_45","medida_alternativa_46","clasificacion_pena_47","tramos_condena_48","clasificacion_penarpa_1_49","clasificacion_penarpa_2_50","marca_suspension_51","marca_pena_52","marca_multa_53","medida_alternativa_54","clasificacion_pena_55","tramos_condena_56","clasificacion_penarpa_1_57","clasificacion_penarpa_2_58"))))
 
@@ -467,7 +467,7 @@ Base_fiscalia_v2 %>%
          p75=as.Date(quantile(unclass(fec_nacimiento_simple), .75, na.rm=T), origin = "1970-01-01"),
          p975=as.Date(quantile(unclass(fec_nacimiento_simple), .975, na.rm=T), origin = "1970-01-01"),
          max = max(fec_nacimiento_simple, na.rm=T)))) %>% 
-knitr::kable(format="html",caption= "Table 2. Summary of Dates") %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
+knitr::kable(format="html",caption= "Summary of Dates") %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
     kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>% 
   kableExtra::group_rows("Original database",1,3) %>% 
   kableExtra::group_rows("Corrected database",4,7)
@@ -477,7 +477,7 @@ knitr::kable(format="html",caption= "Table 2. Summary of Dates") %>% #,col.names
 
 # Missingness
 
-```{r miss, echo=T, error=T, paged.print=TRUE}
+```{r miss, echo=T, error=T, paged.print=TRUE, fig.cap= "Missingness by variables"}
 #```{r miss, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center"}
 
 cols<-Base_fiscalia_v2[,myVars_nva] %>%
@@ -530,7 +530,7 @@ nzv_vals <- nearZeroVar(Base_fiscalia_v2, saveMetrics = TRUE)
 nzv_sorted <- dplyr::arrange(nzv_vals, desc(freqRatio))
 
 kable(as.data.frame.TableOne(nzv_sorted), size=11, format="html",
-    caption= "Table 4. Near Zero Variance",
+    caption= "Near Zero Variance",
     col.names=c("Variable", "freqRatio", "% of Unique values", "Zero Variance", "Near Zero Variance")) %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
     kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
     kableExtra::add_footnote(c("Note. freqRatio= ratio of frequencies for the most common value over the second most common value for that variable"), notation = "none")%>%
@@ -543,7 +543,7 @@ kable(as.data.frame.TableOne(nzv_sorted), size=11, format="html",
 
 -   `r table(Base_fiscalia_v2$encontrado_como_victima,Base_fiscalia_v2$encontrado_como_imputado)[4]` people that is found as accused and as a victim at the same time. Meanwhile, we considered them as accused.
 
-```{r fig1, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Figure 1. Distribution of records in which a user is declared as an accused", fig.height=6}
+```{r fig1, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Distribution of records in which a user is declared as an accused", fig.height=6}
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 base_fiscalia_acc_imp<-
 Base_fiscalia_v2 %>% 
@@ -571,20 +571,20 @@ p
 ```
 
 ```{r perc-accused, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
-paste0("Percentage of HASHs that have records as accused: ",
+cat(paste0("Percentage of HASHs that have records as accused: ",
 scales::percent(
 base_fiscalia_acc_imp %>% 
     dplyr::left_join(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")] %>% distinct(hash_key, .keep_all = T),by=c("rut_enc_saf"="hash_key")) %>%  distinct(rut_enc_saf) %>% nrow()/CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")] %>% distinct(hash_key, .keep_all = T) %>% nrow(),
   accuracy=.01
   )
-  )
+  ), fill=T)
 ```
 
 <br>
 
 ## Times as victim
 
-```{r fig2, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Figure 2. Distribution of records in which a user is declared as a Victim", fig.height=6}
+```{r fig2, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Distribution of records in which a user is declared as a Victim", fig.height=6}
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 base_fiscalia_acc_vic<-
 Base_fiscalia_v2 %>% 
@@ -614,13 +614,13 @@ p2
 ```
 
 ```{r perc-vic, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
-paste0("Percentage of HASHs that have records as victims: ",
+cat(paste0("Percentage of HASHs that have records as victims: ",
 scales::percent(
 base_fiscalia_acc_vic %>% 
     dplyr::left_join(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")] %>% distinct(hash_key, .keep_all = T),by=c("rut_enc_saf"="hash_key")) %>%  distinct(rut_enc_saf) %>% nrow()/CONS_C1_df_dup_SEP_2020[,c("hash_key","dup")] %>% distinct(hash_key, .keep_all = T) %>% nrow(),
 accuracy=.01
   )
-)
+), fill=T)
 ```
 
 <br>
@@ -796,7 +796,7 @@ rel_por_ruc,
 delitos_ruc) %>% 
   dplyr::select(cat, everything()) %>% 
   knitr::kable(size=11, first.strip=T, hide.no="no",
-           format="html",caption= "Table 5. Counts of entries by different groups",
+           format="html",caption= "Counts of entries by different groups",
          smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F) %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
     kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 12) %>%
   # kableExtra::add_footnote(c("Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown;", "Categorical variables are presented as number (%)"), notation = "none")%>%
@@ -809,7 +809,7 @@ We looked for the percentage of entries with the ID for the victim equal to 0 (m
 
 <br>
 
-```{r s2, echo=T, error=T, paged.print=TRUE}
+```{r s2, echo=T, error=T, paged.print=TRUE, fig.cap= "Percentages of 0 values in ID victim by Date of comission of the crime"}
 #sería RUT/Hash → RUC → relaciones
 #
 #fec_cbiorelacion
@@ -845,7 +845,7 @@ Base_fiscalia_v2 %>%
 ggplotly(vic_trim_id_suj_0, tooltip="label_text")
 ```
 
-```{r s202, echo=T, error=T, paged.print=TRUE, eval=T}
+```{r s202, echo=T, error=T, paged.print=TRUE, eval=T, fig.cap= "Percentages of 0 values in ID victim by Date of finishing of the relationship"}
 vic_trim_id_suj_0_b<-
 Base_fiscalia_v2 %>% 
   dplyr::arrange(rut_enc_saf, ruc, idrelacion) %>% 
@@ -885,13 +885,13 @@ ggplotly(vic_trim_id_suj_0_b, tooltip="label_text")
 #   dplyr::filter(combinacion %in% as.character(unlist(agrupacion_base %>% 
 #   dplyr::filter(max>1) %>%dplyr::mutate(combinacion=paste0(ruc,"_",rut_enc_saf)) %>% dplyr::select(combinacion)))) %>% View()
 
-cat("Entries with accused and victim status")
+cat("Entries with accused and victim status", fill=T)
 invisible("2021-12-17, enviado a fiscalía")
 
 format(Base_fiscalia_v2 %>%
   dplyr::filter(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI") %>% nrow(), big.mark=",")
 
-cat("Differences between date of termination of cbiorelacion (fec_cbiorelacion) and termination of relationship (termino_relacion)")
+cat("Differences between date of termination of cbiorelacion (fec_cbiorelacion) and termination of relationship (termino_relacion)", fill=T)
 invisible("¿Hay diferencias en la fecha biorelacion y la de término de relación")
 Base_fiscalia_v2 %>% 
     dplyr::filter(termino_relacion!=fec_cbiorelacion) %>% 
@@ -899,13 +899,13 @@ Base_fiscalia_v2 %>%
     select(diff_en_dias) %>% 
     summarise(n=n(),min=min(diff_en_dias), max=max(diff_en_dias), mean=mean(diff_en_dias), median=median(diff_en_dias), p025=quantile(diff_en_dias, .025), p25=quantile(diff_en_dias, .25), p75=quantile(diff_en_dias,.75), p975=quantile(diff_en_dias, .975)) %>% copiar_nombres()
 
-cat("Entries in which the RUT is found as accused and victim (distinct RUTs & distinct RUCs)")
+cat("Entries in which the RUT is found as accused and victim (distinct RUTs & distinct RUCs)", fill=T)
 invisible("Casos en que hay filas en que un rut es imputado y víctima")
 Base_fiscalia_v2 %>%
     dplyr::filter(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI") %>% 
     summarise(n=n_distinct(rut_enc_saf), n2=n_distinct(ruc))
 
-cat("Entries in which an accused commits a crime with distinct cause (RUC) in the same date")
+cat("Entries in which an accused commits a crime with distinct cause (RUC) in the same date", fill=T)
 invisible("Casos en que una persona comete un delito con distinta causa en la misma fecha")
 format(Base_fiscalia_v2 %>%
     dplyr::mutate(comb=paste0(rut_enc_saf,"_",fec_comision)) %>% 
@@ -924,7 +924,7 @@ format(Base_fiscalia_v2 %>%
 
 # 0007678b8b35fa0961d1e8110fbf9620	SI	NO	6	VICTIMA	47359056	5	V Región de Valparaíso	16916932	1400068650-7	SALIDA NO JUDICIAL	ARCHIVO PROVISIONAL	524	AMENAZAS SIMPLES CONTRA PERSONAS Y PROPIEDADES ART. 296 Nº3.	DELITOS CONTRA LA LIBERTAD E INTIMIDAD DE LAS PERSONAS	SI	16	CONVIVIENTE	1	Archivo Provisional	0	NA	0	SIN PROCEDIMIENTO	47359057	3	IMPUTADO	12911972	18-01-2014 19:40	27-01-2014	2	LUGAR HABITADO O DESTINADO A LA HABITACION Y SUS DEPENDENCIAS	1	VIVIENDA	310	VALPARAISO	5	V Región de Valparaíso	27-01-2014	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
 
-cat("Entries that have different relationship ID for the same combination of an ID of the victim and the ID of the accused")
+cat("Entries that have different relationship ID for the same combination of an ID of the victim and the ID of the accused", fill=T)
 invisible("Gente que tendría distinto id de relación para una misma combianción de id víctima e id imputado")
 format(Base_fiscalia_v2 %>%
     dplyr::mutate(comb=paste0(idsujeto_victima,"_",idsujeto_imputado)) %>% 
@@ -934,7 +934,7 @@ format(Base_fiscalia_v2 %>%
     dplyr::filter(!grepl("^0_", comb)) %>% 
     dplyr::filter(n>1) %>%  nrow(), big.mark=",")
 
-cat("Example")
+cat("Example", fill=T)
 Base_fiscalia_v2 %>%
     dplyr::mutate(comb=paste0(idsujeto_victima,"_",idsujeto_imputado)) %>% 
     arrange(rut_enc_saf,fec_comision,ruc,idrelacion) %>% 
@@ -942,7 +942,7 @@ Base_fiscalia_v2 %>%
     dplyr::select(rut_enc_saf, ruc, idsujeto_victima, idsujeto_imputado, idrelacion, gls_materia) %>%  print()
 
 
-cat("Cases with date of crime comission are posterior to the date that the relationship ended")
+cat("Cases with date of crime comission are posterior to the date that the relationship ended", fill=T)
 format(Base_fiscalia_v2 %>%
   dplyr::mutate(fec_comision_simple=as.Date(stringr::str_extract(as.character(fec_comision), "^.{10}"))) %>% 
   dplyr::mutate(termino_relacion_simple=as.Date(stringr::str_extract(as.character(termino_relacion), "^.{10}"))) %>%
@@ -953,20 +953,20 @@ format(Base_fiscalia_v2 %>%
   #     select(diff_en_dias) %>% 
   #     summarise(n=n(),min=min(diff_en_dias), max=max(diff_en_dias), mean=mean(diff_en_dias), median=median(diff_en_dias), p025=quantile(diff_en_dias, .025), p25=quantile(diff_en_dias, .25), p75=quantile(diff_en_dias,.75), p975=quantile(diff_en_dias, .975)) %>% copiar_nombres()
 
-cat("Are gls_materia and cod_delito distinct (differences in the number of categories contained)?")
+cat("Are gls_materia and cod_delito distinct (differences in the number of categories contained)?", fill=T)
 ifelse(Base_fiscalia_v2 %>%
     dplyr::group_by(cod_delito) %>% 
     summarise(n=n_distinct(gls_materia)) %>% 
     dplyr::filter(n>1) %>% nrow()>0,"Yes","No")
 
-cat("And viceversa?")
+cat("And viceversa?", fill=T)
 
 ifelse(Base_fiscalia_v2 %>%
     dplyr::group_by(gls_materia) %>% 
     summarise(n=n_distinct(cod_delito)) %>% 
     dplyr::filter(n>1) %>% nrow(), "Yes","No")
 
-cat("Cases in which the same RUC has 2 or more RUTs")
+cat("Cases in which the same RUC has 2 or more RUTs", fill=T)
 format(Base_fiscalia_v2 %>%
     dplyr::group_by(ruc) %>% 
     summarise(n=n_distinct(rut_enc_saf)) %>% 
@@ -978,7 +978,7 @@ format(Base_fiscalia_v2 %>%
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
 
-cat("Number of different relationships within a RUC by each RUT")
+cat("Number of different relationships within a RUC by each RUT", fill=T)
 invisible("ID's de relación por RUCs en RUTs")
 agrupacion_base<-
 Base_fiscalia_v2 %>%
@@ -1027,7 +1027,7 @@ Base_fiscalia_v2 %>%
 dplyr::filter(idrelacion %in% c(12935546, 13290172, 14124442, 14248963, 14953586, 15559264, 20446792)) %>% 
   dplyr::arrange(rut_enc_saf, ruc, idrelacion, id_delito) %>% 
 knitr::kable(size=11, first.strip=T, hide.no="no",
-           format="html",caption= "Table 6. Cases with duplicated entries",
+           format="html",caption= "Cases with duplicated entries",
          smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F) %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
     kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
   # kableExtra::add_footnote(c("Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown;", "Categorical variables are presented as number (%)"), notation = "none")%>%
@@ -1080,7 +1080,7 @@ base_fiscalia_acc_vic %>%
                      perc = scales::percent(sum_na/n, accuracy=.01)))
 ) %>% 
 knitr::kable(size=11, first.strip=T, hide.no="no",
-           format="html",caption= "Table 7. Comparison of availability of RUTs") %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
+           format="html",caption= "Comparison of availability of RUTs") %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
     kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 12)
 ```
 
@@ -1124,29 +1124,28 @@ if(!require(explore)){devtools::install_github("rolkra/explore",upgrade ="never"
 #Conclusions. Readmissions to SUD treatment were high, particularly among early withdrawers and those using cocaine paste at admission. Individual risk assessment at admission seems to be a crucial component of treatment to prevent early withdrawal and subsequent problems, such treatment readmission.
 invisible("Una de las limitaciones del estudio preliminar es que tiene todos los RUT, incluso los 370 y algo que no calzan con la base de datos actual, y algunas entradas que debieron ser anuladas por error de digitación. Lo anterior, para tener en cuenta")
 
-paste0("Drug treatment patients: ", length(unique(CONS_C1_df_dup_SEP_2020$hash_key)))
+cat(paste0("Drug treatment patients: ", length(unique(CONS_C1_df_dup_SEP_2020$hash_key))), fill=T)
 
-paste0("Treatment episodes: ",length(CONS_C1_df_dup_SEP_2020$hash_key))
+cat(paste0("Treatment episodes: ",length(CONS_C1_df_dup_SEP_2020$hash_key)), fill=T)
 
-paste0("Drug treatment patients: ", length(unique(CONS_C1_df_dup_SEP_2020$hash_key)))
+cat(paste0("Drug treatment patients: ", length(unique(CONS_C1_df_dup_SEP_2020$hash_key))), fill=T)
 
 print("percentages")
 round(prop.table(table(ifelse(grepl("PR",CONS_C1_df_dup_SEP_2020$tipo_de_plan_2),"Residential","Ambulatory"))),3)*100
 
-paste0("Mean length per treatment: ", round(mean(CONS_C1_df_dup_SEP_2020$dias_treat_imp_sin_na),1), " days")
+cat(paste0("Mean length per treatment: ", round(mean(CONS_C1_df_dup_SEP_2020$dias_treat_imp_sin_na),1), " days"), fill=T)
 
 round(prop.table(table(ifelse(grepl("Therapeutic",CONS_C1_df_dup_SEP_2020$motivodeegreso_mod_imp),"Therapeutic","Else"))),3)*100
 
-paste0("Entries of imputed relationships (crime, accused, victim and RUC): ",
+cat(paste0("Entries of imputed relationships (crime, accused, victim and RUC): ",
        Base_fiscalia_v2 %>% 
          dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
-         dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>% 
-  dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+         dplyr::filter(rut_enc_saf %in% unique(CONS_C1_df_dup_SEP_2020$hash_key)) %>%  dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  T~"VICTIMA")) %>% 
-      dplyr::filter(accused=="IMPUTADO") %>% nrow() %>%  format(big.mark=","))
+      dplyr::filter(accused=="IMPUTADO") %>% nrow() %>%  format(big.mark=",")), fill=T)
 
-
+cat(
 paste0("Criminal processes (RUCs) that had an imputed in which a SENDAs patient participated as an accused: ",
        Base_fiscalia_v2 %>% 
          dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
@@ -1157,11 +1156,11 @@ paste0("Criminal processes (RUCs) that had an imputed in which a SENDAs patient 
          dplyr::filter(accused=="IMPUTADO") %>%
          #slice(1:500) %>% 
          dplyr::distinct(ruc) %>% 
-         nrow() %>% format(big.mark=","))
+         nrow() %>% format(big.mark=",")), fill=T)
 #324,858 casos distintos
 
 invisible("son como 326299/63537=5.15 por rut")
-
+cat(
 paste0("Percentage of patients involved in criminal process (RUCs) as accused: ",
        scales::percent(
          Base_fiscalia_v2 %>% 
@@ -1173,11 +1172,11 @@ paste0("Percentage of patients involved in criminal process (RUCs) as accused: "
          dplyr::filter(accused=="IMPUTADO") %>% 
          dplyr::distinct(rut_enc_saf) %>% nrow()/length(unique(CONS_C1_df_dup_SEP_2020$hash_key))
        )
-)
+), fill=T)
 #63158 envueltos
 
-cat("Grouped distinct combinations of  RUTs, RUCs (criminal processes) & type of crime (gls_materia) that they were charged")
-
+cat("Grouped distinct combinations of  RUTs, RUCs (criminal processes) & type of crime (gls_materia) that they were charged", fill=T)
+cat(
 paste0("[CALCULATED WRONGLY]Percentage of patients involved in criminal processes (RUCs) as accused that were charged for violent crimes: ",
          Base_fiscalia_v2 %>% 
          dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
@@ -1204,9 +1203,9 @@ paste0("[CALCULATED WRONGLY]Percentage of patients involved in criminal processe
          dplyr::mutate(percent=round(percent*100,1)) %>% 
          dplyr::select(percent) %>% 
          as.numeric(),"%"
-)
+), fill=T)
 #El problema es que este porcentaje no está hecho de personas, sino de casos distintos. Para hacerlo por personas debo reagrupar por persona y contar si ha tenido delito de algun tipo.
-
+cat(
 paste0("[CALCULATED WRONGLY]Percentage of patients involved in criminal processes as accused that were charged for drug-related crimes: ",
          Base_fiscalia_v2 %>% 
          dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
@@ -1233,9 +1232,9 @@ paste0("[CALCULATED WRONGLY]Percentage of patients involved in criminal processe
          dplyr::mutate(percent=round(percent*100,1)) %>% 
          dplyr::select(percent) %>% 
          as.numeric(),"%"
-)         
+), fill=T)         
 #E:\Mi unidad\Alvacast\SISTRAT 2019 (github)\SER 2022 analyses.xlsx         
-  
+  cat(
 paste0("[CALCULATED WRONGLY] Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration: ",
          100-Base_fiscalia_v2 %>% 
          dplyr::filter(gls_mottermino!="Anulación de ingreso error de digitación"|is.na(gls_mottermino)) %>% 
@@ -1254,13 +1253,13 @@ paste0("[CALCULATED WRONGLY] Percentage of patients involved in criminal process
         dplyr::filter(is.na(clasificacion_pena_47)) %>% 
         dplyr::select(percent) %>% 
         as.numeric(),
-      "%")
-
-print("They were CALCULATED WRONGLY because the frequencies and percentages were not done by the percentage of patients, but by the percentage of combinations of different crimes, criminal process and patients")
+      "%"), fill=T)
+cat(
+print("They were CALCULATED WRONGLY because the frequencies and percentages were not done by the percentage of patients, but by the percentage of combinations of different crimes, criminal process and patients"), fill=T)
 ```
 
 ```{r 2-ser, echo=T, error=T, paged.print=TRUE}
-cat("Generate a database with the count of charges by user")          
+cat("Generate a database with the count of charges by user", fill=T)          
           
 charges_by_patients<-
 Base_fiscalia_v2 %>% 
@@ -1342,10 +1341,10 @@ Base_fiscalia_v2 %>%
                                                         T~"OTHER CHARGES")) %>% 
       dplyr::group_by(rut_enc_saf,ruc) %>% 
       dplyr::count() 
-
+cat(
 paste0("Patients involved in criminal processes (RUCs) as accused were charged with an average of ",
-       round(mean(charges_by_patients$tot_charges),1)," charged with an average of ", round(mean(cases_by_patients$n),1), " RUCs")
-
+       round(mean(charges_by_patients$tot_charges),1)," charged with an average of ", round(mean(cases_by_patients$n),1), " RUCs"), fill=T)
+cat(
 paste0("[CORRECTED]Percentage of patients involved in criminal processes (RUCs) as accused that have been charged for violent crimes: ",
        charges_by_patients %>% 
          dplyr::mutate(violent_crime_bin=ifelse(violent_crime>0,1,0)) %>% 
@@ -1354,8 +1353,8 @@ paste0("[CORRECTED]Percentage of patients involved in criminal processes (RUCs) 
         dplyr::filter(violent_crime_bin==1) %>% 
         dplyr::mutate(percent=round(percent*100,1)) %>% 
         dplyr::select(percent) %>% 
-         as.numeric(),"%")
-
+         as.numeric(),"%"), fill=T)
+cat(
 paste0("[CORRECTED]Percentage of patients involved in criminal processes as accused that have been charged for drug-related crimes: ",
        charges_by_patients %>% 
          dplyr::mutate(drug_related_crime_bin=ifelse(drug_related_crime>0,1,0)) %>% 
@@ -1364,8 +1363,8 @@ paste0("[CORRECTED]Percentage of patients involved in criminal processes as accu
         dplyr::filter(drug_related_crime_bin==1) %>% 
         dplyr::mutate(percent=round(percent*100,1)) %>% 
         dplyr::select(percent) %>% 
-         as.numeric(),"%")       
-       
+         as.numeric(),"%"), fill=T)       
+cat(       
 paste0("[CORRECTED]Percentage of patients involved in criminal processes as accused that have been charged for other crimes: ",
               charges_by_patients %>% 
          dplyr::mutate(other_charges_bin=ifelse(other_charges>0,1,0)) %>% 
@@ -1374,7 +1373,7 @@ paste0("[CORRECTED]Percentage of patients involved in criminal processes as accu
         dplyr::filter(other_charges_bin==1) %>% 
         dplyr::mutate(percent=round(percent*100,1)) %>% 
         dplyr::select(percent) %>% 
-         as.numeric(),"%")       
+         as.numeric(),"%"), fill=T)
 
 charges_by_patients_perc_pena<-
 Base_fiscalia_v2 %>% 
@@ -1417,10 +1416,10 @@ Only a `r scales::percent(janitor::tabyl(ifelse(charges_by_patients$tot_charges>
 <br>
 
 ```{r 3-5-ser, echo=T, error=T, paged.print=TRUE, eval=T}
-
+cat(
 paste0("[CORRECTED] Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration: ",
        scales::percent(nrow(charges_by_patients_perc_pena)/nrow(charges_by_patients), accuracy=0.1),
-       "")
+       ""), fill=T)
 scales::percent(
 charges_by_patients_perc_pena %>% 
     dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>% 
@@ -1435,7 +1434,7 @@ charges_by_patients %>%
   dplyr::select(n) %>% 
   as.numeric() 
 )
-
+cat(
 paste0("Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration of those who Completed their first treatment (percentage discarded ongoing treatments): ",
 scales::percent(
 charges_by_patients_perc_pena %>% 
@@ -1454,9 +1453,9 @@ charges_by_patients %>%
   dplyr::filter(motivodeegreso_mod_imp_rec==1) %>%  
   dplyr::select(n) %>% 
   as.numeric() 
-))
+)), fill=T)
 
-
+cat(
 paste0("Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration of those who did not Complete their first treatment (percentage discarded ongoing treatments): ",
 scales::percent(
 charges_by_patients_perc_pena %>% 
@@ -1475,18 +1474,19 @@ charges_by_patients %>%
   dplyr::filter(motivodeegreso_mod_imp_rec==0) %>% 
   dplyr::select(n) %>% 
   as.numeric() 
-))
+)), fill=T)
 ```
 
 ```{r 3-5-ser-wrong, echo=T, error=T, paged.print=TRUE, eval=T}
-
+cat(
 paste0("[CORRECTED] Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration: ",
        scales::percent(nrow(charges_by_patients_perc_pena)/nrow(charges_by_patients), accuracy=0.1),
-       "")
+       ""), fill=T)
 
 
 invisible("Diferencia cargos criminales")
-paste0("On average, people that completed their first treatment had a difference of XX in criminal charges (discarding Ongoing treatments)")
+cat(
+paste0("On average, people that completed their first treatment had a difference of XX in criminal charges (discarding Ongoing treatments)"), fill=T)
 t.test(tot_charges~factor(tr_comp),
 charges_by_patients %>% 
   dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
@@ -1494,8 +1494,8 @@ charges_by_patients %>%
   dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
   dplyr::mutate(tr_comp=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)))
 round(6.011362-4.215663,2) #1.8
-
-paste0("On average, people that completed their first treatment had a difference of XX in criminal charges [w/ ongoing treatments as non-completion]")
+cat(
+paste0("On average, people that completed their first treatment had a difference of XX in criminal charges [w/ ongoing treatments as non-completion]"), fill=T)
 t.test(tot_charges~factor(tr_comp),
 charges_by_patients %>% 
   dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
@@ -1506,7 +1506,8 @@ round(5.877325-4.215663,2) #1.66
 
 
 invisible("Diferencia cargos criminales violentos")
-paste0("On average, people that completed their first treatment had a difference of XX in violent criminal charges (discarding Ongoing treatments)")
+cat(
+paste0("On average, people that completed their first treatment had a difference of XX in violent criminal charges (discarding Ongoing treatments)"), fill=T)
 t.test(violent_crime~factor(tr_comp),
 charges_by_patients %>% 
   dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
@@ -1514,8 +1515,8 @@ charges_by_patients %>%
   dplyr::filter(motivodeegreso_mod_imp!="Ongoing treatment") %>% 
   dplyr::mutate(tr_comp=ifelse(motivodeegreso_mod_imp=="Therapeutic discharge",1,0)))
 round(1.1451374-0.8469231,2) #0.3
-
-paste0("On average, people that completed their first treatment had a difference of XX in violent criminal charges [w/ ongoing treatments as non-completion]")
+cat(
+paste0("On average, people that completed their first treatment had a difference of XX in violent criminal charges [w/ ongoing treatments as non-completion]"), fill=T)
 t.test(violent_crime~factor(tr_comp),
 charges_by_patients %>% 
   dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
@@ -1527,7 +1528,8 @@ round(1.1284284-0.8469231,2) #0.28
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 invisible("% cargos criminales con condena")
-paste0("incarceration resulted in X% of the times vs. X%, respectively")
+cat(
+paste0("incarceration resulted in X% of the times vs. X%, respectively"), fill=T)
 t.test(tot_charges~factor(tr_comp),
 charges_by_patients_perc_pena%>% 
   dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>%
@@ -1674,11 +1676,8 @@ if(no_mostrar==0){
    dplyr::filter(n_cases>1) %>% View()
 invisible("Casos con el mismo RUT y RUC, pero con distinto motivo de término en el mismo caso, incluso habiendo echo el filtro")
 }
- 
- #350,660 
- 
- 
-#_#_#_#_#_#_#_#_#_
+  #350,660 
+ #_#_#_#_#_#_#_#_#_
 
       # dplyr::add_count(name="n_") %>% 
       # tidyr::pivot_wider(names_from= familia_delito_rec, values_from= n, values_fill= 0) %>% 
@@ -1694,15 +1693,8 @@ invisible("Casos con el mismo RUT y RUC, pero con distinto motivo de término en
 # Codebook
 
 ```{r codebook, echo=T, error=T, paged.print=TRUE}
-knitr::opts_chunk$set(
-  warning = TRUE, # show warnings during codebook generation
-  message = TRUE, # show messages during codebook generation
-  error = TRUE, # do not interrupt codebook generation in case of errors,
-                # usually better for debugging
-  echo = TRUE  # show R code
-)
 ggplot2::theme_set(ggplot2::theme_bw())
-pander::panderOptions("table.split.table", Inf)
+#pander::panderOptions("table.split.table", Inf)  e: numeric passed to pandoc.table and also affects pander methods. This option tells pander where to split too wide tables. The default value (80) suggests the conventional number of characters used in a line, feel free to change (e.g. to Inf to disable this feature) if you are not using a VT100 terminal any more :)
 
 if(!require(codebook)){install.packages("codebook")}
 if(!require(future)){install.packages("future")}
@@ -1739,22 +1731,36 @@ In the following Tables and graphics, there is a summary of the variables and do
 
 <br>
 
+<div class="superbigimage">
+
 ```{r codebook-display, echo=T, paged.print=T}
   metadata(codebook_data)$name <- "Prosecutor Support System (SAF), database of the Public Prosecutor's Office."
   metadata(codebook_data)$description <- "The information was extracted and processed from the Prosecutor Support System (SAF) database in accordance with the criteria established in the methodological document 'Criteria for Extracting Information from the SAF - 11_04_2018', prepared and updated in 2018 by the Studies, Evaluation, Control and Management Development Division. Data obtained at 2021-08-13; Period= 2010 to 2019; Unit of measurement= Relationships; Offenses considered= All; Date to consider= Date of termination of the case; National Coverage; Detail or summary= Detail; In the search for victims, only direct victims were considered; The RUTs indicated are searched only in cases terminated or suspended in the period 2010 - 2019;
 The following types of accused are considered: COMPLAINED, ACCUSED, QUERELLED, WITNESS, SUSPECTED AND INVESTIGATED"
 
+knitr::opts_chunk$set(
+warning = F, # show warnings during codebook generation
+message = F, # show messages during codebook generation
+error = TRUE, # do not interrupt codebook generation in case of errors,
+              # TRUE is usually better for debugging
+echo = F  # show R code
+)
+  
+options(scipen=2)
+pander::panderOptions('digits', 2)
 codebook(codebook_data)
 ```
+
+</div>
 
 <br>
 
 # Session Info
 
 ```{r session-info, echo=T, error=T, paged.print=TRUE}
-Sys.getenv("R_LIBS_USER")
+cat(Sys.getenv("R_LIBS_USER"), fill=T)
 Sys.Date()
-paste0("Editor context: ", path_dir)
+cat(paste0("Editor context: ", path_dir), fill=T)
 
 if (grepl("CISS Fondecyt",path_dir)==T){
     save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/10.RData")
@@ -1804,10 +1810,10 @@ if(no_mostrar==0){
   }
 }
 
-  base_fiscalia %>% 
+base_fiscalia %>% 
   dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  T~"VICTIMA")) %>% 
   #dplyr::filter(accused=="VICTIMA") %>% 
-  rio::export(file = paste0(sub("2022 \\(github\\)","2019  \\(github\\)",path_dir),"/fiscalia_mariel_ago_2021.dta"))
+  rio::export(file = paste0(sub("2022 \\(github\\)","2022  \\(github\\)",path_dir),"/fiscalia_mariel_ago_2021.dta"))
 ```

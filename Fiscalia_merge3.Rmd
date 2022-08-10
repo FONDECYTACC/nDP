@@ -203,7 +203,7 @@ try(webshot::install_phantomjs())
 
 if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade =F))}
 
-options(scipen=999) #display numbers rather scientific number
+options(scipen=2) #display numbers rather scientific number
 
 #remotes::install_github("chjackson/flexsurv-dev", upgrade = "never")
 #devtools::install_github("stulacy/multistateutils", build_vignettes=TRUE, upgrade = "never")
@@ -954,9 +954,9 @@ at_least_one_cont_entry= "Casos de Usuarios con más de una entrada después de 
 # Session Info
 
 ```{r session-info, echo=T, error=T, paged.print=TRUE}
-Sys.getenv("R_LIBS_USER")
+cat(Sys.getenv("R_LIBS_USER"), fill=T)
 Sys.Date()
-paste0("Editor context: ", path)
+cat(paste0("Editor context: ", path), fill=T)
 
 if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
     save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/11.RData")
@@ -987,7 +987,7 @@ initComplete = htmlwidgets::JS(
 # Export
 
 ```{r export, warning=FALSE, echo=T}
-  Base_fiscalia_v7 %>% 
+Base_fiscalia_v7 %>% 
   dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  T~"VICTIMA")) %>% 

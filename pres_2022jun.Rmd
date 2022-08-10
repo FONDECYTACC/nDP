@@ -344,6 +344,17 @@ class: animated, fadeIn
 
 - **Ocurre lo mismo en chile?**
 
+**OBSERVACIONES REUNIÓN**
+•	Definir completar el tratamiento
+•	Explicar las probabilidades de supervivencia condicional al tiempo
+•	Mencionar HASH  y algoritmo de encriptación
+•	Etnia y tiempo
+•	Situación irregular (surrut) (¿Podrá existir personas con un RUT temporal que cambien posteriormente?)
+•	Explicitar covariables elegidas y relaciones con T y O: historias, lógica e interpretación.
+•	Justificar temporalidades o ventanas elegidas (por qué 3 y 6 meses, 1 y 3 años)
+•	Cuidado con el lenguaje causal ("impacto" por "asociación")
+•	Análisis de sesgos (ej., e-values)
+
 ---
 ## Antecedentes (2)
 

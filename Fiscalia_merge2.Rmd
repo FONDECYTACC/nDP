@@ -202,7 +202,9 @@ if(!require(pacman)){install.packages("pacman")}
 pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, magick, install=F)
 try(webshot::install_phantomjs())
 
-options(scipen=999) #display numbers rather scientific number
+if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade =F))}
+
+options(scipen=2) #display numbers rather scientific number
 
 #remotes::install_github("chjackson/flexsurv-dev", upgrade = "never")
 #devtools::install_github("stulacy/multistateutils", build_vignettes=TRUE, upgrade = "never")
@@ -226,7 +228,6 @@ fitstats.flexsurvreg = function(x){
     BIC = bic
   )
 }
-
 
 if(.Platform$OS.type == "windows") withAutoprint({
   memory.size()
@@ -683,7 +684,9 @@ summ_adm_age_perc<-
 summ_adm_age_perc
 # 62752  20.3  58.8
 
-paste0("To get the age of the comission: as.numeric(as.Date('2019-11-13')-as.Date('2005-11-13'))/365.25 = ",as.numeric(as.Date('2019-11-13')-as.Date('2005-11-13'))/365.25," years. ut this date may depend on the date of the comission of the crime")
+paste0("To get the age of the comission: as.numeric(as.Date('2019-11-13')-as.Date('2005-11-13'))/365.25 = ")
+paste0(as.numeric(as.Date('2019-11-13')-as.Date('2005-11-13'))/365.25)
+paste0(" years. ut this date may depend on the date of the comission of the crime")
 
 paste0("Age of crime comission in PO database, of patients with the same birth date of PO")
 summ_years_crime_perc<-
@@ -913,17 +916,23 @@ paste0("(22_1_a2b_b_2)\n(n= ", flow_fech_nac_fisc_vs_senda %>% dplyr::filter(c_2
 
 <div class = "badCode">
 
-```{r bpmn2, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center", dev.args = list(bg = 'white'), class.source = "badCode", class.output = "badCode"}
+```{r bpmn2, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, fig.align="center", dev.args = list(bg = 'white'), class.source = "badCode", class.output = "badCode"}
 #knitr::include_graphics(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_age_differences.svg"))
 
 tiger <- image_read_svg(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_age_differences.svg"))#, width = 350
+# image_fill(tiger,
+#       color = "white", 
+#       refcolor = "transparent", 
+#       fuzz = 4,
+#       point = "+1+1" # start at top left 1 pixel in
+#       ) 
 
-image_fill(tiger,
-      color = "white", 
-      refcolor = "transparent", 
-      fuzz = 4,
-      point = "+1+1" # start at top left 1 pixel in
-      ) 
+bpmn_file0 <- system.file(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_age_differences.bpmn"), package = "bpmn")
+bpmn::bpmn(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_age_differences.bpmn"))
+
+library(xml2)
+elements0 <- bpmn::bpmn_get_elements(read_xml(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_age_differences.bpmn")))
+#htmlTable(elements, align = "lll", rnames = FALSE, css.class = "table")
 ```
 
 </div>
@@ -1001,8 +1010,10 @@ Base_fiscalia_v3_imp<-
   dplyr::mutate(edad_comision_imp= dplyr::case_when(rut_enc_saf %in% c(impute_age_po_senda_22_1_a2b_b,impute_age_po_senda_22_1_a2a_4b_1)~ NA_real_,T~edad_comision))
 
 Base_fiscalia_v3_imp2<-  Base_fiscalia_v3_imp %>% data.matrix()
-
-paste0("The database with the HASHs that matched w/ C1 in the date of birth with data for imputation had ",format(nrow(Base_fiscalia_v3_imp),big.mark=","), " rows. This database only have cases the first case as imputed of cases, if they had any (if not, it will appear the first case as victim). Additionally, is matched with the first entry in the C1 dataset (the first).")
+paste0("The database with the HASHs that matched w/ C1 in the date of birth with data for imputation had ")
+paste0("",format(nrow(Base_fiscalia_v3_imp),big.mark=","), " rows. This database only have cases the first case as imputed of cases, ")
+paste0("if they had any (if not, it will appear the first case as victim).")
+paste0("Additionally, is matched with the first entry in the C1 dataset (the first).")
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#IMPUTE#_#_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -1801,11 +1812,11 @@ paste0("Percentage of patients involved in criminal process (RUCs) as accused: "
 )
 #63158 envueltos
 
-cat("Grouped distinct combinations of  RUTs, RUCs (criminal processes) & type of crime (gls_materia) that they were charged")
+cat("Grouped distinct combinations of  RUTs, RUCs (criminal processes) & type of crime (gls_materia) that they were charged", fill=T)
 ```
 
 ```{r 2-ser, echo=T, error=T, paged.print=TRUE}
-cat("Generate a database with the count of charges by user")          
+cat("Generate a database with the count of charges by user", fill=T)          
 
 charges_by_patients_jun22<-
   Base_fiscalia_v5 %>% 
@@ -1886,10 +1897,10 @@ cases_by_patients_jun22<-
                     T~"OTHER CHARGES")) %>% 
   dplyr::group_by(rut_enc_saf,ruc) %>% 
   dplyr::count() 
-
+cat(
 paste0("Patients involved in criminal processes (RUCs) as accused were charged with an average of ",
-       round(mean(charges_by_patients_jun22$tot_charges),1)," charged with an average of ", round(mean(charges_by_patients_jun22$n),1), " RUCs")
-
+       round(mean(charges_by_patients_jun22$tot_charges),1)," charged with an average of ", round(mean(charges_by_patients_jun22$n),1), " RUCs"), fill=T)
+cat(
 paste0("[CORRECTED]Percentage of patients involved in criminal processes (RUCs) as accused that have been charged for violent crimes: ",
        charges_by_patients_jun22 %>% 
          dplyr::mutate(violent_crime_bin=ifelse(violent_crime>0,1,0)) %>% 
@@ -1898,8 +1909,8 @@ paste0("[CORRECTED]Percentage of patients involved in criminal processes (RUCs) 
          dplyr::filter(violent_crime_bin==1) %>% 
          dplyr::mutate(percent=round(percent*100,1)) %>% 
          dplyr::select(percent) %>% 
-         as.numeric(),"%")
-
+         as.numeric(),"%"), fill=T)
+cat(
 paste0("[CORRECTED]Percentage of patients involved in criminal processes as accused that have been charged for drug-related crimes: ",
        charges_by_patients_jun22 %>% 
          dplyr::mutate(drug_related_crime_bin=ifelse(drug_related_crime>0,1,0)) %>% 
@@ -1908,8 +1919,8 @@ paste0("[CORRECTED]Percentage of patients involved in criminal processes as accu
          dplyr::filter(drug_related_crime_bin==1) %>% 
          dplyr::mutate(percent=round(percent*100,1)) %>% 
          dplyr::select(percent) %>% 
-         as.numeric(),"%")       
-
+         as.numeric(),"%"), fill=T)       
+cat(
 paste0("[CORRECTED]Percentage of patients involved in criminal processes as accused that have been charged for other crimes: ",
        charges_by_patients_jun22 %>% 
          dplyr::mutate(other_charges_bin=ifelse(other_charges>0,1,0)) %>% 
@@ -1918,7 +1929,7 @@ paste0("[CORRECTED]Percentage of patients involved in criminal processes as accu
          dplyr::filter(other_charges_bin==1) %>% 
          dplyr::mutate(percent=round(percent*100,1)) %>% 
          dplyr::select(percent) %>% 
-         as.numeric(),"%")    
+         as.numeric(),"%"), fill=T)
 ```
 
 ```{r 3-2-ser, echo=T, error=T, paged.print=TRUE}
@@ -2011,7 +2022,8 @@ charges_by_patients_perc_pena_jun22<-
 
 ```{r 3-5-ser, echo=T, error=T, paged.print=TRUE, eval=T}
 
-paste0("[CORRECTED] Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration: ",
+paste0("[CORRECTED] Percentage of patients involved in criminal processes as accused that")
+paste0("had charges and resulted in full or partial incarceration: ",
        scales::percent(nrow(charges_by_patients_perc_pena_jun22)/nrow(charges_by_patients_jun22), accuracy=0.1),
        "")
 scales::percent(
@@ -2029,7 +2041,9 @@ charges_by_patients %>%
   as.numeric() 
 )
 
-paste0("Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration of those who Completed their first treatment (percentage discarded ongoing treatments): ",
+paste0("Percentage of patients involved in criminal processes as accused that had charges and resulted in full")
+paste0("or partial incarceration of those who Completed their first treatment (percentage discarded ongoing")
+paste0("treatments): ",
 scales::percent(
 charges_by_patients_perc_pena_jun22 %>% 
     dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>% 
@@ -2049,8 +2063,9 @@ charges_by_patients %>%
   as.numeric() 
 ))
 
-
-paste0("Percentage of patients involved in criminal processes as accused that had charges and resulted in full or partial incarceration of those who did not Complete their first treatment (percentage discarded ongoing treatments): ",
+paste0("Percentage of patients involved in criminal processes as accused that had charges and resulted in full")
+paste0("or partial incarceration of those who did not Complete their first treatment (percentage discarded ")
+paste0("ongoing treatments): ",
 scales::percent(
 charges_by_patients_perc_pena %>% 
     dplyr::left_join(dplyr::filter(CONS_C1_df_dup_SEP_2020[,c("hash_key","dup","fech_egres_imp","motivodeegreso_mod_imp")], dup==1), by=c("rut_enc_saf"="hash_key")) %>% 
@@ -2166,7 +2181,6 @@ dplyr::mutate(freq_cons_sus_prin=parse_factor(as.character(freq_cons_sus_prin),l
   dplyr::mutate(criminal_rcds=dplyr::case_when(hash_key %in% rut_enc_saf_jun22~"Yes",T~"No")) %>% 
   dplyr::mutate(sum_otras_sus = factor(rowSums(!is.na(dplyr::select(., otras_sus1_mod, otras_sus2_mod, otras_sus3_mod)), na.rm=T))) %>% #,na.rm=F
   data.table::data.table()
-
 
 attr(db_ser_2022$sus_principal_mod,"label")<-"Primary Substance at Admission"
 attr(db_ser_2022$sus_ini_mod_mvv,"label")<-"First Substance Used"
@@ -2538,9 +2552,9 @@ at_least_one_cont_entry= "Casos de Usuarios con más de una entrada después de 
 # Session Info
 
 ```{r session_info, echo=T, error=T, paged.print=TRUE}
-Sys.getenv("R_LIBS_USER")
+cat(Sys.getenv("R_LIBS_USER"), fill=T)
 Sys.Date()
-paste0("Editor context: ", path)
+cat(paste0("Editor context: ", path), fill=T)
 
 if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
     save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/11.RData")
