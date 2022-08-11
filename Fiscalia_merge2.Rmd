@@ -1243,7 +1243,7 @@ Base_fiscalia_v5<-
                         grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
                         grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
                         T~"OTHER CHARGES")) %>% 
-    dplyr::left_join(dplyr::rename(CONS_C1_df_dup_FEB_2020_prev25b[,c("hash_key","obs")],"obs_FEB"="obs") %>% dplyr::group_by(hash_key) %>% dplyr::slice(1) %>% dplyr::ungroup(),by=c("rut_enc_saf"="hash_key")) %>% 
+    dplyr::left_join(dplyr::rename(CONS_C1_df_dup_FEB_2020[,c("hash_key","obs")],"obs_FEB"="obs") %>% dplyr::group_by(hash_key) %>% dplyr::slice(1) %>% dplyr::ungroup(),by=c("rut_enc_saf"="hash_key")) %>% 
   dplyr::mutate(obs=dplyr::case_when(obs==obs_FEB~obs_FEB,
                                      is.na(obs)~obs_FEB,
                                      !is.na(obs)& grepl("^;",obs_FEB)~paste0(obs,obs_FEB),

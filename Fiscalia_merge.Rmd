@@ -1815,5 +1815,5 @@ base_fiscalia %>%
                                  encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
                                  T~"VICTIMA")) %>% 
   #dplyr::filter(accused=="VICTIMA") %>% 
-  rio::export(file = paste0(sub("2022 \\(github\\)","2022  \\(github\\)",path_dir),"/fiscalia_mariel_ago_2021.dta"))
+  rio::export(file = paste0("./fiscalia_mariel_ago_2021.dta"))
 ```

@@ -198,7 +198,7 @@ copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
 }  
 
 if(!require(pacman)){install.packages("pacman")}
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, install=F)
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, install=F)
 try(webshot::install_phantomjs())
 
 if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade =F))}
@@ -267,13 +267,17 @@ Several issues were found in the first stage of the exploration of the matches.
  
  - Generate a category to define VIF `RELACION_VIFSAF` (domestic violence) (include mistreatment, femicide or parricide)
  
- - Anulación de ingreso error de digitación	 & Agrupado -- gls_mottermino
+ - Analyse these procedures "Anulación de ingreso error de digitación" & "Agrupado" (gls_mottermino)
  
  - Generate a narrative of IDs and their nested relationships
+ 
+</div>
+
  <!---
+ #https://github.com/kosukeimai/fastLink
+ 
   #"aquellos registros que terminaronpor ejemplo, con una sentencia absolutoria o en que no se pudo acreditar un hecho delictual". No tengo la bbdd para revisar si esto aplica a nosotros, pero prefiero dejarlo acá para que no se me olvide.
  --->
-</div>
 
 ### Replace missing sex and nationality
 
@@ -287,7 +291,7 @@ sex_nodef<-
 Base_fiscalia_v5%>% 
     dplyr::filter(rut_enc_saf %in% unlist(dplyr::distinct(dplyr::filter(Base_fiscalia_v5, sexo=="No Definido"), rut_enc_saf)))
 
-as.data.frame.TableOne(CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac"), c("gls_comuna", "gls_sitiosuceso", "gls_materia", "reg")), data= dplyr::mutate(Base_fiscalia_v5, sex_nodef=ifelse(sexo=="No Definido",1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10))), factorVars = catVars, smd=T, strata="sex_nodef", addOverall = T, includeNA=T,test=T), smd=T)%>% 
+as.data.frame.TableOne(CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac","cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "gls_materia", "reg")), data= dplyr::mutate(Base_fiscalia_v5, sex_nodef=ifelse(sexo=="No Definido",1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10)),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))), factorVars = catVars, smd=T, strata="sex_nodef", addOverall = T, includeNA=T,test=T), smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
   tidyr::fill(char2) %>% 
   dplyr::select(char2,everything()) %>% 
@@ -378,7 +382,7 @@ dplyr::left_join(C1_centers_SEP_2020, by=c("rut_enc_saf"="hash_key"))%>%
   #generate a summary of records of C1 & TOP
   dplyr::mutate(sum_n=rowSums(dplyr::select(.,length_c1,length_top),na.rm=T), perc_women_center= rowSums(dplyr::select(.,length_women_center,length_women_center_top),na.rm=T)/sum_n, perc_women= rowSums(dplyr::select(.,length_women_center,length_women_center_top),na.rm=T)/sum_n, perc_m_tipo_trat=sum_m_tipo_trat/duplicates_filtered) %>% 
   dplyr::select("rut_enc_saf","sexo","sexo_2","pais","nacionalidad","etnia_cor","ruc", "dist_ruc","obs","sum_n","perc_women_center","perc_women", "length_preg", "length_preg_egr", "sum_m_tipo_trat") %>% 
-dplyr::mutate(step1=dplyr::case_when(grepl("2.6|3.03",obs)~1,T~0), step2a= dplyr::case_when(step1==0 & sum_n>2 & (perc_women_center>=.5| perc_women>=.5)~1,T~0), step2b=  dplyr::case_when(step1==0 & sum_n>1 & perc_women_center>=.5 & perc_women>=.5~1,T~0), step2c=  dplyr::case_when(step1==0 & sum_n>0 & (perc_women_center>=.5 & perc_women>=.5) & (length_preg>0|length_preg_egr>0)~1,T~0), step2d= dplyr::case_when(step1==0 & (perc_women_center>=.5 & perc_women>=.5) & sum_m_tipo_trat>0~1,T~0), step2e= dplyr::case_when(step1==0 & dist_ruc<2 & sum_m_tipo_trat>0~1, T~0), step2f=dplyr::case_when(step1==0 & step2a==0& step2b==0& step2c==0& step2d==0& step2e==0~1,T~0))
+dplyr::mutate(step1=dplyr::case_when(grepl("2.6.01|3.03",obs)~1,T~0), step2a= dplyr::case_when(step1==0 & sum_n>2 & (perc_women_center>=.5| perc_women>=.5)~1,T~0), step2b=  dplyr::case_when(step1==0 & sum_n>1 & perc_women_center>=.5 & perc_women>=.5~1,T~0), step2c=  dplyr::case_when(step1==0 & sum_n>0 & (perc_women_center>=.5 & perc_women>=.5) & (length_preg>0|length_preg_egr>0)~1,T~0), step2d= dplyr::case_when(step1==0 & (perc_women_center>=.5 & perc_women>=.5) & sum_m_tipo_trat>0~1,T~0), step2e= dplyr::case_when(step1==0 & dist_ruc<2 & sum_m_tipo_trat>0~1, T~0), step2f=dplyr::case_when(step1==0 & step2a==0& step2b==0& step2c==0& step2d==0& step2e==0~1,T~0))
  
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
@@ -387,30 +391,36 @@ message(paste0('No discrepancies in sex (& missings) (22_2_b) \n(n = ',format(nr
         ';\nCauses= ',dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
         ';\nindividuals= ',dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
+message(paste0('Missings (22_2_b1) \n(n = ',format(nrow(dplyr::filter(Base_fiscalia_v5, sexo =="No Definido")),big.mark=","), 
+        ';\nCauses= ',dplyr::filter(Base_fiscalia_v5, sexo =="No Definido")%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
+        ';\nindividuals= ',dplyr::filter(Base_fiscalia_v5, sexo =="No Definido")%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+
 #_#_#_#_#_#_#_
 message(paste0('Discrepancies in sex (22_2_a) \n(n = ',format(nrow(differences_bet_sex_po),big.mark=","), 
         ';\nCauses= ',differences_bet_sex_po%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
         ';\nindividuals= ',differences_bet_sex_po%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
 #_#_#_#_#_#_#_
-message(paste0('Differences in sex w/ imputed earlier (22_2_a2) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+message(paste0('Differences in sex w/ imputed earlier (22_2_a2) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,grepl("2.6.01|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,grepl("2.6.01|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,grepl("2.6.01|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
-message(paste0('Differences in sex w/o imputed earlier (22_2_a1) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+message(paste0('Differences in sex w/o imputed earlier (22_2_a1) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,!grepl("2.6.01|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6.01|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6.01|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
 message(paste0('Differences in sex w/o imputed earlier, >2 records in TOP or C1, >=50%  of records in a center for women or stated as a woman, but PO==man (22_2_a1a) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2a==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2a==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2a==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
 message(paste0('Differences in sex w/o imputed earlier,>1 records in TOP or C1, >=50% of records in a center for women and stated as a woman, but PO==man (22_2_a1b) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2b==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
-message(paste0('Differences in sex w/o imputed earlier,>1 records in TOP or C1, >=50% of records in a center for women and stated as a woman, but PO==man (22_2_a1b) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2b==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
-
 message(paste0('Differences in sex w/o imputed earlier, >=50% of records in a center for women or stated as a woman, at least one record pregnant at admission or discharge, but PO==man (22_2_a1c) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2c==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2c==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2c==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
-
 
 message(paste0('Differences in sex w/o imputed earlier, >=50% of records in a center for women or stated as a woman, at least one record in women-only treatments, but PO==man (22_2_a1d) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2d==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2d==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2d==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
-message(paste0('Differences in sex w/o imputed earlier but PO==man, at least one record in women-only treatments  vs. <2 distinct causes in PO (22_2_a1d) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2e==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2e==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2e==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+message(paste0('Differences in sex w/o imputed earlier but PO==man, at least one record in women-only treatments  vs. <2 distinct causes in PO (22_2_a1e) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2e==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2e==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2e==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
 message(paste0('Differences in sex w/o imputed earlier but PO==man, else (22_2_a1f) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2f==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2f==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2f==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+
+invisible("Else could overlap the other counts because alternatives are not mutually exclusive")
+# porque cuando saco la diferencia de los casos tengo 7493 y 8687
+# 619 son los ocasos que sumo en la figura, pero aquí sumo
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -420,12 +430,12 @@ differences_bet_sex_po3<-
   differences_bet_sex_po2 %>% 
   dplyr::distinct(rut_enc_saf, .keep_all=T) %>% 
   dplyr::mutate(flowch_sex= dplyr::case_when(step1==1~"22_2_a2- discordant sex, but imputed previously", step1==0 & step2a==1~"22_2_a1a",step1==0 & step2a==0 & step2b==1~"22_2_a1b",step1==0 & step2a==0 & step2b==0 & step2c==1~"22_2_a1c",step1==0 & step2a==0 & step2b==0 & step2c==0 & step2d==1~"22_2_a1d", step1==0 & step2a==0 & step2b==0 & step2c==0 & step2d==0 & step2e==1~"22_2_a1e",T~"22_2_a1f"))
-
-#2.6.01.2b1.HASH w/ more than one distinct Sex. Recent db (>1)
+ 
+#2.6.01.2b1.HASH w/ more than one distinct Sex. Recent db (>1) --> 2.6.01, correspondiente a sexo
 #"{obs};3.03.1.XX.HASH w/ more than one distinct Sex.2 cases, same yearly dataset.Neural network imputation"
 ```
 
-```{r bpmn2-sexo, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center", dev.args = list(bg = 'white')}
+```{r bpmn2-sexo, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, fig.align="center", dev.args = list(bg = 'white')}
 #Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ
 #Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ#Ñ++++++▼
 #knitr::include_graphics(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_sex_differences.bpmn"))
@@ -475,17 +485,19 @@ Base_fiscalia_v5%>%
    dplyr::mutate(obs=case_when(!is.na(flowch_sex)& !is.na(obs)~ glue::glue("{obs};{flowch_sex}"),
                                !is.na(flowch_sex)& is.na(obs)~ glue::glue("{flowch_sex}"),
                                TRUE~obs)) %>% 
-  dplyr::select(-flowch_sex, -sex_imp)
+  dplyr::select(-flowch_sex, -sexo_2)
+
+#paste0("Number of records finally imputed (22_2_a1f)= ",table(grepl("22_2_a1f",Base_fiscalia_v6$obs))[[2]],"\n individuals= ", nrow(Base_fiscalia_v6[grepl("22_2_a1f",Base_fiscalia_v6$obs),] %>% distinct(rut_enc_saf)))
+
 
 #check if added rows
 if(nrow(Base_fiscalia_v6)-nrow(Base_fiscalia_v5)>0){
-  warning("Some rows were added in the imputation")}
+  stop("Some rows were added in the imputation")}
 ```
-
 
 <div class = "red">
 
-There are `r Base_fiscalia_v5%>% dplyr::left_join(dplyr::left_join(differences_bet_sex_po3[c("rut_enc_saf","sex_decisions")], CONS_C1_tr_sex, by=c("rut_enc_saf"="HASH_KEY")), by="rut_enc_saf") %>%  dplyr::filter(length_women_tr>0, grepl("22_2_a1f",sex_decisions))%>%  nrow() %>%  format(big.mark=",")` records (individuals= `r Base_fiscalia_v5%>% dplyr::left_join(dplyr::left_join(differences_bet_sex_po3[c("rut_enc_saf","sex_decisions")],CONS_C1_tr_sex, by=c("rut_enc_saf"="HASH_KEY")), by="rut_enc_saf") %>%dplyr::filter(length_women_tr>0,grepl("22_2_a1f",sex_decisions))%>%  dplyr::group_by(rut_enc_saf) %>% distinct(rut_enc_saf) %>% nrow() %>% format(big.mark=",")`) corresponding to men recieving women-only treatments. **These should be replaced once the merging is done**.
+There are `r Base_fiscalia_v6%>% dplyr::left_join(dplyr::left_join(differences_bet_sex_po3[c("rut_enc_saf","flowch_sex")], CONS_C1_tr_sex, by=c("rut_enc_saf"="HASH_KEY")), by="rut_enc_saf") %>%  dplyr::filter(length_women_tr>0, grepl("22_2_a1f",flowch_sex))%>%  nrow() %>%  format(big.mark=",")` records (individuals= `r Base_fiscalia_v6%>% dplyr::left_join(dplyr::left_join(differences_bet_sex_po3[c("rut_enc_saf","flowch_sex")],CONS_C1_tr_sex, by=c("rut_enc_saf"="HASH_KEY")), by="rut_enc_saf") %>%dplyr::filter(length_women_tr>0,grepl("22_2_a1f",flowch_sex))%>%  dplyr::group_by(rut_enc_saf) %>% distinct(rut_enc_saf) %>% nrow() %>% format(big.mark=",")`) corresponding to men receiving women-only treatments. **These should be replaced once the merging is done**.
 
 </div>
 
@@ -512,7 +524,7 @@ paste0("Number of records that had a non definite sex= ",
 nat_nodef %>%  nrow())
 )
 
-as.data.frame.TableOne(CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac"), c("gls_comuna", "gls_sitiosuceso", "gls_materia", "reg")), data=  dplyr::mutate(Base_fiscalia_v6, nat_nodef=ifelse(pais=="No Definido",1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10))), factorVars = catVars, smd=T, strata="nat_nodef", addOverall = T, includeNA=T,test=T), smd=T)%>% 
+as.data.frame.TableOne(CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac","cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "gls_materia", "reg")), data=  dplyr::mutate(Base_fiscalia_v6, nat_nodef=ifelse(pais=="No Definido",1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10)),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))), factorVars = catVars, smd=T, strata="nat_nodef", addOverall = T, includeNA=T,test=T), smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
   tidyr::fill(char2) %>% 
   dplyr::select(char2,everything()) %>% 
@@ -531,12 +543,17 @@ Some records had a "undefined" value in nationality (n= `r (data.frame(janitor::
 
 
 ```{r 1-nat, echo=T, fig.align='center', message=T, error=T, eval=T}
+  message(paste0("Paired SENDA patients w/ P.O. data (v6, after cleaning): p= ",length(unique(Base_fiscalia_v6$rut_enc_saf)), "; n= ",nrow(Base_fiscalia_v6)))
+
+message(paste0("missings (no defined nationality). n= ",(data.frame(janitor::tabyl(Base_fiscalia_v5$pais)) %>% dplyr::filter(.[[1]]=="No Definido"))[[2]]," p= ", dplyr::group_by(nat_nodef, rut_enc_saf) %>% summarise(n=n()) %>% nrow()))
+
 cat("Users with different values in nationality between SENDA and P.O.")
+
 differences_bet_nat_po<-
 Base_fiscalia_v6 %>% 
   dplyr::mutate(pais=dplyr::case_when(pais=="No Definido"~NA_character_,T~pais)) %>% 
   #IMPORTANTE, ACTUALIZAR
-  dplyr::mutate(pais= dplyr::case_when(pais=="CHECOLOVAQUIA"~"REPUBLICA CHECA")) %>% 
+  dplyr::mutate(pais= dplyr::case_when(pais=="CHECOLOVAQUIA"~"REPUBLICA CHECA", T~pais)) %>% 
   dplyr::group_by(rut_enc_saf) %>% 
   dplyr::mutate(dist_nat= n_distinct(pais), dist_ruc= n_distinct(ruc)) %>% 
   dplyr::ungroup() %>% 
@@ -547,24 +564,72 @@ Base_fiscalia_v6 %>%
   dplyr::mutate(step0=dplyr::case_when(is.na(pais) & is.na(nacionalidad)~1,T~0)) %>% 
   dplyr::filter(pais!=as.character(nacionalidad))
 
-message(paste0("Number of records with more than one nationality among POs= ", nrow(dplyr::filter(differences_bet_nat_po, dist_nat>1))))
+invisible("In step2 I corrected this difference in observations, so in case that i am working with a database from 2022-08-10 or earlier, I need to get the obs column.")
+if(as.Date("2022-08-10")-as.Date(substr(file.info("./Fiscalia_merge2.html")$mtime,1,10))==0){
+  differences_bet_nat_po<-
+    differences_bet_nat_po %>% 
+  #now, we merged with the actual observation labels from february 2020
+    dplyr::left_join(dplyr::rename(CONS_C1_df_dup_FEB_2020[,c("hash_key","obs")],"obs_FEB"="obs") %>% dplyr::group_by(hash_key) %>% dplyr::slice(1) %>% dplyr::ungroup(),by=c("rut_enc_saf"="hash_key")) %>% 
+    dplyr::mutate(obs=dplyr::case_when(obs==obs_FEB~obs_FEB,
+                                       is.na(obs)~obs_FEB,
+                                       !is.na(obs)& grepl("^;",obs_FEB)~paste0(obs,obs_FEB),
+                                       !is.na(obs)& !grepl("^;",obs_FEB)~paste0(obs,";",obs_FEB),
+                                       T~obs)) %>% 
+    dplyr::select(-obs_FEB)
+}
 
+
+message(paste0("Number of records with more than one nationality among POs= ", nrow(dplyr::filter(differences_bet_nat_po, dist_nat>1))))
 invisible("In PO everyone had consistent nationalities in their records")
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
-print("**Work**: Search observation codes of previous replacements in nationality. The less frequent value here is  not being chilean. Try to see the ethnic factor")
-
-# - Percentage of records as different sexes (C1)
+invisible("Under the assumption that a nationality other than Chile is more informative thus less probabilities of errors due to, for example, misstyping")
+# - Percentage of records of different nationalities other than Chilean (C1)
 CONS_C1_res_nat<-
   CONS_C1 %>% 
-  dplyr::filter(HASH_KEY %in% unlist(differences_bet_nat_po$rut_enc_saf)) %>% 
-  dplyr::mutate(nacionalidad= toupper(stringi::stri_trans_general(as.character(Nacionalidad),"Latin-ASCII"))) %>% 
+    dplyr::filter(HASH_KEY %in% unlist(differences_bet_nat_po$rut_enc_saf)) %>% 
+    dplyr::mutate(nacionalidad= toupper(stringi::stri_trans_general(as.character(Nacionalidad),"Latin-ASCII")),n=1)%>% 
+    dplyr::select(HASH_KEY, nacionalidad,n, Etnia) %>% 
   dplyr::group_by(HASH_KEY) %>% 
-  dplyr::summarise(length_diff_chile=sum(!grepl("CHILE",`Nacionalidad`)), length_etnia= sum(`Etnia`!="No pertenece", na.rm=T), length_c1=n())%>% 
-  dplyr::distinct(HASH_KEY,.keep_all = T)
+  dplyr::mutate(length_etnia= sum(`Etnia`!="No pertenece", na.rm=T)) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::select(-Etnia) %>% 
+    tidyr::pivot_wider(names_from=nacionalidad, values_from=n, values_fn = ~sum(.x, na.rm = TRUE), values_fill=0) %>% 
+  dplyr::select(HASH_KEY, length_etnia, CHILE, everything()) %>% 
+  dplyr::mutate(length_diff_chile=rowSums(dplyr::select(., -any_of(c("HASH_KEY","length_etnia","CHILE"))), na.rm=T),length_c1= rowSums(dplyr::select(., -any_of(c("HASH_KEY","length_etnia"))), na.rm=T))
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+invisible("All ethnics are chilean native. However, we may want to keep other nationalities than chile")
+
+invisible("CASE WITH 2 DIFFERENT NATIONALITIES OTHER THAN CHILE")
+diff_nat_other_ch<-
+differences_bet_nat_po[which(!grepl("CHILE",differences_bet_nat_po$pais)&!grepl("CHILE", differences_bet_nat_po$nacionalidad)),]
+
+if(no_mostrar==F){
+
+CONS_C1_res_nat[which(diff_nat_other_ch$rut_enc_saf),]
+
+CONS_C1_res_nat %>% 
+  dplyr::filter(HASH_KEY %in% unlist(diff_nat_other_ch$rut_enc_saf)) 
+}
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+invisible("What happens with original databases?")
+
+paste0("Cases with discrepancies in PO & SENDA that had");paste0("more than one value in nationality different than CHILE= ",
+CONS_C1_res_nat %>% 
+    rowwise %>%
+    dplyr::mutate_at(.vars = vars(setdiff(names(CONS_C1_res_nat),c("HASH_KEY","CHILE", "length_diff_chile","length_etnia", "length_c1"))),
+                     .funs = ~ifelse(is.na(.), 1, 0)) %>% 
+    dplyr::ungroup() %>%
+    dplyr::mutate(length_diff_diff_ch=rowSums(dplyr::select(., any_of(setdiff(names(CONS_C1_res_nat),c("HASH_KEY","CHILE", "length_diff_chile","length_etnia", "length_c1")))))) %>% 
+    dplyr::filter(length_diff_diff_ch>0) %>% 
+  nrow())
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -573,55 +638,39 @@ CONS_C1_res_nat<-
 differences_bet_nat_po2<-
   differences_bet_nat_po %>% 
   #there are no duplicated hashes
-dplyr::left_join(CONS_C1_res_nat,by=c("rut_enc_saf"="HASH_KEY")) %>% 
-  #generate a summary of records of C1 & TOP
-  dplyr::mutate(sum_n=rowSums(dplyr::select(.,length_c1,length_top),na.rm=T), perc_women_center= rowSums(dplyr::select(.,length_women_center,length_women_center_top),na.rm=T)/sum_n, perc_women= rowSums(dplyr::select(.,length_women_center,length_women_center_top),na.rm=T)/sum_n, perc_m_tipo_trat=sum_m_tipo_trat/duplicates_filtered) %>% 
-  dplyr::select("rut_enc_saf","sexo","sexo_2","pais","nacionalidad","etnia_cor","ruc", "dist_ruc","obs","sum_n","perc_women_center","perc_women", "length_preg", "length_preg_egr", "sum_m_tipo_trat") %>% 
-dplyr::mutate(step1=dplyr::case_when(grepl("2.6|3.03",obs)~1,T~0), step2a= dplyr::case_when(step1==0 & sum_n>2 & (perc_women_center>=.5| perc_women>=.5)~1,T~0), step2b=  dplyr::case_when(step1==0 & sum_n>1 & perc_women_center>=.5 & perc_women>=.5~1,T~0), step2c=  dplyr::case_when(step1==0 & sum_n>0 & (perc_women_center>=.5 & perc_women>=.5) & (length_preg>0|length_preg_egr>0)~1,T~0), step2d= dplyr::case_when(step1==0 & (perc_women_center>=.5 & perc_women>=.5) & sum_m_tipo_trat>0~1,T~0), step2e= dplyr::case_when(step1==0 & dist_ruc<2 & sum_m_tipo_trat>0~1, T~0), step2f=dplyr::case_when(step1==0 & step2a==0& step2b==0& step2c==0& step2d==0& step2e==0~1,T~0))
+dplyr::left_join(CONS_C1_res_nat[,c("HASH_KEY","length_etnia", "length_diff_chile", "length_c1")],by=c("rut_enc_saf"="HASH_KEY")) %>% 
+  #generate a summary of records of C1
+  dplyr::mutate(perc_etnia=length_etnia/length_c1, perc_diff_ch= length_diff_chile/length_c1) %>% 
+ dplyr::mutate(step1=dplyr::case_when(grepl("2.6.02.",obs)~1,T~0), step2=  dplyr::case_when(rut_enc_saf %in% unlist(diff_nat_other_ch$rut_enc_saf)~1,T~0))
  
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
-message(paste0("People with undefined nationality (n=",nrow(nat_nodef) %>% format(big.mark=","),"\nindividuals= ",nat_nodef%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),")"))
+#_#_#_#_#_#_#_
+message(paste0('No discrepancies in sex (& missings) (22_3_b2) \n(n = ',format(nrow(dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_nat_po$rut_enc_saf))),big.mark=","), 
+        ';\nCauses= ',dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_nat_po$rut_enc_saf))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
+        ';\nindividuals= ',dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_nat_po$rut_enc_saf))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
 #_#_#_#_#_#_#_
-message(paste0('No discrepancies in sex (& missings) (22_2_b) \n(n = ',format(nrow(dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))),big.mark=","), 
-        ';\nCauses= ',dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
-        ';\nindividuals= ',dplyr::filter(Base_fiscalia_v5, !rut_enc_saf %in% unlist(differences_bet_sex_po$rut_enc_saf))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+message(paste0('Discrepancies in sex (22_3_a) \n(n = ',format(nrow(differences_bet_nat_po),big.mark=","), 
+        ';\nCauses= ',dplyr::distinct(differences_bet_nat_po, ruc)%>% nrow() %>% format(big.mark=','),
+        ';\nindividuals= ',dplyr::distinct(differences_bet_nat_po,rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
 #_#_#_#_#_#_#_
-message(paste0('Discrepancies in sex (22_2_a) \n(n = ',format(nrow(differences_bet_sex_po),big.mark=","), 
-        ';\nCauses= ',differences_bet_sex_po%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
-        ';\nindividuals= ',differences_bet_sex_po%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
-#_#_#_#_#_#_#_
-message(paste0('Differences in sex w/ imputed earlier (22_2_a2) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,grepl("2.6|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+message(paste0('Discrepancies with other nationality other than Chile (22_3_a1) \n(n = ',format(nrow(dplyr::filter(differences_bet_nat_po2,step2==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_nat_po2,step2==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_nat_po2,step2==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
-message(paste0('Differences in sex w/o imputed earlier (22_2_a1) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po,!grepl("2.6|3.03",obs))%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+message(paste0('Discrepancies with different nationalities but includes Chile (22_3_a2) \n(n = ',format(nrow(dplyr::filter(differences_bet_nat_po2,step2==0)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_nat_po2,step2==0)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_nat_po2,step2==0)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
 
-message(paste0('Differences in sex w/o imputed earlier, >2 records in TOP or C1, >=50%  of records in a center for women or stated as a woman, but PO==man (22_2_a1a) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2a==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2a==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2a==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+message(paste0("People with undefined nationality (22_3_b1) (n=",nrow(nat_nodef) %>% format(big.mark=","),"\nindividuals= ",nat_nodef%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),")"))
+```
 
-message(paste0('Differences in sex w/o imputed earlier,>1 records in TOP or C1, >=50% of records in a center for women and stated as a woman, but PO==man (22_2_a1b) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2b==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
+```{r bpmn2-nat, echo=T, cache= T, paged.print=TRUE, eval=T, error=T, fig.align="center", dev.args = list(bg = 'white')}
+bpmn_file <- system.file(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_sex_differences.bpmn"), package = "bpmn")
+bpmn::bpmn(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_nat_differences.bpmn"))
 
-message(paste0('Differences in sex w/o imputed earlier,>1 records in TOP or C1, >=50% of records in a center for women and stated as a woman, but PO==man (22_2_a1b) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2b==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2b==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
-
-message(paste0('Differences in sex w/o imputed earlier, >=50% of records in a center for women or stated as a woman, at least one record pregnant at admission or discharge, but PO==man (22_2_a1c) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2c==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2c==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2c==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
-
-
-message(paste0('Differences in sex w/o imputed earlier, >=50% of records in a center for women or stated as a woman, at least one record in women-only treatments, but PO==man (22_2_a1d) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2d==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2d==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2d==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
-
-message(paste0('Differences in sex w/o imputed earlier but PO==man, at least one record in women-only treatments  vs. <2 distinct causes in PO (22_2_a1d) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2e==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2e==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2e==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
-
-message(paste0('Differences in sex w/o imputed earlier but PO==man, else (22_2_a1f) \n(n = ',format(nrow(dplyr::filter(differences_bet_sex_po2,step2f==1)),big.mark=","), ';\nCauses= ',dplyr::filter(differences_bet_sex_po2,step2f==1)%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),';\nindividuals= ',dplyr::filter(differences_bet_sex_po2,step2f==1)%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')'))
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-
-differences_bet_sex_po3<-
-  differences_bet_sex_po2 %>% 
-  dplyr::distinct(rut_enc_saf, .keep_all=T) %>% 
-  dplyr::mutate(flowch_sex= dplyr::case_when(step1==1~"22_2_a2- discordant sex, but imputed previously", step1==0 & step2a==1~"22_2_a1a",step1==0 & step2a==0 & step2b==1~"22_2_a1b",step1==0 & step2a==0 & step2b==0 & step2c==1~"22_2_a1c",step1==0 & step2a==0 & step2b==0 & step2c==0 & step2d==1~"22_2_a1d", step1==0 & step2a==0 & step2b==0 & step2c==0 & step2d==0 & step2e==1~"22_2_a1e",T~"22_2_a1f"))
-
+library(xml2)
+elements <- bpmn::bpmn_get_elements(read_xml(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path), "/_figs/diagram_nat_differences.bpmn")))
+#htmlTable(elements, align = "lll", rnames = FALSE, css.class = "table")
 ```
 
 ##### Replace values
@@ -629,41 +678,51 @@ differences_bet_sex_po3<-
 ```{r 2-nat, echo=T, fig.align='center', message=T, error=T, eval=T}
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-CONS_C1_tr_sex<-
-  CONS_C1 %>% 
-  dplyr::filter(HASH_KEY %in% unlist(differences_bet_sex_po$rut_enc_saf)) %>% 
-  dplyr::group_by(HASH_KEY) %>% 
-  dplyr::mutate(sexo=dplyr::case_when(Sexo=="Mujer"~"Women",Sexo=="Hombre"~"Men",T~NA_character_))%>% 
-  dplyr::summarise(length_women_tr=sum(grepl("M\\-",`Tipo.de.Plan`)), length_c1=n(), perc_women_tr= length_women_tr/length_c1, length_women= sum(sexo=="Women"))%>% 
-  dplyr::distinct(HASH_KEY,.keep_all = T)
-
-#1b7e964a46082cca61540f18ef51ff07 es femenino pero sale como masculino
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 invisible("Users that must need to change")
 
 Base_fiscalia_v7<-
 Base_fiscalia_v6%>% 
-  dplyr::left_join(differences_bet_sex_po3[c("rut_enc_saf","flowch_sex")], by="rut_enc_saf")%>%
-  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","sexo_2")), by=c("rut_enc_saf"="hash_key"))%>%#22_2_b1
-  dplyr::mutate(sex_imp= dplyr::case_when(sexo=="FEMENINO"~"Women",sexo=="MASCULINO"~"Men",T~NA_character_))%>% 
-  dplyr::mutate(obs=case_when(is.na(sex_imp)& !is.na(obs)~ glue::glue("{obs};22_2_b1"),
-                               is.na(sex_imp)& is.na(obs)~ glue::glue("{flowch_sex}"),
-                               TRUE~obs)) %>% 
-  dplyr::mutate(sex_imp= dplyr::case_when(is.na(sex_imp)~ as.character(sexo_2), 
-                                          grepl("a1a|a1b|a1c1|a1d|a1e",flowch_sex)~ "Women",
-                                          grepl("a1f",flowch_sex)~ "Men",
-                                          T~  sex_imp)) %>% 
-   dplyr::mutate(obs=case_when(!is.na(flowch_sex)& !is.na(obs)~ glue::glue("{obs};{flowch_sex}"),
-                               !is.na(flowch_sex)& is.na(obs)~ glue::glue("{flowch_sex}"),
-                               TRUE~obs)) %>% 
-  dplyr::select(-flowch_sex, -sex_imp)
+  dplyr::left_join(dplyr::distinct(differences_bet_nat_po2, rut_enc_saf, .keep_all = T)[c("rut_enc_saf","nacionalidad","step2")], by="rut_enc_saf")%>%
+  dplyr::mutate(pais=dplyr::case_when(pais=="No Definido"~NA_character_,T~pais)) %>%
+  #IMPORTANTE, ACTUALIZAR
+  dplyr::mutate(pais= dplyr::case_when(pais=="CHECOLOVAQUIA"~"REPUBLICA CHECA", T~pais)) %>% 
+  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","nacionalidad_2")), by=c("rut_enc_saf"="hash_key"))%>%#22_2_b1
+    dplyr::mutate(nacionalidad_2= toupper(stringi::stri_trans_general(nacionalidad_2,"Latin-ASCII")))%>% 
+  dplyr::mutate(obs= dplyr::case_when(
+                step2==0 & pais!="CHILE" & nacionalidad=="CHILE"~ glue::glue("{obs};22_3_a2"),
+                step2==0 & is.na(pais)~ glue::glue("{obs};22_3_b1"),
+                step2==0 & nacionalidad!="CHILE" & pais=="CHILE"~ glue::glue("{obs};22_3_a2"),
+                #peru-bolivian case
+                step2==1~glue::glue("{obs};22_3_a1"),
+                T~obs
+                )) %>% 
+  dplyr::mutate(nat_imp= dplyr::case_when(
+                step2==0 & pais!="CHILE" & nacionalidad=="CHILE"~ pais,
+                step2==0 & is.na(pais)~ nacionalidad,
+                step2==0 & nacionalidad!="CHILE" & pais=="CHILE"~ nacionalidad,
+                #peru-bolivian case
+                step2==1~pais,
+                T~pais
+                )) %>% 
+  dplyr::select(-nacionalidad) %>% 
+  dplyr::rename("nat_imp2"="nacionalidad_2") %>% 
+  #add step 2 SENDA value
+  dplyr::left_join(subset(dplyr::distinct(differences_bet_nat_po2,.keep_all= T),step2==1,c("rut_enc_saf","nacionalidad")), by="rut_enc_saf") %>% 
+  dplyr::mutate(nat_imp2=dplyr::case_when(step2==0 & nat_imp==nat_imp2~NA_character_,
+                                          step2==1 & is.na(nat_imp2)~nacionalidad,
+                                          T~nat_imp2)) %>% 
+  dplyr::select(-nacionalidad, -step2)
+
+as.character(subset(differences_bet_nat_po2,step2==1,"rut_enc_saf"))
+#table(Base_fiscalia_v5$sexo, Base_fiscalia_v6$sex_imp, exclude=NULL)
+#table(Base_fiscalia_v6$pais, Base_fiscalia_v7$nat_imp, exclude=NULL) %>% data.frame() %>% melt()%>% arrange(desc(value))
 
 #check if added rows
 if(nrow(Base_fiscalia_v7)-nrow(Base_fiscalia_v6)>0){
   warning("Some rows were added in the imputation")}
 ```
+
+We added a second variable of nationality, called `nat_imp2`, which includes information from SENDA that was not compatible with PO data regarding nationality.
 
 <br>
 
@@ -673,8 +732,9 @@ if(nrow(Base_fiscalia_v7)-nrow(Base_fiscalia_v6)>0){
 #- Investigate 0's in `IDSUJETO_VICTIMA`. ¿Have they the same distributed crimes?
 #- Missing values in `TIPO_TERMINO`
 #- `AGRUPA_TERMINOS`, explore missing values
+
 tbone_idsujeto_victima_0<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac"), c("gls_comuna", "gls_sitiosuceso", "reg")), data=  dplyr::mutate(Base_fiscalia_v7, idsujeto_victima_0=ifelse(idsujeto_victima==0,1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg")), smd=T, strata="idsujeto_victima_0", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "reg")), data=  dplyr::mutate(Base_fiscalia_v7, idsujeto_victima_0=ifelse(idsujeto_victima==0,1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg")), smd=T, strata="idsujeto_victima_0", addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_idsujeto_victima_0, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -690,11 +750,16 @@ kable(size=11, format="html",caption= "Table. Summary descriptives, missing valu
 ```
 
 
+Registries with no ID are far more frequent in the north: I Región de Tarapaca, II Región de Antofagasta and XV Región de Arica y Parinacota, while less in the Metropolitan Region. Also have judiciary finishings of the proceedings. Much more were applied a "PRINCIPIO DE OPORTUNIDAD" and "SENTENCIA DEFINITIVA CONDENATORIA", and less ended in  "ARCHIVO PROVISIONAL", "AGRUPACI¿N A OTRO CASO" and "SOBRESEIMIENTO DEFINITIVO". Many of the crimes were related to drunk driving, posession of drugs and knives or sharp objects, brawls, drug traffic, microtraffic. There are no cases related to domestic violence. The order for payment procedure ("MONITORIO") was more frequent, in contrast to the ordinary procedure ("ORDINARIO"). The place in which the crime was commited more frequently in national or municipal goods of public use ("BIENES NACIONALES USO PUBLICO"), but less in residential places ("LUGAR HABITADO"). Also, these crimes were more frequently commited between 2010 and 2015, but less after 2015.
+
+<br>
+
 ```{r 2-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
 #- Missing values in `TIPO_TERMINO`
 #- `AGRUPA_TERMINOS`, explore missing values
+
 tbone_tipo_termino_na<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac"), c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), data=  dplyr::mutate(Base_fiscalia_v7, tipo_termino_NA=ifelse(is.na(tipo_termino),1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="tipo_termino_NA", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), data=  dplyr::mutate(Base_fiscalia_v7, tipo_termino_NA=ifelse(is.na(tipo_termino),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="tipo_termino_NA", addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_tipo_termino_na, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -714,7 +779,7 @@ kable(size=11, format="html",caption= "Table. Summary descriptives, Missing valu
 #- Missing values in `TIPO_TERMINO`
 #- `AGRUPA_TERMINOS`, explore missing values
 tbone_agrupa_terminos_na<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del","cut_fec_nac"), c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_NA=ifelse(is.na(agrupa_terminos),1,0), cut_fec_nac=cut(imp_birth_date,10), cut_com_del=factor(cut_interval(fec_comision_simple,10))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="agrupa_terminos_NA", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_NA=ifelse(is.na(agrupa_terminos),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="agrupa_terminos_NA", addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_agrupa_terminos_na, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -959,13 +1024,13 @@ Sys.Date()
 cat(paste0("Editor context: ", path), fill=T)
 
 if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/11.RData")
+    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/12.RData")
   } else if (grepl("andre",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("C:/Users/andre/Desktop/SUD_CL/11.RData")
+    save.image("C:/Users/andre/Desktop/SUD_CL/12.RData")
   } else if (grepl("E:",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/11.RData")
+    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/12.RData")
   } else {
-    save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"11.RData"))
+    save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"12.RData"))
   }
 
 sesion_info <- devtools::session_info()
