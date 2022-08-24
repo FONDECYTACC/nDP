@@ -1,0 +1,990 @@
+---
+title: "Chilean prosecutor's office Data merge (Step 3.2)"
+date: "`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`"
+output:
+  distill::distill_article:
+    code_folding: true
+    fig_height: 6
+    fig_width: 8
+    theme: flatly
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+    output_dir: "docs"
+  toc_float:
+    collapsed: false
+    smooth_scroll: true
+---
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+ $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+  
+```
+
+```{css hideOutput-lib-src, echo = FALSE}
+<script src="hideOutput.js"></script> 
+```
+
+```{js hideOutput, echo = FALSE}
+$(document).ready(function() {    
+	$chunks = $('.fold');    
+	$chunks.each(function () {      // add button to source code chunks     
+	if ( $(this).hasClass('s') ) {       
+		$('pre.r', this).prepend("<div class=\"showopt\">Show Source</div><br style=\"line-height:22px;\"/>");
+       		$('pre.r', this).children('code').attr('class', 'folded');     
+       		}      // add button to output chunks     
+		if ( $(this).hasClass('o') ) {       
+			$('pre:not(.r)', this).has('code').prepend("<div class=\"showopt\">Show Output</div><br style=\"line-height:22px;\"/>");       
+			$('pre:not(.r)', this).children('code:not(r)').addClass('folded');        // add button to plots       
+			$(this).find('img').wrap('<pre class=\"plot\"></pre>');       
+			$('pre.plot', this).prepend("<div class=\"showopt\">Show Plot</div><br style=\"line-height:22px;\"/>");       
+			$('pre.plot', this).children('img').addClass('folded');      
+			}   
+});    // hide all chunks when document is loaded   
+	$('.folded').css('display', 'none')    // function to toggle the visibility   
+	$('.showopt').click(function() {     
+			var label = $(this).html();     
+			if (label.indexOf("Show") >= 0) {       
+				$(this).html(label.replace("Show", "Hide"));     
+			} else {
+			  $(this).html(label.replace("Hide", "Show"));     
+			}     
+	$(this).siblings('code, img').slideToggle('fast', 'swing');   
+	}); 
+}); 
+
+```
+
+```{=html}
+<style type="text/css">
+.showopt {   
+  background-color: #004c93;   color: #FFFFFF;    width: 100px;   height: 20px;   text-align: center;   vertical-align: middle !important;   float: right;   font-family: sans-serif;   border-radius: 8px; 
+  }
+
+.showopt:hover {     
+        background-color: #dfe4f2;
+        color: #004c93; 
+        }  
+pre.plot {   
+        background-color: white !important; 
+        } 
+.tablelines table, .tablelines td, .tablelines th {
+        border: 1px solid black;
+        }
+
+.centrado {
+    text-align: center;
+}
+
+.table.center {
+    margin-left:auto; 
+    margin-right:auto;
+  }
+
+/* https://vivekjaiskumar.medium.com/css-is-and-not-selector-17c942ec83f :is()*/
+
+/* Applies to outputs that are not code other than R*/
+
+pre {
+  overflow-x: auto !important;
+}
+pre code {
+  word-wrap: normal !important;
+  white-space: pre !important;
+}
+/*
+pre:not(.sourceCode) { 
+  white-space: nowrap !important;
+}
+*/
+.sourceCode { /* Important gives precedence  */
+  font-size: 10px !important;
+  line-height: 50% !important;
+}
+
+body{ /* Normal  */
+      text-align: justify;
+  }
+
+.superbigimage{
+    overflow-y:scroll;
+    height:350px;
+    white-space: nowrap;
+    overflow-x: auto; 
+    width:100%;
+}
+.superbigimage img{
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.message { color:#446C6E; font-family: monospace;font-size: 10px; line-height: 110%; font-weight: bold;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
+div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
+
+.pandoc-table { /* Deb iese ponerle el 24-08-22 00.18 !important;  */
+  margin-left:auto; /* To center */
+  margin-right:auto;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-size: 11px;
+  overflow-y: auto;
+  height:450px;
+  white-space: nowrap;
+  overflow-x: auto; 
+  width:450px;
+}
+
+.pandoc-table th {/* header */
+text-align: center;
+font-size: 9px;
+padding: 0px;
+}
+
+.pandoc-table td {
+font-size: 9px;
+padding: 0px;
+}
+
+.controlly{
+    overflow-y:scroll;
+    height:350px;
+    overflow-x: scroll; 
+}
+
+</style>
+```
+```{=html}
+<!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
+<script>
+function myFunction1() {
+    var x = document.getElementById("myDIV");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<script>
+function myFunction2() {
+    var x = document.getElementById("myDIV2");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+```
+
+```{r prev-setup, include = FALSE, cache=T, error=T}
+rm(list=ls());gc()
+if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
+path<-getwd()#we define it again later in setup chunk
+if (grepl("CISS Fondecyt",path)==T){
+    try(setwd("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)"));load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/12.Rdata")
+  } else if (grepl("andre",path)==T){
+    try(setwd('C:/Users/andre/Desktop/SUD_CL/'));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/12.Rdata")
+  } else if (grepl("E:",path)==T){
+    try(setwd("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/SUD_CL/"));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/12.Rdata")
+  } else {
+    try(setwd(paste0(path)));load(paste0(gsub("SUD_CL","",gsub("2022","2019",path)),"/12.Rdata"))
+  }
+```
+
+```{r setup, include = FALSE, cache=T, error=T, echo=T}
+#Libraries used in the routine. Dont change the order
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
+  if(class(ungroup(x))[1]=="tbl_df"){
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)    
+        }
+  } else {
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)       
+  }
+ }
+}  
+
+if(!require(pacman)){install.packages("pacman")}
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, install=F)
+try(webshot::install_phantomjs())
+
+if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade =F))}
+
+options(scipen=2) #display numbers rather scientific number
+
+#remotes::install_github("chjackson/flexsurv-dev", upgrade = "never")
+#devtools::install_github("stulacy/multistateutils", build_vignettes=TRUE, upgrade = "never")
+#devtools::install_github("hputter/mstate", upgrade = "never")
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+fitstats.flexsurvreg = function(x){
+  ll = x$loglik
+  aic = x$AIC
+  k = length(x$coefficients)
+  n = sum(x$data$m["(weights)"])
+  aicc = aic + ((2 * k) * (k + 1) / (n - k - 1))
+  bic = - 2 * ll + (k * log(n))
+  data.frame(
+   Df = k,
+    "n2ll" = -2 * ll,
+    AIC = aic,
+    AICc = aicc,
+    BIC = bic
+  )
+}
+
+
+if(.Platform$OS.type == "windows") withAutoprint({
+  memory.size()
+  memory.size(TRUE)
+  memory.limit()
+})
+memory.limit(size=56000)
+
+path<-dirname(rstudioapi::getSourceEditorContext()$path)
+
+options(knitr.kable.NA = '')
+
+#to format rows in bold
+format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethrough")){
+
+  # select the correct markup
+  # one * for italics, two ** for bold
+  map <- setNames(c("*", "**", "~~"), c("italics", "bold", "strikethrough"))
+  markup <- map[value]  
+
+  for (r in rows){
+    for(c in cols){
+
+      # Make sure values are not factors
+      df[[c]] <- as.character( df[[c]])
+
+      # Update formatting
+      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, df[r, c], markup))
+    }
+  }
+
+  return(df)
+}
+#To produce line breaks in messages and warnings
+knitr::knit_hooks$set(
+   error = function(x, options) {
+     paste('\n\n<div class="alert alert-danger">',
+           gsub('##', '\n', gsub('^##\ Error', '**Error**', x)),
+           '</div>', sep = '\n')
+   },
+   warning = function(x, options) {
+     paste('\n\n<div class="alert alert-warning">',
+           gsub('##', '\n', gsub('^##\ Warning:', '**Warning**', x)),
+           '</div>', sep = '\n')
+   },
+   message = function(x, options) {
+     paste('<div class="message">',
+           gsub('##', '\n', x),
+           '</div>', sep = '\n')
+   }
+)
+```
+
+### Explore missing/aberrant values
+
+::: controlly
+```{r 1-exp-miss-val, echo=T, fig.align='center',layout="l-body-outset", message=T, error=T, eval=T}
+#- Investigate 0's in `IDSUJETO_VICTIMA`. ¿Have they the same distributed crimes?
+#- Missing values in `TIPO_TERMINO`
+#- `AGRUPA_TERMINOS`, explore missing values
+
+tbone_idsujeto_victima_0<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso","tipo_sujeto_vic ", "gls_materia", "reg")), data=  dplyr::mutate(Base_fiscalia_v7, idsujeto_victima_0=ifelse(idsujeto_victima==0,1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg")), smd=T, strata="idsujeto_victima_0", addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_idsujeto_victima_0, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+kable(size=10, format="markdown",caption= "Summary descriptives, missing values in ID of the victim (1)")
+```
+:::
+
+<br>
+
+Registries with no ID are far more frequent in the north: I Región de Tarapaca, II Región de Antofagasta and XV Región de Arica y Parinacota, while less in the Metropolitan Region. Also have judiciary finishings of the proceedings. Much more were applied a "PRINCIPIO DE OPORTUNIDAD" and "SENTENCIA DEFINITIVA CONDENATORIA", and less ended in  "ARCHIVO PROVISIONAL", "AGRUPACI¿N A OTRO CASO" and "SOBRESEIMIENTO DEFINITIVO". Many of the crimes were related to drunk driving, posession of drugs and knives or sharp objects, brawls, drug traffic, microtraffic. There are no cases related to domestic violence. The order for payment procedure ("MONITORIO") was more frequent, in contrast to the ordinary procedure ("ORDINARIO"). The place in which the crime was commited more frequently in national or municipal goods of public use ("BIENES NACIONALES USO PUBLICO"), but less in residential places ("LUGAR HABITADO"). Also, these crimes were more frequently commited between 2010 and 2015, but less after 2015.
+
+<br>
+
+::: controlly
+```{r 2-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+tbone_tipo_termino_na<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, tipo_termino_NA=ifelse(is.na(tipo_termino),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg")), smd=T, strata="tipo_termino_NA", addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_tipo_termino_na, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>%
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  kable(size=10, format="markdown",caption= "Summary descriptives, Missing values in Termination of the relationship(1)")
+```
+:::
+
+<br>
+
+It is difficult to find any pattern with only 21 records. Despite this, much of the records were from patients that were found imputed, from the Metropolitan Region and the Region of Valparaiso. Every record had "SIN PROCEDIMIENTO" type of proceedings. Those values missing in grouped finishings (`AGRUPA_TERMINOS`) coincide with missing in the type of termination of the relationship (`TIPO_TERMINO`).
+
+<br>
+
+::: controlly
+```{r 3-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+#- `GLS_MOTTERMINO` explore missing values; see why is different with . 
+tbone_mot_termino_na<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, mot_termino_NA=ifelse(is.na(gls_mottermino),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="mot_termino_NA", addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_mot_termino_na, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  kable(size=10, format="markdown",caption= "Summary descriptives, Missing values in the Cause of termination of the relationship(1)")  
+```
+:::
+
+<br>
+
+As seen in the Table above, people missing values in the cause of the termination of the relationship (`GLS_MOTTERMINO`) were more frequently found as an imputed, had no records in in the type of termination "SALIDA NO JUDICIAL" and much more in "SALIDA JUDICIAL" (judicial intervention rather no judicial intervention). In summary, these cases correspond to suspended proceedings (non-missing values in `GLS_MOTSUSPENSION`). Also these records seem to be linked with compensation agreements, temporary dismissal, and conditional suspension of proceedings. Were more frequent in crimes such as thefts ("HURTOS"), injuries, but less frequent in faults ("FALTAS") or burglaries ("ROBOS"). They also were more frequent in cases with a relation to VIF. They also were more frequent in the Metropolitan Region, but less frequent in the Region of Valparaiso. Notably, these cases does not seem to have further changes in the causes (`MARCA_SUSPENSION_43` to `CLASIFICACION_PENA_55`). Another characteristic worth mentioning is that these type of records have continued to grow steadily since 2015 in the date of the commission of the crime.
+
+<br>
+
+::: controlly
+```{r 4-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+tbone_agrup_ter_anul<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_anul=ifelse(agrupa_terminos=="ANULACI¿N ADMINISTRATIVA",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="agrupa_terminos_anul", addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_agrup_ter_anul, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  kable(size=10, format="markdown",caption= "Summary descriptives, Values in the Cause of termination of the relationship, Administrative annulment(1)")
+```
+:::
+
+<br>
+
+Those records that were nullified as a type of termination of the relationship, were more frequently patients found as imputed, with more missing values in the type of victim. Also, more were concentrated in the Metropolitan Region & VIII Bio-Bio, but less were in VI Region of O'Higgins and VII Maule. More records had the value "DENUNCIADO" in the type of imputed, but less with the category "IMPUTADO". Lastly, every record were terminated without a proceeding ("SIN PROCEDIMIENTO"). Notably, these cases does not seem to have further changes in the causes (`MARCA_SUSPENSION_43` to `CLASIFICACION_PENA_55`).They also were much less frequent in cases with a relation to VIF. In terms of date of commision of the crime, there were more records in 2018 to 2020, but less from 1972 to 2011-05.
+
+::: controlly
+```{r 4-5-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+#- `TIPO_SUJETO_VIC` that are victims and imputed at the same time
+
+tbone_suj_vic_imp<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_anul=ifelse(encontrado_como_victima=="SI"& encontrado_como_imputado=="SI",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="agrupa_terminos_anul", addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_suj_vic_imp, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  kable(size=10, format="markdown",caption= "Summary descriptives, Relationships of people both victim and accused(1)")
+```
+:::
+
+<br>
+
+All of the registries both accused and victim were indicated as a victim in the type of subject, were more frequently in the Metropolitan Region (excepting Western sector), more relationships ended without a judicial intervention, applying the principle of discretion ("PRINCIPIO DE OPORTUNIDAD"), compensation agreements ("ACUERDO REPARATORIO") or provision filling of the case ("ARCHIVO PROVISIONAL"), but less a condemnatory sentence ("SENTENCIA DEFINITIVA CONDENATORIA"). Most of them were inflictions/injuries ("LESIONES"). The proceedings corresponded more to ordinary ("ORDINARIO") or no proceedings, and were committed more in residential cohabited location.
+
+<br>
+
+#### Crimes
+
+```{r 5-cod-crimes-more-family, echo=T, fig.align='center', message=T, error=T, eval=T}
+# - `FAMILIA_DELITO` explore whether crimes that were in a family are no longer there or viceversa
+message(paste0("Number of crime codes that are members of"));message(paste0("more than one family of crimes: ",
+Base_fiscalia_v7 %>% 
+    janitor::tabyl(cod_delito, familia_delito) %>% 
+    data.frame() %>% 
+    dplyr::mutate(sum_n=rowSums(dplyr::select(dplyr::mutate_all(.,~ifelse(.==0,0,1)),-1),na.rm=T)) %>%
+  dplyr::filter(sum_n>1) %>% nrow()))
+```
+
+<br>
+
+`COD_DELITO` with value 0 is "Not defined"
+
+```{r 6-exp-crimes, echo=T, fig.align='center', message=T, error=T, eval=T, fig.align='center', fig.pos='H', fig.cap="Crime codes no longer committed"}
+crime_cod_label<-
+dplyr::distinct(Base_fiscalia_v7[,c("cod_delito","gls_materia")],cod_delito,.keep_all = T)
+
+# - `COD_DELITO`. explore deprecated crimes
+crimes_no_cases<-
+Base_fiscalia_v7 %>% 
+  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
+  janitor::tabyl(cut_com_del2,cod_delito) %>% 
+  reshape2::melt() %>%
+   dplyr::filter(value==0)%>%
+  dplyr::distinct(variable)
+# create a vector with crimes that have 0 cases in one determined date window
+
+(
+Base_fiscalia_v7 %>% 
+  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
+  janitor::tabyl(cut_com_del2,cod_delito) %>% 
+  reshape2::melt() %>%
+  ungroup()%>%
+  dplyr::filter(variable %in% as.numeric(unlist(crimes_no_cases)))%>%
+  dplyr::left_join(dplyr::mutate(crime_cod_label,cod_delito=as.factor(cod_delito)), by=c("variable"="cod_delito")) %>% 
+  dplyr::mutate(var=factor(variable), lab=paste0("cod= ",var,"\ndetail= ",gls_materia,"\n Count= ",value), log_value=dplyr::case_when(value==1~0.345,value==0~log(1.1),T~log(value)))%>%
+   dplyr::group_by(var)%>%
+   ggplot(aes(x=cut_com_del2, y= jitter(log_value,factor = .5),color=var, group=var, text=lab))+
+   geom_line()+ #position="stack"
+    theme_blank()+
+    theme(legend.position='none')
+)%>%
+  ggplotly(tooltip="text") %>% 
+  layout(xaxis= list(title= "Dates", tickangle= 90), yaxis= list(title = "count"))
+```
+
+<br>
+
+::: controlly
+```{r 6-exp-crimes2, echo=T, fig.align='center', message=T, error=T, eval=T}
+Base_fiscalia_v7 %>% 
+  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
+  janitor::tabyl(cut_com_del2,cod_delito) %>% 
+  reshape2::melt() %>%
+  dplyr::left_join(dplyr::mutate(crime_cod_label,cod_delito=as.factor(cod_delito)), by=c("variable"="cod_delito")) %>% 
+  ungroup()%>%
+  dplyr::filter(variable %in% as.numeric(unlist(crimes_no_cases)))%>%
+format_cells(1, 1:length(names(.)), "bold") %>%
+  kable(size=10, format="markdown",caption= "Crimes that had a null count in one time window", col.names=c("Dates","Crime (Code)", "Count","Details"))
+```
+:::
+
+<br>
+
+We explored the relationship between the ID of the crime by each RUC, with the code of the crime.
+
+::: controlly 
+```{r 7a-iddelito-cod-delito, echo=T, fig.align='center', message=T, error=T, eval=T}
+#- Explore differences of `IDDELITO` with `cod_delito`.
+Base_fiscalia_v7 %>% 
+  dplyr::group_by(cod_delito,iddelito) %>% 
+  summarise(n=n()) %>% 
+  head(20) %>% 
+  kable(size=10, format="markdown",caption= "ID of crimes in each cause, by the code of crime (First 20 cases)", col.names=c("Crime code","Crime ID", "Count")) 
+```
+:::
+
+```{r 7b-iddelito-cod-delito, echo=T, fig.align='center', message=T, error=T, eval=T}
+message(paste0("More than one distinct crime codes by ID of crime= ",
+Base_fiscalia_v7 %>% 
+  dplyr::group_by(iddelito) %>% 
+  summarise(n=n_distinct(cod_delito)) %>% 
+  dplyr::filter(n>1) %>% 
+  nrow()))
+```
+
+<br>
+
+### Date of commission of the crime
+
+```{r 1-obs-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+#6- 984 < 14 años fecha de comisión: las 144 son responsabilidad mía, las otras no. Las primeras porque las manipulé y elegí el mal menor pero seguía existiendo mal (tal vez que el problema ahí es la fecha de comisión y no la de nacimiento). Las segundas ver cuál es el origen, ahí probablemente la fecha de nac no esté mal porque SENDA y PO tienen la misma. En los 2 casos, hacer tablitas para ver la razón de término de la causa y ver anomalías
+#5- Investigar fechas de término <2010
+
+#- Crimes committed before 2009-12-31 as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05))
+#- Crimes committed at a age lower than the date of birth
+#- age of commission <14
+#- Imputed age
+#- Age of termination of the relationship prior to the date of comission of the crime
+#- Add ten years to the age of comission and see if gets better
+```
+
+The lowest 5% of the dates of crimes committed were in `r as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05))` or older. We decided to explore these entries.
+
+<br>
+
+::: controlly
+```{r 2-date-comission-perc-05, echo=T, fig.align='center', message=T, error=T, eval=T}
+tbone_date_comission_perc_05<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino","gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, date_comission_perc_05=ifelse(fec_comision_simple<as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05)),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="date_comission_perc_05", addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_date_comission_perc_05, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  kable(size=10, format="markdown",caption= "Summary descriptives, Date comission before percentile .05 (2010)")  
+```
+:::
+
+<br>
+
+More cases were found as imputed, more were from the Metropolitan Region, more relationships ended with a judicial intervention, more ended with dismissal of proceedings art.[240](http://iura.cl/cpp/240.html) but less were provision filling of the case ("ARCHIVO PROVISIONAL"). In terms of the types of crimes, misdemeanours ("FALTAS") were less frequent, but more inflictions/injuries ("LESIONES"). By contrast, much more suspended finishings of the proceedings ("SUSPENSION CONDICIONAL DEL PROCEDIMIENTO"). The proceedings corresponded more to ordinary ("ORDINARIO") or no proceedings. Also more had precautionary measures from art.  [155](http://iura.cl/cpp/155.html). Lastly, less were born after December, 1992.
+
+```{r 2-date-comission-perc-05-2, echo=T, fig.align='center', message=T, error=T, eval=T}
+#APROPIACIÓN Y DISTRACCIÓN DE COTIZACIONES PREVISIONALES	
+#APROPIACIÓN INDEBIDA (INCL. DEPOSITARIO ALZADO) ART.470 Nº1	
+#CONSUMO/PORTE EN LUG. PÚB.O PRIV. CON PREV.CONCIERTO(ART.50)	 mucho menos
+# DELITOS CONTRA LEY DE PROPIEDAD INTELECTUAL	(todos)
+# casi todos los HURTO SIMPLE	
+# todos INFRACCIONES A LA LEY DE SEG.NUCLEAR (Art.41 a 47 Ley 18302)	
+#OTROS DELITOS CONTEMPLADOS EN LEY DE PROPIEDAD INTELECTUAL	 x3
+# PORTE ILEGAL DE ARMA DE FUEGO, MUNIC.Y OTR.SUJETAS A CONTROL	x3
+# PRESUNTA DESGRACIA	mucho menos
+# PROMOVER O FACILITAR PROSTITUCIÓN DE MENORES . ART. 367.	x2
+#TRÁFICO ILÍCITO DE DROGAS ART. 3 LEY Nº 20.000.  x2
+# VIOLACIÓN DE MENOR DE 14 AÑOS. ART. 362.	x2
+# VIOLACIÓN DE MAYOR DE 14 AÑOS. ART. 361.	x1.5
+#	RIÑA PÚBLICA 496 Nº 10 CÓDIGO PENAL x3 menos
+# RECEPTACIÓN. ART. 456 BIS A	x2
+```  
+  
+<br>
+
+```{r 2a-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+#invisible("see applyrulesage4 chunk in Fiscalia_merge2.Rmd")
+#https://www.efta.int/sites/default/files/RvalPart3.pdf
+#https://books.google.cl/books?id=3slJDwAAQBAJ&pg=PA160&lpg=PA160&dq=%22errorlocate%22&source=bl&ots=PjMI_G_1ja&sig=ACfU3U03eKo_UALC12_ND1oulbUB6iNsgg&hl=es-419&sa=X&ved=2ahUKEwjPx-ar9tr5AhWRBLkGHYbhBOE4HhDoAXoECAIQAw#v=onepage&q=%22errorlocate%22&f=false
+
+cbind(cat="Date of comission of the crime",
+      Base_fiscalia_v7 %>% 
+          dplyr::summarise(min = min(fec_comision_simple, na.rm=T),
+                           p025=as.Date(quantile(unclass(fec_comision_simple), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fec_comision_simple), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fec_comision_simple), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fec_comision_simple), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fec_comision_simple), .975, na.rm=T), origin = "1970-01-01"), max = max(fec_comision_simple, na.rm=T)))
+
+#- Crimes committed before 2009-12-31 as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05))
+#- Crimes committed at a age lower than the date of birth
+#- age of commission <14
+#- Imputed age
+#- Age of termination of the relationship prior to the date of comission of the crime
+#- Add ten years to the age of comission and see if gets better
+if(no_mostrar==0){
+    library(errorlocate)
+    rules <- validator( grepl(obs,"22_3")==T
+                      , fec_comision_simple < "2010-01-01"
+                      , edad_comision_imp < 18
+                      , edad_ter_rel_imp < edad_comision_imp # is implied
+    )
+    weight <- c(obs=1, fec_comision_simple=3, edad_comsion_imp=1,
+                edad_ter_rel_imp=6)#
+    errorlocate::locate_errors(Base_fiscalia_v7, rules, weight= weight)
+}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+```
+
+
+```{r 2b1-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+Base_fiscalia_v7 %>%
+  dplyr::mutate(obs_age_com_crime= factor(dplyr::case_when(fec_comision_simple <"2010-01-01"~"a. Less 2010",edad_ter_rel_imp < edad_comision_imp~ "b. Age of termination of relationship < Age relationship", edad_comision_imp<0~ "c. Less 0 years age crime committed", edad_comision_imp < 18~ "d. Less 18 years age crime committed", is.na(edad_comision_imp)~"e. Missing age of crime comission", is.na(fec_comision_simple)~"f. Missing of date of crime comission", is.na(imp_birth_date)~ "g. MIssing birth date", T~"0. none"), levels=c("a. Less 2010", "b. Age of termination of relationship < Age relationship", "c. Less 0 years age crime committed", "d. Less 18 years age crime committed", "e. Missing age of crime comission", "f. Missing of date of crime comission", "g. MIssing birth date", "0. none"))) %>% 
+  #group_by(obs_age_com_crime) %>% 
+  #summarise(obs_age_com_crime = n())
+  janitor::tabyl(obs_age_com_crime, show_missing_levels = T)
+
+#- Crimes committed at an age lower than the date of birth
+#- Edad de nacimiento, crimenes cometidos a una edad
+```
+
+invisible("Ver si por cada caso(RUC), hay distintos ID de sujetos imputados, pero para un único RUT")  
+
+::: controlly
+```{r 2b2-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+
+Base_fiscalia_v7 %>% 
+dplyr::select(rut_enc_saf, encontrado_como_imputado, fec_comision_simple, fec_cbiorelacion_simple, edad_ter_rel_imp, edad_comision_imp, imp_birth_date, gls_region, gls_materia, agrupa_terminos, obs) %>% 
+  dplyr::distinct(rut_enc_saf, .keep_all=T) %>% 
+  dplyr::mutate(b=dplyr::if_else(edad_ter_rel_imp < edad_comision_imp,1,0,0)) %>% 
+  dplyr::filter(fec_comision_simple<"2010-01-01") %>% 
+  dplyr::arrange(b,fec_comision_simple) %>% 
+  head(20) %>% 
+  kable(size=10, format="markdown",caption= "Cases w/ crimes committed before 2010 (First 20 cases)") 
+  #knitr::kable(format="html",caption= "Cases w/ crimes committed before 2010 (First 20 cases)") %>% 
+  #kableExtra::kable_classic()
+```
+:::
+
+```{r 2c-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+message(paste0("Time HASHs repeat, Cases w/ relationship date finished before the crime was committed"))
+Base_fiscalia_v7 %>%
+    dplyr::filter(rut_enc_saf %in% unlist(distinct(dplyr::filter(Base_fiscalia_v7,fec_comision_simple<"2010-01-01"),rut_enc_saf))) %>% 
+    group_by(rut_enc_saf) %>% 
+    dplyr::summarise(n=n()) %>% 
+    dplyr::arrange(-n) %>% 
+    #janitor::tabyl(n) %>% 
+    #dplyr::arrange(n_n) %>% 
+    mutate(bin = ntile(n, 8)) %>% 
+    dplyr::group_by(bin) %>% 
+    dplyr::mutate(sum_n=sum(n)) %>% 
+    dplyr::summarise(records_per_hash=paste0(min(n)," - ", max(n)), records=first(sum_n))
+
+
+invisible("Observaciones a casos anómalos 5%")
+#- Delitos de violación <14a para los mas largo
+#- Bigamia: dselitos permanentes, duración de la acción humanada exigida por el tipo penal // persona "que contrajere matrimonio estando válidamente casada". // Nos adelantamos a exponer la razón: cuando todo el mundo consideraba como un hecho absolutamente indiscutible el de la instantaneidad del delito de bigamia, conSUs consecuencias en materia de prescripción, nos ha tocado leer algunos fallos recientes emanados de la Corte Suprema, que vienen a romper el consenso de que dábamos cuenta en ~as páginas que preceden.
+#- "Se produciría falta de concordancia y armonia entre los artículos 29 y 35 de la Ley de Matrimonio Civil al estimar que la acción penal y la pena del delito que  tipifica el artículo 382 del Código Penal, pueden ser  declaradas extinguidas por la prescripción en circunstancias de que civilmente la acción de nulidad de matrimonio celebrado con infracción del artículo 49, NQ 1 es imprescriptible ... El delito de bigamia no es de carácter instantáneo, sino que, por el contrario, es pennanente ..."
+#- http://www.rdpucv.cl/index.php/rderecho/article/view/148/138
+```
+
+::: controlly
+```{r 2d1-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+Base_fiscalia_v7 %>%
+    dplyr::filter(edad_ter_rel_imp < edad_comision_imp) %>% 
+    dplyr::mutate(diff_bet_ter_com= edad_comision_imp-edad_ter_rel_imp) %>% 
+    dplyr::select(rut_enc_saf, diff_bet_ter_com, encontrado_como_imputado, diff_bet_ter_com, fec_comision_simple, fec_cbiorelacion_simple, edad_ter_rel_imp, edad_comision_imp, imp_birth_date, gls_region, gls_materia, agrupa_terminos, obs)%>% 
+  dplyr::arrange(-diff_bet_ter_com)  %>% 
+    head(20) %>%
+  kable(size=10, format="markdown",caption= "Cases w/ Age of finishing of relationship before the crimes being committed (First 20 cases)") 
+
+```
+:::
+
+
+```{r 2d2-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+
+invisible("No son mayores a 1 año")
+invisible("algunos son 22_1_, por lo que fuern imputados")
+invisible("ninguno de ellos fue cometido antes del 2010")
+
+message(paste0("Time HASHs repeat, Cases w/ relationship date finished before the crime was committed"))
+Base_fiscalia_v7 %>%
+    dplyr::filter(rut_enc_saf %in% unlist(distinct(dplyr::filter(Base_fiscalia_v7,edad_ter_rel_imp < edad_comision_imp),rut_enc_saf))) %>% 
+    group_by(rut_enc_saf) %>% 
+    dplyr::summarise(n=n()) %>% 
+    dplyr::arrange(-n) %>% 
+    #janitor::tabyl(n) %>% 
+    #dplyr::arrange(n_n) %>% 
+    mutate(bin = ntile(n, 8)) %>% 
+    dplyr::group_by(bin) %>% 
+    dplyr::mutate(sum_n=sum(n)) %>% 
+    dplyr::summarise(records_per_hash=paste0(min(n)," - ", max(n)), records=first(sum_n))
+
+invisible("no hay más de un RUC en estos RUTs, pero aparecen más de una vez en la base") 
+ # purrr::when(dplyr::filter(.,nchar(c_22_1_a1a_1234_ab2)>2) %>% nrow()>0 ~ stop("imputed age at admission lower than the age of onset of drug use in imputed"), ~.) %>% 
+```
+
+<br>
+
+# Label
+
+```{r change-labels,echo=T, paged.print=TRUE, eval=F}
+invisible("Temporarily useless")
+Base_fiscalia_v8%>%
+dplyr::mutate_at(c('dg_trs_psiq_cie_10_or','x2_dg_trs_psiq_cie_10_or','x3_dg_trs_psiq_cie_10_or','x2_dg_trs_psiq_sub_cie_10_or','x3_dg_trs_psiq_sub_cie_10_or','compromiso_biopsicosocial','pais_nacimiento','nacionalidad','dg_trs_psiq_sub_dsm_iv_or','x2_dg_trs_psiq_sub_dsm_iv_or','x3_dg_trs_psiq_sub_dsm_iv_or','dg_trs_psiq_sub_cie_10_or','etnia_cor_2','motivodeegreso_mod_imp','fecha_ultimo_tratamiento','fecha_ultimo_tratamiento','tiene_menores_de_edad_a_cargo'),~as.factor(.)) %>%
+  dplyr::group_by(hash_key)%>%
+  dplyr::mutate(at_least_one_cont_entry=sum(!is.na(diff_bet_treat)))%>%
+  ungroup()%>%
+  dplyr::mutate(at_least_one_cont_entry= ifelse(at_least_one_cont_entry>0,1,0))%>%
+  dplyr::mutate(menor_45_dias_diff= ifelse(diff_bet_treat<45,1,0))%>%
+  dplyr::mutate(at_least_one_cont_entry= recode(as.character(at_least_one_cont_entry),"0"="User with no cont. entry","1"="User with cont. entry"))%>%
+  dplyr::mutate(menor_45_dias_diff= recode(as.character(menor_45_dias_diff),"0"=">= 45 Days of Difference Between Entries","1"="<45 Days of Difference Between Entries"))%>%
+  dplyr::mutate(menor_60_dias_diff= recode(as.character(menor_60_dias_diff),"0"=">= 60 Days of Difference Between Entries","1"="<60 Days of Difference Between Entries"))%>%
+  dplyr::mutate(obs_cambios_ninguno= recode(as.character(obs_cambios_ninguno),"0"="At least 1 Change w/ the Next Entry","1"="No Changes w/ the Next Entry"))%>%
+  dplyr::mutate(motivoegreso_derivacion= recode(as.character(motivoegreso_derivacion),"0"="Other causes of discharge","1"="Referral"))%>%
+  dplyr::mutate_at(vars(at_least_one_cont_entry,menor_45_dias_diff,menor_60_dias_diff,obs_cambios_ninguno,motivoegreso_derivacion,obs_cambios),~as.factor(.))%>%
+  assign("Base_fiscalia_v7",., envir = .GlobalEnv)
+  
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_  
+  
+codebook::var_label(Base_fiscalia_v8) <- list(
+row= 'Numerador de los eventos presentes en la Base de Datos/Events in the Dataset',
+table= 'Origen de los Datos (de los archivos por año)/Source of Data (of files per year)',
+hash_key= 'Codificación del RUN/Masked Identifier (RUN)',
+ano_bd= 'Año de la Base de Datos/Year of the Dataset (Source)',
+id= 'Codigo Identificación de SENDA/SENDA ID',
+nombre_centro= 'Nombre del Centro de Tratamiento/Treatment Center',
+tipo_centro= 'Tipo de Centro/Type of Center',
+region_del_centro= '(original, Recodificado en nombre_region)/',
+servicio_de_salud= 'Servicio de Salud/Health Service',
+tipo_de_programa= '(original, Recodificado en tipo_de_programa_2)/',
+tipo_de_plan= '(original, Recodificado en tipo_de_plan_2)/',
+senda= 'SENDA/SENDA',
+dias_trat= 'Días de Tratamiento/Days of Treatment',
+nmesesentratamiento= 'Número de Meses en Tratamiento/Number of Months in Treatment',
+dias_en_senda= 'Días en SENDA/Days in SENDA',
+n_meses_en_senda= 'Número de Meses en SENDA/Number of Months in SENDA',
+sexo= '(original, Recodificado en sexo_2)/',
+edad= 'Edad (número entero)/Age (In years, Discrete Number)',
+nombre_usuario= 'Nombre del Usuario (OCULTO y no accesible)/Name of the User (Not Accessible)',
+comuna_residencia= '(original, Recodificado en comuna_residencia_cod)/',
+origen_de_ingreso= '(original, Recodificado en origen_ingreso)/',
+pais_nacimiento= 'País de Nacimiento/Country of Birth',
+nacionalidad= 'Nacionalidad/Nationality',
+etnia= '(original, recodificado en etnia_cor)/',
+estado_conyugal= '(original, Recodificado en estado_conyugal_2)/',
+numero_de_hijos= 'Número de Hijos/Number of Children',
+num_hijos_ing_trat_res= 'Número de Hijos para Ingreso a Tratamiento Residencial/Number of Children to Residential Treatment',
+parentesco_con_el_jefe_de_hogar= '(Sólo presenta valores perdidos)/',
+num_trat_ant= 'Número de Tratamientos Anteriores/Number of Previous Treatments',
+fecha_ultimo_tratamiento= 'Fecha del Último Tratamiento/Date of the Last Treatment',
+sustancia_de_inicio= '(original, Recodificado en sus_ini)/',
+edad_inicio_consumo= '(original, Recodificado en edad_ini_cons)/', 
+x_se_trata_mujer_emb= 'Mujer Embarazada al Ingreso/Pregnant at Admission',
+escolaridad_ultimo_ano_cursado= '(original, Recodificado en escolaridad)/', 
+condicion_ocupacional= '(original, Recodificado en estatus_ocupacional)/', 
+categoria_ocupacional= '(original, Recodificado en cat_ocupacional)/',
+rubro_trabaja= '(original, Recodificado en rubro_trabaja_mod)/',
+con_quien_vive= 'Persona con la que vive el Usuario/People that Share Household with the User',
+tipo_de_vivienda= '(original, Recodificado en tipo_de_vivienda_mod)/',
+tenencia_de_la_vivienda= '(original, Recodificado en tenencia_de_la_vivienda_mod)/',
+sustancia_principal= '(original, Recodificado en sus_principal)/',
+`otras_sustancias_nº1`= '(original, Recodificado en otras_sus1)/',
+`otras_sustancias_nº2`= '(original, Recodificado en otras_sus2)/',
+`otras_sustancias_nº3`= '(original, Recodificado en otras_sus3)/',
+freq_cons_sus_prin_original= '(original, Recodificado en freq_cons_sus_prin)/',
+edad_inicio_sustancia_principal= '(original, Recodificado en edad_ini_sus_prin)/',
+via_adm_sus_prin_original= '(original, Recodificado en via_adm_sus_prin)/',
+dg_trs_cons_sus_or= 'Diagnósico de Trastorno por Consumo de Sustancias/Diagnosed of Substance Use Disorder',
+dg_trs_psiq_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV/Diagnosis of Psychiatric Disorders, DSM-IV criteria',
+dg_trs_psiq_sub_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV (Subclasificacion)/Diagnosis of Psychiatric Disorders, DSM-IV criteria (sub-classification)',
+x2_dg_trs_psiq_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV (2)/Diagnosis of Psychiatric Disorders, DSM-IV criteria (2)',
+x2_dg_trs_psiq_sub_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV (Subclasificacion) (2)/Diagnosis of Psychiatric Disorders, DSM-IV criteria (sub-classification) (2)',
+x3_dg_trs_psiq_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV (3)/Diagnosis of Psychiatric Disorders, DSM-IV criteria (3)',
+x3_dg_trs_psiq_sub_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV (Subclasificacion) (3)/Diagnosis of Psychiatric Disorders, DSM-IV criteria (sub-classification) (3)',
+dg_trs_psiq_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10/Diagnosis of Psychiatric Disorders, CIE-10 criteria',
+dg_trs_psiq_sub_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10 (Subclasificacion)/Diagnosis of Psychiatric Disorders, CIE-10 criteria (subclassification)',
+x2_dg_trs_psiq_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10 (2)/Diagnosis of Psychiatric Disorders, CIE-10 criteria (2)',
+x2_dg_trs_psiq_sub_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10 (Subclasificacion) (2)/Diagnosis of Psychiatric Disorders, CIE-10 criteria (subclassification) (2)',
+x3_dg_trs_psiq_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10 (3)/Diagnosis of Psychiatric Disorders, CIE-10 criteria (3)',
+x3_dg_trs_psiq_sub_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10 (Subclasificacion) (3)/Diagnosis of Psychiatric Disorders, CIE-10 criteria (subclassification) (3)',
+diagnostico_trs_fisico= 'Diagnóstico de Trastorno Físico/Diagnosis of Physical Disorder',
+otros_probl_at_sm_or= 'Otros Problemas de Atención Vinculados a Salud Mental/Other problems linked to Mental Health',
+compromiso_biopsicosocial= 'Compromiso Biopsicosocial/Biopsychosocial Involvement',
+dg_global_nec_int_soc_or= 'Diagnóstico Global de Necesidades de Integración Social (Al Ingreso)/Global Diagnosis of Social Integration (At Admission)',
+dg_nec_int_soc_cap_hum_or= 'Diagnóstico de Necesidades de Integración Social en Capital Humano (Al Ingreso)/Global Diagnosis of Social Integration in Human Capital (At Admission)',
+dg_nec_int_soc_cap_fis_or= 'Diagnóstico de Necesidades de Integración Social en Capital Físico (Al Ingreso)/Global Diagnosis of Social Integration in Physical Capital (At Admission)',
+dg_nec_int_soc_cap_soc_or= 'Diagnóstico de Necesidades de Integración Social en Capital Social (Al Ingreso)/Global Diagnosis of Social Integration in Social Capital (At Admission)',
+fech_ing= 'Fecha de Ingreso a Tratamiento/Date of Admission to Treatment',
+fecha_ingreso_a_convenio_senda= 'Fecha de Ingreso a Convenio SENDA (aún no formateada como fecha)/Date of Admission to SENDA Agreement',
+usuario_tribunal_trat_droga= 'Usuario de modalidad Tribunales de Tratamiento de Drogas/User of Drug Treatment Courts Modality',
+consentimiento_informado= 'Consentimiento Informado/Informed Consent',
+fech_egres= 'Fecha de Egreso de Tratamiento/Date of Discharge from Treatment',
+motivodeegreso= 'Motivo de Egreso/Cause of Discharge',
+tipo_centro_derivacion= 'Tipo de Centro al que el Usuario es Derivado/Type of Center of Derivation',
+evaluacindelprocesoteraputico= 'Evaluación del Proceso Terapéutico/Evaluation of the Therapeutic Process',
+eva_consumo= 'Evaluación al Egreso Respecto al Patrón de consumo/Evaluation at Discharge regarding to Consumption Pattern',
+eva_fam= 'Evaluación al Egreso Respecto a Situación Familiar/Evaluation at Discharge regarding to Family Situation',
+eva_relinterp= 'Evaluación al Egreso Respecto a Relaciones Interpersonales/Evaluation at Discharge regarding to Interpersonal Relations',
+eva_ocupacion= 'Evaluación al Egreso Respecto a Situación Ocupacional/Evaluation at Discharge regarding to Occupational Status',
+eva_sm= 'Evaluación al Egreso Respecto a Salud Mental/Evaluation at Discharge regarding to Mental Health',
+eva_fisica= 'Evaluación al Egreso Respecto a Salud Física/Evaluation at Discharge regarding to Physical Health',
+eva_transgnorma= 'Evaluación al Egreso Respecto a Trasgresión a la Norma Social/Evaluation at Discharge regarding to Transgression to the Norm',
+dg_trs_psiq_cie_10_egres_or= '(Sólo presenta valores perdidos)/',
+dg_global_nec_int_soc_or_1= 'Diagnóstico Global de Necesidades de Integración Social (Al Egreso)/Global Diagnosis of Social Integration (At Discharge)',
+dg_nec_int_soc_cap_hum_or_1= 'Diagnóstico de Necesidades de Integración Social en Capital Humano (Al Egreso)/Global Diagnosis of Social Integration in Human Capital (At Discharge)',
+dg_nec_int_soc_cap_fis_or_1= 'Diagnóstico de Necesidades de Integración Social en Capital Físico (Al Egreso)/Global Diagnosis of Social Integration in Physical Capital (At Discharge)',
+dg_nec_int_soc_cap_soc_or_1= 'Diagnóstico de Necesidades de Integración Social en Capital Social (Al Egreso)/Global Diagnosis of Social Integration in Social Capital (At Discharge)',
+tiene_menores_de_edad_a_cargo= 'Menores de Edad A Cargo/Minor Dependants',
+mot_egres_alt_adm_or= 'Motivo de Egreso Alta Administrativa/Cause of Administrative Discharge',
+consorcio=  'Sociedades de Tratamiento Servicios de Salud- Fundaciones- entre otras entidades encargadas de los centros/Consortium',
+id_centro= 'ID de Centro/Treatment center ID',
+ha_estado_embarazada_egreso= '¿Ha estado embarazada? (al Egreso)/Have you been Pregnant (at Discharge)',
+identidad_de_genero= 'Identidad de Género/Gender Identity',
+discapacidad= 'Presenta Discapacidad/Disability',
+hash_rut_completo= 'HASH alternativo, en el escenario en que se asuma que el individuo al que se le codificó el RUN presente mayor edad/Alternative HASH-Key',
+opcion_discapacidad= 'Origen de Discapacidad/Cause of Disability',
+sexo_2= 'Sexo Usuario/Sex of User',
+embarazo= 'Embarazo al Ingreso /Pregnant at Admission',
+tipo_de_plan_2= 'Tipo de Plan/Type of Plan',
+tipo_de_programa_2= 'Tipo de Programa de Tratamiento/Type of Program',
+fech_egres_sin_fmt= 'Fecha de Egreso de Tratamiento (Sin Formato de Fecha)/Date of Discharge',
+id_mod= 'ID de SENDA para Presentación en Página Web (enmascara caracteres 5 y 6)/SENDA ID (mask characters 5 & 6)',
+ano_nac= 'Año de Nacimiento (numérico)/Year of Birth (numeric)',
+fech_ing_ano= 'Año de Ingreso (numérico)/Year of Admission (numeric)',
+fech_ing_mes= 'Mes de Ingreso (numérico)/Month of Admission (numeric)',
+fech_ing_dia= 'Día de Ingreso (numérico)/Day of Admission (numeric)',
+concat= 'ID de SENDA y HASH Concatenado (permite discriminar más de un HASH en un mismo ID)/Combination of SENDA ID & HASH',
+obs= 'Observaciones al Proceso de Limpieza y Estandarización de Casos/Observations to the Process of Data Tidying & Standardization',
+dias_trat_inv= 'Días de Tratamiento Invertidos (fecha más reciente, menor valor numérico)/Treatment Days (Reversed)',
+fech_nac= 'Fecha de Nacimiento/Date of Birth',
+edad_al_ing= 'Edad a la Fecha de Ingreso a Tratamiento (numérico continuo)/Age at Admission to Treatment',
+edad_ini_cons= 'Edad de Inicio de Consumo/Age of the Onset of Drug Use',
+edad_ini_sus_prin=  'Edad de Inicio de Consumo Sustancia Principal/Age of the Onset of Drug Use of Primary Substance',
+dias_trat_alta_temprana= 'Días de tratamiento (<90)/Less than 90 days in treatment',
+motivodeegreso_mod= 'Motivo de Egreso (con abandono temprano y tardío)/Cause of Discharge (with late and early withdrawal)',
+sus_principal= 'Sustancia Principal de Consumo/Primary or Main Substance of Consumption at Admission',
+otras_sus1= 'Otras Sustancias (1)/Other Substances (1)',
+otras_sus2= 'Otras Sustancias (2)/Other Substances (2)',
+otras_sus3= 'Otras Sustancias (3)/Other Substances (3)',
+sus_ini= 'Sustancia de Inicio/Starting Substance',
+estado_conyugal_2= 'Estado Conyugal/Marital Status',
+estatus_ocupacional= 'Condición Ocupacional/Occupational Status',
+cat_ocupacional= 'Categoría Ocupacional/Occupational Category',
+edad_grupos= 'Edad agrupada/Age in groups',
+origen_ingreso= "(modificado en origen_ingreso_mod)/",
+escolaridad= 'Escolaridad: Nivel Eduacional/Educational Attainment',
+via_adm_sus_prin= 'Vía de Administración de la Sustancia Principal/Route of Administration of the Primary or Main Substance',
+freq_cons_sus_prin= 'Frecuencia de Consumo de la Sustancia Principal (30 días previos a la admisión)/Frequency of Consumption of the Primary or Main Substance (30 days previous to admission)',
+dias_trat_knn_imp= 'Días de Tratamiento (Imputados KNN)/Days of Treatment (Imputed KNN)',
+fech_egres_knn_imp= 'Fecha de Egreso (Imputados KNN)/Date of Discharge (Imputed KNN)',
+dias_trat_alta_temprana_knn_imp= 'Días de Tratamiento con Alta Temprana (<90) (Imputados KNN)/Days of Treatment w Early Withdrawal (Imputed KNN)',
+fech_egres_imp= 'Fecha de Egreso (Imputados KNN & Lógico)/Date of Discharge (Imputed KNN & Logic)',
+motivodeegreso_imp= 'Motivo de Egreso(Imputados KNN & Lógico)/Cause of Discharge (Imputed KNN & Logic)',
+motivodeegreso_mod_imp= 'Motivo de Egreso (con abandono temprano y tardío)(Imputados KNN & Lógico)/Cause of Discharge (with late and early withdrawal)(Imputed KNN & Logic)',
+dias_trat_imp= 'Días de Tratamiento (Imputados KNN & Lógico)/Days of Treatment (Imputed KNN & Logic)', 
+dias_trat_alta_temprana_imp= 'Días de Tratamiento con Alta Temprana (<90) (Imputados KNN & Lógico)/Days of Treatment w Early Withdrawal (Imputed KNN & Logic)',
+via_adm_sus_prin_act= 'Vía de Administración de la Sustancia Principal (Se aplicaron criterios de limpieza)/Route of Administration of the Primary or Main Substance (Tidy)',
+etnia_cor= 'Etnia/Ethnic Group',
+nacionalidad_2= 'Segunda Nacionalidad/Second Nationality',
+etnia_cor_2= 'Etnia (2)/Second Ethnic Group',
+sus_ini_2= 'Segunda Sustancia de Inicio/Second Starting Substance',
+sus_ini_3= 'Tercera Sustancia de Inicio/Third Starting Substance',
+concat_hash_sus_prin= 'Combination of User & Primary Substance',
+macrozona= "Macrozona/Macrozones",
+nombre_region= " Región del Centro/Chilean Region of the Center",
+comuna_residencia_cod= "Comuna de Residencia/Municipality or District of Residence",
+sus_ini_mod= "Sustancia de Inicio (Sólo más frecuentes)/Starting Substance (Only more frequent)",
+sus_principal_mod= 'Sustancia Principal de Consumo (Sólo más frecuentes)/Primary or Main Substance of Consumption at Admission (Only more frequent)',
+origen_ingreso_mod= 'Origen de Ingreso/Motive of Admission to Treatment',
+tipo_de_vivienda_mod= 'Tipo de Vivienda/Type of Housing', 
+tenencia_de_la_vivienda_mod= 'Tenencia de la Vivienda/Tenure status of Households',
+rubro_trabaja_mod= 'Rubro de Trabajo/Area of Work',
+edad_al_ing_grupos= 'Edad a la Fecha de Ingreso a Tratamiento en Grupos/Age at Admission to Treatment In Groups',
+menor_60_dias_diff= 'Menor a 60 días de diferencia con el registro posterior/Menor a 60 days of difference between the next entry',
+menor_45_dias_diff= 'Menor a 45 días de diferencia con el registro posterior/Less than 45 days of difference between the next entry',
+diff_bet_treat= 'Días de diferencia con el registro posterior/Days of difference between the next entry',
+id_centro_sig_trat= "ID del Centro del registro posterior/Center ID of the Next Treatment",
+tipo_plan_sig_trat= "Tipo de Plan del registro posterior/Type of Plan of the Next Entry",
+tipo_programa_sig_trat= "Tipo de Programa del registro posterior/Type of Program of the Next Entry", 
+senda_sig_trat= "SENDA del registro posterior/SENDA of the Next Entry",
+motivoegreso_derivacion= "Motivo de Egreso= Derivación/Cause of Discharge= Derivación",
+obs_cambios= "Cambios del tratamiento en comparación al registro posterior/Changes in treatment compared to the Next Entry",
+obs_cambios_ninguno= "Sin cambios del tratamiento en comparación al registro posterior/No changes in treatment compared to the Next Entry",
+obs_cambios_num= "Recuento de cambios del tratamiento en comparación al registro posterior/Count of changes in treatment compared to the Next Entry",
+obs_cambios_fac= "Recuento de cambios del tratamiento en comparación al registro posterior(factor)/Count of changes in treatment compared to the Next Entry(factor)",
+at_least_one_cont_entry= "Casos de Usuarios con más de una entrada después de otra/Cases of users with more than one entry after another one"
+)
+```
+
+# Session Info
+
+```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE}
+message(Sys.getenv("R_LIBS_USER"))
+Sys.Date()
+message(paste0("Editor context: ", path))
+
+if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.RData")
+  } else if (grepl("andre",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("C:/Users/andre/Desktop/SUD_CL/13.RData")
+  } else if (grepl("E:",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.RData")
+  } else {
+    save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"13.RData"))
+  }
+
+sesion_info <- devtools::session_info()
+dplyr::select(
+  tibble::as_tibble(sesion_info$packages),
+  c(package, loadedversion, source)
+) %>% 
+  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Variable' = 2, 'Percentage'= 3),
+              caption = htmltools::tags$caption(
+        style = 'caption-side: top; text-align: left;',
+        '', htmltools::em('Packages')),
+      options=list(
+initComplete = htmlwidgets::JS(
+      "function(settings, json) {",
+      "$(this.api().tables().body()).css({'font-size': '80%'});",
+      "}")))
+```
+
+# Export
+
+```{r export, warning=FALSE, echo=T}
+Base_fiscalia_v7 %>% 
+  dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                 encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
+                                 T~"VICTIMA")) %>% 
+#  dplyr::filter(accused=="VICTIMA") %>% 
+    rio::export(file = paste0("fiscalia_mariel_sep_2022.dta"))
+
+invisible("Temporarily useless")
+# ```{r label_to_stata, echo=T, paged.print=TRUE}
+# 
+# export_lab_stata_merge<-
+#   tibble::rownames_to_column(data.frame(Hmisc::label(Base_fiscalia_v2)))%>% data.frame() %>%
+#   dplyr::rename("code" = !!names(.[1]), "label" = !!names(.[2]))%>% data.frame()%>%
+#   dplyr::mutate(first= "cap noi label variable")%>%
+#   dplyr::mutate(final= paste0(first, " ",code,' "',label,'"'))%>%
+#   dplyr::select(-code,-label,-first)%>%
+#   dplyr::rename("*clear all"="final") %>% 
+#   rbind(paste0('cap noi save "', gsub('/', '\\', path, fixed=T),'\\fiscalia_mariel_ago_2022.dta", replace'))%>%
+#   rbind('cap noi drop id id_mod nombre_centro consentimiento_informado')%>%
+#   rbind('cap noi drop id id_mod nombre_centro')%>%
+#   rbind(paste0('cap noi save "', gsub('/', '\\', path, fixed=T),'\\fiscalia_mariel_ago_2022.dta", replace'))
+# 
+# rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\fiscalia_mariel_ago_2022.dta", clear'),export_lab_stata_merge) %>% knitr::kable("html") %>% 
+#     kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size =10) %>% 
+#   kableExtra::scroll_box(width = "100%", height = "375px")
+# 
+# write.table(rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\fiscalia_mariel_ago_2022.dta", clear'),export_lab_stata_merge), file = paste0(path,"/SUD_CL/_label_var_to_stata.do"), sep = "",row.names = FALSE, quote = FALSE, fileEncoding="UTF-8")
+# ```
+# 
+# <br>
+# 
+# <div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:350px; overflow-x: scroll; width:100%">
+# 
+# ```{stata 2, collectcode=F, include=T, error=T, cleanlog=F}
+# *should be in the same folder of the .Rmd to work
+# cap noi do _label_var_to_stata.do
+# ```
+# 
+# </div>
+```

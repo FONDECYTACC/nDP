@@ -1112,12 +1112,11 @@ tab_agr_ter %>%  knitr::kable("html") %>% kableExtra::kable_classic()
 ```
 </div>
   
-We decided to eliminate those cases with missing birth dates that matched with the original C1 and TOP databases only (`r Base_fiscalia_v3 %>% dplyr::filter(fec_nacimiento_simple=="1900-01-01") %>% dplyr::left_join(CONS_C1_df_dup_SEP_2020[,c("hash_key","fech_nac")], by=c("rut_enc_saf"="hash_key")) %>% dplyr::filter(is.na(fech_nac)) %>%  dplyr::distinct(rut_enc_saf) %>% nrow` patients). Additionally, we eliminated those cases with no date of comission of the crime (`r Base_fiscalia_v3 %>%   dplyr::left_join(after_imp_Base_fiscalia_v3_db[,c("rut_enc_saf","imp_birth_date","flowch_age")],by="rut_enc_saf") %>%   dplyr::rename("obs"="flowch_age") %>%   dplyr::mutate(imp_birth_date=dplyr::case_when(!is.na(imp_birth_date)~imp_birth_date,T~fec_nacimiento_simple))%>% dplyr::mutate(edad_comision_imp=as.numeric(fec_comision_simple-imp_birth_date)/365.25) %>% dplyr::mutate(edad_ter_rel_imp=as.numeric(termino_relacion_simple-imp_birth_date)/365.25) %>% dplyr::arrange(rut_enc_saf, edad_comision_imp) %>% dplyr::filter(dplyr::case_when(is.na(edad_comision_imp)~T,T~F)) %>% nrow()` entries). Must consider that much more had annulment of the administrative procedures (42.5% vs. 0.3%) or dismissal of proceedings art.[240](http://iura.cl/cpp/240.html) (15.8% vs. 7.9%).
+We decided to eliminate those cases with missing birth dates that matched with the original C1 and TOP databases only (`r Base_fiscalia_v3 %>% dplyr::filter(fec_nacimiento_simple=="1900-01-01") %>% dplyr::left_join(CONS_C1_df_dup_SEP_2020[,c("hash_key","fech_nac")], by=c("rut_enc_saf"="hash_key")) %>% dplyr::filter(is.na(fech_nac)) %>%  dplyr::distinct(rut_enc_saf) %>% nrow` patients). Additionally, we eliminated those cases with no date of commission of the crime (`r Base_fiscalia_v3 %>%   dplyr::left_join(after_imp_Base_fiscalia_v3_db[,c("rut_enc_saf","imp_birth_date","flowch_age")],by="rut_enc_saf") %>%   dplyr::rename("obs"="flowch_age") %>%   dplyr::mutate(imp_birth_date=dplyr::case_when(!is.na(imp_birth_date)~imp_birth_date,T~fec_nacimiento_simple))%>% dplyr::mutate(edad_comision_imp=as.numeric(fec_comision_simple-imp_birth_date)/365.25) %>% dplyr::mutate(edad_ter_rel_imp=as.numeric(termino_relacion_simple-imp_birth_date)/365.25) %>% dplyr::arrange(rut_enc_saf, edad_comision_imp) %>% dplyr::filter(dplyr::case_when(is.na(edad_comision_imp)~T,T~F)) %>% nrow()` entries). Must consider that much more had annulment of the administrative procedures (42.5% vs. 0.3%) or dismissal of proceedings art.[240](http://iura.cl/cpp/240.html) (15.8% vs. 7.9%).
 
 <br>
   
 ```{r applyrulesage4, echo=T, cache= T, paged.print=TRUE, eval=T, error=T}
-
 invisible("erase entries with missing values in fec_comision_simple y termino_relacion_simple")
 
 Base_fiscalia_v3 %>% 
@@ -1335,7 +1334,7 @@ rbind(
   
 <br>
   
-```{r fig1-agrupaterminos-fechnac, fig.align='center', fig.pos='H', fig.cap="Date of birth and suspicious of commiting a crime", echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320, fig.align="center"}
+```{r fig1-agrupaterminos-fechnac, fig.align='center', fig.pos='H', fig.cap="Date of birth and suspicious of commiting a crime", echo=T, cache= T, paged.print=TRUE, eval=T, error=T, dpi=320}
 #https://coolors.co/0a1128-001f54-034078-1282a2-c1dbe3
 
 #c("pais", "encontrado_como_victima", "gls_tipo_sujeto_vic", "gls_tipo_imputado", "gls_region", "familia_delito", "agrupa_terminos", "sexo", "edad_comision", "region_delito")
