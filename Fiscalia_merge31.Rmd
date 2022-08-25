@@ -115,6 +115,7 @@ pre:not(.sourceCode) {
 .sourceCode { /* Important gives precedence  */
   font-size: 10px !important;
   line-height: 50% !important;
+  white-space: normal !important;  /* To create another line */
 }
 
 body{ /* Normal  */
@@ -137,28 +138,34 @@ body{ /* Normal  */
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
 div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
 
-.pandoc-table { /* Deb iese ponerle el 24-08-22 00.18 !important;  */
+.pandoc-table { /* Should add !important; but it seems no necessary  */
   margin-left:auto; /* To center */
   margin-right:auto;
   border-collapse: collapse;
   table-layout: auto;
   font-size: 11px;
   overflow-y: auto;
-  height:450px;
+  max-height:450px !important;
   white-space: nowrap;
   overflow-x: auto; 
   width:450px;
 }
 
 .pandoc-table th {/* header */
-text-align: center;
-font-size: 9px;
+text-align: center !important;
+font-size: 10px;
 padding: 0px;
 }
 
 .pandoc-table td {
+text-align: left !important;
 font-size: 9px;
 padding: 0px;
+}
+
+.pandoc-table caption {
+    text-align: left !important;
+    font-size: 11px !important;
 }
 
 .controlly{

@@ -115,6 +115,7 @@ pre:not(.sourceCode) {
 .sourceCode { /* Important gives precedence  */
   font-size: 10px !important;
   line-height: 50% !important;
+  white-space: normal !important;  /* To create another line */
 }
 
 body{ /* Normal  */
@@ -137,28 +138,34 @@ body{ /* Normal  */
 div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
 div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
 
-.pandoc-table { /* Deb iese ponerle el 24-08-22 00.18 !important;  */
+.pandoc-table { /* Should add !important; but it seems no necessary  */
   margin-left:auto; /* To center */
   margin-right:auto;
   border-collapse: collapse;
   table-layout: auto;
   font-size: 11px;
   overflow-y: auto;
-  height:450px;
+  max-height:450px !important;
   white-space: nowrap;
   overflow-x: auto; 
   width:450px;
 }
 
 .pandoc-table th {/* header */
-text-align: center;
-font-size: 9px;
+text-align: center !important;
+font-size: 10px;
 padding: 0px;
 }
 
 .pandoc-table td {
+text-align: left !important;
 font-size: 9px;
 padding: 0px;
+}
+
+.pandoc-table caption {
+    text-align: left !important;
+    font-size: 11px !important;
 }
 
 .controlly{
@@ -352,7 +359,7 @@ kable(size=10, format="markdown",caption= "Summary descriptives, missing values 
 
 <br>
 
-Registries with no ID are far more frequent in the north: I Región de Tarapaca, II Región de Antofagasta and XV Región de Arica y Parinacota, while less in the Metropolitan Region. Also have judiciary finishings of the proceedings. Much more were applied a "PRINCIPIO DE OPORTUNIDAD" and "SENTENCIA DEFINITIVA CONDENATORIA", and less ended in  "ARCHIVO PROVISIONAL", "AGRUPACI¿N A OTRO CASO" and "SOBRESEIMIENTO DEFINITIVO". Many of the crimes were related to drunk driving, posession of drugs and knives or sharp objects, brawls, drug traffic, microtraffic. There are no cases related to domestic violence. The order for payment procedure ("MONITORIO") was more frequent, in contrast to the ordinary procedure ("ORDINARIO"). The place in which the crime was commited more frequently in national or municipal goods of public use ("BIENES NACIONALES USO PUBLICO"), but less in residential places ("LUGAR HABITADO"). Also, these crimes were more frequently commited between 2010 and 2015, but less after 2015.
+Registries with no ID are far more frequent in the north: I Región de Tarapaca, II Región de Antofagasta and XV Región de Arica y Parinacota, while less in the Metropolitan Region. Also have judiciary finishings of the proceedings. Much more were applied a principle of discretion ("PRINCIPIO DE OPORTUNIDAD") and condemnatory sentence ("SENTENCIA DEFINITIVA CONDENATORIA"), and less ended in provision filling of the case ("ARCHIVO PROVISIONAL"), grouped in another case ("AGRUPACI¿N A OTRO CASO") and definitive dismissal ("SOBRESEIMIENTO DEFINITIVO"). Many of the crimes were related to drunk driving, posession of drugs and knives or sharp objects, brawls, drug traffic, microtraffic. There are no cases related to domestic violence. The order for payment procedure ("MONITORIO") was more frequent, in contrast to the ordinary procedure ("ORDINARIO"). The place in which the crime was commited more frequently in national or municipal goods of public use ("BIENES NACIONALES USO PUBLICO"), but less in residential places ("LUGAR HABITADO"). Also, these crimes were more frequently commited between 2010 and 2015, but less after 2015.
 
 <br>
 
@@ -429,7 +436,7 @@ Those records that were nullified as a type of termination of the relationship, 
 #- `TIPO_SUJETO_VIC` that are victims and imputed at the same time
 
 tbone_suj_vic_imp<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_anul=ifelse(encontrado_como_victima=="SI"& encontrado_como_imputado=="SI",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="agrupa_terminos_anul", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, vicimp=ifelse(encontrado_como_victima=="SI"& encontrado_como_imputado=="SI",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="vicimp", addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_suj_vic_imp, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -446,6 +453,31 @@ as.data.frame.TableOne(tbone_suj_vic_imp, smd=T)%>%
 <br>
 
 All of the registries both accused and victim were indicated as a victim in the type of subject, were more frequently in the Metropolitan Region (excepting Western sector), more relationships ended without a judicial intervention, applying the principle of discretion ("PRINCIPIO DE OPORTUNIDAD"), compensation agreements ("ACUERDO REPARATORIO") or provision filling of the case ("ARCHIVO PROVISIONAL"), but less a condemnatory sentence ("SENTENCIA DEFINITIVA CONDENATORIA"). Most of them were inflictions/injuries ("LESIONES"). The proceedings corresponded more to ordinary ("ORDINARIO") or no proceedings, and were committed more in residential cohabited location.
+
+<br>
+
+::: controlly
+```{r 5-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+#- `TIPO_SUJETO_VIC` 
+
+tbone_suj_tip_suj_novic<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino")), data=  dplyr::mutate(Base_fiscalia_v7, diff_vic_tip_suj=ifelse((tipo_sujeto_vic==6),0,1),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="diff_vic_tip_suj", addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_suj_tip_suj_novic, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  kable(size=10, format="markdown",caption= "Summary descriptives, Relationships of people both victim and accused(1)")
+```
+:::
+
+<br>
+
+Those cases in which the type of subject that is a victim did not have the value of "victim (6)", corresponded to records with the following characteristics: every record the patient was found as imputed, most ended with judiciary proceedings, had more condemnatory or of acquittal sentence ("SENTENCIA DEFINITIVA CONDENATORIA" and "ABSOLUTAORIA") and definitive dismissal ("SOBRESEIMIENTO DEFINITIVO") but less provision filling of the case ("ARHIVO PROVISIONAL"). Crimes were much more related to sex-related (specially one to a child under 14 years of age), quasi-delicts ("CUASIDELITOS") or against public trust ("CONTRA LA FE PÚBLICA"), less had a  relationship with the victim because of domestic violence, more were on ordinary proceedings ("ORDINARIO") and accelerated ("ABREVIADO"), while less on payment procedure (“MONITORIO”). Also more occured in residential places ("LUGAR HABITADO") while less in public or social associations ("ORGANIZACION PÚBLICA Y/O SOCIAL"). Less crimes were committed in the Metropolitan Region ("Región Metropolitana") de Santiago	but more in IV Región de Coquimbo. more patients were sentenced to a term of ordinary imprisonment ("PRESIDIO MENOR"), and more frequently from 1 to 60 days in prison. Also more crimes were committed between 1972- mid 2010, declining from 2018, and were more frequent in people born in 1992 and afterwards.
 
 <br>
 
@@ -472,18 +504,21 @@ dplyr::distinct(Base_fiscalia_v7[,c("cod_delito","gls_materia")],cod_delito,.kee
 # - `COD_DELITO`. explore deprecated crimes
 crimes_no_cases<-
 Base_fiscalia_v7 %>% 
-  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
+  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple-1, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
   janitor::tabyl(cut_com_del2,cod_delito) %>% 
   reshape2::melt() %>%
    dplyr::filter(value==0)%>%
   dplyr::distinct(variable)
 # create a vector with crimes that have 0 cases in one determined date window
 
+invisible("Its normal if there is a value that is not includeed in the categorization. It is because of the nature of the cut of equal parts in the dates")
+
 (
 Base_fiscalia_v7 %>% 
-  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
+  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple-1, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
   janitor::tabyl(cut_com_del2,cod_delito) %>% 
   reshape2::melt() %>%
+    dplyr::filter(cut_com_del2!="1972-12-20") %>% 
   ungroup()%>%
   dplyr::filter(variable %in% as.numeric(unlist(crimes_no_cases)))%>%
   dplyr::left_join(dplyr::mutate(crime_cod_label,cod_delito=as.factor(cod_delito)), by=c("variable"="cod_delito")) %>% 
@@ -502,14 +537,18 @@ Base_fiscalia_v7 %>%
 
 ::: controlly
 ```{r 6-exp-crimes2, echo=T, fig.align='center', message=T, error=T, eval=T}
+
+invisible("Its normal if there is a value that is not includeed in the categorization. It is because of the nature of the cut of equal parts in the dates")
+
 Base_fiscalia_v7 %>% 
-  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
+  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple-1, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
   janitor::tabyl(cut_com_del2,cod_delito) %>% 
   reshape2::melt() %>%
+    dplyr::filter(cut_com_del2!="1972-12-20") %>% 
   dplyr::left_join(dplyr::mutate(crime_cod_label,cod_delito=as.factor(cod_delito)), by=c("variable"="cod_delito")) %>% 
   ungroup()%>%
   dplyr::filter(variable %in% as.numeric(unlist(crimes_no_cases)))%>%
-format_cells(1, 1:length(names(.)), "bold") %>%
+#format_cells(1, 1:length(names(.)), "bold") %>%
   kable(size=10, format="markdown",caption= "Crimes that had a null count in one time window", col.names=c("Dates","Crime (Code)", "Count","Details"))
 ```
 :::
@@ -541,6 +580,8 @@ Base_fiscalia_v7 %>%
 <br>
 
 ### Date of commission of the crime
+
+#### Cases w/ crimes committed before 2010
 
 ```{r 1-obs-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
 #6- 984 < 14 años fecha de comisión: las 144 son responsabilidad mía, las otras no. Las primeras porque las manipulé y elegí el mal menor pero seguía existiendo mal (tal vez que el problema ahí es la fecha de comisión y no la de nacimiento). Las segundas ver cuál es el origen, ahí probablemente la fecha de nac no esté mal porque SENDA y PO tienen la misma. En los 2 casos, hacer tablitas para ver la razón de término de la causa y ver anomalías
@@ -633,16 +674,17 @@ if(no_mostrar==0){
 
 ```{r 2b1-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
 Base_fiscalia_v7 %>%
-  dplyr::mutate(obs_age_com_crime= factor(dplyr::case_when(fec_comision_simple <"2010-01-01"~"a. Less 2010",edad_ter_rel_imp < edad_comision_imp~ "b. Age of termination of relationship < Age relationship", edad_comision_imp<0~ "c. Less 0 years age crime committed", edad_comision_imp < 18~ "d. Less 18 years age crime committed", is.na(edad_comision_imp)~"e. Missing age of crime comission", is.na(fec_comision_simple)~"f. Missing of date of crime comission", is.na(imp_birth_date)~ "g. MIssing birth date", T~"0. none"), levels=c("a. Less 2010", "b. Age of termination of relationship < Age relationship", "c. Less 0 years age crime committed", "d. Less 18 years age crime committed", "e. Missing age of crime comission", "f. Missing of date of crime comission", "g. MIssing birth date", "0. none"))) %>% 
+  dplyr::mutate(obs_age_com_crime= factor(dplyr::case_when(fec_comision_simple <"2010-01-01"~"a. Less 2010",edad_ter_rel_imp < edad_comision_imp~ "b. Age of termination of relationship < Age relationship", edad_comision_imp<0~ "c. Less 0 years age crime committed", edad_comision_imp < 18~ "d. Less 18 years age crime committed", is.na(edad_comision_imp)~"e. Missing age of crime comission", is.na(fec_comision_simple)~"f. Missing of date of crime comission", is.na(imp_birth_date)~ "g. MIssing birth date", T~"0. none"), levels=c("a. Less 2010", "b. Age of termination of relationship < Age relationship", "c. Less 0 years age crime committed", "d. Less 18 years age crime committed", "e. Missing age of crime commission", "f. Missing of date of crime commission", "g. Missing birth date", "0. none"))) %>% 
   #group_by(obs_age_com_crime) %>% 
   #summarise(obs_age_com_crime = n())
-  janitor::tabyl(obs_age_com_crime, show_missing_levels = T)
-
+  janitor::tabyl(obs_age_com_crime, show_missing_levels = T) %>% 
+  dplyr::mutate(percent=scales::percent(percent, accuracy = .1)) %>% 
+  kable("markdown", caption= "Count of distinct cases ")
 #- Crimes committed at an age lower than the date of birth
 #- Edad de nacimiento, crimenes cometidos a una edad
 ```
 
-invisible("Ver si por cada caso(RUC), hay distintos ID de sujetos imputados, pero para un único RUT")  
+`r invisible("Ver si por cada caso(RUC), hay distintos ID de sujetos imputados, pero para un único RUT")`
 
 ::: controlly
 ```{r 2b2-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
@@ -653,12 +695,14 @@ dplyr::select(rut_enc_saf, encontrado_como_imputado, fec_comision_simple, fec_cb
   dplyr::mutate(b=dplyr::if_else(edad_ter_rel_imp < edad_comision_imp,1,0,0)) %>% 
   dplyr::filter(fec_comision_simple<"2010-01-01") %>% 
   dplyr::arrange(b,fec_comision_simple) %>% 
-  head(20) %>% 
-  kable(size=10, format="markdown",caption= "Cases w/ crimes committed before 2010 (First 20 cases)") 
+  head(50) %>% 
+  kable(size=10, format="markdown",caption= "Cases w/ crimes committed before 2010 (First 50 cases)") 
   #knitr::kable(format="html",caption= "Cases w/ crimes committed before 2010 (First 20 cases)") %>% 
   #kableExtra::kable_classic()
 ```
 :::
+
+#### Cases w/ relationship dates finished before the crime was committed
 
 ```{r 2c-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
 message(paste0("Time HASHs repeat, Cases w/ relationship date finished before the crime was committed"))
@@ -674,7 +718,6 @@ Base_fiscalia_v7 %>%
     dplyr::mutate(sum_n=sum(n)) %>% 
     dplyr::summarise(records_per_hash=paste0(min(n)," - ", max(n)), records=first(sum_n))
 
-
 invisible("Observaciones a casos anómalos 5%")
 #- Delitos de violación <14a para los mas largo
 #- Bigamia: dselitos permanentes, duración de la acción humanada exigida por el tipo penal // persona "que contrajere matrimonio estando válidamente casada". // Nos adelantamos a exponer la razón: cuando todo el mundo consideraba como un hecho absolutamente indiscutible el de la instantaneidad del delito de bigamia, conSUs consecuencias en materia de prescripción, nos ha tocado leer algunos fallos recientes emanados de la Corte Suprema, que vienen a romper el consenso de que dábamos cuenta en ~as páginas que preceden.
@@ -689,9 +732,9 @@ Base_fiscalia_v7 %>%
     dplyr::mutate(diff_bet_ter_com= edad_comision_imp-edad_ter_rel_imp) %>% 
     dplyr::select(rut_enc_saf, diff_bet_ter_com, encontrado_como_imputado, diff_bet_ter_com, fec_comision_simple, fec_cbiorelacion_simple, edad_ter_rel_imp, edad_comision_imp, imp_birth_date, gls_region, gls_materia, agrupa_terminos, obs)%>% 
   dplyr::arrange(-diff_bet_ter_com)  %>% 
-    head(20) %>%
-  kable(size=10, format="markdown",caption= "Cases w/ Age of finishing of relationship before the crimes being committed (First 20 cases)") 
-
+    head(50) %>%
+  dplyr::mutate(diff_bet_ter_com=scales::percent(diff_bet_ter_com, .1)) %>% 
+  kable(size=10, format="markdown",caption= "Cases w/ Age of finishing of relationship before the crimes being committed (First 50 cases)") 
 ```
 :::
 
@@ -718,6 +761,10 @@ Base_fiscalia_v7 %>%
 invisible("no hay más de un RUC en estos RUTs, pero aparecen más de una vez en la base") 
  # purrr::when(dplyr::filter(.,nchar(c_22_1_a1a_1234_ab2)>2) %>% nrow()>0 ~ stop("imputed age at admission lower than the age of onset of drug use in imputed"), ~.) %>% 
 ```
+
+<br>
+
+
 
 <br>
 
