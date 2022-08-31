@@ -15,7 +15,6 @@ output:
     collapsed: false
     smooth_scroll: true
 ---
-
 ```{css zoom-lib-src, echo = FALSE}
 script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
 ```
@@ -35,7 +34,6 @@ script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
   });
   
 ```
-
 
 ```{css hideOutput-lib-src, echo = FALSE}
 <script src="hideOutput.js"></script> 
@@ -75,7 +73,8 @@ $(document).ready(function() {
 <style type="text/css">
 .showopt {   
   background-color: #004c93;   color: #FFFFFF;    width: 100px;   height: 20px;   text-align: center;   vertical-align: middle !important;   float: right;   font-family: sans-serif;   border-radius: 8px; 
-  }  
+  }
+
 .showopt:hover {     
         background-color: #dfe4f2;
         color: #004c93; 
@@ -86,43 +85,95 @@ pre.plot {
 .tablelines table, .tablelines td, .tablelines th {
         border: 1px solid black;
         }
+
 .centrado {
     text-align: center;
 }
+
 .table.center {
     margin-left:auto; 
     margin-right:auto;
   }
-.table_wrapper{
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+
+/* https://vivekjaiskumar.medium.com/css-is-and-not-selector-17c942ec83f :is()*/
+
+/* Applies to outputs that are not code other than R*/
+
+pre {
+  overflow-x: auto !important;
 }
-code.r{
-  font-size: 8px;
+pre code {
+  word-wrap: normal !important;
+  white-space: pre !important;
 }
+/*
+pre:not(.sourceCode) { 
+  white-space: nowrap !important;
+}
+*/
+.sourceCode { /* Important gives precedence  */
+  font-size: 10px !important;
+  line-height: 50% !important;
+}
+
 body{ /* Normal  */
       text-align: justify;
   }
+
 .superbigimage{
     overflow-y:scroll;
+    height:350px;
     white-space: nowrap;
+    overflow-x: auto; 
+    width:100%;
 }
 .superbigimage img{
     overflow-y: scroll;
     overflow-x: hidden;
 }
-.badCode {
-background-color: white;
-}
-</style>
-```
-```{=html}
-<style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px; text-align: justify;}
-</style>
-```
 
+.message { color:#446C6E; font-family: monospace;font-size: 10px; line-height: 110%; font-weight: bold;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
+div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
+
+.pandoc-table { /* Should add !important; but it seems no necessary  */
+  margin-left:auto; /* To center */
+  margin-right:auto;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-size: 11px;
+  overflow-y: auto;
+  max-height:450px !important;
+  white-space: nowrap;
+  overflow-x: auto; 
+  width:450px;
+}
+
+.pandoc-table th {/* header */
+text-align: center !important;
+font-size: 10px;
+padding: 0px;
+}
+
+.pandoc-table td {
+text-align: left !important;
+font-size: 9px;
+padding: 0px;
+}
+
+.pandoc-table caption {
+    text-align: left !important;
+    font-size: 11px !important;
+}
+
+.controlly{
+    overflow-y:scroll;
+    height:350px;
+    overflow-x: scroll; 
+}
+
+</style>
+```
 ```{=html}
 <!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
 <script>
@@ -147,7 +198,6 @@ function myFunction2() {
 }
 </script>
 ```
-
 ```{r prev_setup, include = FALSE, cache=T}
 rm(list=ls());gc()
 if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
@@ -345,7 +395,7 @@ grViz("digraph flowchart {
       tab4 -> blank2 [arrowhead = none,label='  Data wrangling and normalization process',fontsize = 8];
       blank2 -> tab5
       blank2 -> tab6
-      blank4 -> blank6 [arrowhead= none, label='⋉']
+      blank4 -> blank6 [arrowhead= none, label='  &#10198;']
       blank6 -> tab7
                   subgraph {
         rank = same; blank6; tab7;
@@ -1119,6 +1169,7 @@ We decided to eliminate those cases with missing birth dates that matched with t
 ```{r applyrulesage4, echo=T, cache= T, paged.print=TRUE, eval=T, error=T}
 invisible("erase entries with missing values in fec_comision_simple y termino_relacion_simple")
 
+Base_fiscalia_v4<-
 Base_fiscalia_v3 %>% 
   dplyr::left_join(after_imp_Base_fiscalia_v3_db[,c("rut_enc_saf","imp_birth_date","flowch_age")], by="rut_enc_saf") %>% 
   dplyr::rename("obs"="flowch_age") %>% 
@@ -1126,8 +1177,7 @@ Base_fiscalia_v3 %>%
   #arrange the rut from the first date of comission of a crime, but we are not detecting if he/she is the victim or not
   dplyr::arrange(rut_enc_saf, edad_comision_imp) %>% #566884
   dplyr::filter(dplyr::case_when(!is.na(edad_comision_imp)~T,T~F)) %>% #566644
-  dplyr::filter(imp_birth_date!="1900-01-01") %>% 
-  assign("Base_fiscalia_v4",.,envir = .GlobalEnv) 
+  dplyr::filter(imp_birth_date!="1900-01-01")
 
 if(
   Base_fiscalia_v4 %>% 
@@ -1724,7 +1774,7 @@ plot_merge_flowchart_after_dates<-
       tab4 -> blank2 [arrowhead = none,label='        Data wrangling and normalization process',fontsize = 8];
       blank2 -> tab5
       blank2 -> tab6
-      blank4 -> blank6 [arrowhead= none, label='⋉']
+      blank4 -> blank6 [arrowhead= none, label='  &#10198;']
       blank6 -> tab7
                   subgraph {
         rank = same; blank6; tab7;
@@ -2576,9 +2626,16 @@ dplyr::select(
         '', htmltools::em('Packages')),
       options=list(
 initComplete = htmlwidgets::JS(
-      "function(settings, json) {",
-      "$(this.api().tables().body()).css({'font-size': '80%'});",
-      "}")))
+        "function(settings, json) {",
+        "$(this.api().tables().body()).css({
+            'font-family': 'Helvetica Neue',
+            'font-size': '50%', 
+            'code-inline-font-size': '15%', 
+            'white-space': 'nowrap',
+            'line-height': '0.75em',
+            'min-height': '0.5em'
+            });",#;
+        "}")))
 ```
 
 # Export

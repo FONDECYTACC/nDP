@@ -36,7 +36,6 @@ script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
   
 ```
 
-
 ```{css hideOutput-lib-src, echo = FALSE}
 <script src="hideOutput.js"></script> 
 ```
@@ -75,7 +74,8 @@ $(document).ready(function() {
 <style type="text/css">
 .showopt {   
   background-color: #004c93;   color: #FFFFFF;    width: 100px;   height: 20px;   text-align: center;   vertical-align: middle !important;   float: right;   font-family: sans-serif;   border-radius: 8px; 
-  }  
+  }
+
 .showopt:hover {     
         background-color: #dfe4f2;
         color: #004c93; 
@@ -86,40 +86,95 @@ pre.plot {
 .tablelines table, .tablelines td, .tablelines th {
         border: 1px solid black;
         }
+
 .centrado {
     text-align: center;
 }
+
 .table.center {
     margin-left:auto; 
     margin-right:auto;
   }
-.table_wrapper{
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+
+/* https://vivekjaiskumar.medium.com/css-is-and-not-selector-17c942ec83f :is()*/
+
+/* Applies to outputs that are not code other than R*/
+
+pre {
+  overflow-x: auto !important;
 }
-code.r{
-  font-size: 8px;
+pre code {
+  word-wrap: normal !important;
+  white-space: pre !important;
 }
+/*
+pre:not(.sourceCode) { 
+  white-space: nowrap !important;
+}
+*/
+.sourceCode { /* Important gives precedence  */
+  font-size: 10px !important;
+  line-height: 50% !important;
+}
+
 body{ /* Normal  */
       text-align: justify;
   }
+
 .superbigimage{
     overflow-y:scroll;
+    height:350px;
     white-space: nowrap;
+    overflow-x: auto; 
+    width:100%;
 }
 .superbigimage img{
     overflow-y: scroll;
     overflow-x: hidden;
 }
-</style>
-```
-```{=html}
-<style>
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px; text-align: justify;}
-</style>
-```
 
+.message { color:#446C6E; font-family: monospace;font-size: 10px; line-height: 110%; font-weight: bold;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
+div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
+
+.pandoc-table { /* Should add !important; but it seems no necessary  */
+  margin-left:auto; /* To center */
+  margin-right:auto;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-size: 11px;
+  overflow-y: auto;
+  max-height:450px !important;
+  white-space: nowrap;
+  overflow-x: auto; 
+  width:450px;
+}
+
+.pandoc-table th {/* header */
+text-align: center !important;
+font-size: 10px;
+padding: 0px;
+}
+
+.pandoc-table td {
+text-align: left !important;
+font-size: 9px;
+padding: 0px;
+}
+
+.pandoc-table caption {
+    text-align: left !important;
+    font-size: 11px !important;
+}
+
+.controlly{
+    overflow-y:scroll;
+    height:350px;
+    overflow-x: scroll; 
+}
+
+</style>
+```
 ```{=html}
 <!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
 <script>
@@ -144,6 +199,7 @@ function myFunction2() {
 }
 </script>
 ```
+
 ```{r prev-setup, include = FALSE, cache=T}
 rm(list=ls());gc()
 if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
@@ -380,6 +436,7 @@ myVars_nva <-dput(names(dplyr::select(Base_fiscalia_v2, -c("rut_enc_saf","ruc","
 catVars_bd_nva <- dput(names(dplyr::select(Base_fiscalia_v2,c("encontrado_como_victima", "encontrado_como_imputado", "gls_tipo_sujeto_vic", "gls_region","tipo_termino","pais", "sexo","reg", "agrupa_terminos","gls_materia","familia_delito","relacion_vifsaf","gls_parentesco","gls_mottermino","gls_motsuspension","gls_proctermino","gls_tipo_imputado","lugar_ocurrencia","gls_sitiosuceso","gls_comuna","region_delito","medidas_155","medidas_pp","medidas_ip","marca_suspension_43","marca_pena_44","marca_multa_45","medida_alternativa_46","clasificacion_pena_47","tramos_condena_48","clasificacion_penarpa_1_49","clasificacion_penarpa_2_50","marca_suspension_51","marca_pena_52","marca_multa_53","medida_alternativa_54","clasificacion_pena_55","tramos_condena_56","clasificacion_penarpa_1_57","clasificacion_penarpa_2_58"))))
 ```
 
+::: controlly
 ```{r tab2-descr-c1-baseline-vs-type-treatd, message=F, error=T,eval=T, warnings=F, echo=T}
 tab2 <- as.data.frame.TableOne(CreateTableOne(vars = myVars, data = base_fiscalia[,myVars], factorVars = catVars, smd=T, strata="encontrado_como_imputado", addOverall = T, includeNA=T,test=T), smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -393,13 +450,19 @@ tab2 %>%
     # dplyr::select(-char2,-characteristic.x,-level) %>% 
     # dplyr::select(characteristic.y, level.y,  everything()) %>% 
 #fec_nacimiento_simple
-kable(size=11, format="html",caption= "Table 1. Summary descriptives, by accused status",smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F, col.names=c("Variable ","Level",rep(c("Total (%)","No", "Yes", "p-value","test", "SMD"),1)))%>%
-  #kableExtra::add_header_above(c("First attempt" = 3, "Second attempt" = 1), bold=T) %>%
-  kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
-  row_spec(1, bold=T, italic=T,color="black",hline_after=T,extra_latex_after="\\arrayrulecolor{white}",font_size= 11) %>%
-  kableExtra::add_footnote(c("Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown;", "Categorical variables are presented as number (%)"), notation = "none")%>%
-  kableExtra::scroll_box(width = "100%", height = "375px")
+
+
+# kable(size=11, format="html",caption= "Table 1. Summary descriptives, by accused status",smd=T, test=T, varLabels=T,noSpaces=T, printToggle=T, dropEqual=F, col.names=c("Variable ","Level",rep(c("Total (%)","No", "Yes", "p-value","test", "SMD"),1)))%>%
+#   #kableExtra::add_header_above(c("First attempt" = 3, "Second attempt" = 1), bold=T) %>%
+#   kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 10) %>%
+#   row_spec(1, bold=T, italic=T,color="black",hline_after=T,extra_latex_after="\\arrayrulecolor{white}",font_size= 11) %>%
+#   kableExtra::add_footnote(c("Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown;", "Categorical variables are presented as number (%)"), notation = "none")%>%
+#   kableExtra::scroll_box(width = "100%", height = "375px")  
+    
+kable(size=10, format="markdown",caption= "Summary descriptives, by accused status")
 ```
+<sup> Note. Continuous variables are presented as Medians and Percentiles 25 and 75 were shown; Categorical variables are presented as number (%)</sup>
+:::
 
 ```{r tab3, message=F, error=T,eval=T, warnings=F, echo=T}
 rbind(
@@ -1783,9 +1846,16 @@ dplyr::select(
         '', htmltools::em('Packages')),
       options=list(
 initComplete = htmlwidgets::JS(
-      "function(settings, json) {",
-      "$(this.api().tables().body()).css({'font-size': '80%'});",
-      "}")))
+        "function(settings, json) {",
+        "$(this.api().tables().body()).css({
+            'font-family': 'Helvetica Neue',
+            'font-size': '50%', 
+            'code-inline-font-size': '15%', 
+            'white-space': 'nowrap',
+            'line-height': '0.75em',
+            'min-height': '0.5em'
+            });",#;
+        "}")))
 ```
 
 # Exportar

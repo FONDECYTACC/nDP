@@ -115,7 +115,6 @@ pre:not(.sourceCode) {
 .sourceCode { /* Important gives precedence  */
   font-size: 10px !important;
   line-height: 50% !important;
-  white-space: normal !important;  /* To create another line */
 }
 
 body{ /* Normal  */
@@ -200,7 +199,6 @@ function myFunction2() {
 }
 </script>
 ```
-
 ```{r prev-setup, include = FALSE, cache=T, error=T}
 rm(list=ls());gc()
 if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
@@ -1075,19 +1073,22 @@ dplyr::select(
         '', htmltools::em('Packages')),
       options=list(
 initComplete = htmlwidgets::JS(
-      "function(settings, json) {",
-      "$(this.api().tables().body()).css({'font-size': '80%'});",
-      "}")))
+        "function(settings, json) {",
+        "$(this.api().tables().body()).css({
+            'font-family': 'Helvetica Neue',
+            'font-size': '50%', 
+            'code-inline-font-size': '15%', 
+            'white-space': 'nowrap',
+            'line-height': '0.75em',
+            'min-height': '0.5em'
+            });",#;
+        "}")))
 ```
 
 # Export
 
 ```{r export, warning=FALSE, echo=T}
 Base_fiscalia_v7 %>% 
-  dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
-                                 encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
-                                 T~"VICTIMA")) %>% 
-#  dplyr::filter(accused=="VICTIMA") %>% 
     rio::export(file = paste0("fiscalia_mariel_aug_2022.dta"))
 
 invisible("Temporarily useless")

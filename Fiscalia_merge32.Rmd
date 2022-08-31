@@ -115,7 +115,6 @@ pre:not(.sourceCode) {
 .sourceCode { /* Important gives precedence  */
   font-size: 10px !important;
   line-height: 50% !important;
-  white-space: normal !important;  /* To create another line */
 }
 
 body{ /* Normal  */
@@ -251,10 +250,13 @@ copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
 }  
 
 if(!require(pacman)){install.packages("pacman")}
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, install=F)
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, install=F)
 try(webshot::install_phantomjs())
 
 if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade =F))}
+
+#easystats::install_suggested()
+
 
 options(scipen=2) #display numbers rather scientific number
 
@@ -334,7 +336,7 @@ knitr::knit_hooks$set(
 )
 ```
 
-### Explore missing/aberrant values
+# Explore missing/aberrant values
 
 ::: controlly
 ```{r 1-exp-miss-val, echo=T, fig.align='center',layout="l-body-outset", message=T, error=T, eval=T}
@@ -343,7 +345,7 @@ knitr::knit_hooks$set(
 #- `AGRUPA_TERMINOS`, explore missing values
 
 tbone_idsujeto_victima_0<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso","tipo_sujeto_vic ", "gls_materia", "reg")), data=  dplyr::mutate(Base_fiscalia_v7, idsujeto_victima_0=ifelse(idsujeto_victima==0,1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg")), smd=T, strata="idsujeto_victima_0", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso","tipo_sujeto_vic", "gls_materia", "encontrado_como_victima",  "reg")), data=  dplyr::mutate(Base_fiscalia_v7, idsujeto_victima_0=ifelse(idsujeto_victima==0,1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg")), smd=T, strata=c("idsujeto_victima_0"), addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_idsujeto_victima_0, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -376,7 +378,7 @@ as.data.frame.TableOne(tbone_tipo_termino_na, smd=T)%>%
   dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>%
   format_cells(1, 1:length(names(.)), "bold") %>%
   dplyr::select(-1) %>% 
-  kable(size=10, format="markdown",caption= "Summary descriptives, Missing values in Termination of the relationship(1)")
+  kable(size=10, format="markdown",caption= "Summary descriptives, Missing values in Termination of the relationship(1)", format.args = list(decimal.mark = ".", big.mark = ","))
 ```
 :::
 
@@ -390,7 +392,7 @@ It is difficult to find any pattern with only 21 records. Despite this, much of 
 ```{r 3-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
 #- `GLS_MOTTERMINO` explore missing values; see why is different with . 
 tbone_mot_termino_na<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, mot_termino_NA=ifelse(is.na(gls_mottermino),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="mot_termino_NA", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "encontrado_como_victima","gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, mot_termino_NA=ifelse(is.na(gls_mottermino),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("mot_termino_NA","encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_mot_termino_na, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -400,20 +402,22 @@ as.data.frame.TableOne(tbone_mot_termino_na, smd=T)%>%
   dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
   format_cells(1, 1:length(names(.)), "bold") %>%
   dplyr::select(-1) %>% 
-  kable(size=10, format="markdown",caption= "Summary descriptives, Missing values in the Cause of termination of the relationship(1)")  
+  kable(size=10, format="markdown",caption= "Summary descriptives, Missing values in the Cause of termination of the relationship(1) & Found as an imputed (YES)")  
 ```
 :::
 
 <br>
 
-As seen in the Table above, people missing values in the cause of the termination of the relationship (`GLS_MOTTERMINO`) were more frequently found as an imputed, had no records in in the type of termination "SALIDA NO JUDICIAL" and much more in "SALIDA JUDICIAL" (judicial intervention rather no judicial intervention). In summary, these cases correspond to suspended proceedings (non-missing values in `GLS_MOTSUSPENSION`). Also these records seem to be linked with compensation agreements, temporary dismissal, and conditional suspension of proceedings. Were more frequent in crimes such as thefts ("HURTOS"), injuries, but less frequent in faults ("FALTAS") or burglaries ("ROBOS"). They also were more frequent in cases with a relation to VIF. They also were more frequent in the Metropolitan Region, but less frequent in the Region of Valparaiso. Notably, these cases does not seem to have further changes in the causes (`MARCA_SUSPENSION_43` to `CLASIFICACION_PENA_55`). Another characteristic worth mentioning is that these type of records have continued to grow steadily since 2015 in the date of the commission of the crime.
+As seen in the Table above, people missing values in the cause of the termination of the relationship (`GLS_MOTTERMINO`) were more frequently found as an imputed, had no records in in the type of termination "SALIDA NO JUDICIAL" and much more in "SALIDA JUDICIAL" (judicial intervention rather no judicial intervention). In summary, these cases correspond to suspended proceedings (non-missing values in `GLS_MOTSUSPENSION`). Also these records seem to be linked with compensation agreements, temporary dismissal, and conditional suspension of proceedings. Were more frequent in crimes such as thefts ("HURTOS"), injuries, but less frequent in misdemeanours ("FALTAS") or burglaries ("ROBOS"). They also were more frequent in cases with a relation to VIF. They also were more frequent in the Metropolitan Region, but less frequent in the Region of Valparaiso. Notably, these cases does not seem to have further changes in the causes (`MARCA_SUSPENSION_43` to `CLASIFICACION_PENA_55`). Another characteristic worth mentioning is that these type of records have continued to grow steadily since 2015 in the date of the commission of the crime.
+
+We also explored end of the proceedings with `r message(paste0("Administrative annulment:\n(p= ",format(nrow(unique(subset(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA","rut_enc_saf"))),big.mark=","),";\n RUCs= ", format(nrow(unique(subset(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA","ruc"))), big.mark=","),";\nn= ", format(nrow(subset(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA","rut_enc_saf")), big.mark=",")))`.
 
 <br>
 
 ::: controlly
 ```{r 4-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
 tbone_agrup_ter_anul<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_anul=ifelse(agrupa_terminos=="ANULACI¿N ADMINISTRATIVA",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="agrupa_terminos_anul", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_anul=ifelse(agrupa_terminos=="ANULACI¿N ADMINISTRATIVA",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("agrupa_terminos_anul", "encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_agrup_ter_anul, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -423,7 +427,7 @@ as.data.frame.TableOne(tbone_agrup_ter_anul, smd=T)%>%
   dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
   format_cells(1, 1:length(names(.)), "bold") %>%
   dplyr::select(-1) %>% 
-  kable(size=10, format="markdown",caption= "Summary descriptives, Values in the Cause of termination of the relationship, Administrative annulment(1)")
+  kable(size=10, format="markdown",caption= "Summary descriptives, Values in the Cause of termination of the relationship, Administrative annulment(1) & Found as an imputed (YES)")
 ```
 :::
 
@@ -431,12 +435,39 @@ as.data.frame.TableOne(tbone_agrup_ter_anul, smd=T)%>%
 
 Those records that were nullified as a type of termination of the relationship, were more frequently patients found as imputed, with more missing values in the type of victim. Also, more were concentrated in the Metropolitan Region & VIII Bio-Bio, but less were in VI Region of O'Higgins and VII Maule. More records had the value "DENUNCIADO" in the type of imputed, but less with the category "IMPUTADO". Lastly, every record were terminated without a proceeding ("SIN PROCEDIMIENTO"). Notably, these cases does not seem to have further changes in the causes (`MARCA_SUSPENSION_43` to `CLASIFICACION_PENA_55`).They also were much less frequent in cases with a relation to VIF. In terms of date of commision of the crime, there were more records in 2018 to 2020, but less from 1972 to 2011-05.
 
+We also explored end of the proceedings with `r message(paste0("Grouped to another case:\n(p= ",format(nrow(unique(subset(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO","rut_enc_saf"))),big.mark=","),";\n RUCs= ", format(nrow(unique(subset(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO","ruc"))), big.mark=","),";\nn= ", format(nrow(subset(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO","rut_enc_saf")), big.mark=",")))`.
+
+<br>
+
 ::: controlly
-```{r 4-5-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+```{r 4-2-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+tbone_agrup_ter_agrup<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_agrup=ifelse(agrupa_terminos=="AGRUPACI¿N A OTRO CASO",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("agrupa_terminos_agrup","encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_agrup_ter_agrup, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  kable(size=10, format="markdown",caption= "Summary descriptives, Values in the Cause of termination of the relationship, Grouped to another case(1) & Found as an imputed (YES)")
+```
+:::
+
+<br>
+
+Among those records grouped to another case, more cases were found as a victim, more committed the crime in the south of the Metropolitan Region and more corresponded to Region del Bio Bio. Every record finished with other terms as judiciary proceedings ("OTROS T¿RMINOS"), more  crimes against the public faith ("DELITOS CONTRA LA FE PÚBLICA"), more corresponded to crimes of criminal relevance ("HECHOS DE RELEVANCIA CRIMINAL"), less  misdemeanours ("FALTAS"), thefts ("HURTOS") and burglaries ("ROBOS"). Also more had a relationship with the victim because of domestic violence. Every record had a missing cause of suspension, possibly because every record had no proceedings. There are no sentences with imprisonment. Crimes were committed more frequently starting from 2017.
+
+<br>
+
+::: controlly
+```{r 4-3-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
 #- `TIPO_SUJETO_VIC` that are victims and imputed at the same time
 
 tbone_suj_vic_imp<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, vicimp=ifelse(encontrado_como_victima=="SI"& encontrado_como_imputado=="SI",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="vicimp", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, vicimp=ifelse(encontrado_como_victima=="SI"& encontrado_como_imputado=="SI",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="vicimp", addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_suj_vic_imp, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -461,7 +492,7 @@ All of the registries both accused and victim were indicated as a victim in the 
 #- `TIPO_SUJETO_VIC` 
 
 tbone_suj_tip_suj_novic<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino")), data=  dplyr::mutate(Base_fiscalia_v7, diff_vic_tip_suj=ifelse((tipo_sujeto_vic==6),0,1),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="diff_vic_tip_suj", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "encontrado_como_victima", "gls_mottermino")), data=  dplyr::mutate(Base_fiscalia_v7, diff_vic_tip_suj=ifelse((tipo_sujeto_vic==6),0,1),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="diff_vic_tip_suj", addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_suj_tip_suj_novic, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -471,7 +502,7 @@ as.data.frame.TableOne(tbone_suj_tip_suj_novic, smd=T)%>%
   dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
   format_cells(1, 1:length(names(.)), "bold") %>%
   dplyr::select(-1) %>% 
-  kable(size=10, format="markdown",caption= "Summary descriptives, Relationships of people both victim and accused(1)")
+  kable(size=10, format="markdown",caption= "Summary descriptives, Types of Victim as Victim vs. Others (1)")
 ```
 :::
 
@@ -479,9 +510,21 @@ as.data.frame.TableOne(tbone_suj_tip_suj_novic, smd=T)%>%
 
 Those cases in which the type of subject that is a victim did not have the value of "victim (6)", corresponded to records with the following characteristics: every record the patient was found as imputed, most ended with judiciary proceedings, had more condemnatory or of acquittal sentence ("SENTENCIA DEFINITIVA CONDENATORIA" and "ABSOLUTAORIA") and definitive dismissal ("SOBRESEIMIENTO DEFINITIVO") but less provision filling of the case ("ARHIVO PROVISIONAL"). Crimes were much more related to sex-related (specially one to a child under 14 years of age), quasi-delicts ("CUASIDELITOS") or against public trust ("CONTRA LA FE PÚBLICA"), less had a  relationship with the victim because of domestic violence, more were on ordinary proceedings ("ORDINARIO") and accelerated ("ABREVIADO"), while less on payment procedure (“MONITORIO”). Also more occured in residential places ("LUGAR HABITADO") while less in public or social associations ("ORGANIZACION PÚBLICA Y/O SOCIAL"). Less crimes were committed in the Metropolitan Region ("Región Metropolitana") de Santiago	but more in IV Región de Coquimbo. more patients were sentenced to a term of ordinary imprisonment ("PRESIDIO MENOR"), and more frequently from 1 to 60 days in prison. Also more crimes were committed between 1972- mid 2010, declining from 2018, and were more frequent in people born in 1992 and afterwards.
 
+::: controlly
+```{r 5-5-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+table(Base_fiscalia_v7$region_delito,Base_fiscalia_v7$reg,Base_fiscalia_v7$gls_region, exclude=NULL) %>% melt() %>% dplyr::filter(value>0)%>% dplyr::arrange(Var1, -value) %>% 
+  kable(size=10, format="markdown",caption= "Differences between 'region_delito', 'reg' and 'gls_region'", col.names=c("region_delito", "reg", "gls_region", "count"))
+#it has "region metropolitana" alone
+```
+:::
+
 <br>
 
-#### Crimes
+We should use `region_delito`, because we are not trying to evaluate the performance of each prosecutor's office, but the crime itself. However `region_delito` have "Not defined" and blank values. For research purposes only, we replaced these values with the region of the office in which the patient participated as imputed or victim.
+
+<br>
+
+## Crimes
 
 ```{r 5-cod-crimes-more-family, echo=T, fig.align='center', message=T, error=T, eval=T}
 # - `FAMILIA_DELITO` explore whether crimes that were in a family are no longer there or viceversa
@@ -495,7 +538,7 @@ Base_fiscalia_v7 %>%
 
 <br>
 
-`COD_DELITO` with value 0 is "Not defined"
+See cases in which `COD_DELITO` with value 0 is "Not defined"
 
 ```{r 6-exp-crimes, echo=T, fig.align='center', message=T, error=T, eval=T, fig.align='center', fig.pos='H', fig.cap="Crime codes no longer committed"}
 crime_cod_label<-
@@ -526,6 +569,7 @@ Base_fiscalia_v7 %>%
    dplyr::group_by(var)%>%
    ggplot(aes(x=cut_com_del2, y= jitter(log_value,factor = .5),color=var, group=var, text=lab))+
    geom_line()+ #position="stack"
+    scale_color_manual(values= colorspace::rainbow_hcl(2e2))+
     theme_blank()+
     theme(legend.position='none')
 )%>%
@@ -537,7 +581,6 @@ Base_fiscalia_v7 %>%
 
 ::: controlly
 ```{r 6-exp-crimes2, echo=T, fig.align='center', message=T, error=T, eval=T}
-
 invisible("Its normal if there is a value that is not includeed in the categorization. It is because of the nature of the cut of equal parts in the dates")
 
 Base_fiscalia_v7 %>% 
@@ -577,11 +620,102 @@ Base_fiscalia_v7 %>%
   nrow()))
 ```
 
+## End of the proceedings
+
+::: controlly 
+```{r 8-termino-grupa-terminos, echo=T, fig.align='center', message=T, error=T, eval=T}
+table(Base_fiscalia_v7$tipo_termino,Base_fiscalia_v7$agrupa_terminos, Base_fiscalia_v7$gls_mottermino) %>% melt() %>% dplyr::arrange(Var1, Var2,-value) %>%  dplyr::filter(value!=0) %>% 
+    kable(size=10, format="markdown",caption= "Differences between 'tipo_termino', 'agrupa_terminos' and 'gls_mottermino'", col.names=c("tipo_termino", "agrupa_terminos", "gls_mottermino","count"))
+```
+:::
+
 <br>
 
-### Date of commission of the crime
+We compared cases that ended with a condemnatory sentence vs. other types of endings.
 
-#### Cases w/ crimes committed before 2010
+<br>
+
+::: controlly 
+```{r 9-termino-agrupa-terminos-exp, echo=T, fig.align='center', message=T, error=T, eval=T}
+tbone_sent_def_cond<-
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "encontrado_como_victima", "gls_mottermino")), data=  dplyr::mutate(Base_fiscalia_v7, sent_def_cond=ifelse(agrupa_terminos=="SENTENCIA DEFINITIVA CONDENATORIA",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("sent_def_cond", "encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
+
+as.data.frame.TableOne(tbone_sent_def_cond, smd=T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  kable(size=10, format="markdown",caption= "Summary descriptives, Condemnatory sentence (1) & Found as an imputed (YES)")
+```
+:::
+
+<br>
+
+We notice that records with condemnatory sentences were found exclusively as imputed. Also less frequently corresponded to patients found as victim as the type of victim. Were in concentrated more in Regions Antofagasta, Tarapaca, Los Lagos y Los Rios, but less in the Metropolitan Region. As expected, every record ended with judiciary proceedings. Cases had more misdemeanours ("FALTAS"), thefts ("HURTOS"), crimes of special laws ("DELITOS DE LEYES ESPECIALES"), and other crimes ("OTROS DELITOS"), while less economic and tax crimes ("DELITOS ECONÓMICOS Y TRIBUTARIOS") and crimes against personal freedom and privacy ("DELITOS CONTRA LA LIBERTAD E INTIMIDAD DE LAS PERSONAS"). here are less cases related to domestic violence. Regarding the judiciary procedures, the order for payment ("MONITORIO"), accelerated ("ABREVIADO") and simplified/streamlined ("SIMPLIFICADO") were more frequent. More crimes were committed in malls or business locals and public domains, while less at residential places (“LUGAR HABITADO”). More had more other precautionary measures (Art. 155), pretrial detention (PP), juvenile detention (IP). Crimes were committd more frequently between 2010 and mid-2011, and between February 2013 and June 2016, while less starting from June 2017 (**maybe due to delayed times in finishing the proceedings**). Patients born between 1930 and 1963 were less frequent, while more were born between July 1983 and 1992.
+
+<br>
+
+<!---
++ frecuente imputado
+- sujeto víctima como víctima
++ Antofagasta, Tarapacá, Los lagos y Los Ríos
+- RM Centro Norte, RM Occidente y RM Sur
+Todos Salida Judicial 
++ TRÁFICO ILÍCITO DE DROGAS ART. 3 LEY Nº 20.000., ROBO EN LUGAR NO HABITADO. ART. 442., RIÑA PÚBLICA 496 Nº 10 CÓDIGO PENAL, RECEPTACIÓN. ART. 456 BIS A, PORTE DE ARMA CORTANTE O PUNZANTE (288 bis), PORTE ILEGAL DE ARMA DE FUEGO, MUNIC.Y OTR.SUJETAS A CONTROL,OTROS DELITOS DE LA LEY 20.000, OTROS DELITOS CONTEMPLADOS EN LEY DE PROPIEDAD INTELECTUAL, OTRAS FALTAS CÓDIGO PENAL, OCULTACIÓN DE IDENTIDAD 496 Nº5 CÓDIGO PENAL, OCULTACIÓN DE IDENT. CONTROL PREV. 496 Nº 5 Y 12 LEY 20.931, MICROTRÁFICO (TRÁFICO DE PEQUEÑAS CANTID. ART. 4 LEY 20000), HURTO SIMPLE POR UN VALOR DE MEDIA A 4 UTM, HURTO FALTA 494 BIS CÓDIGO PENAL, HOMICIDIO, FALTA DE RESPETO A LA AUTORIDAD PÚBLICA 495 Nº4 CÓDIGO PENAL, CONSUMO/PORTE EN LUG. PÚB.O PRIV. CON PREV.CONCIERTO(ART.50), CONSUMO/PORTE DE DROGAS EN LUGARES CALIFICADOS (ART.51), CONDUCCIÓN EBRIEDAD CON O SIN DAÑO O LES. LEVE 196 INC. 1, CONDUCCIÓN ESTADO DE EBRIEDAD CON RESULTADO DE LESIONES., CONDUC EBRIEDAD C/SUSP LICENCIA ART 196,209 LEY TRANSITO, ARROJAMIENTO DE PIEDRAS U OTROS OBJETOS (496 Nº26 Cód.Penal)			
+- ROBO CON VIOLENCIA. ART.436 inc. 1º 433, 438, 439, ROBO CON INTIMIDACIÓN . ART. 433, 436 INC 1º 438., OTROS HECHOS, MALTRATO HABITUAL (VIOLENCIA INTRAFAMILIAR), LESIONES en general, ESTAFAS Y OTRAS DEFRAUDACIONES CONTRA PARTICULARES, DESACATO (Art. 240 Código de Procedimiento Civil), DAÑOS SIMPLES. ART. 487., DAÑO FALTA (495 N° 21 Código Penal) , CUASIDELITO DE LESIONES. ART 490, 491 INC 2° Y 492., AMENAZAS SIMPLES CONTRA PERSONAS Y PROPIEDADES ART. 296 Nº3., AMENAZAS CONDIC. CONTRA PERSONAS Y PROP. ART. 296 1 y 2, 297	
++ FALTAS,HURTOS,OTROS DELITOS, DELITOS DE LEYES ESPECIALES	
+- DELITOS CONTRA LA LIBERTAD E INTIMIDAD DE LAS PERSONAS, DELITOS ECONÓMICOS Y TRIBUTARIOS.
+- Relación VIFSAF
++ Procedimiento término: MONITORIO,ABREVIADO, SIMPLIFICADO; - MONITORIO, nadie SIN PROCEDIMIENTO
++ ESTABLECIMIENTO COMERCIAL, BIENES NACIONALES USO PUBLICO		
+- LUGAR HABITADO O DESTINADO A LA HABITACION Y SUS DEPENDENCIAS
++ medidas_155, medidas_pp, medidas_ip , marca_suspension_43 
++ marca_pena_44, marca_multa_45 
++ Desde [2009-12-20, a ,2011-05-27; Desde 2013-02-23 a 2016-06-22
+- Desde 2017-06-28,
+- en nacidos desde 1930-01-18,1963-06-08
++ nacidos entre 1983-07-04 y 1992-12-13
+--->
+
+<br>
+
+# Date of commission of the crime
+
+we get a glance at the distribution of the dates.
+
+```{r 0-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+#invisible("see applyrulesage4 chunk in Fiscalia_merge2.Rmd")
+#https://www.efta.int/sites/default/files/RvalPart3.pdf
+#https://books.google.cl/books?id=3slJDwAAQBAJ&pg=PA160&lpg=PA160&dq=%22errorlocate%22&source=bl&ots=PjMI_G_1ja&sig=ACfU3U03eKo_UALC12_ND1oulbUB6iNsgg&hl=es-419&sa=X&ved=2ahUKEwjPx-ar9tr5AhWRBLkGHYbhBOE4HhDoAXoECAIQAw#v=onepage&q=%22errorlocate%22&f=false
+
+cbind(cat="Date of comission of the crime",
+      Base_fiscalia_v7 %>% 
+          dplyr::summarise(min = min(fec_comision_simple, na.rm=T),
+                           p025=as.Date(quantile(unclass(fec_comision_simple), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fec_comision_simple), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fec_comision_simple), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fec_comision_simple), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fec_comision_simple), .975, na.rm=T), origin = "1970-01-01"), max = max(fec_comision_simple, na.rm=T)))
+```
+
+<br>
+
+We explored several characteristics of the date of commission of the crime.
+
+```{r 2b1-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+Base_fiscalia_v7 %>%
+  dplyr::mutate(obs_age_com_crime= factor(dplyr::case_when(fec_comision_simple <"2010-01-01"~"a. Less 2010",edad_ter_rel_imp < edad_comision_imp~ "b. Age of termination of relationship < Age relationship", edad_comision_imp<0~ "c. Less 0 years age crime committed", edad_comision_imp < 18~ "d. Less 18 years age crime committed", is.na(edad_comision_imp)~"e. Missing age of crime comission", is.na(fec_comision_simple)~"f. Missing of date of crime comission", is.na(imp_birth_date)~ "g. MIssing birth date", T~"0. none"), levels=c("a. Less 2010", "b. Age of termination of relationship < Age relationship", "c. Less 0 years age crime committed", "d. Less 18 years age crime committed", "e. Missing age of crime commission", "f. Missing of date of crime commission", "g. Missing birth date", "0. none"))) %>% 
+  #group_by(obs_age_com_crime) %>% 
+  #summarise(obs_age_com_crime = n())
+  janitor::tabyl(obs_age_com_crime, show_missing_levels = T) %>% 
+  dplyr::mutate(percent=scales::percent(percent, accuracy = .1)) %>% 
+  kable("markdown", caption= "Count of distinct cases ")
+#- Crimes committed at an age lower than the date of birth
+#- Edad de nacimiento, crimenes cometidos a una edad
+```
+
+`r invisible("Ver si por cada caso(RUC), hay distintos ID de sujetos imputados, pero para un único RUT")`
+
+## Records w/ crimes committed before 2010
 
 ```{r 1-obs-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
 #6- 984 < 14 años fecha de comisión: las 144 son responsabilidad mía, las otras no. Las primeras porque las manipulé y elegí el mal menor pero seguía existiendo mal (tal vez que el problema ahí es la fecha de comisión y no la de nacimiento). Las segundas ver cuál es el origen, ahí probablemente la fecha de nac no esté mal porque SENDA y PO tienen la misma. En los 2 casos, hacer tablitas para ver la razón de término de la causa y ver anomalías
@@ -597,12 +731,39 @@ Base_fiscalia_v7 %>%
 
 The lowest 5% of the dates of crimes committed were in `r as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05))` or older. We decided to explore these entries.
 
+```{r 2a-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+#- Crimes committed before 2009-12-31 as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05))
+#- Crimes committed at a age lower than the date of birth
+#- age of commission <14
+#- Imputed age
+#- Age of termination of the relationship prior to the date of comission of the crime
+#- Add ten years to the age of comission and see if gets better
+if(no_mostrar==0){
+    library(errorlocate)
+    rules <- validator( grepl(obs,"22_3")==T
+                      , fec_comision_simple < "2010-01-01"
+                      , edad_comision_imp < 18
+                      , edad_ter_rel_imp < edad_comision_imp # is implied
+    )
+    weight <- c(obs=1, fec_comision_simple=3, edad_comsion_imp=1,
+                edad_ter_rel_imp=6)#
+    errorlocate::locate_errors(Base_fiscalia_v7, rules, weight= weight)
+}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+message(
+paste0("Crimes committed before 2010:\n(p= ",format(nrow(unique(subset(Base_fiscalia_v7,fec_comision_simple<"2010-01-01","rut_enc_saf"))),big.mark=","),";\n RUCs= ",
+       format(nrow(unique(subset(Base_fiscalia_v7,fec_comision_simple<"2010-01-01","ruc"))), big.mark=","),";\nn= ",
+       format(nrow(subset(Base_fiscalia_v7,fec_comision_simple<"2010-01-01","rut_enc_saf")), big.mark=","),")"))
+```
+
 <br>
 
 ::: controlly
 ```{r 2-date-comission-perc-05, echo=T, fig.align='center', message=T, error=T, eval=T}
 tbone_date_comission_perc_05<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino","gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, date_comission_perc_05=ifelse(fec_comision_simple<as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05)),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="date_comission_perc_05", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, date_comission_perc_05=ifelse(fec_comision_simple<as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05)),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata= c("date_comission_perc_05","encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_date_comission_perc_05, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -612,7 +773,7 @@ as.data.frame.TableOne(tbone_date_comission_perc_05, smd=T)%>%
   dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
 format_cells(1, 1:length(names(.)), "bold") %>%
   dplyr::select(-1) %>% 
-  kable(size=10, format="markdown",caption= "Summary descriptives, Date comission before percentile .05 (2010)")  
+  kable(size=10, format="markdown",caption= "Summary descriptives, Date comission before percentile .05 (2010) & Found as an imputed (YES)")  
 ```
 :::
 
@@ -637,54 +798,8 @@ More cases were found as imputed, more were from the Metropolitan Region, more r
 #	RIÑA PÚBLICA 496 Nº 10 CÓDIGO PENAL x3 menos
 # RECEPTACIÓN. ART. 456 BIS A	x2
 ```  
-  
+
 <br>
-
-```{r 2a-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
-#invisible("see applyrulesage4 chunk in Fiscalia_merge2.Rmd")
-#https://www.efta.int/sites/default/files/RvalPart3.pdf
-#https://books.google.cl/books?id=3slJDwAAQBAJ&pg=PA160&lpg=PA160&dq=%22errorlocate%22&source=bl&ots=PjMI_G_1ja&sig=ACfU3U03eKo_UALC12_ND1oulbUB6iNsgg&hl=es-419&sa=X&ved=2ahUKEwjPx-ar9tr5AhWRBLkGHYbhBOE4HhDoAXoECAIQAw#v=onepage&q=%22errorlocate%22&f=false
-
-cbind(cat="Date of comission of the crime",
-      Base_fiscalia_v7 %>% 
-          dplyr::summarise(min = min(fec_comision_simple, na.rm=T),
-                           p025=as.Date(quantile(unclass(fec_comision_simple), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fec_comision_simple), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fec_comision_simple), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fec_comision_simple), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fec_comision_simple), .975, na.rm=T), origin = "1970-01-01"), max = max(fec_comision_simple, na.rm=T)))
-
-#- Crimes committed before 2009-12-31 as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05))
-#- Crimes committed at a age lower than the date of birth
-#- age of commission <14
-#- Imputed age
-#- Age of termination of the relationship prior to the date of comission of the crime
-#- Add ten years to the age of comission and see if gets better
-if(no_mostrar==0){
-    library(errorlocate)
-    rules <- validator( grepl(obs,"22_3")==T
-                      , fec_comision_simple < "2010-01-01"
-                      , edad_comision_imp < 18
-                      , edad_ter_rel_imp < edad_comision_imp # is implied
-    )
-    weight <- c(obs=1, fec_comision_simple=3, edad_comsion_imp=1,
-                edad_ter_rel_imp=6)#
-    errorlocate::locate_errors(Base_fiscalia_v7, rules, weight= weight)
-}
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-```
-
-
-```{r 2b1-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
-Base_fiscalia_v7 %>%
-  dplyr::mutate(obs_age_com_crime= factor(dplyr::case_when(fec_comision_simple <"2010-01-01"~"a. Less 2010",edad_ter_rel_imp < edad_comision_imp~ "b. Age of termination of relationship < Age relationship", edad_comision_imp<0~ "c. Less 0 years age crime committed", edad_comision_imp < 18~ "d. Less 18 years age crime committed", is.na(edad_comision_imp)~"e. Missing age of crime comission", is.na(fec_comision_simple)~"f. Missing of date of crime comission", is.na(imp_birth_date)~ "g. MIssing birth date", T~"0. none"), levels=c("a. Less 2010", "b. Age of termination of relationship < Age relationship", "c. Less 0 years age crime committed", "d. Less 18 years age crime committed", "e. Missing age of crime commission", "f. Missing of date of crime commission", "g. Missing birth date", "0. none"))) %>% 
-  #group_by(obs_age_com_crime) %>% 
-  #summarise(obs_age_com_crime = n())
-  janitor::tabyl(obs_age_com_crime, show_missing_levels = T) %>% 
-  dplyr::mutate(percent=scales::percent(percent, accuracy = .1)) %>% 
-  kable("markdown", caption= "Count of distinct cases ")
-#- Crimes committed at an age lower than the date of birth
-#- Edad de nacimiento, crimenes cometidos a una edad
-```
-
-`r invisible("Ver si por cada caso(RUC), hay distintos ID de sujetos imputados, pero para un único RUT")`
 
 ::: controlly
 ```{r 2b2-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
@@ -697,74 +812,262 @@ dplyr::select(rut_enc_saf, encontrado_como_imputado, fec_comision_simple, fec_cb
   dplyr::arrange(b,fec_comision_simple) %>% 
   head(50) %>% 
   kable(size=10, format="markdown",caption= "Cases w/ crimes committed before 2010 (First 50 cases)") 
-  #knitr::kable(format="html",caption= "Cases w/ crimes committed before 2010 (First 20 cases)") %>% 
-  #kableExtra::kable_classic()
-```
-:::
 
-#### Cases w/ relationship dates finished before the crime was committed
-
-```{r 2c-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
-message(paste0("Time HASHs repeat, Cases w/ relationship date finished before the crime was committed"))
-Base_fiscalia_v7 %>%
-    dplyr::filter(rut_enc_saf %in% unlist(distinct(dplyr::filter(Base_fiscalia_v7,fec_comision_simple<"2010-01-01"),rut_enc_saf))) %>% 
-    group_by(rut_enc_saf) %>% 
-    dplyr::summarise(n=n()) %>% 
-    dplyr::arrange(-n) %>% 
-    #janitor::tabyl(n) %>% 
-    #dplyr::arrange(n_n) %>% 
-    mutate(bin = ntile(n, 8)) %>% 
-    dplyr::group_by(bin) %>% 
-    dplyr::mutate(sum_n=sum(n)) %>% 
-    dplyr::summarise(records_per_hash=paste0(min(n)," - ", max(n)), records=first(sum_n))
-
-invisible("Observaciones a casos anómalos 5%")
 #- Delitos de violación <14a para los mas largo
 #- Bigamia: dselitos permanentes, duración de la acción humanada exigida por el tipo penal // persona "que contrajere matrimonio estando válidamente casada". // Nos adelantamos a exponer la razón: cuando todo el mundo consideraba como un hecho absolutamente indiscutible el de la instantaneidad del delito de bigamia, conSUs consecuencias en materia de prescripción, nos ha tocado leer algunos fallos recientes emanados de la Corte Suprema, que vienen a romper el consenso de que dábamos cuenta en ~as páginas que preceden.
 #- "Se produciría falta de concordancia y armonia entre los artículos 29 y 35 de la Ley de Matrimonio Civil al estimar que la acción penal y la pena del delito que  tipifica el artículo 382 del Código Penal, pueden ser  declaradas extinguidas por la prescripción en circunstancias de que civilmente la acción de nulidad de matrimonio celebrado con infracción del artículo 49, NQ 1 es imprescriptible ... El delito de bigamia no es de carácter instantáneo, sino que, por el contrario, es pennanente ..."
 #- http://www.rdpucv.cl/index.php/rderecho/article/view/148/138
-```
 
-::: controlly
-```{r 2d1-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
-Base_fiscalia_v7 %>%
-    dplyr::filter(edad_ter_rel_imp < edad_comision_imp) %>% 
-    dplyr::mutate(diff_bet_ter_com= edad_comision_imp-edad_ter_rel_imp) %>% 
-    dplyr::select(rut_enc_saf, diff_bet_ter_com, encontrado_como_imputado, diff_bet_ter_com, fec_comision_simple, fec_cbiorelacion_simple, edad_ter_rel_imp, edad_comision_imp, imp_birth_date, gls_region, gls_materia, agrupa_terminos, obs)%>% 
-  dplyr::arrange(-diff_bet_ter_com)  %>% 
-    head(50) %>%
-  dplyr::mutate(diff_bet_ter_com=scales::percent(diff_bet_ter_com, .1)) %>% 
-  kable(size=10, format="markdown",caption= "Cases w/ Age of finishing of relationship before the crimes being committed (First 50 cases)") 
 ```
 :::
 
+<br>
 
-```{r 2d2-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+## Records w/ relationship dates finished before the crime was committed
+
+
+```{r 2c-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
 
 invisible("No son mayores a 1 año")
 invisible("algunos son 22_1_, por lo que fuern imputados")
 invisible("ninguno de ellos fue cometido antes del 2010")
 
-message(paste0("Time HASHs repeat, Cases w/ relationship date finished before the crime was committed"))
-Base_fiscalia_v7 %>%
-    dplyr::filter(rut_enc_saf %in% unlist(distinct(dplyr::filter(Base_fiscalia_v7,edad_ter_rel_imp < edad_comision_imp),rut_enc_saf))) %>% 
-    group_by(rut_enc_saf) %>% 
-    dplyr::summarise(n=n()) %>% 
-    dplyr::arrange(-n) %>% 
-    #janitor::tabyl(n) %>% 
-    #dplyr::arrange(n_n) %>% 
-    mutate(bin = ntile(n, 8)) %>% 
-    dplyr::group_by(bin) %>% 
-    dplyr::mutate(sum_n=sum(n)) %>% 
-    dplyr::summarise(records_per_hash=paste0(min(n)," - ", max(n)), records=first(sum_n))
+message(
+    paste0("Relationship date finished before the crime was committed:\n(p= ",format(nrow(unique(subset(Base_fiscalia_v7,edad_ter_rel_imp < edad_comision_imp,"rut_enc_saf"))),big.mark=","),";\n RUCs= ",
+           format(nrow(unique(subset(Base_fiscalia_v7,edad_ter_rel_imp < edad_comision_imp,"ruc"))), big.mark=","),";\nn= ",
+           format(nrow(subset(Base_fiscalia_v7,edad_ter_rel_imp < edad_comision_imp,"rut_enc_saf")), big.mark=","),")"))
 
 invisible("no hay más de un RUC en estos RUTs, pero aparecen más de una vez en la base") 
  # purrr::when(dplyr::filter(.,nchar(c_22_1_a1a_1234_ab2)>2) %>% nrow()>0 ~ stop("imputed age at admission lower than the age of onset of drug use in imputed"), ~.) %>% 
 ```
 
+
+::: controlly
+```{r 2d-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+Base_fiscalia_v7 %>%
+    dplyr::filter(edad_ter_rel_imp < edad_comision_imp) %>% 
+    dplyr::mutate(diff_bet_ter_com= edad_comision_imp-edad_ter_rel_imp) %>% 
+    dplyr::select(rut_enc_saf, diff_bet_ter_com, encontrado_como_imputado, diff_bet_ter_com, fec_comision_simple, fec_cbiorelacion_simple, edad_ter_rel_imp, edad_comision_imp, imp_birth_date, gls_region, gls_materia, agrupa_terminos, obs)%>% 
+  dplyr::arrange(-diff_bet_ter_com)  %>% 
+  dplyr::mutate(diff_bet_ter_com=scales::percent(diff_bet_ter_com, .1)) %>% 
+  kable(size=10, format="markdown",caption= "Cases w/ Age of finishing of relationship before the crimes being committed") 
+```
+:::
+
 <br>
 
+We decided to discard crimes committed before 2010. We also left as missing values the ID of subjects that were equal to 0. Lastly, we deleted the registries with Administrative annulment and grouped to another case.
 
+
+```{r 3-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
+#entender los NAs, los No definidos, y cuál es la relación de las variables region
+#luego limpiarlos
+#no definido: region_delito , gls_parentesco poner como perdido, más una observación de reemplazo
+
+#We should use `region_delito`, because we are not trying to evaluate the performance of each prosecutor's office, but the crime itself. However `region_delito` have "Not defined" and blank values. For research purposes only, we replaced these values with the region of the office in which the patient participated as imputed or victim.
+
+#duplicated rows eliminated
+eliminated_duplicates<-    
+Base_fiscalia_v7 %>% 
+ dplyr::mutate(rut_ruc= paste0(rut_enc_saf,"_",ruc)) %>% 
+  dplyr::filter( rut_ruc %in% as.character(unlist(dplyr::distinct(dplyr::mutate(ungroup(subset(agrupacion_base,max>1)), rut_ruc=paste0(rut_enc_saf,"_",ruc)),rut_ruc)))) %>% 
+  dplyr::group_by(rut_ruc) %>% 
+     dplyr::mutate(rn_rut_ruc=dplyr::row_number()) %>% 
+     dplyr::ungroup() %>% 
+dplyr::filter(dplyr::case_when((rut_ruc %in% as.character(unlist(dplyr::distinct(dplyr::mutate(ungroup(subset(agrupacion_base,max>1)), rut_ruc=paste0(rut_enc_saf,"_",ruc)),rut_ruc)))) & rn_rut_ruc>1~F,T~T)) 
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+Base_fiscalia_v8 <-
+Base_fiscalia_v7 %>%
+  dplyr::filter(fec_comision_simple>="2010-01-01", agrupa_terminos!="ANULACI¿N ADMINISTRATIVA", agrupa_terminos!="AGRUPACI¿N A OTRO CASO") %>% 
+  dplyr::mutate(obs=dplyr::case_when(idsujeto_victima==0~glue::glue("{obs};3.3.1.Victim ID equals 0"),T~obs)) %>% 
+  dplyr::mutate(idsujeto_victima= dplyr::case_when(idsujeto_victima==0 ~ NA_character_,T~ as.character(idsujeto_victima))) %>% 
+  dplyr::mutate(rut_ruc= paste0(rut_enc_saf,"_",ruc)) %>% 
+  dplyr::mutate(obs=dplyr::case_when(rut_ruc %in% unlist(dplyr::distinct(dplyr::mutate(ungroup(subset(agrupacion_base,max>1)), rut_ruc=paste0(rut_enc_saf,"_",ruc)),rut_ruc))~glue::glue("{obs};3.3.2.Duplicate entries in PO"),T~obs)) %>% 
+  dplyr::group_by(rut_ruc) %>% 
+  dplyr::mutate(rn_rut_ruc=dplyr::row_number()) %>% 
+  dplyr::ungroup() %>% 
+  #filter the 2nd observation from duplicated entries
+  dplyr::filter(dplyr::case_when((rut_ruc %in% as.character(unlist(dplyr::distinct(dplyr::mutate(ungroup(subset(agrupacion_base,max>1)), rut_ruc=paste0(rut_enc_saf,"_",ruc)),rut_ruc)))) & rn_rut_ruc>1~F,T~T)) %>% 
+  dplyr::select(-rn_rut_ruc, -rut_ruc) %>% 
+  #Region of the crime, change according
+    dplyr::mutate(obs=dplyr::case_when(region_delito=="No Definido"~glue::glue("{obs};3.3.3a.Not defined value in Region of Crime commission"), is.na(region_delito)~glue::glue("{obs};3.3.3b.Missing value in Region of Crime commission"),T~as.character(region_delito))) %>% 
+        dplyr::mutate(region_delito_rec= dplyr::case_when(region_delito=="No Definido"~as.character(gls_region), is.na(region_delito)~as.character(gls_region),T~as.character(region_delito))) %>% 
+  dplyr::mutate(region_delito_rec= dplyr::case_when(grepl("RM",region_delito_rec)~"Región Metropolitana de Santiago",T~as.character(region_delito_rec)))
+
+#check if added rows
+if(nrow(Base_fiscalia_v8)-nrow(Base_fiscalia_v7)>0){
+  stop("Some rows were added in the imputation")}
+```
+
+<br>
+
+  
+```{r export-svg,echo=T, paged.print=TRUE, eval=T, error=T}
+if(isTRUE(getOption('knitr.in.progress'))==T){
+} else {
+  #path<-ifelse(!grepl("$\\/",getwd()),paste0(getwd(),"/"),getwd())
+  path<- getwd()
+}
+
+tab1_lab_aft_d<- paste0('Original C1 Dataset \n(n = ', formatC(nrow(CONS_C1), format='f', big.mark=',', digits=0), ';\npatients: ',formatC(CONS_C1%>% dplyr::distinct(HASH_KEY)%>% nrow(), format='f', big.mark=',', digits=0),')')
+tab2_lab_aft_d<- paste0('&#8226;Remove duplicated entries\\\\\\l&#8226;Overlapping treatments of patients\\\\\\l&#8226;Intermediate treatment events (continuous referrals)    \\\\\\l')
+tab3_lab_aft_d<- paste0('      C1 Dataset          \n(n = ', formatC(nrow(CONS_C1_df_dup_SEP_2020), format='f', big.mark=',', digits=0), ';\npatients: ',formatC(CONS_C1_df_dup_SEP_2020%>% dplyr::distinct(hash_key)%>% nrow(), format='f', big.mark=',', digits=0),')')
+tab4_lab_aft_d<- paste0('Original Prosecutors Office\n(n = ',format(nrow(Base_fiscalia_v2),big.mark=","), 
+                        ';\nCauses= ',Base_fiscalia_v2%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
+                        ';\nRel.=',Base_fiscalia_v2%>%dplyr::distinct(idrelacion)%>%nrow()%>%format(big.mark=','),
+                        ';\nRUC_Vic_Imp=',Base_fiscalia_v2%>%dplyr::mutate(rel=paste0(ruc,"_",idsujeto_victima,"_",idsujeto_imputado,"_","iddelito"))%>%dplyr::distinct(rel)%>%nrow()%>%format(big.mark=','),
+                        ';\nindividuals= ',Base_fiscalia_v2%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')')
+
+#crimes committed after study follow-up
+tab5_lab_aft_d1<-
+    paste0("(p= ",format(nrow(unique(subset(Base_fiscalia_v2,fec_comision_simple>as.Date("2019-11-13"),"rut_enc_saf"))),big.mark=","),"; RUCs= ",
+           format(nrow(unique(subset(Base_fiscalia_v2,fec_comision_simple>as.Date("2019-11-13"),"ruc"))), big.mark=","),";n= ",
+           format(nrow(subset(Base_fiscalia_v2,fec_comision_simple>as.Date("2019-11-13"),"rut_enc_saf")), big.mark=","),")")
+#erase entries with missing values in fec_comision_simple y termino_relacion_simple
+leftovers_Base_fiscalia_v3<-
+Base_fiscalia_v3 %>% 
+  dplyr::left_join(after_imp_Base_fiscalia_v3_db[,c("rut_enc_saf","imp_birth_date","flowch_age")], by="rut_enc_saf") %>% 
+  dplyr::rename("obs"="flowch_age") %>% 
+  dplyr::mutate(imp_birth_date=dplyr::case_when(!is.na(imp_birth_date)~imp_birth_date,T~fec_nacimiento_simple))%>% dplyr::mutate(edad_comision_imp=as.numeric(fec_comision_simple-imp_birth_date)/365.25) %>% dplyr::mutate(edad_ter_rel_imp=as.numeric(termino_relacion_simple-imp_birth_date)/365.25) %>%
+  #arrange the rut from the first date of comission of a crime, but we are not detecting if he/she is the victim or not
+  dplyr::arrange(rut_enc_saf, edad_comision_imp) %>% #566884
+  dplyr::filter(dplyr::case_when(!is.na(edad_comision_imp)~T,T~F)) %>% #566644
+  dplyr::filter(imp_birth_date=="1900-01-01"|is.na(imp_birth_date))
+
+tab5_lab_aft_d12<-
+    paste0("(p= ",format(nrow(dplyr::distinct(leftovers_Base_fiscalia_v3,rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(leftovers_Base_fiscalia_v3,ruc)), big.mark=","),";n= ",
+           format(nrow(leftovers_Base_fiscalia_v3), big.mark=","),")")
+
+#minor to 14 years old
+tab5_lab_aft_d13<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v4,edad_comision_imp<14),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v4,edad_comision_imp<14),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v4,edad_comision_imp<14)), big.mark=","),")")
+
+#Remove duplicated entries
+tab5_lab_aft_d2<-
+  paste0("(p= ",format(length(unique(eliminated_duplicates$rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(length(unique(eliminated_duplicates$ruc)), big.mark=","),";n= ",
+           format(nrow(eliminated_duplicates), big.mark=","),")")
+#before 2010
+ tab5_lab_aft_d3<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,fec_comision_simple<"2010-01-01"),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,fec_comision_simple<"2010-01-01"),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v7,fec_comision_simple<"2010-01-01")), big.mark=","),")")
+#remove administrative annulment
+tab5_lab_aft_d4<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA"),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA"),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA")), big.mark=","),")")
+#remove grouped to another case
+tab5_lab_aft_d5<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO"),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO"),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO")), big.mark=","),")")
+
+tab5_lab_aft_d<- paste0('&#8226;Filter crimes committed after study follow-up period',tab5_lab_aft_d1,'\\\\\\l&#8226;Remove duplicated entries',tab5_lab_aft_d2,'\\\\\\l&#8226;Correct dates (birth, comission of crime, end of judicial proceedings), missing nationality and sex\\\\\\l&#8226;Erase entries with missing values in  comission of crime, end of judicial proceedings',tab5_lab_aft_d12,'\\\\\\l&#8226;Erase entries with values in comission of crime when minor to 14 years old after imputation',tab5_lab_aft_d13,'\\\\\\l&#8226;Filter crimes committed before study follow-up',tab5_lab_aft_d3,'\\\\\\l&#8226;Filter records with cause of end of the proceedings= administrative annulment',tab5_lab_aft_d4,'\\\\\\l&#8226;Filter records with cause of end of the proceedings= grouped to another case',tab5_lab_aft_d5,'\\\\\\l')
+tab6_lab_aft_d<- paste0("O.P. Dataset \n(n= ", formatC(nrow(Base_fiscalia_v8),big.mark = ","),";\nindividuals= ",Base_fiscalia_v8%>% dplyr::distinct(rut_enc_saf)%>% nrow()%>% formatC(big.mark = ","),")")
+tab7_lab_aft_d<- paste0('&#8226;Discard observations depending on the values of the end of the proceedings         \\\\\\l&#8226;Long-to-wide relationships/crimes, end of judicial proceedings, penalty         \\\\\\l&#8226;Group crimes into violent, drug-related, etc.         \\\\\\l&#8226;Check overlapping events (e.g., incarcerated while completing a residential treatment)         \\\\\\l')
+
+library(DiagrammeR) #⋉
+plot_merge_flowchart_after_dates<-
+  grViz("digraph flowchart {
+      fontname='Comic Sans MS'
+      # node definitions with substituted label text
+      node [shape = rectangle,fontsize = 9]        
+      tab1 [label = '@@1']
+      blank [label = '', width = 0.0001, height = 0.0001]
+      tab2 [label = '@@2',fontsize = 7]
+      tab3 [label = '@@3']
+      
+      tab4 [label = '@@4',fontsize = 8]
+      blank2 [label = '', width = 0.0001, height = 0.0001]
+      tab5 [label = '@@5',fontsize = 7]
+      tab6 [label= '@@6']
+      
+      blank3 [label = '', width = 0.0001, height = 0.0001]
+      blank4 [label = '', width = 0.0001, height = 0.0001]      
+      blank5 [label = '', width = 0.0001, height = 0.0001] 
+      
+      blank6 [label = '', width = 0.0001, height = 0.0001]
+      tab7 [label = '@@7',fontsize = 7]
+      tab8 [label= '@@8']
+      
+      # edge definitions with the node IDs
+      rankdir='TB'; rank= same; tab1 -> blank [arrowhead = none,label='        Data wrangling and normalization process',fontsize = 8];
+      rankdir='TB'; rank= same; tab1; tab3;   
+      blank -> tab2;
+                  subgraph {
+              rank = same; tab2; blank;
+                  }
+      rankdir='TB'; rank= same; blank -> tab3;      
+            
+      tab4 -> blank2 [arrowhead = none,label='        Data wrangling and normalization process',fontsize = 8];
+      blank2 -> tab5
+      blank2 -> tab6
+      blank4 -> blank6 [arrowhead= none, label='  &#10198;']
+      blank6 -> tab7
+                  subgraph {
+        rank = same; blank6; tab7;
+                  }
+      blank6 -> tab8
+                  subgraph {
+        rank = same; tab5; blank2;
+                  }
+                  subgraph {
+      rank= same; tab3 -> blank3 -> blank4 -> blank5 -> tab6 [arrowhead= none]
+                  }
+      }
+                  subgraph {
+        rank = same; tab3; tab6;
+                  }
+                  subgraph {
+        rank = same; tab1; tab4;
+                  }         
+                  subgraph {
+        rank = same; tab2; tab5;
+                  } 
+                  subgraph {
+        rank = same; tab1; tab3;
+        rankdir=TB
+        rank=same
+                  }
+                  subgraph {
+        rank = same; tab4; tab6;
+        rankdir=TB
+        rank=same
+                  }                     
+
+      [1]:  tab1_lab_aft_d
+      [2]:  tab2_lab_aft_d
+      [3]:  tab3_lab_aft_d
+      [4]:  tab4_lab_aft_d
+      [5]:  tab5_lab_aft_d
+      [6]:  tab6_lab_aft_d
+      [7]:  tab7_lab_aft_d
+      [8]:  'Merged database'
+      ", width = 1200,
+        height = 900)
+
+DPI = 1200
+WidthCM = 11
+HeightCM = 8
+
+font_add(family = "Rooney Sans", regular = paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_style/RooneySansRegular.otf"))
+
+showtext_begin()
+plot_merge_flowchart_after_dates %>%
+  export_svg %>% charToRaw %>% rsvg_pdf(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge2.pdf"))
+plot_merge_flowchart_after_dates %>% export_svg()%>%charToRaw %>% rsvg(width = WidthCM *(DPI/2.54), height = HeightCM *(DPI/2.54)) %>% png::writePNG(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_wo_fmt2.png"))
+
+htmlwidgets::saveWidget(plot_merge_flowchart_after_dates, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_222_2.html"))
+webshot(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_222_2.html"), paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_formatted_2.png"),vwidth = 1200, vheight = 900,
+        zoom = 2)
+```
 
 <br>
 
@@ -785,7 +1088,7 @@ dplyr::mutate_at(c('dg_trs_psiq_cie_10_or','x2_dg_trs_psiq_cie_10_or','x3_dg_trs
   dplyr::mutate(obs_cambios_ninguno= recode(as.character(obs_cambios_ninguno),"0"="At least 1 Change w/ the Next Entry","1"="No Changes w/ the Next Entry"))%>%
   dplyr::mutate(motivoegreso_derivacion= recode(as.character(motivoegreso_derivacion),"0"="Other causes of discharge","1"="Referral"))%>%
   dplyr::mutate_at(vars(at_least_one_cont_entry,menor_45_dias_diff,menor_60_dias_diff,obs_cambios_ninguno,motivoegreso_derivacion,obs_cambios),~as.factor(.))%>%
-  assign("Base_fiscalia_v7",., envir = .GlobalEnv)
+  assign("Base_fiscalia_v8",., envir = .GlobalEnv)
   
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_  
   
@@ -987,19 +1290,22 @@ dplyr::select(
         '', htmltools::em('Packages')),
       options=list(
 initComplete = htmlwidgets::JS(
-      "function(settings, json) {",
-      "$(this.api().tables().body()).css({'font-size': '80%'});",
-      "}")))
+        "function(settings, json) {",
+        "$(this.api().tables().body()).css({
+            'font-family': 'Helvetica Neue',
+            'font-size': '50%', 
+            'code-inline-font-size': '15%', 
+            'white-space': 'nowrap',
+            'line-height': '0.75em',
+            'min-height': '0.5em'
+            });",#;
+        "}")))
 ```
 
 # Export
 
-```{r export, warning=FALSE, echo=T}
-Base_fiscalia_v7 %>% 
-  dplyr::mutate(accused=dplyr::case_when(encontrado_como_victima=="SI" & encontrado_como_imputado=="SI"~"IMPUTADO",
-                                 encontrado_como_victima=="NO" & encontrado_como_imputado=="SI"~"IMPUTADO",
-                                 T~"VICTIMA")) %>% 
-#  dplyr::filter(accused=="VICTIMA") %>% 
+```{r export, warning=FALSE, echo=T, error=T}
+Base_fiscalia_v8 %>% 
     rio::export(file = paste0("fiscalia_mariel_sep_2022.dta"))
 
 invisible("Temporarily useless")
