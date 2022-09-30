@@ -1,0 +1,1083 @@
+---
+title: "Chilean prosecutor's office Data merge (Step 4)"
+date: "`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`"
+output:
+  distill::distill_article:
+    code_folding: true
+    fig_height: 6
+    fig_width: 8
+    theme: flatly
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+    output_dir: "docs"
+  toc_float:
+    collapsed: false
+    smooth_scroll: true
+---
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+ $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+  
+```
+
+```{css hideOutput-lib-src, echo = FALSE}
+<script src="hideOutput.js"></script> 
+```
+
+```{js hideOutput, echo = FALSE}
+$(document).ready(function() {    
+	$chunks = $('.fold');    
+	$chunks.each(function () {      // add button to source code chunks     
+	if ( $(this).hasClass('s') ) {       
+		$('pre.r', this).prepend("<div class=\"showopt\">Show Source</div><br style=\"line-height:22px;\"/>");
+       		$('pre.r', this).children('code').attr('class', 'folded');     
+       		}      // add button to output chunks     
+		if ( $(this).hasClass('o') ) {       
+			$('pre:not(.r)', this).has('code').prepend("<div class=\"showopt\">Show Output</div><br style=\"line-height:22px;\"/>");       
+			$('pre:not(.r)', this).children('code:not(r)').addClass('folded');        // add button to plots       
+			$(this).find('img').wrap('<pre class=\"plot\"></pre>');       
+			$('pre.plot', this).prepend("<div class=\"showopt\">Show Plot</div><br style=\"line-height:22px;\"/>");       
+			$('pre.plot', this).children('img').addClass('folded');      
+			}   
+});    // hide all chunks when document is loaded   
+	$('.folded').css('display', 'none')    // function to toggle the visibility   
+	$('.showopt').click(function() {     
+			var label = $(this).html();     
+			if (label.indexOf("Show") >= 0) {       
+				$(this).html(label.replace("Show", "Hide"));     
+			} else {
+			  $(this).html(label.replace("Hide", "Show"));     
+			}     
+	$(this).siblings('code, img').slideToggle('fast', 'swing');   
+	}); 
+}); 
+
+```
+
+```{=html}
+<style type="text/css">
+.showopt {   
+  background-color: #004c93;   color: #FFFFFF;    width: 100px;   height: 20px;   text-align: center;   vertical-align: middle !important;   float: right;   font-family: sans-serif;   border-radius: 8px; 
+  }
+
+.showopt:hover {     
+        background-color: #dfe4f2;
+        color: #004c93; 
+        }  
+pre.plot {   
+        background-color: white !important; 
+        } 
+.tablelines table, .tablelines td, .tablelines th {
+        border: 1px solid black;
+        }
+
+.centrado {
+    text-align: center;
+}
+
+.table.center {
+    margin-left:auto; 
+    margin-right:auto;
+  }
+
+/* https://vivekjaiskumar.medium.com/css-is-and-not-selector-17c942ec83f :is()*/
+
+/* Applies to outputs that are not code other than R*/
+
+pre {
+  overflow-x: auto !important;
+}
+pre code {
+  word-wrap: normal !important;
+  white-space: pre !important;
+}
+/*
+pre:not(.sourceCode) { 
+  white-space: nowrap !important;
+}
+*/
+.sourceCode { /* Important gives precedence  */
+  font-size: 10px !important;
+  line-height: 50% !important;
+}
+
+body{ /* Normal  */
+      text-align: justify;
+  }
+
+.superbigimage{
+    overflow-y:scroll;
+    height:350px;
+    white-space: nowrap;
+    overflow-x: auto; 
+    width:100%;
+}
+.superbigimage img{
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.message { color:#446C6E; font-family: monospace;font-size: 10px; line-height: 110%; font-weight: bold;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
+div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
+
+.pandoc-table { /* Should add !important; but it seems no necessary  */
+  margin-left:auto; /* To center */
+  margin-right:auto;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-size: 11px;
+  overflow-y: auto;
+  max-height:450px !important;
+  white-space: nowrap;
+  overflow-x: auto; 
+  width:450px;
+}
+
+.pandoc-table th {/* header */
+text-align: center !important;
+font-size: 10px;
+padding: 0px;
+}
+
+.pandoc-table td {
+text-align: left !important;
+font-size: 9px;
+padding: 0px;
+}
+
+.pandoc-table caption {
+    text-align: left !important;
+    font-size: 11px !important;
+}
+
+.controlly{
+    overflow-y:scroll;
+    height:350px;
+    overflow-x: scroll; 
+}
+
+</style>
+```
+```{=html}
+<!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
+<script>
+function myFunction1() {
+    var x = document.getElementById("myDIV");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<script>
+function myFunction2() {
+    var x = document.getElementById("myDIV2");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+```
+
+```{r prev-setup, include = FALSE, cache=T, error=T}
+rm(list=ls());gc()
+if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
+path<-getwd()#we define it again later in setup chunk
+if (grepl("CISS Fondecyt",path)==T){
+    try(setwd("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)"));load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.Rdata")
+  } else if (grepl("andre",path)==T){
+    try(setwd('C:/Users/andre/Desktop/SUD_CL/'));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.Rdata")
+  } else if (grepl("E:",path)==T){
+    try(setwd("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/SUD_CL/"));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.Rdata")
+  } else {
+    try(setwd(paste0(path)));load(paste0(gsub("SUD_CL","",gsub("2022","2019",path)),"/13.Rdata"))
+  }
+```
+
+```{r setup, include = FALSE, cache=T, error=T, echo=T}
+#Libraries used in the routine. Dont change the order
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
+  if(class(try(dplyr::ungroup(x)))[1]=="tbl_df"){
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)    
+        }
+  } else {
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)       
+  }
+ }
+}  
+
+if(!require(pacman)){install.packages("pacman")}
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, install=F)
+try(webshot::install_phantomjs())
+
+if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade =F))}
+
+#easystats::install_suggested()
+
+
+options(scipen=2) #display numbers rather scientific number
+
+#remotes::install_github("chjackson/flexsurv-dev", upgrade = "never")
+#devtools::install_github("stulacy/multistateutils", build_vignettes=TRUE, upgrade = "never")
+#devtools::install_github("hputter/mstate", upgrade = "never")
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+fitstats.flexsurvreg = function(x){
+  ll = x$loglik
+  aic = x$AIC
+  k = length(x$coefficients)
+  n = sum(x$data$m["(weights)"])
+  aicc = aic + ((2 * k) * (k + 1) / (n - k - 1))
+  bic = - 2 * ll + (k * log(n))
+  data.frame(
+   Df = k,
+    "n2ll" = -2 * ll,
+    AIC = aic,
+    AICc = aicc,
+    BIC = bic
+  )
+}
+
+
+if(.Platform$OS.type == "windows") withAutoprint({
+  memory.size()
+  memory.size(TRUE)
+  memory.limit()
+})
+memory.limit(size=56000)
+
+path<-dirname(rstudioapi::getSourceEditorContext()$path)
+
+options(knitr.kable.NA = '')
+
+#to format rows in bold
+format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethrough")){
+
+  # select the correct markup
+  # one * for italics, two ** for bold
+  map <- setNames(c("*", "**", "~~"), c("italics", "bold", "strikethrough"))
+  markup <- map[value]  
+
+  for (r in rows){
+    for(c in cols){
+
+      # Make sure values are not factors
+      df[[c]] <- as.character( df[[c]])
+
+      # Update formatting
+      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, df[r, c], markup))
+    }
+  }
+
+  return(df)
+}
+#To produce line breaks in messages and warnings
+knitr::knit_hooks$set(
+   error = function(x, options) {
+     paste('\n\n<div class="alert alert-danger">',
+           gsub('##', '\n', gsub('^##\ Error', '**Error**', x)),
+           '</div>', sep = '\n')
+   },
+   warning = function(x, options) {
+     paste('\n\n<div class="alert alert-warning">',
+           gsub('##', '\n', gsub('^##\ Warning:', '**Warning**', x)),
+           '</div>', sep = '\n')
+   },
+   message = function(x, options) {
+     paste('<div class="message">',
+           gsub('##', '\n', x),
+           '</div>', sep = '\n')
+   }
+)
+```
+
+
+::: blue
+
+<!--- https://docs.google.com/document/d/1d0lwgylQ89JyLZuQ6b6Tn8-u_idgDjfq_hTumTYQ9Aw/edit --->
+
+- Rename variables according to studied names <!--- mariel --->
+
+- We filtered relationships with a result of the proceeding with the value "FINAL JUDGMENT GUILTY" ("SENTENCIA DEFINITIVA CONDENATORIA")
+
+- In this section, we tried to identify the offenders of interest.
+
+- Also we explored the type of sentence by those that had a condemnatory sentence.
+
+- We corrected the coded types of offenses to include PREDATORY ACTS
+
+:::
+
+# Filter cases
+
+We discarded relationships in which the offender was not the patient from SENDA. Also we restricted the analysis to the patients that had a final judgment as guilty ("SENTENCIA DEFINITIVA CONDENATORIA").
+
+```{r 1-filter, echo=T, fig.align='center',layout="l-body-outset", message=T, error=T, eval=T}
+Base_fiscalia_v9<-
+  plyr::rename(Base_fiscalia_v8,
+c('rut_enc_saf' = 'id',
+'fec_nacimiento' = 'dateofbirth',
+'pais' = 'country',
+'sexo' = 'sex',
+'encontrado_como_victima' = 'victim',
+'encontrado_como_imputado' = 'offender_d',
+'tipo_sujeto_vic' = 'victim_type_n',
+'gls_tipo_sujeto_vic' = 'victim_type_c',
+'idsujeto_victima' = 'id_victim',
+'reg' = 'reg',
+'gls_region' = 'reg_c',
+'idrelacion' = 'id_relac',
+'ruc' = 'caseid',
+'tipo_termino' = 'end_type_group',
+'agrupa_terminos' = 'end_type',
+'cod_delito' = 'crime_code',
+'gls_materia' = 'crime_code_c',
+'familia_delito' = 'crime_code_group',
+'cod_mottermino' = 'end_type_2c',
+'gls_mottermino' = 'end_type_2',
+'impcod_tiposujeto' = 'offender_type',
+'gls_tipo_imputado' = 'offender_type2',
+'iddelito' = 'offence_type',
+'fec_comision' = 'date_offending',
+'marca_pena_44' = 's_sentence_1',
+'marca_multa_45' = 's__fine_1',
+'medida_alternativa_46' = 's_restorative_3',
+'clasificacion_pena_47' = 's_kindprison_1',
+'marca_pena_52' = 's_sentence_2',
+'marca_multa_53' = 's__fine_2',
+'medida_alternativa_54' = 's_restorative_2',
+'clasificacion_pena_55' = 's_kindprison_2',
+'imp_birth_date' = 'dateofbirth_imp',
+'obs' = 'obs',
+'edad_comision_imp' = 'date_offending_imp',
+'edad_ter_rel_imp' = 'age_offending_imp',
+'familia_delito_rec' = 'crime_code_group_rec',
+'sex_imp' = 'sex_imp',
+'nat_imp2' = 'country_b',
+'nat_imp' = 'country_a')) %>% 
+  dplyr::filter(grepl("CONDENATORIA",end_type)) %>% 
+  dplyr::filter(grepl("SI",offender_d)) %>% 
+  dplyr::select(id, caseid, victim, offender_d, victim_type_n, victim_type_c, id_victim, id_relac, reg, reg_c, end_type_group, end_type, crime_code, crime_code_c, crime_code_group, end_type_2c, end_type_2, offender_type, offender_type2, offence_type, date_offending, s_sentence_1, s__fine_1, s_restorative_3, s_kindprison_1, s_sentence_2, s__fine_2, s_restorative_2, s_kindprison_2, dateofbirth_imp, obs, date_offending_imp, age_offending_imp, crime_code_group_rec, sex_imp, country_b, country_a) %>% 
+  dplyr::mutate(crime_code_group= dplyr::case_when(crime_code_group== 'CUASIDELITOS'~ 'QUASIDELITES',
+crime_code_group== 'DELITOS CONTRA LA FE PÚBLICA'~ 'OFFENCES AGAINST PUBLIC FAITH',
+crime_code_group== 'DELITOS CONTRA LA LIBERTAD E INTIMIDAD DE LAS PERSONAS'~ 'OFFENCES AGAINST LIBERTY AND PRIVACY D',
+crime_code_group== 'DELITOS CONTRA LEYES DE PROPIEDAD INTELECTUAL E INDUSTRIAL'~ 'OFFENCES AGAINST INTELLECTUAL PROPERTY LAWS',
+crime_code_group== 'DELITOS DE JUSTICIA MILITAR'~ 'MILITARY JUSTICE OFFENCES',
+crime_code_group== 'DELITOS DE LEYES ESPECIALES'~ 'OFFENCES UNDER SPECIAL LAWS',
+crime_code_group== 'DELITOS DE TORTURA, MALOS TRATOS, GENOCIDIO Y LESA HUMANIDAD'~ 'OFFENCES OF TORTURE, ILL-TREATMENT, GENOCIDE, ETC.',
+crime_code_group== 'DELITOS ECONÓMICOS Y TRIBUTARIOS'~ 'ECONOMIC AND TAX OFFENCES',
+crime_code_group== 'DELITOS FUNCIONARIOS'~ 'OFFENCES AGAINST CIVIL SERVANTS',
+crime_code_group== 'DELITOS LEY DE DROGAS'~ 'DRUG LAW OFFENCES',
+crime_code_group== 'DELITOS LEY DE TRÁNSITO'~ 'TRAFFIC LAW OFFENCES',
+crime_code_group== 'DELITOS SEXUALES'~ 'SEXUAL OFFENCES',
+crime_code_group== 'FALTAS'~ 'MISDEMEANOURS',
+crime_code_group== 'HECHOS DE RELEVANCIA CRIMINAL'~ 'OFFENCES OF CRIMINAL RELEVANCE',
+crime_code_group== 'HOMICIDIOS'~ 'HOMICIDES',
+crime_code_group== 'HURTOS'~ 'BURGLARY',
+crime_code_group== 'LESIONES'~ 'INJURIES',
+crime_code_group== 'OTROS DELITOS'~ 'OTHER CRIMES',
+crime_code_group== 'OTROS DELITOS CONTRA LA PROPIEDAD'~ 'OTHER CRIMES AGAINST PROPERTY',
+crime_code_group== 'ROBOS'~ 'VIOLENT THEFTS',
+crime_code_group== 'ROBOS NO VIOLENTOS'~ 'NON-VIOLENT THEFTS',
+T~crime_code_group)) %>% 
+  dplyr::mutate(s_kindprison_1=dplyr::case_when(
+    s_kindprison_1== 'Presidio Mayor grado medio' ~ 'Prison Major medium grade',
+    s_kindprison_1== 'Presidio Mayor grado máximo' ~ 'Prison Major maximum grade',
+    s_kindprison_1== 'Presidio Mayor grado mínimo' ~ 'Prison Mayor minimum degree',
+    s_kindprison_1== 'Presidio Menor grado medio' ~ 'Prison Menor medium grade',
+    s_kindprison_1== 'Presidio Menor grado máximo' ~ 'Prison Menor maximum degree',
+    s_kindprison_1== 'Presidio Menor grado mínimo' ~ 'Minimum minimum term of imprisonment',
+    s_kindprison_1== 'Presidio Perpetuo calificado' ~ 'Life imprisonment, qualified degree',
+    s_kindprison_1== 'Presidio Perpetuo simple' ~ 'Simple life imprisonment',
+    s_kindprison_1== 'Prisión' ~ 'Prison',
+    T~ s_kindprison_1))
+
+if(nrow(Base_fiscalia_v9)-nrow(Base_fiscalia_v8)>0){
+  stop("Some rows were added in the imputation")}
+```
+
+# Explore values
+
+We saw the relationships by RUN and RUC.
+
+::: controlly
+```{r 1-exp-val, echo=T, fig.align='center',layout="l-body-outset", message=T, error=T, eval=T}
+#- clasificacion_pena_47 #CHANGE GRADE FOR LENGTH 
+concatenated_run_ruc_n_rel_n_offenses<-
+Base_fiscalia_v9 %>% 
+  group_by(id, caseid) %>% 
+  dplyr::summarise(n=n(), n_distinct_offenses=n_distinct(crime_code_c))
+
+#plot(cut2(concatenated_run_ruc_n_rel_n_offenses$n_distinct_offenses), main= "Number of different crimes committed within a case, by patients")
+
+#more than 1 different offenses
+concatenated_run_ruc_n_rel_n_offenses_f1<-
+Base_fiscalia_v9 %>% 
+  group_by(id, caseid) %>% 
+  dplyr::summarise(n=n(), n_distinct_offenses=n_distinct(crime_code_c)) %>% 
+  dplyr::filter(n_distinct_offenses>1)
+
+warning(paste0("There are ",length(unique(concatenated_run_ruc_n_rel_n_offenses_f1$ruc)), " rucs with more than one crime within a case"))
+
+#plot(cut2(concatenated_run_ruc_n_rel_n_offenses$n), main= "Number of relationships within a case, by patients")
+
+concatenated_run_ruc_n_rel_n_offenses %>% dplyr::ungroup() %>%  dplyr::mutate(n=cut2(n),n_distinct_offenses=cut2(n_distinct_offenses)) %>% dplyr::group_by(n, n_distinct_offenses) %>% count() %>% dplyr::ungroup() %>% dplyr::mutate(perc=round(nn/sum(nn)*100,2)) %>% 
+  knitr::kable("markdown", col.names = c("Number of relationships by RUC", "Number of distinct offenses by RUC", "n", "%"))
+```
+:::
+
+<br>
+
+We showed details
+
+<br>
+
+::: controlly
+```{r 2-exp-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+Base_fiscalia_v9 %>% 
+  dplyr::filter(caseid %in%
+as.character(unlist(distinct(dplyr::filter(dplyr::ungroup(concatenated_run_ruc_n_rel_n_offenses),n>1),caseid)))) %>% 
+  dplyr::select(id, dateofbirth_imp, sex_imp, country_a, caseid, id_relac, id_victim, age_offending_imp, date_offending_imp, crime_code_c, reg_c, end_type_2, s_sentence_1, s__fine_1, s_kindprison_1, s_sentence_2, s__fine_2, s_kindprison_2)
+
+```
+:::
+
+# Modify variables
+
+<br>
+
+::: controlly
+```{r 2-exp-val, echo=T, fig.align='center', message=T, error=T, eval=T}
+# Add cathegory "predatory ilegal acts": assault, robbery, burglary, larceny, forgery, stolen property) , as they may be related with drug use individuals.	ADD PROPERTY
+# 	BURGLARY
+# 	OTHER CRIMES AGAINST PROPERTY
+
+#La fiscalía tiene una definición de delitos violentos: consideran delitos violentos: secuestro, sustracción, lesiones, robos, homicidios, cuasidelito por delitos de la salud. Por otro lado, no estudia delitos como tortura, maltrato, genocidio,
+
+# ***Step 3:  Generate Outcome variable option 2: violent crimes (conservative measure, only considering homicide and violent thefts) (N=32450, valid cases)****
+# ***I am following the chilean prosecutor office to operationalize "violent crime", but I am not considering abortion nor Quasi-delicts committed by health professionals. Also I am not sure if I should add OFFENCES OF TORTURE, ILL-TREATMENT, GENOCIDE, ETC, because the prosecutor Office does not consider it, but also because many crimes on this group are "the intent of"(intent of genocide, give the order of torture, etc.)*** 
+# 
+# **Sobre la familia "malos tratos, genocidio y tortura" se considera por la fiscalia 4 delitos: 1. crimenes de lesa humanidad,2. obtencion de declaraciones forzadas, 3. tormentos y apremios cometidos por empleados publicosñ 4. tormentos y apremios cometidos por paticulares.// Considerar que en el codigo penal: "ART. 150 A.    El empleado público que, abusando de su cargo o sus funciones, aplicare, ordenare o consintiere en que se aplique tortura, será penado con presidio mayor en su grado mínimo. Igual sanción se impondrá al empleado público que, conociendo de la ocurrencia de estas conductas, no impidiere o no hiciere cesar la aplicación de tortura, teniendo la facultad o autoridad necesaria para ello o estando en posición para hacerlo.La misma pena se aplicará al particular que, en el ejercicio de funciones públicas, o a instigación de un empleado público, o con el consentimiento o aquiescencia de éste, ejecutare los actos a que se refiere este artículo." ***
+# 
+# gen violent=.
+# replace violent=1 if familia_delito=="HOMICIDIOS"
+# replace violent=1 if familia_delito=="ROBOS"
+# replace violent=1 if familia_delito=="LESIONES"
+# replace violent=1 if gls_materia=="SECUESTRO CON HOMICIDIO, VIOLACIÓN O LE"
+# replace violent=1 if gls_materia=="SECUESTRO CON LESIONES"
+# replace violent=1 if gls_materia=="SECUESTRO CON VIOLACIÓN"
+# replace violent=1 if gls_materia=="SUSTRACCIÓN DE MENORES. ART. 142"
+# replace  violent=0 if violent==.
+# label values violent dico
+# table violent if validcases==1
+# 
+# ****Step 4:Generate Outcome variable option 2: Type of crime 2(violent as a relaxed measure, considering all crimes that may involve violence) (N=DRUG:4938;VIOLENT:32450;OTHER:113210)
+# ****
+# gen t_crime3groups=.
+# replace t_crime3groups=1 if familia_delito=="DELITOS LEY DE DROGAS"
+# replace t_crime3groups=1 if gls_materia=="HALLAZGO DE DROGAS"
+# replace t_crime3groups=2 if violent==1
+# replace t_crime3groups=3 if t_crime3groups==.
+# 
+# label define  t_crime3groups 1 "DRUG RELATED CRIMES" 2 "VIOLENT CRIMES" 3 "OTHER CHARGES"
+# label values t_crime3groups t_crime3groups
+# table t_crime3groups if validcases==1
+
+```
+:::
+
+<br>
+
+# Flowchart
+
+  
+```{r export-svg,echo=T, paged.print=TRUE, eval=T, error=T}
+if(isTRUE(getOption('knitr.in.progress'))==T){
+} else {
+  #path<-ifelse(!grepl("$\\/",getwd()),paste0(getwd(),"/"),getwd())
+  path<- getwd()
+}
+
+tab1_lab_aft_d<- paste0('Original C1 Dataset \n(n = ', formatC(nrow(CONS_C1), format='f', big.mark=',', digits=0), ';\npatients: ',formatC(CONS_C1%>% dplyr::distinct(HASH_KEY)%>% nrow(), format='f', big.mark=',', digits=0),')')
+tab2_lab_aft_d<- paste0('&#8226;Remove duplicated entries\\\\\\l&#8226;Overlapping treatments of patients\\\\\\l&#8226;Intermediate treatment events (continuous referrals)    \\\\\\l')
+tab3_lab_aft_d<- paste0('      C1 Dataset          \n(n = ', formatC(nrow(CONS_C1_df_dup_SEP_2020), format='f', big.mark=',', digits=0), ';\npatients: ',formatC(CONS_C1_df_dup_SEP_2020%>% dplyr::distinct(hash_key)%>% nrow(), format='f', big.mark=',', digits=0),')')
+tab4_lab_aft_d<- paste0('Original Prosecutors Office\n(n = ',format(nrow(Base_fiscalia_v2),big.mark=","), 
+                        ';\nCauses= ',Base_fiscalia_v2%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','),
+                        ';\nRel.=',Base_fiscalia_v2%>%dplyr::distinct(idrelacion)%>%nrow()%>%format(big.mark=','),
+                        ';\nRUC_Vic_Imp=',Base_fiscalia_v2%>%dplyr::mutate(rel=paste0(ruc,"_",idsujeto_victima,"_",idsujeto_imputado,"_","iddelito"))%>%dplyr::distinct(rel)%>%nrow()%>%format(big.mark=','),
+                        ';\nindividuals= ',Base_fiscalia_v2%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')')
+
+#crimes committed after study follow-up
+tab5_lab_aft_d1<-
+    paste0("(p= ",format(nrow(unique(subset(Base_fiscalia_v2,fec_comision_simple>as.Date("2019-11-13"),"rut_enc_saf"))),big.mark=","),"; RUCs= ",
+           format(nrow(unique(subset(Base_fiscalia_v2,fec_comision_simple>as.Date("2019-11-13"),"ruc"))), big.mark=","),";n= ",
+           format(nrow(subset(Base_fiscalia_v2,fec_comision_simple>as.Date("2019-11-13"),"rut_enc_saf")), big.mark=","),")")
+#erase entries with missing values in fec_comision_simple y termino_relacion_simple
+leftovers_Base_fiscalia_v3<-
+Base_fiscalia_v3 %>% 
+  dplyr::left_join(after_imp_Base_fiscalia_v3_db[,c("rut_enc_saf","imp_birth_date","flowch_age")], by="rut_enc_saf") %>% 
+  dplyr::rename("obs"="flowch_age") %>% 
+  dplyr::mutate(imp_birth_date=dplyr::case_when(!is.na(imp_birth_date)~imp_birth_date,T~fec_nacimiento_simple))%>% dplyr::mutate(edad_comision_imp=as.numeric(fec_comision_simple-imp_birth_date)/365.25) %>% dplyr::mutate(edad_ter_rel_imp=as.numeric(termino_relacion_simple-imp_birth_date)/365.25) %>%
+  #arrange the rut from the first date of comission of a crime, but we are not detecting if he/she is the victim or not
+  dplyr::arrange(rut_enc_saf, edad_comision_imp) %>% #566884
+  dplyr::filter(dplyr::case_when(!is.na(edad_comision_imp)~T,T~F)) %>% #566644
+  dplyr::filter(imp_birth_date=="1900-01-01"|is.na(imp_birth_date))
+
+tab5_lab_aft_d12<-
+    paste0("(p= ",format(nrow(dplyr::distinct(leftovers_Base_fiscalia_v3,rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(leftovers_Base_fiscalia_v3,ruc)), big.mark=","),";n= ",
+           format(nrow(leftovers_Base_fiscalia_v3), big.mark=","),")")
+
+#minor to 14 years old
+tab5_lab_aft_d13<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v4,edad_comision_imp<14),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v4,edad_comision_imp<14),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v4,edad_comision_imp<14)), big.mark=","),")")
+
+#Remove duplicated entries
+tab5_lab_aft_d2<-
+  paste0("(p= ",format(length(unique(eliminated_duplicates$rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(length(unique(eliminated_duplicates$ruc)), big.mark=","),";n= ",
+           format(nrow(eliminated_duplicates), big.mark=","),")")
+#before 2010
+ tab5_lab_aft_d3<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,fec_comision_simple<"2010-01-01"),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,fec_comision_simple<"2010-01-01"),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v7,fec_comision_simple<"2010-01-01")), big.mark=","),")")
+#remove administrative annulment
+tab5_lab_aft_d4<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA"),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA"),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA")), big.mark=","),")")
+#remove grouped to another case
+tab5_lab_aft_d5<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO"),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO"),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO")), big.mark=","),")")
+
+tab5_lab_aft_d<- paste0('&#8226;Filter crimes committed after study follow-up period',tab5_lab_aft_d1,'\\\\\\l&#8226;Remove duplicated entries',tab5_lab_aft_d2,'\\\\\\l&#8226;Correct dates (birth, comission of crime, end of judicial proceedings), missing nationality and sex\\\\\\l&#8226;Erase entries with missing values in  comission of crime, end of judicial proceedings',tab5_lab_aft_d12,'\\\\\\l&#8226;Erase entries with values in comission of crime when minor to 14 years old after imputation',tab5_lab_aft_d13,'\\\\\\l&#8226;Filter crimes committed before study follow-up',tab5_lab_aft_d3,'\\\\\\l&#8226;Filter records with cause of end of the proceedings= administrative annulment',tab5_lab_aft_d4,'\\\\\\l&#8226;Filter records with cause of end of the proceedings= grouped to another case',tab5_lab_aft_d5,'\\\\\\l')
+tab6_lab_aft_d<- paste0("O.P. Dataset \n(n= ", formatC(nrow(Base_fiscalia_v8),big.mark = ","),";\nindividuals= ",Base_fiscalia_v8%>% dplyr::distinct(rut_enc_saf)%>% nrow()%>% formatC(big.mark = ","),")")
+tab7_lab_aft_d<- paste0('&#8226;Discard observations depending on the values of the end of the proceedings         \\\\\\l&#8226;Long-to-wide relationships/crimes, end of judicial proceedings, penalty         \\\\\\l&#8226;Group crimes into violent, drug-related, etc.         \\\\\\l&#8226;Check overlapping events (e.g., incarcerated while completing a residential treatment)         \\\\\\l')
+
+library(DiagrammeR) #⋉
+plot_merge_flowchart_after_dates<-
+  grViz("digraph flowchart {
+      fontname='Comic Sans MS'
+      # node definitions with substituted label text
+      node [shape = rectangle,fontsize = 9]        
+      tab1 [label = '@@1']
+      blank [label = '', width = 0.0001, height = 0.0001]
+      tab2 [label = '@@2',fontsize = 7]
+      tab3 [label = '@@3']
+      
+      tab4 [label = '@@4',fontsize = 8]
+      blank2 [label = '', width = 0.0001, height = 0.0001]
+      tab5 [label = '@@5',fontsize = 7]
+      tab6 [label= '@@6']
+      
+      blank3 [label = '', width = 0.0001, height = 0.0001]
+      blank4 [label = '', width = 0.0001, height = 0.0001]      
+      blank5 [label = '', width = 0.0001, height = 0.0001] 
+      
+      blank6 [label = '', width = 0.0001, height = 0.0001]
+      tab7 [label = '@@7',fontsize = 7]
+      tab8 [label= '@@8']
+      
+      # edge definitions with the node IDs
+      rankdir='TB'; rank= same; tab1 -> blank [arrowhead = none,label='        Data wrangling and normalization process',fontsize = 8];
+      rankdir='TB'; rank= same; tab1; tab3;   
+      blank -> tab2;
+                  subgraph {
+              rank = same; tab2; blank;
+                  }
+      rankdir='TB'; rank= same; blank -> tab3;      
+            
+      tab4 -> blank2 [arrowhead = none,label='        Data wrangling and normalization process',fontsize = 8];
+      blank2 -> tab5
+      blank2 -> tab6
+      blank4 -> blank6 [arrowhead= none, label='  &#10198;']
+      blank6 -> tab7
+                  subgraph {
+        rank = same; blank6; tab7;
+                  }
+      blank6 -> tab8
+                  subgraph {
+        rank = same; tab5; blank2;
+                  }
+                  subgraph {
+      rank= same; tab3 -> blank3 -> blank4 -> blank5 -> tab6 [arrowhead= none]
+                  }
+      }
+                  subgraph {
+        rank = same; tab3; tab6;
+                  }
+                  subgraph {
+        rank = same; tab1; tab4;
+                  }         
+                  subgraph {
+        rank = same; tab2; tab5;
+                  } 
+                  subgraph {
+        rank = same; tab1; tab3;
+        rankdir=TB
+        rank=same
+                  }
+                  subgraph {
+        rank = same; tab4; tab6;
+        rankdir=TB
+        rank=same
+                  }                     
+
+      [1]:  tab1_lab_aft_d
+      [2]:  tab2_lab_aft_d
+      [3]:  tab3_lab_aft_d
+      [4]:  tab4_lab_aft_d
+      [5]:  tab5_lab_aft_d
+      [6]:  tab6_lab_aft_d
+      [7]:  tab7_lab_aft_d
+      [8]:  'Merged database'
+      ", width = 1200,
+        height = 900)
+
+DPI = 1200
+WidthCM = 11
+HeightCM = 8
+
+font_add(family = "Rooney Sans", regular = paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_style/RooneySansRegular.otf"))
+
+showtext_begin()
+plot_merge_flowchart_after_dates %>%
+  export_svg %>% charToRaw %>% rsvg_pdf(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge2.pdf"))
+plot_merge_flowchart_after_dates %>% export_svg()%>%charToRaw %>% rsvg(width = WidthCM *(DPI/2.54), height = HeightCM *(DPI/2.54)) %>% png::writePNG(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_wo_fmt2.png"))
+
+htmlwidgets::saveWidget(plot_merge_flowchart_after_dates, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_222_2.html"))
+webshot(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_222_2.html"), paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_formatted_2.png"),vwidth = 1200, vheight = 900,
+        zoom = 2)
+```
+
+<br>
+
+# Label
+
+```{r change-labels,echo=T, paged.print=TRUE, eval=F}
+invisible("Temporarily useless")
+Base_fiscalia_v8%>%
+dplyr::mutate_at(c('dg_trs_psiq_cie_10_or','x2_dg_trs_psiq_cie_10_or','x3_dg_trs_psiq_cie_10_or','x2_dg_trs_psiq_sub_cie_10_or','x3_dg_trs_psiq_sub_cie_10_or','compromiso_biopsicosocial','pais_nacimiento','nacionalidad','dg_trs_psiq_sub_dsm_iv_or','x2_dg_trs_psiq_sub_dsm_iv_or','x3_dg_trs_psiq_sub_dsm_iv_or','dg_trs_psiq_sub_cie_10_or','etnia_cor_2','motivodeegreso_mod_imp','fecha_ultimo_tratamiento','fecha_ultimo_tratamiento','tiene_menores_de_edad_a_cargo'),~as.factor(.)) %>%
+  dplyr::group_by(hash_key)%>%
+  dplyr::mutate(at_least_one_cont_entry=sum(!is.na(diff_bet_treat)))%>%
+  ungroup()%>%
+  dplyr::mutate(at_least_one_cont_entry= ifelse(at_least_one_cont_entry>0,1,0))%>%
+  dplyr::mutate(menor_45_dias_diff= ifelse(diff_bet_treat<45,1,0))%>%
+  dplyr::mutate(at_least_one_cont_entry= recode(as.character(at_least_one_cont_entry),"0"="User with no cont. entry","1"="User with cont. entry"))%>%
+  dplyr::mutate(menor_45_dias_diff= recode(as.character(menor_45_dias_diff),"0"=">= 45 Days of Difference Between Entries","1"="<45 Days of Difference Between Entries"))%>%
+  dplyr::mutate(menor_60_dias_diff= recode(as.character(menor_60_dias_diff),"0"=">= 60 Days of Difference Between Entries","1"="<60 Days of Difference Between Entries"))%>%
+  dplyr::mutate(obs_cambios_ninguno= recode(as.character(obs_cambios_ninguno),"0"="At least 1 Change w/ the Next Entry","1"="No Changes w/ the Next Entry"))%>%
+  dplyr::mutate(motivoegreso_derivacion= recode(as.character(motivoegreso_derivacion),"0"="Other causes of discharge","1"="Referral"))%>%
+  dplyr::mutate_at(vars(at_least_one_cont_entry,menor_45_dias_diff,menor_60_dias_diff,obs_cambios_ninguno,motivoegreso_derivacion,obs_cambios),~as.factor(.))%>%
+        dplyr::mutate(familia_delito_rec2=dplyr::case_when(grepl("LESA HUMANIDAD",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("SEXUALES",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("ROBOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("LESIONES$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("HOMICIDIOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("DROGAS$",familia_delito)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
+#2022-09-22
+                                                        grepl("LIBERTAD",familia_delito)~"",
+                                                        T~"OTHER CHARGES")) %>% 
+  assign("Base_fiscalia_v8",., envir = .GlobalEnv)
+  
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+Base_fiscalia_v8 <- plyr::rename(Base_fiscalia_v8,
+c('rut_enc_saf' = 'id',
+'fec_nacimiento' = 'dateofbirth',
+'pais' = 'country',
+'sexo' = 'sex',
+'encontrado_como_victima' = 'victim',
+'encontrado_como_imputado' = 'offender_d',
+'tipo_sujeto_vic' = 'victim_type_n',
+'gls_tipo_sujeto_vic' = 'victim_type_c',
+'idsujeto_victima' = 'id_victim',
+'reg' = 'reg',
+'gls_region' = 'reg_c',
+'idrelacion' = 'id_relac',
+'ruc' = 'caseid',
+'tipo_termino' = 'end_type_group',
+'agrupa_terminos' = 'end_type',
+'cod_delito' = 'crime_code',
+'gls_materia' = 'crime_code_c',
+'familia_delito' = 'crime_code_group',
+'cod_mottermino' = 'end_type_2c',
+'gls_mottermino' = 'end_type_2',
+'impcod_tiposujeto' = 'offender_type',
+'gls_tipo_imputado' = 'offender_type2',
+'iddelito' = 'offence_type',
+'fec_comision' = 'date_offending',
+'marca_pena_44' = 's_sentence_1',
+'marca_multa_45' = 's__fine_1',
+'medida_alternativa_46' = 's_restorative_3',
+'clasificacion_pena_47' = 's_kindprison_1',
+'marca_pena_52' = 's_sentence_2',
+'marca_multa_53' = 's__fine_2',
+'medida_alternativa_54' = 's_restorative_2',
+'clasificacion_pena_55' = 's_kindprison_2',
+'imp_birth_date' = 'dateofbirth_imp',
+'obs' = 'obs',
+'edad_comision_imp' = 'date_offending_imp',
+'edad_ter_rel_imp' = 'age_offending_imp',
+'familia_delito_rec' = 'crime_code_group_rec',
+'sex_imp' = 'sex_imp',
+'nat_imp2' = 'country_b',
+'nat_imp' = 'country_a'))  
+
+#(rut_enc_saf, fec_nacimiento, pais, sexo, encontrado_como_victima, encontrado_como_imputado, tipo_sujeto_vic, gls_tipo_sujeto_vic, idsujeto_victima, reg, gls_region, idrelacion, ruc, tipo_termino, agrupa_terminos, cod_delito, gls_materia, familia_delito, cod_mottermino, gls_mottermino, impcod_tiposujeto, gls_tipo_imputado, iddelito, fec_comision, marca_pena_44, marca_multa_45, medida_alternativa_46, clasificacion_pena_47, marca_pena_52, marca_multa_53, medida_alternativa_54, clasificacion_pena_55, imp_birth_date, obs, edad_comision_imp, edad_ter_rel_imp, familia_delito_rec, sex_imp, nat_imp2, nat_imp)
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+
+codebook::var_label(Base_fiscalia_v8) <- list(
+row= 'Numerador de los eventos presentes en la Base de Datos/Events in the Dataset',
+table= 'Origen de los Datos (de los archivos por año)/Source of Data (of files per year)',
+hash_key= 'Codificación del RUN/Masked Identifier (RUN)',
+ano_bd= 'Año de la Base de Datos/Year of the Dataset (Source)',
+id= 'Codigo Identificación de SENDA/SENDA ID',
+nombre_centro= 'Nombre del Centro de Tratamiento/Treatment Center',
+tipo_centro= 'Tipo de Centro/Type of Center',
+region_del_centro= '(original, Recodificado en nombre_region)/',
+servicio_de_salud= 'Servicio de Salud/Health Service',
+tipo_de_programa= '(original, Recodificado en tipo_de_programa_2)/',
+tipo_de_plan= '(original, Recodificado en tipo_de_plan_2)/',
+senda= 'SENDA/SENDA',
+dias_trat= 'Días de Tratamiento/Days of Treatment',
+nmesesentratamiento= 'Número de Meses en Tratamiento/Number of Months in Treatment',
+dias_en_senda= 'Días en SENDA/Days in SENDA',
+n_meses_en_senda= 'Número de Meses en SENDA/Number of Months in SENDA',
+sexo= '(original, Recodificado en sexo_2)/',
+edad= 'Edad (número entero)/Age (In years, Discrete Number)',
+nombre_usuario= 'Nombre del Usuario (OCULTO y no accesible)/Name of the User (Not Accessible)',
+comuna_residencia= '(original, Recodificado en comuna_residencia_cod)/',
+origen_de_ingreso= '(original, Recodificado en origen_ingreso)/',
+pais_nacimiento= 'País de Nacimiento/Country of Birth',
+nacionalidad= 'Nacionalidad/Nationality',
+etnia= '(original, recodificado en etnia_cor)/',
+estado_conyugal= '(original, Recodificado en estado_conyugal_2)/',
+numero_de_hijos= 'Número de Hijos/Number of Children',
+num_hijos_ing_trat_res= 'Número de Hijos para Ingreso a Tratamiento Residencial/Number of Children to Residential Treatment',
+parentesco_con_el_jefe_de_hogar= '(Sólo presenta valores perdidos)/',
+num_trat_ant= 'Número de Tratamientos Anteriores/Number of Previous Treatments',
+fecha_ultimo_tratamiento= 'Fecha del Último Tratamiento/Date of the Last Treatment',
+sustancia_de_inicio= '(original, Recodificado en sus_ini)/',
+edad_inicio_consumo= '(original, Recodificado en edad_ini_cons)/', 
+x_se_trata_mujer_emb= 'Mujer Embarazada al Ingreso/Pregnant at Admission',
+escolaridad_ultimo_ano_cursado= '(original, Recodificado en escolaridad)/', 
+condicion_ocupacional= '(original, Recodificado en estatus_ocupacional)/', 
+categoria_ocupacional= '(original, Recodificado en cat_ocupacional)/',
+rubro_trabaja= '(original, Recodificado en rubro_trabaja_mod)/',
+con_quien_vive= 'Persona con la que vive el Usuario/People that Share Household with the User',
+tipo_de_vivienda= '(original, Recodificado en tipo_de_vivienda_mod)/',
+tenencia_de_la_vivienda= '(original, Recodificado en tenencia_de_la_vivienda_mod)/',
+sustancia_principal= '(original, Recodificado en sus_principal)/',
+`otras_sustancias_nº1`= '(original, Recodificado en otras_sus1)/',
+`otras_sustancias_nº2`= '(original, Recodificado en otras_sus2)/',
+`otras_sustancias_nº3`= '(original, Recodificado en otras_sus3)/',
+freq_cons_sus_prin_original= '(original, Recodificado en freq_cons_sus_prin)/',
+edad_inicio_sustancia_principal= '(original, Recodificado en edad_ini_sus_prin)/',
+via_adm_sus_prin_original= '(original, Recodificado en via_adm_sus_prin)/',
+dg_trs_cons_sus_or= 'Diagnósico de Trastorno por Consumo de Sustancias/Diagnosed of Substance Use Disorder',
+dg_trs_psiq_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV/Diagnosis of Psychiatric Disorders, DSM-IV criteria',
+dg_trs_psiq_sub_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV (Subclasificacion)/Diagnosis of Psychiatric Disorders, DSM-IV criteria (sub-classification)',
+x2_dg_trs_psiq_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV (2)/Diagnosis of Psychiatric Disorders, DSM-IV criteria (2)',
+x2_dg_trs_psiq_sub_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV (Subclasificacion) (2)/Diagnosis of Psychiatric Disorders, DSM-IV criteria (sub-classification) (2)',
+x3_dg_trs_psiq_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV (3)/Diagnosis of Psychiatric Disorders, DSM-IV criteria (3)',
+x3_dg_trs_psiq_sub_dsm_iv_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios DSM IV (Subclasificacion) (3)/Diagnosis of Psychiatric Disorders, DSM-IV criteria (sub-classification) (3)',
+dg_trs_psiq_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10/Diagnosis of Psychiatric Disorders, CIE-10 criteria',
+dg_trs_psiq_sub_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10 (Subclasificacion)/Diagnosis of Psychiatric Disorders, CIE-10 criteria (subclassification)',
+x2_dg_trs_psiq_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10 (2)/Diagnosis of Psychiatric Disorders, CIE-10 criteria (2)',
+x2_dg_trs_psiq_sub_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10 (Subclasificacion) (2)/Diagnosis of Psychiatric Disorders, CIE-10 criteria (subclassification) (2)',
+x3_dg_trs_psiq_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10 (3)/Diagnosis of Psychiatric Disorders, CIE-10 criteria (3)',
+x3_dg_trs_psiq_sub_cie_10_or= 'Diagnóstico de Trastorno Psiquiátrico, Criterios CIE-10 (Subclasificacion) (3)/Diagnosis of Psychiatric Disorders, CIE-10 criteria (subclassification) (3)',
+diagnostico_trs_fisico= 'Diagnóstico de Trastorno Físico/Diagnosis of Physical Disorder',
+otros_probl_at_sm_or= 'Otros Problemas de Atención Vinculados a Salud Mental/Other problems linked to Mental Health',
+compromiso_biopsicosocial= 'Compromiso Biopsicosocial/Biopsychosocial Involvement',
+dg_global_nec_int_soc_or= 'Diagnóstico Global de Necesidades de Integración Social (Al Ingreso)/Global Diagnosis of Social Integration (At Admission)',
+dg_nec_int_soc_cap_hum_or= 'Diagnóstico de Necesidades de Integración Social en Capital Humano (Al Ingreso)/Global Diagnosis of Social Integration in Human Capital (At Admission)',
+dg_nec_int_soc_cap_fis_or= 'Diagnóstico de Necesidades de Integración Social en Capital Físico (Al Ingreso)/Global Diagnosis of Social Integration in Physical Capital (At Admission)',
+dg_nec_int_soc_cap_soc_or= 'Diagnóstico de Necesidades de Integración Social en Capital Social (Al Ingreso)/Global Diagnosis of Social Integration in Social Capital (At Admission)',
+fech_ing= 'Fecha de Ingreso a Tratamiento/Date of Admission to Treatment',
+fecha_ingreso_a_convenio_senda= 'Fecha de Ingreso a Convenio SENDA (aún no formateada como fecha)/Date of Admission to SENDA Agreement',
+usuario_tribunal_trat_droga= 'Usuario de modalidad Tribunales de Tratamiento de Drogas/User of Drug Treatment Courts Modality',
+consentimiento_informado= 'Consentimiento Informado/Informed Consent',
+fech_egres= 'Fecha de Egreso de Tratamiento/Date of Discharge from Treatment',
+motivodeegreso= 'Motivo de Egreso/Cause of Discharge',
+tipo_centro_derivacion= 'Tipo de Centro al que el Usuario es Derivado/Type of Center of Derivation',
+evaluacindelprocesoteraputico= 'Evaluación del Proceso Terapéutico/Evaluation of the Therapeutic Process',
+eva_consumo= 'Evaluación al Egreso Respecto al Patrón de consumo/Evaluation at Discharge regarding to Consumption Pattern',
+eva_fam= 'Evaluación al Egreso Respecto a Situación Familiar/Evaluation at Discharge regarding to Family Situation',
+eva_relinterp= 'Evaluación al Egreso Respecto a Relaciones Interpersonales/Evaluation at Discharge regarding to Interpersonal Relations',
+eva_ocupacion= 'Evaluación al Egreso Respecto a Situación Ocupacional/Evaluation at Discharge regarding to Occupational Status',
+eva_sm= 'Evaluación al Egreso Respecto a Salud Mental/Evaluation at Discharge regarding to Mental Health',
+eva_fisica= 'Evaluación al Egreso Respecto a Salud Física/Evaluation at Discharge regarding to Physical Health',
+eva_transgnorma= 'Evaluación al Egreso Respecto a Trasgresión a la Norma Social/Evaluation at Discharge regarding to Transgression to the Norm',
+dg_trs_psiq_cie_10_egres_or= '(Sólo presenta valores perdidos)/',
+dg_global_nec_int_soc_or_1= 'Diagnóstico Global de Necesidades de Integración Social (Al Egreso)/Global Diagnosis of Social Integration (At Discharge)',
+dg_nec_int_soc_cap_hum_or_1= 'Diagnóstico de Necesidades de Integración Social en Capital Humano (Al Egreso)/Global Diagnosis of Social Integration in Human Capital (At Discharge)',
+dg_nec_int_soc_cap_fis_or_1= 'Diagnóstico de Necesidades de Integración Social en Capital Físico (Al Egreso)/Global Diagnosis of Social Integration in Physical Capital (At Discharge)',
+dg_nec_int_soc_cap_soc_or_1= 'Diagnóstico de Necesidades de Integración Social en Capital Social (Al Egreso)/Global Diagnosis of Social Integration in Social Capital (At Discharge)',
+tiene_menores_de_edad_a_cargo= 'Menores de Edad A Cargo/Minor Dependants',
+mot_egres_alt_adm_or= 'Motivo de Egreso Alta Administrativa/Cause of Administrative Discharge',
+consorcio=  'Sociedades de Tratamiento Servicios de Salud- Fundaciones- entre otras entidades encargadas de los centros/Consortium',
+id_centro= 'ID de Centro/Treatment center ID',
+ha_estado_embarazada_egreso= '¿Ha estado embarazada? (al Egreso)/Have you been Pregnant (at Discharge)',
+identidad_de_genero= 'Identidad de Género/Gender Identity',
+discapacidad= 'Presenta Discapacidad/Disability',
+hash_rut_completo= 'HASH alternativo, en el escenario en que se asuma que el individuo al que se le codificó el RUN presente mayor edad/Alternative HASH-Key',
+opcion_discapacidad= 'Origen de Discapacidad/Cause of Disability',
+sexo_2= 'Sexo Usuario/Sex of User',
+embarazo= 'Embarazo al Ingreso /Pregnant at Admission',
+tipo_de_plan_2= 'Tipo de Plan/Type of Plan',
+tipo_de_programa_2= 'Tipo de Programa de Tratamiento/Type of Program',
+fech_egres_sin_fmt= 'Fecha de Egreso de Tratamiento (Sin Formato de Fecha)/Date of Discharge',
+id_mod= 'ID de SENDA para Presentación en Página Web (enmascara caracteres 5 y 6)/SENDA ID (mask characters 5 & 6)',
+ano_nac= 'Año de Nacimiento (numérico)/Year of Birth (numeric)',
+fech_ing_ano= 'Año de Ingreso (numérico)/Year of Admission (numeric)',
+fech_ing_mes= 'Mes de Ingreso (numérico)/Month of Admission (numeric)',
+fech_ing_dia= 'Día de Ingreso (numérico)/Day of Admission (numeric)',
+concat= 'ID de SENDA y HASH Concatenado (permite discriminar más de un HASH en un mismo ID)/Combination of SENDA ID & HASH',
+obs= 'Observaciones al Proceso de Limpieza y Estandarización de Casos/Observations to the Process of Data Tidying & Standardization',
+dias_trat_inv= 'Días de Tratamiento Invertidos (fecha más reciente, menor valor numérico)/Treatment Days (Reversed)',
+fech_nac= 'Fecha de Nacimiento/Date of Birth',
+edad_al_ing= 'Edad a la Fecha de Ingreso a Tratamiento (numérico continuo)/Age at Admission to Treatment',
+edad_ini_cons= 'Edad de Inicio de Consumo/Age of the Onset of Drug Use',
+edad_ini_sus_prin=  'Edad de Inicio de Consumo Sustancia Principal/Age of the Onset of Drug Use of Primary Substance',
+dias_trat_alta_temprana= 'Días de tratamiento (<90)/Less than 90 days in treatment',
+motivodeegreso_mod= 'Motivo de Egreso (con abandono temprano y tardío)/Cause of Discharge (with late and early withdrawal)',
+sus_principal= 'Sustancia Principal de Consumo/Primary or Main Substance of Consumption at Admission',
+otras_sus1= 'Otras Sustancias (1)/Other Substances (1)',
+otras_sus2= 'Otras Sustancias (2)/Other Substances (2)',
+otras_sus3= 'Otras Sustancias (3)/Other Substances (3)',
+sus_ini= 'Sustancia de Inicio/Starting Substance',
+estado_conyugal_2= 'Estado Conyugal/Marital Status',
+estatus_ocupacional= 'Condición Ocupacional/Occupational Status',
+cat_ocupacional= 'Categoría Ocupacional/Occupational Category',
+edad_grupos= 'Edad agrupada/Age in groups',
+origen_ingreso= "(modificado en origen_ingreso_mod)/",
+escolaridad= 'Escolaridad: Nivel Eduacional/Educational Attainment',
+via_adm_sus_prin= 'Vía de Administración de la Sustancia Principal/Route of Administration of the Primary or Main Substance',
+freq_cons_sus_prin= 'Frecuencia de Consumo de la Sustancia Principal (30 días previos a la admisión)/Frequency of Consumption of the Primary or Main Substance (30 days previous to admission)',
+dias_trat_knn_imp= 'Días de Tratamiento (Imputados KNN)/Days of Treatment (Imputed KNN)',
+fech_egres_knn_imp= 'Fecha de Egreso (Imputados KNN)/Date of Discharge (Imputed KNN)',
+dias_trat_alta_temprana_knn_imp= 'Días de Tratamiento con Alta Temprana (<90) (Imputados KNN)/Days of Treatment w Early Withdrawal (Imputed KNN)',
+fech_egres_imp= 'Fecha de Egreso (Imputados KNN & Lógico)/Date of Discharge (Imputed KNN & Logic)',
+motivodeegreso_imp= 'Motivo de Egreso(Imputados KNN & Lógico)/Cause of Discharge (Imputed KNN & Logic)',
+motivodeegreso_mod_imp= 'Motivo de Egreso (con abandono temprano y tardío)(Imputados KNN & Lógico)/Cause of Discharge (with late and early withdrawal)(Imputed KNN & Logic)',
+dias_trat_imp= 'Días de Tratamiento (Imputados KNN & Lógico)/Days of Treatment (Imputed KNN & Logic)', 
+dias_trat_alta_temprana_imp= 'Días de Tratamiento con Alta Temprana (<90) (Imputados KNN & Lógico)/Days of Treatment w Early Withdrawal (Imputed KNN & Logic)',
+via_adm_sus_prin_act= 'Vía de Administración de la Sustancia Principal (Se aplicaron criterios de limpieza)/Route of Administration of the Primary or Main Substance (Tidy)',
+etnia_cor= 'Etnia/Ethnic Group',
+nacionalidad_2= 'Segunda Nacionalidad/Second Nationality',
+etnia_cor_2= 'Etnia (2)/Second Ethnic Group',
+sus_ini_2= 'Segunda Sustancia de Inicio/Second Starting Substance',
+sus_ini_3= 'Tercera Sustancia de Inicio/Third Starting Substance',
+concat_hash_sus_prin= 'Combination of User & Primary Substance',
+macrozona= "Macrozona/Macrozones",
+nombre_region= " Región del Centro/Chilean Region of the Center",
+comuna_residencia_cod= "Comuna de Residencia/Municipality or District of Residence",
+sus_ini_mod= "Sustancia de Inicio (Sólo más frecuentes)/Starting Substance (Only more frequent)",
+sus_principal_mod= 'Sustancia Principal de Consumo (Sólo más frecuentes)/Primary or Main Substance of Consumption at Admission (Only more frequent)',
+origen_ingreso_mod= 'Origen de Ingreso/Motive of Admission to Treatment',
+tipo_de_vivienda_mod= 'Tipo de Vivienda/Type of Housing', 
+tenencia_de_la_vivienda_mod= 'Tenencia de la Vivienda/Tenure status of Households',
+rubro_trabaja_mod= 'Rubro de Trabajo/Area of Work',
+edad_al_ing_grupos= 'Edad a la Fecha de Ingreso a Tratamiento en Grupos/Age at Admission to Treatment In Groups',
+menor_60_dias_diff= 'Menor a 60 días de diferencia con el registro posterior/Menor a 60 days of difference between the next entry',
+menor_45_dias_diff= 'Menor a 45 días de diferencia con el registro posterior/Less than 45 days of difference between the next entry',
+diff_bet_treat= 'Días de diferencia con el registro posterior/Days of difference between the next entry',
+id_centro_sig_trat= "ID del Centro del registro posterior/Center ID of the Next Treatment",
+tipo_plan_sig_trat= "Tipo de Plan del registro posterior/Type of Plan of the Next Entry",
+tipo_programa_sig_trat= "Tipo de Programa del registro posterior/Type of Program of the Next Entry", 
+senda_sig_trat= "SENDA del registro posterior/SENDA of the Next Entry",
+motivoegreso_derivacion= "Motivo de Egreso= Derivación/Cause of Discharge= Derivación",
+obs_cambios= "Cambios del tratamiento en comparación al registro posterior/Changes in treatment compared to the Next Entry",
+obs_cambios_ninguno= "Sin cambios del tratamiento en comparación al registro posterior/No changes in treatment compared to the Next Entry",
+obs_cambios_num= "Recuento de cambios del tratamiento en comparación al registro posterior/Count of changes in treatment compared to the Next Entry",
+obs_cambios_fac= "Recuento de cambios del tratamiento en comparación al registro posterior(factor)/Count of changes in treatment compared to the Next Entry(factor)",
+at_least_one_cont_entry= "Casos de Usuarios con más de una entrada después de otra/Cases of users with more than one entry after another one"
+)
+```
+
+# Session Info
+
+```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE}
+message(Sys.getenv("R_LIBS_USER"))
+Sys.Date()
+message(paste0("Editor context: ", path))
+
+if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.RData")
+  } else if (grepl("andre",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("C:/Users/andre/Desktop/SUD_CL/13.RData")
+  } else if (grepl("E:",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.RData")
+  } else {
+    save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"13.RData"))
+  }
+
+sesion_info <- devtools::session_info()
+dplyr::select(
+  tibble::as_tibble(sesion_info$packages),
+  c(package, loadedversion, source)
+) %>% 
+  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Variable' = 2, 'Percentage'= 3),
+              caption = htmltools::tags$caption(
+        style = 'caption-side: top; text-align: left;',
+        '', htmltools::em('Packages')),
+      options=list(
+initComplete = htmlwidgets::JS(
+        "function(settings, json) {",
+        "$(this.api().tables().body()).css({
+            'font-family': 'Helvetica Neue',
+            'font-size': '50%', 
+            'code-inline-font-size': '15%', 
+            'white-space': 'nowrap',
+            'line-height': '0.75em',
+            'min-height': '0.5em'
+            });",#;
+        "}")))
+```
+
+# Export
+
+```{r export, warning=FALSE, echo=T, error=T}
+invisible("Exported database in 22-09-2022")
+CONS_C1_df_dup_SEP_2020_22<-
+CONS_C1_df_dup_SEP_2020 %>% 
+  subset(select= c("hash_key", "dup", "ano_bd_first", "duplicates_filtered", "id_centro", "tipo_centro", "tipo_de_programa_2", "tipo_de_plan_2", "senda", "macrozona", "nombre_region", "escolaridad_rec", "estado_conyugal_2", "compromiso_biopsicosocial", "edad_ini_cons", "edad_ini_sus_prin" ,"edad_ini_sus_prin_grupos", "freq_cons_sus_prin", "via_adm_sus_prin_act", 
+"sus_ini_2_mod", "sus_ini_3_mod", "sus_ini_mod", "con_quien_vive", "sus_principal_mod", "tipo_de_vivienda_mod", "tenencia_de_la_vivienda_mod", "rubro_trabaja_mod", "cat_ocupacional", "estatus_ocupacional", "sus_ini_mod_mvv","cat_ocupacional_corr", "condicion_ocupacional_corr", "otras_sus1_mod", "otras_sus2_mod",  "otras_sus3_mod", "fech_ing_num", "fech_egres_num", "motivodeegreso_mod_imp","motivoegreso_derivacion", "evaluacindelprocesoteraputico",
+paste0("tipo_de_plan_2_",1:10),paste0("motivodeegreso_mod_imp_",1:10),
+paste0("dias_treat_imp_sin_na_",1:10), "dg_trs_cons_sus_or", "dg_total_cie_10", "dg_cie_10_rec", "dg_total_dsm_iv", "dg_dsm_iv_rec", "cnt_diagnostico_trs_fisico", "diagnostico_trs_fisico", "dg_fis_anemia", "dg_fis_card", "dg_fis_in_study", "dg_fis_enf_som", "dg_fis_ets", "dg_fis_hep_alc", "dg_fis_hep_b", "dg_fis_hep_cro", "dg_fis_inf", "dg_fis_otr_cond_fis_ries_vit", "dg_fis_otr_cond_fis", "dg_fis_pat_buc", "dg_fis_pat_ges_intrau", "dg_fis_trau_sec", "otros_pr_sm_abu_sex", "otros_pr_sm_exp_com_sex", "otros_pr_sm_otros", "otros_pr_sm_vif")) %>% 
+    dplyr::mutate(comorbidity_icd_10=dplyr::case_when(dg_total_cie_10>=2~ "Two or more", dg_total_cie_10==1~ "One", as.character(dg_cie_10_rec)=="Diagnosis unknown (under study)"~"Diagnosis unknown (under study)", as.character(dg_cie_10_rec)=="Without psychiatric comorbidity"~"Without psychiatric comorbidity")) %>%
+  dplyr::mutate(comorbidity_icd_10=as.factor(comorbidity_icd_10)) %>% 
+    dplyr::mutate(estatus_ocupacional= dplyr::case_when(!is.na(cat_ocupacional)&!is.na(estatus_ocupacional)~"Empleado", TRUE~as.character(estatus_ocupacional)))%>% 
+  dplyr::mutate(estatus_ocupacional= as.factor(estatus_ocupacional))%>% 
+  dplyr::mutate(cnt_mod_cie_10_dg_cons_sus_or= dplyr::case_when(as.character(dg_trs_cons_sus_or)=="Drug dependence"~dg_total_cie_10+1, TRUE~dg_total_cie_10))%>% 
+  dplyr::mutate(freq_cons_sus_prin= dplyr::case_when(as.character(freq_cons_sus_prin)=="Did not use"~ "Less than 1 day a week", TRUE~as.character(freq_cons_sus_prin)))%>% 
+  dplyr::mutate(freq_cons_sus_prin= as.factor(freq_cons_sus_prin)) %>% 
+    dplyr::mutate(tipo_centro_pub= factor(dplyr::if_else(as.character(tipo_centro)=="Public",TRUE,FALSE,NA))) %>%  dplyr::mutate(dg_trs_fis_rec= factor(dplyr::case_when(as.character(diagnostico_trs_fisico)=="En estudio"~"Diagnosis unknown (under study)",as.character(diagnostico_trs_fisico)=="Sin trastorno"~'Without physical comorbidity',cnt_diagnostico_trs_fisico>0 ~'With physical comorbidity',
+                                             TRUE~NA_character_)))%>%
+    dplyr::mutate(escolaridad_rec= readr::parse_factor(as.character(escolaridad_rec),levels=c('3-Completed primary school or less', '2-Completed high school or less', '1-More than high school'), ordered=T,trim_ws=T,include_na =F, locale=readr::locale(encoding = "Latin1"))) %>%   
+dplyr::mutate(freq_cons_sus_prin= readr::parse_factor(as.character(freq_cons_sus_prin),levels=c('Did not use', 'Less than 1 day a week','2 to 3 days a week','4 to 6 days a week','1 day a week or more','Daily'), ordered =T,trim_ws=T,include_na =F, locale=readr::locale(encoding = "UTF-8"))) %>% 
+  dplyr::mutate(evaluacindelprocesoteraputico= dplyr::case_when(grepl("1",as.character(evaluacindelprocesoteraputico))~'1-High Achievement',grepl("2",as.character(evaluacindelprocesoteraputico))~'2-Medium Achievement',grepl("3",as.character(evaluacindelprocesoteraputico))~'3-Minimum Achievement', TRUE~as.character(evaluacindelprocesoteraputico))) %>% 
+  dplyr::mutate(evaluacindelprocesoteraputico= readr::parse_factor(as.character(evaluacindelprocesoteraputico),levels=c('1-High Achievement', '2-Medium Achievement','3-Minimum Achievement'), ordered =T,trim_ws=T,include_na =F, locale=readr::locale(encoding = "UTF-8"))) %>% 
+    dplyr::mutate(tenencia_de_la_vivienda_mod= factor(dplyr::case_when(tenencia_de_la_vivienda_mod=="Allegado"~"Stays temporarily with a relative", tenencia_de_la_vivienda_mod=="Arrienda"~"Renting", tenencia_de_la_vivienda_mod=="Cedida"~"Owner/Transferred dwellings/Pays Dividends", tenencia_de_la_vivienda_mod=="Ocupación Irregular"~"Illegal Settlement", tenencia_de_la_vivienda_mod=="Otros"~"Others", tenencia_de_la_vivienda_mod=="Paga dividendo"~"Owner/Transferred dwellings/Pays Dividends", tenencia_de_la_vivienda_mod=="Propia"~"Owner/Transferred dwellings/Pays Dividends", T~NA_character_))) %>% 
+  dplyr::mutate(freq_cons_sus_prin=dplyr::case_when(freq_cons_sus_prin=="1 day a week or less"~"1 day a week or more",T~as.character(freq_cons_sus_prin))) %>% 
+  dplyr::mutate(freq_cons_sus_prin=ordered(freq_cons_sus_prin,levels=c("Did not use", "Less than 1 day a week", "1 day a week or more", "2 to 3 days a week","4 to 6 days a week", "Daily"))) %>%   
+  data.table::data.table() %>% 
+    dplyr::group_by(hash_key) %>% 
+  dplyr::mutate(rn_hash_discard=row_number())%>% 
+  dplyr::ungroup() %>% 
+  dplyr::mutate(fech_ing_num_discard=fech_ing_num, fech_egres_num_discard= fech_egres_num) %>% 
+   tidyr::pivot_wider(
+    names_from =  rn_hash_discard, 
+    names_sep="_",
+    values_from = c(fech_ing_num_discard, fech_egres_num_discard))%>% #glimpse() 
+     dplyr::group_by(hash_key)%>%
+  dplyr::mutate_at(vars(fech_ing_num_discard_1:fech_egres_num_discard_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
+  dplyr::ungroup()
+ 
+name_vec <- setNames(c(paste0("fech_ing_num_discard_",1:10),paste0("fech_egres_num_discard_",1:10)),c(paste0("fech_ing_num_",1:10),paste0("fech_egres_num_",1:10)))
+
+CONS_C1_df_dup_SEP_2020_22<-
+CONS_C1_df_dup_SEP_2020_22 %>% rename(!!!name_vec)
+
+#_#_#_#_#_#__#_#_#_#_#_#_
+
+Base_fiscalia_v8 %>% 
+  #arrange the rut from the first date of comission of a crime, but we are not detecting if he/she is the victim or not
+  dplyr::arrange(rut_enc_saf, fec_comision_simple) %>% 
+  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020_22, subset= dup==1),by=c("rut_enc_saf"="hash_key")) %>%
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_sep_2022_match_SENDA.dta"))
+  
+Base_fiscalia_v8 %>% 
+    rio::export(file = paste0("fiscalia_mariel_sep_2022.dta"))
+
+invisible("Temporarily useless")
+# ```{r label_to_stata, echo=T, paged.print=TRUE}
+# 
+# export_lab_stata_merge<-
+#   tibble::rownames_to_column(data.frame(Hmisc::label(Base_fiscalia_v2)))%>% data.frame() %>%
+#   dplyr::rename("code" = !!names(.[1]), "label" = !!names(.[2]))%>% data.frame()%>%
+#   dplyr::mutate(first= "cap noi label variable")%>%
+#   dplyr::mutate(final= paste0(first, " ",code,' "',label,'"'))%>%
+#   dplyr::select(-code,-label,-first)%>%
+#   dplyr::rename("*clear all"="final") %>% 
+#   rbind(paste0('cap noi save "', gsub('/', '\\', path, fixed=T),'\\fiscalia_mariel_ago_2022.dta", replace'))%>%
+#   rbind('cap noi drop id id_mod nombre_centro consentimiento_informado')%>%
+#   rbind('cap noi drop id id_mod nombre_centro')%>%
+#   rbind(paste0('cap noi save "', gsub('/', '\\', path, fixed=T),'\\fiscalia_mariel_ago_2022.dta", replace'))
+# 
+# rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\fiscalia_mariel_ago_2022.dta", clear'),export_lab_stata_merge) %>% knitr::kable("html") %>% 
+#     kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size =10) %>% 
+#   kableExtra::scroll_box(width = "100%", height = "375px")
+# 
+# write.table(rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\fiscalia_mariel_ago_2022.dta", clear'),export_lab_stata_merge), file = paste0(path,"/SUD_CL/_label_var_to_stata.do"), sep = "",row.names = FALSE, quote = FALSE, fileEncoding="UTF-8")
+# ```
+# 
+# <br>
+# 
+# <div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:350px; overflow-x: scroll; width:100%">
+# 
+# ```{stata 2, collectcode=F, include=T, error=T, cleanlog=F}
+# *should be in the same folder of the .Rmd to work
+# cap noi do _label_var_to_stata.do
+# ```
+# 
+# </div>
+```

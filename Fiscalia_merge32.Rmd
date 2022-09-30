@@ -222,7 +222,7 @@ local({r <- getOption("repos")
        options(repos=r)
 })
 copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
-  if(class(ungroup(x))[1]=="tbl_df"){
+  if(class(try(dplyr::ungroup(x)))[1]=="tbl_df"){
         if(options()$OutDec=="."){
             options(OutDec = dec)
             write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
@@ -361,7 +361,7 @@ kable(size=10, format="markdown",caption= "Summary descriptives, missing values 
 
 <br>
 
-Registries with no ID are far more frequent in the north: I Región de Tarapaca, II Región de Antofagasta and XV Región de Arica y Parinacota, while less in the Metropolitan Region. Also have judiciary finishings of the proceedings. Much more were applied a principle of discretion ("PRINCIPIO DE OPORTUNIDAD") and condemnatory sentence ("SENTENCIA DEFINITIVA CONDENATORIA"), and less ended in provision filling of the case ("ARCHIVO PROVISIONAL"), grouped in another case ("AGRUPACI¿N A OTRO CASO") and definitive dismissal ("SOBRESEIMIENTO DEFINITIVO"). Many of the crimes were related to drunk driving, posession of drugs and knives or sharp objects, brawls, drug traffic, microtraffic. There are no cases related to domestic violence. The order for payment procedure ("MONITORIO") was more frequent, in contrast to the ordinary procedure ("ORDINARIO"). The place in which the crime was commited more frequently in national or municipal goods of public use ("BIENES NACIONALES USO PUBLICO"), but less in residential places ("LUGAR HABITADO"). Also, these crimes were more frequently commited between 2010 and 2015, but less after 2015.
+Registries with no ID are far more frequent in the north: I Región de Tarapaca, II Región de Antofagasta and XV Región de Arica y Parinacota, while less in the Metropolitan Region. Also have judiciary finishings of the proceedings. Much more were applied a principle of discretion ("PRINCIPIO DE OPORTUNIDAD") and condemnatory sentence ("SENTENCIA DEFINITIVA CONDENATORIA"), and less ended in provision filling of the case ("ARCHIVO PROVISIONAL"), grouped in another case ("AGRUPACI¿N A OTRO CASO") and definitive dismissal ("SOBRESEIMIENTO DEFINITIVO"). Many of the crimes were related to drunk driving, possession of drugs and knives or sharp objects, brawls, drug traffic, microtraffic. There are no cases related to domestic violence. The order for payment procedure ("MONITORIO") was more frequent, in contrast to the ordinary procedure ("ORDINARIO"). The place in which the crime was committed more frequently in national or municipal goods of public use ("BIENES NACIONALES USO PUBLICO"), but less in residential places ("LUGAR HABITADO"). Also, these crimes were more frequently committed between 2010 and 2015, but less after 2015.
 
 <br>
 
@@ -550,7 +550,8 @@ Base_fiscalia_v7 %>%
   dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple-1, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
   janitor::tabyl(cut_com_del2,cod_delito) %>% 
   reshape2::melt() %>%
-   dplyr::filter(value==0)%>%
+  dplyr::filter(value==0)%>%
+  dplyr::filter(cut_com_del2!="1972-12-20") %>% 
   dplyr::distinct(variable)
 # create a vector with crimes that have 0 cases in one determined date window
 
@@ -588,7 +589,7 @@ Base_fiscalia_v7 %>%
   janitor::tabyl(cut_com_del2,cod_delito) %>% 
   reshape2::melt() %>%
     dplyr::filter(cut_com_del2!="1972-12-20") %>% 
-  dplyr::left_join(dplyr::mutate(crime_cod_label,cod_delito=as.factor(cod_delito)), by=c("variable"="cod_delito")) %>% 
+  dplyr::left_join(dplyr::mutate(crime_cod_label,cod_delito=as.factor(cod_delito)), by=c("variable"="cod_delito")) %>%
   ungroup()%>%
   dplyr::filter(variable %in% as.numeric(unlist(crimes_no_cases)))%>%
 #format_cells(1, 1:length(names(.)), "bold") %>%
@@ -612,7 +613,7 @@ Base_fiscalia_v7 %>%
 :::
 
 ```{r 7b-iddelito-cod-delito, echo=T, fig.align='center', message=T, error=T, eval=T}
-message(paste0("More than one distinct crime codes by ID of crime= ",
+message(paste0("More than one distinct crime codes (cod_delito) by ID of crime (iddelito)= ",
 Base_fiscalia_v7 %>% 
   dplyr::group_by(iddelito) %>% 
   summarise(n=n_distinct(cod_delito)) %>% 
@@ -1088,10 +1089,28 @@ dplyr::mutate_at(c('dg_trs_psiq_cie_10_or','x2_dg_trs_psiq_cie_10_or','x3_dg_trs
   dplyr::mutate(obs_cambios_ninguno= recode(as.character(obs_cambios_ninguno),"0"="At least 1 Change w/ the Next Entry","1"="No Changes w/ the Next Entry"))%>%
   dplyr::mutate(motivoegreso_derivacion= recode(as.character(motivoegreso_derivacion),"0"="Other causes of discharge","1"="Referral"))%>%
   dplyr::mutate_at(vars(at_least_one_cont_entry,menor_45_dias_diff,menor_60_dias_diff,obs_cambios_ninguno,motivoegreso_derivacion,obs_cambios),~as.factor(.))%>%
+        dplyr::mutate(familia_delito_rec2=dplyr::case_when(grepl("LESA HUMANIDAD",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("SEXUALES",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("ROBOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("LESIONES$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("HOMICIDIOS$",familia_delito)~"VIOLENT CRIME",
+                                                        grepl("DROGAS$",familia_delito)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("DROGAS",gls_materia)~"DRUG-RELATED CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("PRESUNTA",gls_materia)~"VIOLENT CRIME",
+                                                        grepl("RELEVANCIA",familia_delito)& grepl("MUERTES",gls_materia)~"VIOLENT CRIME",
+#2022-09-22
+                                                        grepl("LIBERTAD",familia_delito)~"",
+                                                        T~"OTHER CHARGES")) %>% 
   assign("Base_fiscalia_v8",., envir = .GlobalEnv)
   
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_  
-  
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+
+#(rut_enc_saf, fec_nacimiento, pais, sexo, encontrado_como_victima, encontrado_como_imputado, tipo_sujeto_vic, gls_tipo_sujeto_vic, idsujeto_victima, reg, gls_region, idrelacion, ruc, tipo_termino, agrupa_terminos, cod_delito, gls_materia, familia_delito, cod_mottermino, gls_mottermino, impcod_tiposujeto, gls_tipo_imputado, iddelito, fec_comision, marca_pena_44, marca_multa_45, medida_alternativa_46, clasificacion_pena_47, marca_pena_52, marca_multa_53, medida_alternativa_54, clasificacion_pena_55, imp_birth_date, obs, edad_comision_imp, edad_ter_rel_imp, familia_delito_rec, sex_imp, nat_imp2, nat_imp)
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+
 codebook::var_label(Base_fiscalia_v8) <- list(
 row= 'Numerador de los eventos presentes en la Base de Datos/Events in the Dataset',
 table= 'Origen de los Datos (de los archivos por año)/Source of Data (of files per year)',
@@ -1305,6 +1324,56 @@ initComplete = htmlwidgets::JS(
 # Export
 
 ```{r export, warning=FALSE, echo=T, error=T}
+invisible("Exported database in 22-09-2022")
+CONS_C1_df_dup_SEP_2020_22<-
+CONS_C1_df_dup_SEP_2020 %>% 
+  subset(select= c("hash_key", "dup", "ano_bd_first", "duplicates_filtered", "id_centro", "tipo_centro", "tipo_de_programa_2", "tipo_de_plan_2", "senda", "macrozona", "nombre_region", "escolaridad_rec", "estado_conyugal_2", "compromiso_biopsicosocial", "edad_ini_cons", "edad_ini_sus_prin" ,"edad_ini_sus_prin_grupos", "freq_cons_sus_prin", "via_adm_sus_prin_act", 
+"sus_ini_2_mod", "sus_ini_3_mod", "sus_ini_mod", "con_quien_vive", "sus_principal_mod", "tipo_de_vivienda_mod", "tenencia_de_la_vivienda_mod", "rubro_trabaja_mod", "cat_ocupacional", "estatus_ocupacional", "sus_ini_mod_mvv","cat_ocupacional_corr", "condicion_ocupacional_corr", "otras_sus1_mod", "otras_sus2_mod",  "otras_sus3_mod", "fech_ing_num", "fech_egres_num", "motivodeegreso_mod_imp","motivoegreso_derivacion", "evaluacindelprocesoteraputico",
+paste0("tipo_de_plan_2_",1:10),paste0("motivodeegreso_mod_imp_",1:10),
+paste0("dias_treat_imp_sin_na_",1:10), "dg_trs_cons_sus_or", "dg_total_cie_10", "dg_cie_10_rec", "dg_total_dsm_iv", "dg_dsm_iv_rec", "cnt_diagnostico_trs_fisico", "diagnostico_trs_fisico", "dg_fis_anemia", "dg_fis_card", "dg_fis_in_study", "dg_fis_enf_som", "dg_fis_ets", "dg_fis_hep_alc", "dg_fis_hep_b", "dg_fis_hep_cro", "dg_fis_inf", "dg_fis_otr_cond_fis_ries_vit", "dg_fis_otr_cond_fis", "dg_fis_pat_buc", "dg_fis_pat_ges_intrau", "dg_fis_trau_sec", "otros_pr_sm_abu_sex", "otros_pr_sm_exp_com_sex", "otros_pr_sm_otros", "otros_pr_sm_vif")) %>% 
+    dplyr::mutate(comorbidity_icd_10=dplyr::case_when(dg_total_cie_10>=2~ "Two or more", dg_total_cie_10==1~ "One", as.character(dg_cie_10_rec)=="Diagnosis unknown (under study)"~"Diagnosis unknown (under study)", as.character(dg_cie_10_rec)=="Without psychiatric comorbidity"~"Without psychiatric comorbidity")) %>%
+  dplyr::mutate(comorbidity_icd_10=as.factor(comorbidity_icd_10)) %>% 
+    dplyr::mutate(estatus_ocupacional= dplyr::case_when(!is.na(cat_ocupacional)&!is.na(estatus_ocupacional)~"Empleado", TRUE~as.character(estatus_ocupacional)))%>% 
+  dplyr::mutate(estatus_ocupacional= as.factor(estatus_ocupacional))%>% 
+  dplyr::mutate(cnt_mod_cie_10_dg_cons_sus_or= dplyr::case_when(as.character(dg_trs_cons_sus_or)=="Drug dependence"~dg_total_cie_10+1, TRUE~dg_total_cie_10))%>% 
+  dplyr::mutate(freq_cons_sus_prin= dplyr::case_when(as.character(freq_cons_sus_prin)=="Did not use"~ "Less than 1 day a week", TRUE~as.character(freq_cons_sus_prin)))%>% 
+  dplyr::mutate(freq_cons_sus_prin= as.factor(freq_cons_sus_prin)) %>% 
+    dplyr::mutate(tipo_centro_pub= factor(dplyr::if_else(as.character(tipo_centro)=="Public",TRUE,FALSE,NA))) %>%  dplyr::mutate(dg_trs_fis_rec= factor(dplyr::case_when(as.character(diagnostico_trs_fisico)=="En estudio"~"Diagnosis unknown (under study)",as.character(diagnostico_trs_fisico)=="Sin trastorno"~'Without physical comorbidity',cnt_diagnostico_trs_fisico>0 ~'With physical comorbidity',
+                                             TRUE~NA_character_)))%>%
+    dplyr::mutate(escolaridad_rec= readr::parse_factor(as.character(escolaridad_rec),levels=c('3-Completed primary school or less', '2-Completed high school or less', '1-More than high school'), ordered=T,trim_ws=T,include_na =F, locale=readr::locale(encoding = "Latin1"))) %>%   
+dplyr::mutate(freq_cons_sus_prin= readr::parse_factor(as.character(freq_cons_sus_prin),levels=c('Did not use', 'Less than 1 day a week','2 to 3 days a week','4 to 6 days a week','1 day a week or more','Daily'), ordered =T,trim_ws=T,include_na =F, locale=readr::locale(encoding = "UTF-8"))) %>% 
+  dplyr::mutate(evaluacindelprocesoteraputico= dplyr::case_when(grepl("1",as.character(evaluacindelprocesoteraputico))~'1-High Achievement',grepl("2",as.character(evaluacindelprocesoteraputico))~'2-Medium Achievement',grepl("3",as.character(evaluacindelprocesoteraputico))~'3-Minimum Achievement', TRUE~as.character(evaluacindelprocesoteraputico))) %>% 
+  dplyr::mutate(evaluacindelprocesoteraputico= readr::parse_factor(as.character(evaluacindelprocesoteraputico),levels=c('1-High Achievement', '2-Medium Achievement','3-Minimum Achievement'), ordered =T,trim_ws=T,include_na =F, locale=readr::locale(encoding = "UTF-8"))) %>% 
+    dplyr::mutate(tenencia_de_la_vivienda_mod= factor(dplyr::case_when(tenencia_de_la_vivienda_mod=="Allegado"~"Stays temporarily with a relative", tenencia_de_la_vivienda_mod=="Arrienda"~"Renting", tenencia_de_la_vivienda_mod=="Cedida"~"Owner/Transferred dwellings/Pays Dividends", tenencia_de_la_vivienda_mod=="Ocupación Irregular"~"Illegal Settlement", tenencia_de_la_vivienda_mod=="Otros"~"Others", tenencia_de_la_vivienda_mod=="Paga dividendo"~"Owner/Transferred dwellings/Pays Dividends", tenencia_de_la_vivienda_mod=="Propia"~"Owner/Transferred dwellings/Pays Dividends", T~NA_character_))) %>% 
+  dplyr::mutate(freq_cons_sus_prin=dplyr::case_when(freq_cons_sus_prin=="1 day a week or less"~"1 day a week or more",T~as.character(freq_cons_sus_prin))) %>% 
+  dplyr::mutate(freq_cons_sus_prin=ordered(freq_cons_sus_prin,levels=c("Did not use", "Less than 1 day a week", "1 day a week or more", "2 to 3 days a week","4 to 6 days a week", "Daily"))) %>%   
+  data.table::data.table() %>% 
+    dplyr::group_by(hash_key) %>% 
+  dplyr::mutate(rn_hash_discard=row_number())%>% 
+  dplyr::ungroup() %>% 
+  dplyr::mutate(fech_ing_num_discard=fech_ing_num, fech_egres_num_discard= fech_egres_num) %>% 
+   tidyr::pivot_wider(
+    names_from =  rn_hash_discard, 
+    names_sep="_",
+    values_from = c(fech_ing_num_discard, fech_egres_num_discard))%>% #glimpse() 
+     dplyr::group_by(hash_key)%>%
+  dplyr::mutate_at(vars(fech_ing_num_discard_1:fech_egres_num_discard_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
+  dplyr::ungroup()
+ 
+name_vec <- setNames(c(paste0("fech_ing_num_discard_",1:10),paste0("fech_egres_num_discard_",1:10)),c(paste0("fech_ing_num_",1:10),paste0("fech_egres_num_",1:10)))
+
+CONS_C1_df_dup_SEP_2020_22<-
+CONS_C1_df_dup_SEP_2020_22 %>% rename(!!!name_vec)
+
+#_#_#_#_#_#__#_#_#_#_#_#_
+
+Base_fiscalia_v8 %>% 
+  #arrange the rut from the first date of comission of a crime, but we are not detecting if he/she is the victim or not
+  dplyr::arrange(rut_enc_saf, fec_comision_simple) %>% 
+  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020_22, subset= dup==1),by=c("rut_enc_saf"="hash_key")) %>%
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_sep_2022_match_SENDA.dta"))
+  
 Base_fiscalia_v8 %>% 
     rio::export(file = paste0("fiscalia_mariel_sep_2022.dta"))
 
