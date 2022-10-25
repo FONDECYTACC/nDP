@@ -250,6 +250,8 @@ copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
 }  
 
 if(!require(pacman)){install.packages("pacman")}
+if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
+
 pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, install=F)
 try(webshot::install_phantomjs())
 
@@ -345,7 +347,7 @@ knitr::knit_hooks$set(
 #- `AGRUPA_TERMINOS`, explore missing values
 
 tbone_idsujeto_victima_0<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso","tipo_sujeto_vic", "gls_materia", "encontrado_como_victima",  "reg")), data=  dplyr::mutate(Base_fiscalia_v7, idsujeto_victima_0=ifelse(idsujeto_victima==0,1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg")), smd=T, strata=c("idsujeto_victima_0"), addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso","tipo_sujeto_vic", "gls_materia", "encontrado_como_victima",  "reg")), data=  dplyr::mutate(Base_fiscalia_v7, idsujeto_victima_0=ifelse(idsujeto_victima==0,1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg")), smd=T, strata=c("idsujeto_victima_0"), addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_idsujeto_victima_0, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -368,7 +370,7 @@ Registries with no ID are far more frequent in the north: I Región de Tarapaca,
 ::: controlly
 ```{r 2-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
 tbone_tipo_termino_na<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, tipo_termino_NA=ifelse(is.na(tipo_termino),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg")), smd=T, strata="tipo_termino_NA", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, tipo_termino_NA=ifelse(is.na(tipo_termino),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg")), smd=T, strata="tipo_termino_NA", addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_tipo_termino_na, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -392,7 +394,7 @@ It is difficult to find any pattern with only 21 records. Despite this, much of 
 ```{r 3-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
 #- `GLS_MOTTERMINO` explore missing values; see why is different with . 
 tbone_mot_termino_na<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "encontrado_como_victima","gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, mot_termino_NA=ifelse(is.na(gls_mottermino),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("mot_termino_NA","encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "encontrado_como_victima","gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, mot_termino_NA=ifelse(is.na(gls_mottermino),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("mot_termino_NA","encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_mot_termino_na, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -417,7 +419,7 @@ We also explored end of the proceedings with `r message(paste0("Administrative a
 ::: controlly
 ```{r 4-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
 tbone_agrup_ter_anul<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_anul=ifelse(agrupa_terminos=="ANULACI¿N ADMINISTRATIVA",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("agrupa_terminos_anul", "encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_anul=ifelse(agrupa_terminos=="ANULACI¿N ADMINISTRATIVA",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("agrupa_terminos_anul", "encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_agrup_ter_anul, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -442,7 +444,7 @@ We also explored end of the proceedings with `r message(paste0("Grouped to anoth
 ::: controlly
 ```{r 4-2-exp-miss-val, echo=T, fig.align='center', message=T, error=T, eval=T}
 tbone_agrup_ter_agrup<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_agrup=ifelse(agrupa_terminos=="AGRUPACI¿N A OTRO CASO",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("agrupa_terminos_agrup","encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic ", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, agrupa_terminos_agrup=ifelse(agrupa_terminos=="AGRUPACI¿N A OTRO CASO",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("agrupa_terminos_agrup","encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_agrup_ter_agrup, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -467,7 +469,7 @@ Among those records grouped to another case, more cases were found as a victim, 
 #- `TIPO_SUJETO_VIC` that are victims and imputed at the same time
 
 tbone_suj_vic_imp<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, vicimp=ifelse(encontrado_como_victima=="SI"& encontrado_como_imputado=="SI",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="vicimp", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, vicimp=ifelse(encontrado_como_victima=="SI"& encontrado_como_imputado=="SI",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="vicimp", addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_suj_vic_imp, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -492,7 +494,7 @@ All of the registries both accused and victim were indicated as a victim in the 
 #- `TIPO_SUJETO_VIC` 
 
 tbone_suj_tip_suj_novic<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "encontrado_como_victima", "gls_mottermino")), data=  dplyr::mutate(Base_fiscalia_v7, diff_vic_tip_suj=ifelse((tipo_sujeto_vic==6),0,1),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="diff_vic_tip_suj", addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "encontrado_como_victima", "gls_mottermino")), data=  dplyr::mutate(Base_fiscalia_v7, diff_vic_tip_suj=ifelse((tipo_sujeto_vic==6),0,1),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata="diff_vic_tip_suj", addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_suj_tip_suj_novic, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -547,7 +549,7 @@ dplyr::distinct(Base_fiscalia_v7[,c("cod_delito","gls_materia")],cod_delito,.kee
 # - `COD_DELITO`. explore deprecated crimes
 crimes_no_cases<-
 Base_fiscalia_v7 %>% 
-  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple-1, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
+  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple-1, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
   janitor::tabyl(cut_com_del2,cod_delito) %>% 
   reshape2::melt() %>%
   dplyr::filter(value==0)%>%
@@ -559,7 +561,7 @@ invisible("Its normal if there is a value that is not includeed in the categoriz
 
 (
 Base_fiscalia_v7 %>% 
-  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple-1, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
+  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple-1, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
   janitor::tabyl(cut_com_del2,cod_delito) %>% 
   reshape2::melt() %>%
     dplyr::filter(cut_com_del2!="1972-12-20") %>% 
@@ -585,7 +587,7 @@ Base_fiscalia_v7 %>%
 invisible("Its normal if there is a value that is not includeed in the categorization. It is because of the nature of the cut of equal parts in the dates")
 
 Base_fiscalia_v7 %>% 
-  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple-1, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
+  dplyr::mutate(cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple-1, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table() %>% 
   janitor::tabyl(cut_com_del2,cod_delito) %>% 
   reshape2::melt() %>%
     dplyr::filter(cut_com_del2!="1972-12-20") %>% 
@@ -625,7 +627,7 @@ Base_fiscalia_v7 %>%
 
 ::: controlly 
 ```{r 8-termino-grupa-terminos, echo=T, fig.align='center', message=T, error=T, eval=T}
-table(Base_fiscalia_v7$tipo_termino,Base_fiscalia_v7$agrupa_terminos, Base_fiscalia_v7$gls_mottermino) %>% melt() %>% dplyr::arrange(Var1, Var2,-value) %>%  dplyr::filter(value!=0) %>% 
+table(Base_fiscalia_v7$tipo_termino,Base_fiscalia_v7$agrupa_terminos, Base_fiscalia_v7$gls_mottermino, exclude=NULL) %>% melt() %>% dplyr::arrange(Var1, Var2,-value) %>%  dplyr::filter(value!=0) %>% 
     kable(size=10, format="markdown",caption= "Differences between 'tipo_termino', 'agrupa_terminos' and 'gls_mottermino'", col.names=c("tipo_termino", "agrupa_terminos", "gls_mottermino","count"))
 ```
 :::
@@ -639,7 +641,7 @@ We compared cases that ended with a condemnatory sentence vs. other types of end
 ::: controlly 
 ```{r 9-termino-agrupa-terminos-exp, echo=T, fig.align='center', message=T, error=T, eval=T}
 tbone_sent_def_cond<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "encontrado_como_victima", "gls_mottermino")), data=  dplyr::mutate(Base_fiscalia_v7, sent_def_cond=ifelse(agrupa_terminos=="SENTENCIA DEFINITIVA CONDENATORIA",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("sent_def_cond", "encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "encontrado_como_victima", "gls_mottermino")), data=  dplyr::mutate(Base_fiscalia_v7, sent_def_cond=ifelse(agrupa_terminos=="SENTENCIA DEFINITIVA CONDENATORIA",1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks"))),cut_com_del2=cut2(fec_comision_simple, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata=c("sent_def_cond", "encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_sent_def_cond, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -730,7 +732,7 @@ Base_fiscalia_v7 %>%
 #- Add ten years to the age of comission and see if gets better
 ```
 
-The lowest 5% of the dates of crimes committed were in `r as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05))` or older. We decided to explore these entries.
+The lowest 5% of the dates of crimes committed were in `r as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05), origin="1970-01-01")` or older. We decided to explore these entries.
 
 ```{r 2a-date-crimecomission, echo=T, fig.align='center', message=T, error=T, eval=T}
 #- Crimes committed before 2009-12-31 as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05))
@@ -764,7 +766,7 @@ paste0("Crimes committed before 2010:\n(p= ",format(nrow(unique(subset(Base_fisc
 ::: controlly
 ```{r 2-date-comission-perc-05, echo=T, fig.align='center', message=T, error=T, eval=T}
 tbone_date_comission_perc_05<-
-CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, date_comission_perc_05=ifelse(fec_comision_simple<as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05)),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(binning(as.numeric(imp_birth_date)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata= c("date_comission_perc_05","encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
+CreateTableOne(vars= setdiff(c(myVars,"cut_com_del2","cut_fec_nac2"), c("gls_comuna", "gls_sitiosuceso", "tipo_sujeto_vic", "reg", "gls_mottermino", "encontrado_como_victima", "gls_materia")), data=  dplyr::mutate(Base_fiscalia_v7, date_comission_perc_05=ifelse(fec_comision_simple<as.Date(quantile(unclass(Base_fiscalia_v7$fec_comision_simple), .05)),1,0),cut_fec_nac2=cut2(imp_birth_date, cuts=as.Date(attr(dlookr::binning(as.numeric(imp_birth_date)),"breaks")))) %>% data.table(), factorVars = setdiff(catVars, c("gls_comuna", "gls_sitiosuceso", "reg", "tipo_termino")), smd=T, strata= c("date_comission_perc_05","encontrado_como_imputado"), addOverall = T, includeNA=T,test=T)
 
 as.data.frame.TableOne(tbone_date_comission_perc_05, smd=T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -1058,9 +1060,9 @@ DPI = 1200
 WidthCM = 11
 HeightCM = 8
 
-font_add(family = "Rooney Sans", regular = paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_style/RooneySansRegular.otf"))
+sysfonts::font_add(family = "Rooney Sans", regular = paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_style/RooneySansRegular.otf"))
 
-showtext_begin()
+showtext::showtext_begin()
 plot_merge_flowchart_after_dates %>%
   export_svg %>% charToRaw %>% rsvg_pdf(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge2.pdf"))
 plot_merge_flowchart_after_dates %>% export_svg()%>%charToRaw %>% rsvg(width = WidthCM *(DPI/2.54), height = HeightCM *(DPI/2.54)) %>% png::writePNG(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_wo_fmt2.png"))
@@ -1297,6 +1299,7 @@ if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
   } else {
     save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"13.RData"))
   }
+rstudioapi::getSourceEditorContext()
 
 sesion_info <- devtools::session_info()
 dplyr::select(

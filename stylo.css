@@ -1,0 +1,34 @@
+.distill-site-nav {
+  color: rgba(255, 255, 255, 0.8);
+  background-color: #e1001c;
+    font-size: 15px;
+  font-weight: 300;
+}
+
+.distill-site-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.distill-site-nav a:hover {
+  color: white;
+}
+
+.distill-site-header {
+}
+
+.distill-site-footer {
+}
+
+@media print {
+  .distill-site-nav {
+    display: none;
+  }
+}
+.distill-site-header {
+  --title-size:       18px;    
+  --text-color:       #FFFFFF; /* edited */
+  --text-size:        13px;
+  --hover-color:      #e1001c; /* edited */
+  --bkgd-color:       #b8121e; /* edited */
+}
