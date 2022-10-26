@@ -634,9 +634,6 @@ paste0("Observations of SENDA database: ",nrow(CONS_C1_df_dup_SEP_2020_22_b))#10
 paste0("Observations of PO database: ", nrow(Base_fiscalia_v10))#204,115 nrow
 
 
-#set iter
-#digits <- paste0("fech_ing_num_",1:10)
-#j <- 0
 Base_fiscalia_v11<-
 Base_fiscalia_v10 %>% 
   #discrepancies in names of variables
@@ -651,6 +648,7 @@ Base_fiscalia_v10 %>%
   #dplyr::mutate_at(vars(paste0("edad_al_ing_",1:10)), ~dplyr::case_when(is.na(.)~ (as.numeric(as.Date("2019-11-13"))-dob_imp_num)/365.25, T~ as.numeric(.)))%>%
   #make censorship date of age of comission
   dplyr::mutate(age_offending_imp= dplyr::case_when(is.na(age_offending_imp)~ (as.numeric(as.Date("2019-11-13"))-dob_imp_num)/365.25, T~ age_offending_imp)) %>% 
+  dplyr::mutate(edad_al_egres_imp= (fech_egres_num_1-dob_imp_num)/365.25)%>% 
   dplyr::group_by(hash_key) %>% 
   dplyr::slice_min(age_offending_imp, with_ties = T) %>% 
   dplyr::ungroup() %>% 
@@ -659,7 +657,6 @@ Base_fiscalia_v10 %>%
   
 invisible("Ver por qué los valores negativos")
 invisible("QUEDA POR LIMPIAR LA BASE DE FISCALIA")
-
 ```
 
 <br>
@@ -668,11 +665,16 @@ invisible("QUEDA POR LIMPIAR LA BASE DE FISCALIA")
 
 ```{r exp_surv1, echo=T, fig.align='center', message=T, error=T, eval=T}
 
-Base_fiscalia_v11
-biostat3::survRate(Surv((age_offending_imp-edad_al_ing_1), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_1, data=Base_fiscalia_v11)
+biostat3::survRate(Surv((age_offending_imp-edad_al_ing_1), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_1, data=Base_fiscalia_v11) %>% knitr::kable("markdown", caption= "Glimpse of the survival analysis, Offending from admission by Cause of Discharge of the First Treatment")
 
+biostat3::survRate(Surv((age_offending_imp-edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_1, data= dplyr::filter(Base_fiscalia_v11,age_offending_imp-edad_al_egres_imp>=0)) %>% knitr::kable("markdown", caption= "Glimpse of the survival analysis, Offending from admission by Cause of Discharge of the First Treatment")
+```
 
-mot_egreso_fit<- survfit(Surv(age_offending_imp-edad_al_ing_1,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_1, data=Base_fiscalia_v11,
+`r paste0("We discarded cases with ", nrow(dplyr::filter(Base_fiscalia_v11, age_offending_imp-edad_al_egres_imp<0)) %>% format(big.mark=","), " relationships with a contact with the system before finishing treatment")`
+
+```{r exp_surv2, echo=T, fig.align='center', message=T, error=T, eval=T}
+
+mot_egreso_fit<- survfit(Surv(age_offending_imp-edad_al_ing_1,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_1, data=dplyr::filter(Base_fiscalia_v11,age_offending_imp-edad_al_egres_imp>=0),
                                type      = "kaplan-meier",
                                 error     = "greenwood",
                                 conf.type = "log-log") 
@@ -694,14 +696,48 @@ ggsurvplot(mot_egreso_fit,
            #break.time.by = 365.25,
            pval = F,
            #ylim=c(0,10),
-           legend = c(0.88, 0.15), 
-           legend.title="Early Drop.",
+           legend = c(0.88, 0.25), 
+           legend.title="Cause of discharge",
            xlab= "Time (in years)", 
            #cumevents=T,
            surv.connect = T,
            censor= F
            )
+#
+```
 
+
+```{r exp_surv3, echo=T, fig.align='center', message=T, error=T, eval=T}
+
+mot_egreso_fit2<- survfit(Surv(age_offending_imp-edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_1, data=dplyr::filter(Base_fiscalia_v11,age_offending_imp-edad_al_egres_imp>=0),
+                               type      = "kaplan-meier",
+                                error     = "greenwood",
+                                conf.type = "log-log") 
+
+mot_egreso_fit_na2 <- mot_egreso_fit2 %>% fortify %>% group_by(strata) %>% mutate(CumHaz = cumsum(n.event/n.risk))
+
+ggsurvplot(mot_egreso_fit2,
+           fun = "cumhaz",
+           conf.int = TRUE,
+           #legend.labs = c("Late Dropout", "Early Dropout"), 
+           risk.table = "abs_pct",
+           #ncensor.plot = TRUE,
+           ggtheme = theme_classic2(base_size=10),
+           risk.table.y.text.col = F,
+           risk.table.col="black",
+           font.tickslab = c(10),
+           risk.table.height = .2,
+           risk.table.fontsize = 2.5,
+           #break.time.by = 365.25,
+           pval = F,
+           #ylim=c(0,10),
+           legend = c(0.88, 0.25), 
+           legend.title="Cause of discharge",
+           xlab= "Time (in years)", 
+           #cumevents=T,
+           surv.connect = T,
+           censor= F
+           )
 ```
 
 
