@@ -36,3 +36,5 @@ output:
 - [Chilean prosecutor’s office Data merge (Step 3.1)](Fiscalia_merge31.html)
 
 - [Chilean prosecutor’s office Data merge (Step 3.2)](Fiscalia_merge32.html)
+
+- [Chilean prosecutor’s office Data merge (Step 4)](Fiscalia_merge4.html)
