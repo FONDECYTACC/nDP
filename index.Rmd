@@ -19,7 +19,7 @@ author:
     email: mdmateo@uc.cl
     orcid_id: 0000-0002-9607-7541
 description: |
- Part of the research done and available in https://www.nucleondp.cl/ 
+ A small part of the research done and available in https://www.nucleondp.cl/ 
 base_url: https://beta.rstudioconnect.com/content/3776/
 creative_commons: CC BY
 output: 

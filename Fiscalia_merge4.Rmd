@@ -284,6 +284,8 @@ fitstats.flexsurvreg = function(x){
     BIC = bic
   )
 }
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 
 
 if(.Platform$OS.type == "windows") withAutoprint({
@@ -296,6 +298,28 @@ memory.limit(size=56000)
 path<-dirname(rstudioapi::getSourceEditorContext()$path)
 
 options(knitr.kable.NA = '')
+
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      # record the current time before each chunk
+      now <<- Sys.time()
+    } else {
+      # calculate the time difference after a chunk
+      res <- difftime(Sys.time(), now)
+      # return a character string to show the time
+      print(paste("Time for this code chunk to run:", res))
+    }
+  }
+}))
+knitr::opts_chunk$set(time_it = TRUE)
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 
 #to format rows in bold
 format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethrough")){
@@ -488,21 +512,21 @@ Base_fiscalia_v9 %>%
   dplyr::summarise(n=n(), n_distinct_offenses=n_distinct(crime_code_c)) %>% 
   dplyr::filter(n_distinct_offenses>1)
 
-warning(paste0("There are ",length(unique(concatenated_run_ruc_n_rel_n_offenses_f1$ruc)), " rucs with more than one crime within a case"))
+warning(paste0("There are ",length(unique(concatenated_run_ruc_n_rel_n_offenses_f1$caseid)), " rucs with more than one crime within a case"))
 
-#plot(cut2(concatenated_run_ruc_n_rel_n_offenses$n), main= "Number of relationships within a case, by patients")
+plot(cut2(concatenated_run_ruc_n_rel_n_offenses$n), main= "Number of relationships within a case, by patients")
 ```
 
 ::: controlly
 ```{r 1b-exp-val, echo=T, fig.align='center',layout="l-body-outset", message=T, error=T, eval=T}
 concatenated_run_ruc_n_rel_n_offenses %>% dplyr::ungroup() %>%  dplyr::mutate(n=cut2(n),n_distinct_offenses=cut2(n_distinct_offenses)) %>% dplyr::group_by(n, n_distinct_offenses) %>% count() %>% dplyr::ungroup() %>% dplyr::mutate(perc=round(nn/sum(nn)*100,2)) %>% 
-  knitr::kable("markdown", col.names = c("Number of relationships by RUC", "Number of distinct offenses by RUC", "n", "%"))
+  knitr::kable("markdown", col.names = c("Number of relationships by RUC(caseid)", "Number of distinct offenses by RUC (caseid)", "n of relationships", "%"))
 ```
 :::
 
 <br>
 
-We showed details.
+The majority of cases had only  one relationship, and nearly 95% had only one offense (even if the number of relationships is greater) had only We showed details.
 
 <br>
 
