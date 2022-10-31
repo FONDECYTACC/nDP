@@ -87,6 +87,6 @@ renv.lock
 *ssh*
 *id_rsa_*
 *.rar
-*.xlsx
 *.rda
 *.RDataTmp
+*prueba_g_methods.xlsx
