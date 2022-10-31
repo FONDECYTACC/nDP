@@ -695,14 +695,14 @@ Base_fiscalia_v10 %>%
   dplyr::group_by(hash_key) %>% 
   dplyr::slice_min(age_offending_imp, with_ties = T) %>% 
   dplyr::ungroup() %>% 
-  purrr::when(nrow(dplyr::filter(.,age_offending_imp-edad_al_ing_1<0))>0 ~ stop("Cases with negaative time after admission to commission of crime"), ~.) #%>% 
+  purrr::when(nrow(dplyr::filter(.,age_offending_imp-edad_al_ing_1<0))>0 ~ stop("Cases with negaative time after admission to commission of crime"), ~.) %>% 
+   dplyr::mutate(motivodeegreso_mod_imp_rec= dplyr::case_when(grepl("Therapeutic",motivodeegreso_mod_imp)~ "Treatment completion", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 <90) ~  "Treatment non-completion (Early)", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 >=90) ~ "Treatment non-completion (Late)", grepl("Referral|Death|Ongoing", motivodeegreso_mod_imp)~ "Censored", T~NA_character_))
   #dplyr::rowwise() %>% 
 # dplyr::mutate(across(paste0("fech_ing_num_",1:10), ~
 #    sum(get(gsub("fech_ing_num_","fech_egres_num_",cur_column()))- .,na.rm=T), .names = "dias_trat"))   
  # dplyr::mutate(across(paste0("fech_ing_num_",1:10), ~ !!rlang::sym(digits2[j<<- j+1])- ., .names = "dias_trat"))
 #   
 #   dplyr::mutate(across(paste0("motivodeegreso_mod_imp_",1:10), ~ dplyr::case_when(.=="Therapeutic discharge"~ "Treatment completion", grepl("Early|Late|Administrative", .) &  sum(!!rlang::sym(digits2[j<<- j+1])- !!rlang::sym(digits[j<<- j]), na.rm=T)<90 ~ "Treatment non-completion (Early)",  grepl("Early|Late|Administrative", .) & sum(!!rlang::sym(digits2[j<<- j+1])- !!rlang::sym(digits[j<<- j]), na.rm=T) >=90 ~ "Treatment non-completion (Late)", grepl("Referral|Death|Ongoing", .)~ "Censored", T~NA_character_), .names = "{col}_rec")) %>% 
-# dplyr::mutate(motivodeegreso_mod_imp_rec= dplyr::case_when(grepl("Therapeutic",motivodeegreso_mod_imp)~ "Treatment completion", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 <90) ~  "Treatment non-completion (Early)", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 >=90) ~ "Treatment non-completion (Late)", grepl("Referral|Death|Ongoing", motivodeegreso_mod_imp)~ "Censored", T~NA_character_))
 
 #table(Base_fiscalia_v11$motivodeegreso_mod_imp_rec,Base_fiscalia_v11$motivodeegreso_mod_imp, exclude=NULL)
   
