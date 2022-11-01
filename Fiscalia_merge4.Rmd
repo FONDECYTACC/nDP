@@ -567,91 +567,154 @@ We checked and resolved the inconsistencies in male users receiving women-only t
 <br>
 
 ::: controlly
-```{r pre-join, echo=T, fig.align='center', message=T, error=T, eval=T}
+```{r pre-join, echo=T, fig.align='center', message=T, error=F, eval=T}
 invisible("Exported database in 22-09-2022")
+
+#2022-11-01, added the age at discharge.
+CONS_C1_df_dup_SEP_2020$edad_al_egres <-
+#difftime(lubridate::ymd(CONS_C1_df_dup_SEP_2020$fech_egres_imp), lubridate::ymd(CONS_C1_df_dup_SEP_2020 $fech_nac))/365.25
+lubridate::time_length(lubridate::interval(lubridate::ymd(CONS_C1_df_dup_SEP_2020 $fech_nac),lubridate::ymd(CONS_C1_df_dup_SEP_2020$fech_egres_imp)),unit="years")
+
+CONS_C1_df_dup_SEP_2020$edad_al_ing_fmt <-
+#lubridate::time_length(lubridate::ymd(CONS_C1_df_dup_SEP_2020$fech_ing), lubridate::ymd(CONS_C1_df_dup_SEP_2020 $fech_nac),"years")
+lubridate::time_length(lubridate::interval(lubridate::ymd(CONS_C1_df_dup_SEP_2020 $fech_nac),lubridate::ymd(CONS_C1_df_dup_SEP_2020$fech_ing)),unit="years")
+
 CONS_C1_df_dup_SEP_2020_22<-
 CONS_C1_df_dup_SEP_2020 %>% 
-  subset(select= c("hash_key", "fech_nac", "dup", "ano_bd_first", "duplicates_filtered", "id_centro", "tipo_centro", "tipo_de_programa_2", "tipo_de_plan_2", "senda", "macrozona", "nombre_region", "escolaridad_rec", "estado_conyugal_2", "compromiso_biopsicosocial", "sexo_2", "edad_al_ing", "edad_ini_cons", "edad_ini_sus_prin" ,"edad_ini_sus_prin_grupos", "freq_cons_sus_prin", "via_adm_sus_prin_act", 
+  subset(select= c("hash_key", "fech_nac", "fech_ing", "fech_egres_imp", "dup", "ano_bd_first", "duplicates_filtered", "id_centro", "tipo_centro", "tipo_de_programa_2", "tipo_de_plan_2", "senda", "macrozona", "nombre_region", "escolaridad_rec", "estado_conyugal_2", "compromiso_biopsicosocial", "sexo_2", "edad_al_ing", "edad_al_ing_fmt", "edad_al_egres", "edad_ini_cons", "edad_ini_sus_prin" ,"edad_ini_sus_prin_grupos", "freq_cons_sus_prin", "via_adm_sus_prin_act", 
 "sus_ini_2_mod", "sus_ini_3_mod", "sus_ini_mod", "con_quien_vive", "sus_principal_mod", "tipo_de_vivienda_mod", "tenencia_de_la_vivienda_mod", "rubro_trabaja_mod", "cat_ocupacional", "estatus_ocupacional", "sus_ini_mod_mvv","cat_ocupacional_corr", "condicion_ocupacional_corr", "otras_sus1_mod", "otras_sus2_mod",  "otras_sus3_mod", "fech_ing_num", "fech_egres_num", "motivodeegreso_mod_imp","motivoegreso_derivacion", "evaluacindelprocesoteraputico",
 paste0("tipo_de_plan_2_",1:10),paste0("motivodeegreso_mod_imp_",1:10),
 paste0("dias_treat_imp_sin_na_",1:10), "dg_trs_cons_sus_or", "dg_total_cie_10", "dg_cie_10_rec", "dg_total_dsm_iv", "dg_dsm_iv_rec", "cnt_diagnostico_trs_fisico", "diagnostico_trs_fisico", "dg_fis_anemia", "dg_fis_card", "dg_fis_in_study", "dg_fis_enf_som", "dg_fis_ets", "dg_fis_hep_alc", "dg_fis_hep_b", "dg_fis_hep_cro", "dg_fis_inf", "dg_fis_otr_cond_fis_ries_vit", "dg_fis_otr_cond_fis", "dg_fis_pat_buc", "dg_fis_pat_ges_intrau", "dg_fis_trau_sec", "otros_pr_sm_abu_sex", "otros_pr_sm_exp_com_sex", "otros_pr_sm_otros", "otros_pr_sm_vif")) %>% 
+  purrr::when(dplyr::filter(.,abs(edad_al_ing_fmt-edad_al_ing)>0.02) %>% nrow()>0 ~ stop("Age at admission was calculated differently"), ~.) %>%
+    dplyr::mutate(edad_al_ing=edad_al_ing_fmt) %>% 
     dplyr::mutate(comorbidity_icd_10=dplyr::case_when(dg_total_cie_10>=2~ "Two or more", dg_total_cie_10==1~ "One", as.character(dg_cie_10_rec)=="Diagnosis unknown (under study)"~"Diagnosis unknown (under study)", as.character(dg_cie_10_rec)=="Without psychiatric comorbidity"~"Without psychiatric comorbidity")) %>%
   dplyr::mutate(comorbidity_icd_10=as.factor(comorbidity_icd_10)) %>% 
-    dplyr::mutate(estatus_ocupacional= dplyr::case_when(!is.na(cat_ocupacional)&!is.na(estatus_ocupacional)~"Empleado", TRUE~as.character(estatus_ocupacional)))%>% 
+    dplyr::mutate(estatus_ocupacional=  dplyr::case_when(!is.na(cat_ocupacional)&!is.na(estatus_ocupacional)~"Empleado", TRUE~as.character(estatus_ocupacional)))%>% 
   dplyr::mutate(estatus_ocupacional= as.factor(estatus_ocupacional))%>% 
-  dplyr::mutate(cnt_mod_cie_10_dg_cons_sus_or= dplyr::case_when(as.character(dg_trs_cons_sus_or)=="Drug dependence"~dg_total_cie_10+1, TRUE~dg_total_cie_10))%>% 
-  dplyr::mutate(freq_cons_sus_prin= dplyr::case_when(as.character(freq_cons_sus_prin)=="Did not use"~ "Less than 1 day a week", TRUE~as.character(freq_cons_sus_prin)))%>% 
+  dplyr::mutate(cnt_mod_cie_10_dg_cons_sus_or= dplyr::case_when(as.character(dg_trs_cons_sus_or)== "Drug dependence"~ dg_total_cie_10+1, TRUE~dg_total_cie_10))%>% 
+  dplyr::mutate(freq_cons_sus_prin=  dplyr::case_when(as.character(freq_cons_sus_prin)=="Did not use"~ "Less than 1 day a week", TRUE~as.character(freq_cons_sus_prin)))%>% 
   dplyr::mutate(freq_cons_sus_prin= as.factor(freq_cons_sus_prin)) %>% 
-    dplyr::mutate(tipo_centro_pub= factor(dplyr::if_else(as.character(tipo_centro)=="Public",TRUE,FALSE,NA))) %>%  dplyr::mutate(dg_trs_fis_rec= factor(dplyr::case_when(as.character(diagnostico_trs_fisico)=="En estudio"~"Diagnosis unknown (under study)",as.character(diagnostico_trs_fisico)=="Sin trastorno"~'Without physical comorbidity',cnt_diagnostico_trs_fisico>0 ~'With physical comorbidity',
+    dplyr::mutate(tipo_centro_pub=  factor(dplyr::if_else(as.character(tipo_centro)=="Public",TRUE,FALSE,NA))) %>%  dplyr::mutate(dg_trs_fis_rec=  factor(dplyr::case_when(as.character(diagnostico_trs_fisico)=="En estudio"~"Diagnosis unknown (under study)",as.character(diagnostico_trs_fisico)=="Sin trastorno"~'Without physical comorbidity',cnt_diagnostico_trs_fisico>0 ~'With physical comorbidity',
                                              TRUE~NA_character_)))%>%
-    dplyr::mutate(escolaridad_rec= readr::parse_factor(as.character(escolaridad_rec),levels=c('3-Completed primary school or less', '2-Completed high school or less', '1-More than high school'), ordered=T,trim_ws=T,include_na =F, locale=readr::locale(encoding = "Latin1"))) %>%   
-dplyr::mutate(freq_cons_sus_prin= readr::parse_factor(as.character(freq_cons_sus_prin),levels=c('Did not use', 'Less than 1 day a week','2 to 3 days a week','4 to 6 days a week','1 day a week or more','Daily'), ordered =T,trim_ws=T,include_na =F, locale=readr::locale(encoding = "UTF-8"))) %>% 
-  dplyr::mutate(evaluacindelprocesoteraputico= dplyr::case_when(grepl("1",as.character(evaluacindelprocesoteraputico))~'1-High Achievement',grepl("2",as.character(evaluacindelprocesoteraputico))~'2-Medium Achievement',grepl("3",as.character(evaluacindelprocesoteraputico))~'3-Minimum Achievement', TRUE~as.character(evaluacindelprocesoteraputico))) %>% 
+    dplyr::mutate(escolaridad_rec= readr::parse_factor(as.character(escolaridad_rec), levels=c('3-Completed primary school or less', '2-Completed high school or less', '1-More than high school'), ordered=T,trim_ws=T,include_na =F, locale=readr::locale(encoding = "Latin1"))) %>%   
+dplyr::mutate(freq_cons_sus_prin= readr::parse_factor(as.character(freq_cons_sus_prin), levels=c('Did not use', 'Less than 1 day a week','2 to 3 days a week','4 to 6 days a week','1 day a week or more','Daily'), ordered =T,trim_ws=T,include_na =F, locale=readr::locale(encoding = "UTF-8"))) %>% 
+  dplyr::mutate(evaluacindelprocesoteraputico= dplyr::case_when(grepl("1",as.character(evaluacindelprocesoteraputico))~ '1-High Achievement',grepl("2",as.character(evaluacindelprocesoteraputico))~ '2-Medium Achievement',grepl("3",as.character(evaluacindelprocesoteraputico))~ '3-Minimum Achievement', TRUE~as.character(evaluacindelprocesoteraputico))) %>% 
   dplyr::mutate(evaluacindelprocesoteraputico= readr::parse_factor(as.character(evaluacindelprocesoteraputico),levels=c('1-High Achievement', '2-Medium Achievement','3-Minimum Achievement'), ordered =T,trim_ws=T,include_na =F, locale=readr::locale(encoding = "UTF-8"))) %>% 
     dplyr::mutate(tenencia_de_la_vivienda_mod= factor(dplyr::case_when(tenencia_de_la_vivienda_mod=="Allegado"~"Stays temporarily with a relative", tenencia_de_la_vivienda_mod=="Arrienda"~"Renting", tenencia_de_la_vivienda_mod=="Cedida"~"Owner/Transferred dwellings/Pays Dividends", tenencia_de_la_vivienda_mod=="Ocupación Irregular"~"Illegal Settlement", tenencia_de_la_vivienda_mod=="Otros"~"Others", tenencia_de_la_vivienda_mod=="Paga dividendo"~"Owner/Transferred dwellings/Pays Dividends", tenencia_de_la_vivienda_mod=="Propia"~"Owner/Transferred dwellings/Pays Dividends", T~NA_character_))) %>% 
   dplyr::mutate(freq_cons_sus_prin=dplyr::case_when(freq_cons_sus_prin=="1 day a week or less"~"1 day a week or more",T~as.character(freq_cons_sus_prin))) %>% 
   dplyr::mutate(freq_cons_sus_prin=ordered(freq_cons_sus_prin,levels=c("Did not use", "Less than 1 day a week", "1 day a week or more", "2 to 3 days a week","4 to 6 days a week", "Daily"))) %>%   
   data.table::data.table() %>% 
-    dplyr::group_by(hash_key) %>% 
+  dplyr::group_by(hash_key) %>% 
   dplyr::mutate(rn_hash_discard=row_number())%>% 
   dplyr::ungroup() %>% 
-  dplyr::mutate(fech_ing_num_discard=fech_ing_num, fech_egres_num_discard= fech_egres_num) %>% 
+  dplyr::mutate(fech_ing_num_discard=fech_ing_num, fech_egres_num_discard= fech_egres_num, fech_ing_discard= fech_ing, fech_egres_imp_discard=fech_egres_imp)%>% 
+  #WIDE
    tidyr::pivot_wider(
     names_from =  rn_hash_discard, 
     names_sep="_",
-    values_from = c(fech_ing_num_discard, fech_egres_num_discard, edad_al_ing))%>%
+    values_from = c(fech_ing_num_discard, fech_egres_num_discard, edad_al_ing, edad_al_egres, fech_ing_discard, fech_egres_imp_discard))%>%
+  #FILL COLUMNS BY PATIENT
      dplyr::group_by(hash_key)%>%
   dplyr::mutate_at(vars(fech_ing_num_discard_1:fech_egres_num_discard_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
     dplyr::mutate_at(vars(edad_al_ing_1:edad_al_ing_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
+  #2022-11-01, added the age at discharge and the dates
+   dplyr::mutate_at(vars(edad_al_egres_1:edad_al_egres_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
+  dplyr::mutate_at(vars(fech_ing_discard_1:fech_ing_discard_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
+  dplyr::mutate_at(vars(fech_egres_imp_discard_1:fech_egres_imp_discard_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
   dplyr::ungroup() %>% 
   purrr::when(nrow(.)>nrow(CONS_C1_df_dup_SEP_2020) ~ stop("More cases in the new database"), ~.)
 
-name_vec <- setNames(c(paste0("fech_ing_num_discard_",1:10),paste0("fech_egres_num_discard_",1:10)),c(paste0("fech_ing_num_",1:10),paste0("fech_egres_num_",1:10)))
+
+name_vec <- setNames(c(paste0("fech_ing_num_discard_",1:10), paste0("fech_egres_num_discard_",1:10), paste0("fech_ing_discard_",1:10), paste0("fech_egres_imp_discard_",1:10)),                      
+#names:                     
+                     c(paste0("fech_ing_num_",1:10), paste0("fech_egres_num_",1:10), paste0("fech_ing_",1:10), paste0("fech_egres_imp_",1:10)))
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_# #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_# #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 # Transform into numeric wide variables
 CONS_C1_df_dup_SEP_2020_22_b<-
-CONS_C1_df_dup_SEP_2020_22 %>% rename(!!!name_vec) %>% 
+CONS_C1_df_dup_SEP_2020_22 %>% 
+  rename(!!!name_vec) %>% 
   dplyr::mutate_at(vars(fech_ing_num_1:fech_ing_num_10),~suppressWarnings(as.numeric(.)))%>%
   dplyr::mutate_at(vars(fech_egres_num_1:fech_egres_num_10),~suppressWarnings(as.numeric(.)))%>% 
   dplyr::mutate_at(vars(edad_al_ing_1:edad_al_ing_10),~suppressWarnings(as.numeric(.)))%>%
+  dplyr::mutate_at(vars(edad_al_egres_1:edad_al_egres_10),~suppressWarnings(as.numeric(.)))%>%
   as.data.table()%>% 
   purrr::when(nrow(.)>nrow(CONS_C1_df_dup_SEP_2020_22) ~ stop("More cases in the new database"), ~.)
 
-#set iter
-digits <- paste0("fech_ing_num_",1:10)
-j <- 0
 
-CONS_C1_df_dup_SEP_2020_22_b<-
+# #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+# Previous join and resolution of inconsistencies
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+# #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+CONS_C1_df_dup_SEP_2020_22_c<-
 CONS_C1_df_dup_SEP_2020_22_b %>% 
   dplyr::left_join(subset(Base_fiscalia_v9, rn_id==1,c("id","sex_imp","dateofbirth_imp")), by=c("hash_key"="id")) %>% 
+#
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 # If there are inconsistencies in sex
-  dplyr::mutate(sex= dplyr::case_when(!is.na(sex_imp) & sex_imp!=as.character(sexo_2)~ sex_imp,
-                                      !is.na(sex_imp) & is.na(sexo_2)~ sex_imp,
-                                      T~as.character(sexo_2))) %>% 
+  dplyr::mutate(sex= dplyr::case_when(!is.na(sex_imp) & sex_imp!=as.character(sexo_2)~ sex_imp, !is.na(sex_imp) & is.na(sexo_2)~ sex_imp, T~as.character(sexo_2))) %>% 
   dplyr::mutate(tipo_de_plan_2= dplyr::case_when(sex=="Men" & tipo_de_plan_2=="M-PAB"~ "PG-PAB", sex=="Men" & tipo_de_plan_2=="M-PAI"~ "PG-PAI", sex=="Men" & tipo_de_plan_2=="M-PR"~ "PG-PR", T~ as.character(tipo_de_plan_2))) %>%
   dplyr::mutate(tipo_de_programa_2= dplyr::case_when(sex=="Men" & tipo_de_programa_2=="Women specific"~ "General population", T~ as.character(tipo_de_programa_2))) %>% 
   dplyr::mutate_at(vars(tipo_de_plan_2_1:tipo_de_plan_2_10),
                    ~suppressWarnings(dplyr::case_when(sex=="Men"& as.character(.)=="M-PAB"~ "PG-PAB", sex=="Men"& as.character(.)=="M-PAI"~ "PG-PAI", sex=="Men"& as.character(.)=="M-PR"~ "PG-PR", T~as.character(.))))%>%
   dplyr::select(hash_key, sex, everything()) %>% 
+#  
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 # If there are inconsistencies in the date of birth
-  dplyr::mutate(fech_nac_num= as.numeric(as.Date(fech_nac))) %>% 
-  dplyr::mutate(dob_imp_num= as.numeric(as.Date(dateofbirth_imp))) %>%
+  dplyr::mutate(fech_nac= lubridate::ymd(fech_nac)) %>% 
+  dplyr::mutate(dob_imp= lubridate::ymd(dateofbirth_imp)) %>%
   #to test if there are differences in the actual and past calculation of age at admission of SENDAs treatments only, greater than 0.002
-  dplyr::mutate(edad_al_ing_1_b= (fech_ing_num_1- as.numeric(as.Date(fech_nac)))/365.25) %>% 
-  purrr::when(dplyr::filter(.,abs(edad_al_ing_1-edad_al_ing_1_b)>0.002) %>% nrow()>0 ~ stop("Age at admission was calculated differently"), ~.) %>% 
+  dplyr::mutate(edad_al_ing_1_b= (fech_ing_num_1-  as.numeric(lubridate::ymd(fech_nac)))/365.25) %>% 
+  purrr::when(dplyr::filter(.,abs(edad_al_ing_1-edad_al_ing_1_b)>0.02) %>% nrow()>0 ~ stop("Age at admission was calculated differently"), ~.) %>%
+# #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 # replace year at admission
-  dplyr::mutate(edad_al_ing_imp= dplyr::case_when(!is.na(dob_imp_num) & fech_nac_num!= dob_imp_num~ (fech_ing_num_1- dob_imp_num)/365.25, !is.na(dob_imp_num) & is.na(fech_nac_num)~ (fech_ing_num_1- dob_imp_num)/365.25, T~ as.numeric(edad_al_ing_1)))%>% 
+  dplyr::mutate(edad_al_ing_imp= dplyr::case_when(!is.na(dob_imp) & fech_nac!= dob_imp~ difftime(fech_ing, dob_imp)/365.25, !is.na(dob_imp) & is.na(fech_nac)~ (fech_ing- dob_imp)/365.25, T~ as.numeric(edad_al_ing_1)))%>% 
+# replace year at discharge (2022-11-01)
+  dplyr::mutate(edad_al_egres_imp= dplyr::case_when(!is.na(dob_imp) & fech_nac!= dob_imp~ lubridate::time_length(lubridate::interval(dob_imp, fech_egres_imp),unit="years"), !is.na(dob_imp) & is.na(fech_nac)~ lubridate::time_length(lubridate::interval(dob_imp, fech_egres_imp),unit="years"), T~ as.numeric(edad_al_egres_1)))%>%   
+  dplyr::select(-sex_imp, -sexo_2, -edad_al_ing_1_b, -edad_al_ing_imp)
+
 # Age at admission for each treatment: if the date of birth (PO) is not empty and the date of birth of senda is different of date of birth, for each age at admission (for different admissions), we compute the difference of the date of admission (at each admission) with the date of birth (PO) and divided by years; if the date of birth (PO) is not empty but SENDA is empty, we compute the difference of the date of admission (at each admission) with the date of birth (PO) and divided by years; else will be taken from the date at admission from the date of birth of SENDA.
-  dplyr::mutate_at(vars(paste0("edad_al_ing_",1:10)), ~dplyr::case_when(!is.na(dob_imp_num) & fech_nac_num!= dob_imp_num~ ( !! rlang::sym(digits[j<<- j+1])- dob_imp_num)/365.25, !is.na(dob_imp_num) & is.na(fech_nac_num)~ ( !! rlang::sym(digits[j<<- j+1])- dob_imp_num)/365.25, T~ as.numeric(.)))%>%
-# Erase columns
-  dplyr::select(-sex_imp, -sexo_2, -edad_al_ing_1_b, -fech_nac, -edad_al_ing_imp) %>% 
-  as.data.table()%>% 
-  purrr::when(nrow(.)>nrow(CONS_C1_df_dup_SEP_2020_22) ~ stop("More cases in the new database"), ~.)
+#The same for age at discharge
+
+
+CONS_C1_df_dup_SEP_2020_22_d <- CONS_C1_df_dup_SEP_2020_22_c
+for (i in 1:10) {
+  yr<- 365.25
+  column_name <- paste0("fech_ing_",1:10)[i]
+  column_name2 <- paste0("fech_egres_imp_",1:10)[i]
+  log_column_name <- paste0("edad_al_ing_",1:10)[i]
+  log_column_name2 <- paste0("edad_al_egres_",1:10)[i]
+  
+  CONS_C1_df_dup_SEP_2020_22_d <- 
+    CONS_C1_df_dup_SEP_2020_22_d %>% 
+  #age at admission
+    dplyr::mutate(!!log_column_name := dplyr::case_when(!is.na(dob_imp) & fech_nac!= dob_imp~ lubridate::time_length(lubridate::interval(dob_imp, !!rlang::sym(column_name)), unit="years"), 
+        !is.na(dob_imp) & is.na(fech_nac)~ lubridate::time_length(lubridate::interval(dob_imp, !!rlang::sym(column_name)), unit="years"), T~ lubridate::time_length(lubridate::interval(fech_nac, !!rlang::sym(column_name)), unit="years"))) %>% 
+  #age at discharge  
+    dplyr::mutate(!!log_column_name2 := dplyr::case_when(!is.na(dob_imp) & fech_nac!= dob_imp~ lubridate::time_length(lubridate::interval(dob_imp, !!rlang::sym(column_name2)), unit="years"), 
+        !is.na(dob_imp) & is.na(fech_nac)~ lubridate::time_length(lubridate::interval(dob_imp, !!rlang::sym(column_name2)), unit="years"), T~ lubridate::time_length(lubridate::interval(fech_nac, !!rlang::sym(column_name2)), unit="years"))) %>% 
+    as.data.table()%>% 
+  purrr::when(nrow(.)>nrow(CONS_C1_df_dup_SEP_2020_22) ~ stop("More cases in the new database"), ~.) 
+    
+}
+#
+#_#_#_#_#_#_#_#_#_#_#_ alternativas
+#
+#set iter
+# digits <- paste0("fech_ing_",1:10)
+# j <- 0
+# digits2 <- paste0("fech_egres_imp_",1:10)
+# f <- 0
+# CONS_C1_df_dup_SEP_2020_22_d<-
+# CONS_C1_df_dup_SEP_2020_22_c %>% 
+#   dplyr::mutate_at(vars(paste0("edad_al_ing_",1:10)), ~dplyr::case_when(!is.na(dob_imp) & fech_nac!= dob_imp~ difftime( !! rlang::sym(digits[j<<- j+1]), dob_imp)/yr, !is.na(dob_imp) & is.na(fech_nac_num)~ difftime( !! rlang::sym(digits[j<<- j+1]), dob_imp)/yr, T~ difftime(as.numeric(.),fech_nac)/yr))%>%
+# # replace year at discharge (2022-11-01)
+#   dplyr::mutate_at(vars(paste0("edad_al_egres_",1:10)), ~dplyr::case_when(!is.na(dob_imp) & fech_nac!= dob_imp~ 
+#         difftime( !! rlang::sym(digits2[f<<- f+1]), dob_imp)/yr, 
+#         !is.na(dob_imp) & is.na(fech_nac_num)~ difftime( !! rlang::sym(digits2[f<<- f+1]), dob_imp)/yr, T~ difftime(as.numeric(.),fech_nac)/yr))
+#   
 
 invisible("La edad está bien definida en términos relativos (entre ingresos), pero no absolutos (manualmente no llego a la misma edad calculando manualmente ), tiene una diferencia de 0,5 años")
 ```
@@ -664,64 +727,66 @@ Once standardization is complete, we joined the databases `CONS_C1_df_dup_SEP_20
 #WHERE rn_id = 1
 Base_fiscalia_v10<-
 sqldf("SELECT *
-  FROM CONS_C1_df_dup_SEP_2020_22_b AS x  
+  FROM CONS_C1_df_dup_SEP_2020_22_d AS x  
   LEFT JOIN (SELECT *
              FROM Base_fiscalia_v9
              ) AS y
   ON x.hash_key == y.id AND 
-  x.edad_al_ing_1 <= y.age_offending_imp")
+  x.edad_al_egres_1 <= y.age_offending_imp")
 
 paste0("Observations of SENDA database: ",nrow(CONS_C1_df_dup_SEP_2020_22_b))#109756)
 paste0("Observations of PO database: ", nrow(Base_fiscalia_v10))#204,115 nrow
 
 #must use these vectors to run iterations correctly
-digits <- paste0("fech_ing_num_",1:10)
-digits2 <- paste0("fech_egres_num_",1:10)
-j <- 0
+
 Base_fiscalia_v11<-
 Base_fiscalia_v10 %>% 
   #discrepancies in names of variables
-  janitor::clean_names() %>% 
-  #janitor::tabyl(!is.na(dob_imp_num))
+  janitor::clean_names() %>%   #janitor::tabyl(!is.na(dob_imp_num))
   #previously recoded, 
   dplyr::select(-sex, -dateofbirth_imp, -country, -victim, -id_victim, -crime_code_c , -reg_c, -end_type_2c, -cod_comunadelito, -cod_lugarocurrencia, -date_offending_imp, -sex_imp, -region_delito, -filter, -id)%>%
   plyr::rename(c("sex_2"="sex", "dateofbirth_imp_2"="dateofbirth_imp")) %>% 
   dplyr::ungroup() %>% 
+  #_#_#_#_#_#_#_#_
   #generates errors with survival setting
-  #dplyr::mutate_at(vars(paste0("edad_al_ing_",1:10)), ~dplyr::case_when(is.na(.)~ (as.numeric(as.Date("2019-11-13"))-dob_imp_num)/365.25, T~ as.numeric(.)))%>%
   #make censorship date of age of comission
-  dplyr::mutate(age_offending_imp= dplyr::case_when(is.na(age_offending_imp)~ (as.numeric(as.Date("2019-11-13"))-dob_imp_num)/365.25, T~ age_offending_imp)) %>% 
-  dplyr::mutate(edad_al_egres_imp= (fech_egres_num_1-dob_imp_num)/365.25)%>% 
+  dplyr::mutate(age_offending_imp= dplyr::case_when(is.na(age_offending_imp)~
+lubridate::time_length(lubridate::interval(dob_imp, as.Date("2019-11-13")),unit="years"), T~ age_offending_imp)) %>% 
   dplyr::group_by(hash_key) %>% 
   dplyr::slice_min(age_offending_imp, with_ties = T) %>% 
   dplyr::ungroup() %>% 
   purrr::when(nrow(dplyr::filter(.,age_offending_imp-edad_al_ing_1<0))>0 ~ stop("Cases with negaative time after admission to commission of crime"), ~.) %>% 
    dplyr::mutate(motivodeegreso_mod_imp_rec= dplyr::case_when(grepl("Therapeutic",motivodeegreso_mod_imp)~ "Treatment completion", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 <90) ~  "Treatment non-completion (Early)", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 >=90) ~ "Treatment non-completion (Late)", grepl("Referral|Death|Ongoing", motivodeegreso_mod_imp)~ "Censored", T~NA_character_))
-  #dplyr::rowwise() %>% 
-# dplyr::mutate(across(paste0("fech_ing_num_",1:10), ~
-#    sum(get(gsub("fech_ing_num_","fech_egres_num_",cur_column()))- .,na.rm=T), .names = "dias_trat"))   
- # dplyr::mutate(across(paste0("fech_ing_num_",1:10), ~ !!rlang::sym(digits2[j<<- j+1])- ., .names = "dias_trat"))
-#   
-#   dplyr::mutate(across(paste0("motivodeegreso_mod_imp_",1:10), ~ dplyr::case_when(.=="Therapeutic discharge"~ "Treatment completion", grepl("Early|Late|Administrative", .) &  sum(!!rlang::sym(digits2[j<<- j+1])- !!rlang::sym(digits[j<<- j]), na.rm=T)<90 ~ "Treatment non-completion (Early)",  grepl("Early|Late|Administrative", .) & sum(!!rlang::sym(digits2[j<<- j+1])- !!rlang::sym(digits[j<<- j]), na.rm=T) >=90 ~ "Treatment non-completion (Late)", grepl("Referral|Death|Ongoing", .)~ "Censored", T~NA_character_), .names = "{col}_rec")) %>% 
 
-#table(Base_fiscalia_v11$motivodeegreso_mod_imp_rec,Base_fiscalia_v11$motivodeegreso_mod_imp, exclude=NULL)
   
 invisible("Ver por qué los valores negativos-R: por que entre la admisión y terminar el tratamiento hay casos que registraron un delito")
 invisible("ver por qué no recodifica a los motivo de egresos de manera iterativa")
 invisible("QUEDA POR LIMPIAR LA BASE DE FISCALIA")
 invisible("Qué hacer con Death, Referral to another treatment, Ongoing treatment")
+
+Base_fiscalia_v11 %>% 
+    dplyr::group_by(hash_key) %>% 
+    count() %>% 
+    dplyr::filter(n>1) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::summarise(total=n(),max=max(n), min=min(n), mean=round(mean(n),2), p025=quantile(n, .025), p25=quantile(n, .25), median=quantile(n, .5), p75=quantile(n, .75),p975=quantile(n, .975)) %>% 
+  data.frame() %>% 
+  kable("markdown", caption= "Summary descvriptive of users with more than one closest offense committed after the first admission")
 ```
+
+
+
 
 ```{r join1b, echo=T, fig.align='center', message=T, error=T, eval=F}
 
 Base_fiscalia_v10b<-
 sqldf("SELECT *
-  FROM CONS_C1_df_dup_SEP_2020_22_b AS x  
+  FROM CONS_C1_df_dup_SEP_2020_22_d AS x  
   LEFT JOIN (SELECT *
              FROM Base_fiscalia_v9
              ) AS y
   ON x.hash_key == y.id AND 
-  x.edad_al_ing_1 >= y.age_offending_imp") #change the direction to past events
+  x.edad_al_egres_1 <= y.age_offending_imp") #change the direction to past events
 
 Base_fiscalia_v11b<-
 Base_fiscalia_v10b %>% 
