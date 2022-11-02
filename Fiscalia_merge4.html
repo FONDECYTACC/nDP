@@ -11993,7 +11993,7 @@ Show code
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class="co"># Treatment status (Early dropout/Late dropout/Treatment completion) </span></span>
 <span></span>
 <span></span>
-<span><span class="va">cont_vars_desc</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">&quot;edad_al_ing_fmt&quot;</span>, <span class="st">&quot;edad_ini_sus_prin&quot;</span>, <span class="st">&quot;dias_treat_imp_sin_na_1&quot;</span><span class="op">)</span></span>
+<span><span class="va">cont_vars_desc</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">&quot;edad_al_ing_fmt&quot;</span>, <span class="st">&quot;edad_ini_cons&quot;</span>, <span class="st">&quot;dias_treat_imp_sin_na_1&quot;</span><span class="op">)</span></span>
 <span><span class="va">cat_vars_desc</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">&quot;escolaridad_rec&quot;</span>, <span class="st">&quot;sus_principal_mod&quot;</span>, <span class="st">&quot;freq_cons_sus_prin&quot;</span>, <span class="st">&quot;compromiso_biopsicosocial&quot;</span>, <span class="st">&quot;tenencia_de_la_vivienda_mod&quot;</span>, <span class="st">&quot;dg_cie_10_rec&quot;</span>, <span class="st">&quot;dg_trs_cons_sus_or&quot;</span>, <span class="st">&quot;macrozona&quot;</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">edad_al_ing_fmt</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Age (admission to treatment)&quot;</span></span>
@@ -12085,15 +12085,16 @@ Show code
 <td style="text-align: left;">0.325</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">edad_ini_sus_prin (median [IQR])</td>
+<td style="text-align: left;">Age of Onset of Substance Use (median
+[IQR])</td>
 <td style="text-align: left;"></td>
-<td style="text-align: left;">18.00 [15.00, 23.00]</td>
-<td style="text-align: left;">18.00 [15.00, 24.00]</td>
-<td style="text-align: left;">18.00 [15.00, 23.00]</td>
-<td style="text-align: left;">18.00 [15.00, 23.00]</td>
+<td style="text-align: left;">15.00 [14.00, 18.00]</td>
+<td style="text-align: left;">16.00 [14.00, 18.00]</td>
+<td style="text-align: left;">15.00 [13.00, 17.00]</td>
+<td style="text-align: left;">15.00 [14.00, 18.00]</td>
 <td style="text-align: left;">&lt;0.001</td>
 <td style="text-align: left;">nonnorm</td>
-<td style="text-align: left;">0.068</td>
+<td style="text-align: left;">0.145</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Days in treatment (median [IQR])</td>
