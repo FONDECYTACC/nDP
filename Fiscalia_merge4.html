@@ -5542,8 +5542,8 @@ offenses</a></li>
 <li><a href="#explore-values" id="toc-explore-values">Explore
 values</a></li>
 <li><a href="#join-with-sendas-database" id="toc-join-with-sendas-database">Join with SENDAs database</a></li>
-<li><a href="#explore-survival-setting" id="toc-explore-survival-setting">Explore Survival setting</a></li>
 <li><a href="#characteristics" id="toc-characteristics">Characteristics</a></li>
+<li><a href="#explore-survival-setting" id="toc-explore-survival-setting">Explore Survival setting</a></li>
 <li><a href="#flowchart" id="toc-flowchart">Flowchart</a></li>
 <li><a href="#label" id="toc-label">Label</a></li>
 <li><a href="#session-info" id="toc-session-info">Session Info</a></li>
@@ -11869,22 +11869,69 @@ closest offense committed after the first admission</caption>
 <p>Time for this code chunk to run: 0 minutes</p>
 </div>
 </div>
+<p><br></p>
+<p>We took <code>Base_fiscalia_v9</code> (only offenders that had a
+final judgment as guilty)</p>
+<p><br></p>
 <div class="layout-chunk" data-layout="l-body">
 <details>
 <summary>
 Show code
 </summary>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class="va">Base_fiscalia_v13</span><span class="op">&lt;-</span></span>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class="va">Base_fiscalia_v10b</span><span class="op">&lt;-</span></span>
+<span><span class="fu">sqldf</span><span class="op">(</span><span class="st">&quot;SELECT *</span></span>
+<span><span class="st">  FROM CONS_C1_df_dup_SEP_2020_22_d AS x  </span></span>
+<span><span class="st">  LEFT JOIN (SELECT *</span></span>
+<span><span class="st">             FROM Base_fiscalia_v9</span></span>
+<span><span class="st">             ) AS y</span></span>
+<span><span class="st">  ON x.hash_key == y.id AND </span></span>
+<span><span class="st">  x.edad_al_egres_1 &lt;= y.age_offending_imp&quot;</span><span class="op">)</span> <span class="co">#change the direction to past events</span></span>
+<span></span>
+<span></span>
+<span><span class="va">Base_fiscalia_v11b</span><span class="op">&lt;-</span></span>
+<span><span class="va">Base_fiscalia_v10b</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="co">#discrepancies in names of variables</span></span>
+<span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/janitor/man/clean_names.html">clean_names</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>   <span class="co">#janitor::tabyl(!is.na(dob_imp_num))</span></span>
+<span>  <span class="co">#previously recoded, </span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">sex</span>, <span class="op">-</span><span class="va">dateofbirth_imp</span>, <span class="op">-</span><span class="va">country</span>, <span class="op">-</span><span class="va">victim</span>, <span class="op">-</span><span class="va">id_victim</span>, <span class="op">-</span><span class="va">crime_code_c</span> , <span class="op">-</span><span class="va">reg_c</span>, <span class="op">-</span><span class="va">end_type_2c</span>, <span class="op">-</span><span class="va">cod_comunadelito</span>, <span class="op">-</span><span class="va">cod_lugarocurrencia</span>, <span class="op">-</span><span class="va">sex_imp</span>, <span class="op">-</span><span class="va">region_delito</span>, <span class="op">-</span><span class="va">filter</span>, <span class="op">-</span><span class="va">id</span><span class="op">)</span><span class="op">%&gt;%</span></span>
+<span>  <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/rename.html">rename</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">&quot;sex_2&quot;</span><span class="op">=</span><span class="st">&quot;sex&quot;</span>, <span class="st">&quot;dateofbirth_imp_2&quot;</span><span class="op">=</span><span class="st">&quot;dateofbirth_imp&quot;</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span><span class="co">#selected the first row with distinct information regarding patient ID, case ID, crime code.</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">hash_key</span>, <span class="va">caseid</span>, <span class="va">crime_code_group_rec_prof</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">hash_key</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">summarise</span><span class="op">(</span>n_off_acq<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">crime_code_group_rec_prof</span><span class="op">==</span><span class="st">&quot;Acquisitive&quot;</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">0</span>, <span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, n_off_vio<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">crime_code_group_rec_prof</span><span class="op">==</span><span class="st">&quot;Violent&quot;</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">0</span>, <span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, n_off_sud<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">crime_code_group_rec_prof</span><span class="op">==</span> <span class="st">&quot;Substance-related&quot;</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">0</span>, <span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, n_off_oth<span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">crime_code_group_rec_prof</span><span class="op">==</span> <span class="st">&quot;Other&quot;</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">0</span>, <span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, n_prev_off<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu">n</span><span class="op">(</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code></pre>
+</div>
+</details>
+<div class="message">
+<p>summarise: now 85,048 rows and 6 columns, ungrouped</p>
+</div>
+<details>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class="co"># Pre-treatment Criminality </span></span>
+<span><span class="va">Base_fiscalia_v13</span><span class="op">&lt;-</span></span>
 <span><span class="va">Base_fiscalia_v12</span> <span class="op">%&gt;%</span> </span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">hash_key</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="co">#select the first and without ties (only one)</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min</a></span><span class="op">(</span><span class="va">age_offending_imp</span>, n <span class="op">=</span> <span class="fl">1</span>, with_ties <span class="op">=</span> <span class="cn">F</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span>  </span></code></pre>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">Base_fiscalia_v11b</span>, by<span class="op">=</span><span class="st">&quot;hash_key&quot;</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>policonsumo<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">otras_sus1_mod</span><span class="op">)</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>cut_fec_nac<span class="op">=</span><span class="fu">cut2</span><span class="op">(</span><span class="va">fech_nac_rec</span>, cuts<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="fu">dlookr</span><span class="fu">::</span><span class="fu"><a href="https://choonghyunryu.github.io/dlookr/reference/binning.html">binning</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">fech_nac_rec</span><span class="op">)</span><span class="op">)</span>,<span class="st">&quot;breaks&quot;</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,cut_com_del<span class="op">=</span><span class="fu">cut2</span><span class="op">(</span><span class="va">fec_comision_simple</span>, cuts<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="fu">dlookr</span><span class="fu">::</span><span class="fu"><a href="https://choonghyunryu.github.io/dlookr/reference/binning.html">binning</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">fec_comision_simple</span><span class="op">)</span><span class="op">)</span>,<span class="st">&quot;breaks&quot;</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>tr_modality<span class="op">=</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">&quot;PR&quot;</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">tipo_de_plan_2_1</span><span class="op">)</span><span class="op">)</span><span class="op">~</span> <span class="st">&quot;Residential&quot;</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">&quot;PAI|PAB&quot;</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">tipo_de_plan_2_1</span><span class="op">)</span><span class="op">)</span><span class="op">~</span> <span class="st">&quot;Ambulatory&quot;</span>, <span class="cn">T</span><span class="op">~</span> <span class="cn">NA_character_</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">as.data.table</span><span class="op">(</span><span class="op">)</span><span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/when.html">when</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">&gt;</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Base_fiscalia_v12</span><span class="op">)</span> <span class="op">~</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">&quot;More cases in the new database&quot;</span><span class="op">)</span>, <span class="op">~</span><span class="va">.</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co">#length(unique(Base_fiscalia_v13$hash_key))    </span></span></code></pre>
 </div>
 </details>
 <div class="message">
-<p>Time for this code chunk to run: 0.2 minutes</p>
+<p>Time for this code chunk to run: 0.7 minutes</p>
 </div>
 </div>
 <div class="layout-chunk" data-layout="l-body">
@@ -11892,65 +11939,1004 @@ Show code
 <summary>
 Show code
 </summary>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Base_fiscalia_v10b<span class="ot">&lt;-</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqldf</span>(<span class="st">&quot;SELECT *</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="st">  FROM CONS_C1_df_dup_SEP_2020_22_d AS x  </span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="st">  LEFT JOIN (SELECT *</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="st">             FROM Base_fiscalia_v9</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="st">             ) AS y</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="st">  ON x.hash_key == y.id AND </span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="st">  x.edad_al_egres_1 &lt;= y.age_offending_imp&quot;</span>) <span class="co">#change the direction to past events</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>Base_fiscalia_v11b<span class="ot">&lt;-</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>Base_fiscalia_v10b <span class="sc">%&gt;%</span> </span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#discrepancies in names of variables</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">#janitor::tabyl(!is.na(dob_imp_num))</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#previously recoded, </span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>sex, <span class="sc">-</span>dateofbirth_imp, <span class="sc">-</span>country, <span class="sc">-</span>victim, <span class="sc">-</span>id_victim, <span class="sc">-</span>crime_code_c , <span class="sc">-</span>reg_c, <span class="sc">-</span>end_type_2c, <span class="sc">-</span>cod_comunadelito, <span class="sc">-</span>cod_lugarocurrencia, <span class="sc">-</span>date_offending_imp, <span class="sc">-</span>sex_imp, <span class="sc">-</span>region_delito, <span class="sc">-</span>filter, <span class="sc">-</span>id)<span class="sc">%&gt;%</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  plyr<span class="sc">::</span><span class="fu">rename</span>(<span class="fu">c</span>(<span class="st">&quot;sex_2&quot;</span><span class="ot">=</span><span class="st">&quot;sex&quot;</span>, <span class="st">&quot;dateofbirth_imp_2&quot;</span><span class="ot">=</span><span class="st">&quot;dateofbirth_imp&quot;</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co">#Registrar hurtos, robos, violencia intrafamiliar y otras acciones cometidas en las últimas 4 semanas</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">#Violencia Intrafamiliar (Maltrato físico o psicológico)</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>CONS_TOP_2022<span class="ot">&lt;-</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 107307</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>CONS_TOP<span class="sc">%&gt;%</span> </span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="fu">subset</span>(dplyr<span class="sc">::</span><span class="fu">mutate</span>(dplyr<span class="sc">::</span><span class="fu">group_by</span>(Base_fiscalia_v11b, hash_key), <span class="at">hash_rn=</span><span class="fu">row_number</span>())<span class="sc">%&gt;%</span> <span class="fu">ungroup</span>(), hash_rn<span class="sc">==</span><span class="dv">1</span>), <span class="at">by=</span> <span class="fu">c</span>(<span class="st">&quot;HASH_KEY&quot;</span> <span class="ot">=</span> <span class="st">&quot;hash_key&quot;</span>))<span class="sc">%&gt;%</span> </span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">fech_ap_top_num=</span> <span class="fu">as.numeric</span>(<span class="fu">as.Date</span>(<span class="fu">str_sub</span>(<span class="fu">as.character</span>(lubridate<span class="sc">::</span><span class="fu">parse_date_time</span>(Fecha.Aplicación.TOP, <span class="fu">c</span>(<span class="st">&quot;%Y-%m-%d&quot;</span>),<span class="at">exact=</span>T)),<span class="dv">1</span>,<span class="dv">10</span>))))<span class="sc">%&gt;%</span> <span class="co">#No parse failures</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(HASH_KEY,fech_ap_top_num, dateofbirth_imp, Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(HASH_KEY)) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate_at</span>(<span class="fu">vars</span>(<span class="st">&quot;Hurto&quot;</span>, <span class="st">&quot;Robo&quot;</span>, <span class="st">&quot;Venta.Drogas&quot;</span>, <span class="st">&quot;Riña&quot;</span>, <span class="st">&quot;Otro&quot;</span>), <span class="sc">~</span><span class="fu">ifelse</span>(.<span class="sc">==</span><span class="st">&quot;S&quot;</span>,<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Total.VIF=</span> <span class="fu">ifelse</span>(Total.VIF<span class="sc">&gt;</span><span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>))<span class="sc">%&gt;%</span> </span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">tot_off_top =</span> base<span class="sc">::</span><span class="fu">rowSums</span>(dplyr<span class="sc">::</span><span class="fu">select</span>(.,<span class="fu">c</span>(Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro)), <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">dateofbirth_imp_num=</span> <span class="fu">as.numeric</span>(dateofbirth_imp),<span class="at">edad_a_ap_top_num=</span> (fech_ap_top_num<span class="sc">-</span>dateofbirth_imp_num)<span class="sc">/</span><span class="fl">365.25</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>dateofbirth_imp, <span class="sc">-</span>dateofbirth_imp_num) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(edad_a_ap_top_num))</span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Registrar hurtos, robos, violencia intrafamiliar y otras acciones cometidas en las últimas 4 semanas</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Violencia Intrafamiliar (Maltrato físico o psicológico)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>CONS_TOP_2022<span class="ot">&lt;-</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 107307</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>CONS_TOP<span class="sc">%&gt;%</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="fu">subset</span>(dplyr<span class="sc">::</span><span class="fu">mutate</span>(dplyr<span class="sc">::</span><span class="fu">group_by</span>(Base_fiscalia_v11b, hash_key), <span class="at">hash_rn=</span><span class="fu">row_number</span>())<span class="sc">%&gt;%</span> <span class="fu">ungroup</span>(), hash_rn<span class="sc">==</span><span class="dv">1</span>), <span class="at">by=</span> <span class="fu">c</span>(<span class="st">&quot;HASH_KEY&quot;</span> <span class="ot">=</span> <span class="st">&quot;hash_key&quot;</span>))<span class="sc">%&gt;%</span> </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">fech_ap_top_num=</span> <span class="fu">as.numeric</span>(<span class="fu">as.Date</span>(<span class="fu">str_sub</span>(<span class="fu">as.character</span>(lubridate<span class="sc">::</span><span class="fu">parse_date_time</span>(Fecha.Aplicación.TOP, <span class="fu">c</span>(<span class="st">&quot;%Y-%m-%d&quot;</span>),<span class="at">exact=</span>T)),<span class="dv">1</span>,<span class="dv">10</span>))))<span class="sc">%&gt;%</span> <span class="co">#No parse failures</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(HASH_KEY,fech_ap_top_num, dateofbirth_imp, Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(HASH_KEY)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate_at</span>(<span class="fu">vars</span>(<span class="st">&quot;Hurto&quot;</span>, <span class="st">&quot;Robo&quot;</span>, <span class="st">&quot;Venta.Drogas&quot;</span>, <span class="st">&quot;Riña&quot;</span>, <span class="st">&quot;Otro&quot;</span>), <span class="sc">~</span><span class="fu">ifelse</span>(.<span class="sc">==</span><span class="st">&quot;S&quot;</span>,<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Total.VIF=</span> <span class="fu">ifelse</span>(Total.VIF<span class="sc">&gt;</span><span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>))<span class="sc">%&gt;%</span> </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">tot_off_top =</span> base<span class="sc">::</span><span class="fu">rowSums</span>(dplyr<span class="sc">::</span><span class="fu">select</span>(.,<span class="fu">c</span>(Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro)), <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">dateofbirth_imp_num=</span> <span class="fu">as.numeric</span>(dateofbirth_imp),<span class="at">edad_a_ap_top_num=</span> (fech_ap_top_num<span class="sc">-</span>dateofbirth_imp_num)<span class="sc">/</span><span class="fl">365.25</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>dateofbirth_imp, <span class="sc">-</span>dateofbirth_imp_num) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(edad_a_ap_top_num))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>Base_fiscalia_v12b<span class="ot">&lt;-</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">sqldf</span>(<span class="st">&quot;SELECT *</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="st">  FROM Base_fiscalia_v11b AS x  </span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="st">  LEFT JOIN (SELECT *</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="st">             FROM CONS_TOP_2022</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="st">             ) AS y</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="st">  ON x.hash_key == y.HASH_KEY AND </span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="st">  x.age_offending_imp &gt;= y.edad_a_ap_top_num&quot;</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>Base_fiscalia_v12b <span class="sc">%&gt;%</span> </span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(HASH_KEY))</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>   tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span>  rn_hash_discard, </span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_sep=</span><span class="st">&quot;_&quot;</span>,</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(fech_ing_num_discard, fech_egres_num_discard, edad_al_ing))<span class="sc">%&gt;%</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>     dplyr<span class="sc">::</span><span class="fu">group_by</span>(hash_key)<span class="sc">%&gt;%</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate_at</span>(<span class="fu">vars</span>(fech_ing_num_discard_1<span class="sc">:</span>fech_egres_num_discard_10),<span class="sc">~</span><span class="fu">suppressWarnings</span>(<span class="fu">max</span>(<span class="fu">as.character</span>(.),<span class="at">na.rm=</span>T)))<span class="sc">%&gt;%</span></span>
 <span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>Base_fiscalia_v12b<span class="ot">&lt;-</span></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="fu">sqldf</span>(<span class="st">&quot;SELECT *</span></span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="st">  FROM Base_fiscalia_v11b AS x  </span></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="st">  LEFT JOIN (SELECT *</span></span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="st">             FROM CONS_TOP_2022</span></span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="st">             ) AS y</span></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="st">  ON x.hash_key == y.HASH_KEY AND </span></span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="st">  x.age_offending_imp &gt;= y.edad_a_ap_top_num&quot;</span>)</span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>Base_fiscalia_v12b <span class="sc">%&gt;%</span> </span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(HASH_KEY))</span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>   tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span>  rn_hash_discard, </span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_sep=</span><span class="st">&quot;_&quot;</span>,</span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(fech_ing_num_discard, fech_egres_num_discard, edad_al_ing))<span class="sc">%&gt;%</span></span>
-<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>     dplyr<span class="sc">::</span><span class="fu">group_by</span>(hash_key)<span class="sc">%&gt;%</span></span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate_at</span>(<span class="fu">vars</span>(fech_ing_num_discard_1<span class="sc">:</span>fech_egres_num_discard_10),<span class="sc">~</span><span class="fu">suppressWarnings</span>(<span class="fu">max</span>(<span class="fu">as.character</span>(.),<span class="at">na.rm=</span>T)))<span class="sc">%&gt;%</span></span>
-<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>Base_fiscalia_v12b<span class="sc">%&gt;%</span> </span>
-<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(CONS_TOP,)</span></code></pre></div>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>Base_fiscalia_v12b<span class="sc">%&gt;%</span> </span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(CONS_TOP,)</span></code></pre></div>
 </details>
 <div class="message">
 <p>Time for this code chunk to run: 0 minutes</p>
+</div>
+</div>
+<p><br></p>
+<h1 id="characteristics">Characteristics</h1>
+<div class="controlly">
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class="co"># Treatment status (Early dropout/Late dropout/Treatment completion) </span></span>
+<span></span>
+<span></span>
+<span><span class="va">cont_vars_desc</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">&quot;edad_al_ing_fmt&quot;</span>, <span class="st">&quot;edad_ini_sus_prin&quot;</span>, <span class="st">&quot;dias_treat_imp_sin_na_1&quot;</span><span class="op">)</span></span>
+<span><span class="va">cat_vars_desc</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">&quot;escolaridad_rec&quot;</span>, <span class="st">&quot;sus_principal_mod&quot;</span>, <span class="st">&quot;freq_cons_sus_prin&quot;</span>, <span class="st">&quot;compromiso_biopsicosocial&quot;</span>, <span class="st">&quot;tenencia_de_la_vivienda_mod&quot;</span>, <span class="st">&quot;dg_cie_10_rec&quot;</span>, <span class="st">&quot;dg_trs_cons_sus_or&quot;</span>, <span class="st">&quot;macrozona&quot;</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">edad_al_ing_fmt</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Age (admission to treatment)&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">escolaridad_rec</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Educational Attainment&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">sus_principal_mod</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Primary Substance (admission to treatment)&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">freq_cons_sus_prin</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Substance use frequency (primary substance)&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">edad_ini_cons</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Age of Onset of Substance Use&quot;</span> <span class="co"># I added it</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">compromiso_biopsicosocial</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Bio-psychosocial status&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">tenencia_de_la_vivienda_mod</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Housing situation (tenure status of households)&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">policonsumo</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Co-occurring SUD&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">dg_cie_10_rec</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Comorbidity (ICD-10)&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">dg_trs_cons_sus_or</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;SUD Severity (Dependence status)&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">dias_treat_imp_sin_na_1</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Days in treatment&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">tr_modality</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Treatment Modality&quot;</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">n_prev_off</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Pre-treatment Criminality (Dich.)&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">n_off_acq</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Acquisitive crime, Pre-treatment Criminality&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">n_off_oth</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Other crime, Pre-treatment Criminality&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">n_off_sud</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Substance use-related crime, Pre-treatment Criminality&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">n_off_vio</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Violent crime, Pre-treatment Criminality&quot;</span></span>
+<span><span class="co">#added</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">cut_com_del</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Binned comission date&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">cut_fec_nac</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Binned birth date&quot;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span><span class="op">$</span><span class="va">macrozona</span>,<span class="st">&quot;label&quot;</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">&quot;Macro administrative Chilean zone&quot;</span></span>
+<span></span>
+<span><span class="va">tbone_desc_merge4</span><span class="op">&lt;-</span></span>
+<span><span class="fu">CreateTableOne</span><span class="op">(</span>vars<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">cont_vars_desc</span>, <span class="va">cat_vars_desc</span>, <span class="st">&quot;cut_com_del&quot;</span>, <span class="st">&quot;cut_fec_nac&quot;</span><span class="op">)</span>, data<span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span>, select<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">cont_vars_desc</span>, <span class="va">cat_vars_desc</span>, <span class="st">&quot;cut_com_del&quot;</span>, <span class="st">&quot;cut_fec_nac&quot;</span>, <span class="st">&quot;motivodeegreso_mod_imp_rec&quot;</span><span class="op">)</span><span class="op">)</span>, factorVars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">catVars</span>, <span class="st">&quot;cut_com_del&quot;</span>, <span class="st">&quot;cut_fec_nac&quot;</span><span class="op">)</span>, smd<span class="op">=</span><span class="cn">T</span>, strata<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">&quot;motivodeegreso_mod_imp_rec&quot;</span><span class="op">)</span>, addOverall <span class="op">=</span> <span class="cn">T</span>, includeNA<span class="op">=</span><span class="cn">T</span>, test<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">as.data.frame.TableOne</span><span class="op">(</span><span class="va">tbone_desc_merge4</span>, smd<span class="op">=</span><span class="cn">T</span>, nonnormal<span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>char2<span class="op">=</span><span class="va">characteristic</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/fill.html">fill</a></span><span class="op">(</span><span class="va">char2</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">char2</span>,<span class="fu">everything</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>level<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">level</span><span class="op">)</span>,<span class="st">&quot;[Missing]&quot;</span>,<span class="va">level</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>char2<span class="op">=</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span><span class="va">characteristic</span><span class="op">==</span><span class="st">&quot;NA&quot;</span><span class="op">~</span><span class="cn">NA_character_</span>,<span class="cn">T</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">characteristic</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">format_cells</span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span>, <span class="st">&quot;bold&quot;</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">kable</span><span class="op">(</span>size<span class="op">=</span><span class="fl">10</span>, format<span class="op">=</span><span class="st">&quot;markdown&quot;</span>,caption<span class="op">=</span> <span class="st">&quot;Summary descriptives, Condemnatory sentence (1) &amp; Found as an imputed (YES)&quot;</span><span class="op">)</span></span></code></pre>
+</div>
+</details>
+<table style="width:100%;">
+<caption><span id="tab:desc">Table 3: </span>Summary descriptives, Condemnatory sentence (1)
+&amp; Found as an imputed (YES)</caption>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 18%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 3%" />
+<col style="width: 3%" />
+<col style="width: 2%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">characteristic</th>
+<th style="text-align: left;">level</th>
+<th style="text-align: left;">Overall</th>
+<th style="text-align: left;">Treatment completion</th>
+<th style="text-align: left;">Treatment non-completion (Early)</th>
+<th style="text-align: left;">Treatment non-completion (Late)</th>
+<th style="text-align: left;">p</th>
+<th style="text-align: left;">test</th>
+<th style="text-align: left;">SMD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>n</strong></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">** 72397**</td>
+<td style="text-align: left;">** 19778**</td>
+<td style="text-align: left;"><strong>16155</strong></td>
+<td style="text-align: left;">** 36454**</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Age (admission to treatment) (median
+[IQR])</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">34.02 [27.36, 42.84]</td>
+<td style="text-align: left;">37.54 [29.59, 47.13]</td>
+<td style="text-align: left;">31.88 [25.90, 39.61]</td>
+<td style="text-align: left;">33.42 [27.08, 41.83]</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">nonnorm</td>
+<td style="text-align: left;">0.325</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">edad_ini_sus_prin (median [IQR])</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">18.00 [15.00, 23.00]</td>
+<td style="text-align: left;">18.00 [15.00, 24.00]</td>
+<td style="text-align: left;">18.00 [15.00, 23.00]</td>
+<td style="text-align: left;">18.00 [15.00, 23.00]</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">nonnorm</td>
+<td style="text-align: left;">0.068</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Days in treatment (median [IQR])</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">170.00 [93.00, 300.00]</td>
+<td style="text-align: left;">324.00 [224.00, 447.00]</td>
+<td style="text-align: left;">58.00 [38.00, 74.00]</td>
+<td style="text-align: left;">176.00 [126.00, 266.00]</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">nonnorm</td>
+<td style="text-align: left;">1.552</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Educational Attainment (%)</td>
+<td style="text-align: left;">1-More than high school</td>
+<td style="text-align: left;">11560 (16.0)</td>
+<td style="text-align: left;">4053 (20.5)</td>
+<td style="text-align: left;">2127 (13.2)</td>
+<td style="text-align: left;">5380 (14.8)</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.135</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">2-Completed high school or less</td>
+<td style="text-align: left;">39917 (55.1)</td>
+<td style="text-align: left;">10546 (53.3)</td>
+<td style="text-align: left;">9061 (56.1)</td>
+<td style="text-align: left;">20305 (55.7)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">3-Completed primary school or less</td>
+<td style="text-align: left;">20601 (28.5)</td>
+<td style="text-align: left;">5097 (25.8)</td>
+<td style="text-align: left;">4896 (30.3)</td>
+<td style="text-align: left;">10604 (29.1)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[Missing]</td>
+<td style="text-align: left;">319 ( 0.4)</td>
+<td style="text-align: left;">82 ( 0.4)</td>
+<td style="text-align: left;">71 ( 0.4)</td>
+<td style="text-align: left;">165 ( 0.5)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Primary Substance (admission to treatment)
+(%)</td>
+<td style="text-align: left;">Alcohol</td>
+<td style="text-align: left;">24240 (33.5)</td>
+<td style="text-align: left;">8674 (43.9)</td>
+<td style="text-align: left;">4025 (24.9)</td>
+<td style="text-align: left;">11538 (31.7)</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.324</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Cocaine hydrochloride</td>
+<td style="text-align: left;">13496 (18.6)</td>
+<td style="text-align: left;">3373 (17.1)</td>
+<td style="text-align: left;">2944 (18.2)</td>
+<td style="text-align: left;">7176 (19.7)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Cocaine paste</td>
+<td style="text-align: left;">28601 (39.5)</td>
+<td style="text-align: left;">5852 (29.6)</td>
+<td style="text-align: left;">8038 (49.8)</td>
+<td style="text-align: left;">14708 (40.3)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Marijuana</td>
+<td style="text-align: left;">4810 ( 6.6)</td>
+<td style="text-align: left;">1349 ( 6.8)</td>
+<td style="text-align: left;">951 ( 5.9)</td>
+<td style="text-align: left;">2509 ( 6.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Other</td>
+<td style="text-align: left;">1249 ( 1.7)</td>
+<td style="text-align: left;">530 ( 2.7)</td>
+<td style="text-align: left;">197 ( 1.2)</td>
+<td style="text-align: left;">522 ( 1.4)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[Missing]</td>
+<td style="text-align: left;">1 ( 0.0)</td>
+<td style="text-align: left;">0 ( 0.0)</td>
+<td style="text-align: left;">0 ( 0.0)</td>
+<td style="text-align: left;">1 ( 0.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Substance use frequency (primary
+substance) (%)</td>
+<td style="text-align: left;">1 day a week or more</td>
+<td style="text-align: left;">4857 ( 6.7)</td>
+<td style="text-align: left;">1519 ( 7.7)</td>
+<td style="text-align: left;">807 ( 5.0)</td>
+<td style="text-align: left;">2531 ( 6.9)</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.146</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">2 to 3 days a week</td>
+<td style="text-align: left;">20350 (28.1)</td>
+<td style="text-align: left;">5592 (28.3)</td>
+<td style="text-align: left;">3968 (24.6)</td>
+<td style="text-align: left;">10789 (29.6)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">4 to 6 days a week</td>
+<td style="text-align: left;">11842 (16.4)</td>
+<td style="text-align: left;">3106 (15.7)</td>
+<td style="text-align: left;">2666 (16.5)</td>
+<td style="text-align: left;">6068 (16.6)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Daily</td>
+<td style="text-align: left;">31381 (43.3)</td>
+<td style="text-align: left;">8363 (42.3)</td>
+<td style="text-align: left;">8029 (49.7)</td>
+<td style="text-align: left;">14982 (41.1)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Less than 1 day a week</td>
+<td style="text-align: left;">3603 ( 5.0)</td>
+<td style="text-align: left;">1107 ( 5.6)</td>
+<td style="text-align: left;">598 ( 3.7)</td>
+<td style="text-align: left;">1898 ( 5.2)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[Missing]</td>
+<td style="text-align: left;">364 ( 0.5)</td>
+<td style="text-align: left;">91 ( 0.5)</td>
+<td style="text-align: left;">87 ( 0.5)</td>
+<td style="text-align: left;">186 ( 0.5)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bio-psychosocial status (%)</td>
+<td style="text-align: left;">1-Mild</td>
+<td style="text-align: left;">6957 ( 9.6)</td>
+<td style="text-align: left;">2309 (11.7)</td>
+<td style="text-align: left;">1153 ( 7.1)</td>
+<td style="text-align: left;">3495 ( 9.6)</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.158</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">2-Moderate</td>
+<td style="text-align: left;">40939 (56.5)</td>
+<td style="text-align: left;">11112 (56.2)</td>
+<td style="text-align: left;">8584 (53.1)</td>
+<td style="text-align: left;">21241 (58.3)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">3-Severe</td>
+<td style="text-align: left;">23070 (31.9)</td>
+<td style="text-align: left;">6024 (30.5)</td>
+<td style="text-align: left;">6159 (38.1)</td>
+<td style="text-align: left;">10880 (29.8)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[Missing]</td>
+<td style="text-align: left;">1431 ( 2.0)</td>
+<td style="text-align: left;">333 ( 1.7)</td>
+<td style="text-align: left;">259 ( 1.6)</td>
+<td style="text-align: left;">838 ( 2.3)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Housing situation (tenure status of
+households) (%)</td>
+<td style="text-align: left;">Illegal Settlement</td>
+<td style="text-align: left;">764 ( 1.1)</td>
+<td style="text-align: left;">197 ( 1.0)</td>
+<td style="text-align: left;">218 ( 1.3)</td>
+<td style="text-align: left;">349 ( 1.0)</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.161</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Others</td>
+<td style="text-align: left;">2044 ( 2.8)</td>
+<td style="text-align: left;">533 ( 2.7)</td>
+<td style="text-align: left;">437 ( 2.7)</td>
+<td style="text-align: left;">1074 ( 2.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Owner/Transferred dwellings/Pays
+Dividends</td>
+<td style="text-align: left;">25304 (35.0)</td>
+<td style="text-align: left;">7910 (40.0)</td>
+<td style="text-align: left;">5049 (31.3)</td>
+<td style="text-align: left;">12340 (33.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Renting</td>
+<td style="text-align: left;">12342 (17.0)</td>
+<td style="text-align: left;">3358 (17.0)</td>
+<td style="text-align: left;">2768 (17.1)</td>
+<td style="text-align: left;">6212 (17.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Stays temporarily with a relative</td>
+<td style="text-align: left;">27791 (38.4)</td>
+<td style="text-align: left;">6866 (34.7)</td>
+<td style="text-align: left;">6370 (39.4)</td>
+<td style="text-align: left;">14554 (39.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[Missing]</td>
+<td style="text-align: left;">4152 ( 5.7)</td>
+<td style="text-align: left;">914 ( 4.6)</td>
+<td style="text-align: left;">1313 ( 8.1)</td>
+<td style="text-align: left;">1925 ( 5.3)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Comorbidity (ICD-10) (%)</td>
+<td style="text-align: left;">Without psychiatric comorbidity</td>
+<td style="text-align: left;">28331 (39.1)</td>
+<td style="text-align: left;">9402 (47.5)</td>
+<td style="text-align: left;">3035 (18.8)</td>
+<td style="text-align: left;">15893 (43.6)</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">1.057</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Diagnosis unknown (under study)</td>
+<td style="text-align: left;">13498 (18.6)</td>
+<td style="text-align: left;">364 ( 1.8)</td>
+<td style="text-align: left;">9601 (59.4)</td>
+<td style="text-align: left;">3533 ( 9.7)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">With psychiatric comorbidity</td>
+<td style="text-align: left;">30568 (42.2)</td>
+<td style="text-align: left;">10012 (50.6)</td>
+<td style="text-align: left;">3519 (21.8)</td>
+<td style="text-align: left;">17028 (46.7)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SUD Severity (Dependence status) (%)</td>
+<td style="text-align: left;">Drug dependence</td>
+<td style="text-align: left;">52413 (72.4)</td>
+<td style="text-align: left;">13795 (69.7)</td>
+<td style="text-align: left;">12400 (76.8)</td>
+<td style="text-align: left;">26211 (71.9)</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.106</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Hazardous consumption</td>
+<td style="text-align: left;">19983 (27.6)</td>
+<td style="text-align: left;">5983 (30.3)</td>
+<td style="text-align: left;">3755 (23.2)</td>
+<td style="text-align: left;">10242 (28.1)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[Missing]</td>
+<td style="text-align: left;">1 ( 0.0)</td>
+<td style="text-align: left;">0 ( 0.0)</td>
+<td style="text-align: left;">0 ( 0.0)</td>
+<td style="text-align: left;">1 ( 0.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Macro administrative Chilean zone (%)</td>
+<td style="text-align: left;">Center</td>
+<td style="text-align: left;">54854 (75.8)</td>
+<td style="text-align: left;">13997 (70.8)</td>
+<td style="text-align: left;">12102 (74.9)</td>
+<td style="text-align: left;">28749 (78.9)</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.214</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">North</td>
+<td style="text-align: left;">10701 (14.8)</td>
+<td style="text-align: left;">3000 (15.2)</td>
+<td style="text-align: left;">3011 (18.6)</td>
+<td style="text-align: left;">4690 (12.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">South</td>
+<td style="text-align: left;">6826 ( 9.4)</td>
+<td style="text-align: left;">2778 (14.0)</td>
+<td style="text-align: left;">1031 ( 6.4)</td>
+<td style="text-align: left;">3014 ( 8.3)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[Missing]</td>
+<td style="text-align: left;">16 ( 0.0)</td>
+<td style="text-align: left;">3 ( 0.0)</td>
+<td style="text-align: left;">11 ( 0.1)</td>
+<td style="text-align: left;">1 ( 0.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Binned comission date (%)</td>
+<td style="text-align: left;">[2010-01-03,2011-06-24)</td>
+<td style="text-align: left;">1277 ( 1.8)</td>
+<td style="text-align: left;">174 ( 0.9)</td>
+<td style="text-align: left;">399 ( 2.5)</td>
+<td style="text-align: left;">703 ( 1.9)</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.289</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2011-06-24,2012-03-01)</td>
+<td style="text-align: left;">1276 ( 1.8)</td>
+<td style="text-align: left;">197 ( 1.0)</td>
+<td style="text-align: left;">347 ( 2.1)</td>
+<td style="text-align: left;">732 ( 2.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2012-03-01,2012-10-25)</td>
+<td style="text-align: left;">1275 ( 1.8)</td>
+<td style="text-align: left;">203 ( 1.0)</td>
+<td style="text-align: left;">330 ( 2.0)</td>
+<td style="text-align: left;">742 ( 2.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2012-10-25,2013-05-30)</td>
+<td style="text-align: left;">1276 ( 1.8)</td>
+<td style="text-align: left;">203 ( 1.0)</td>
+<td style="text-align: left;">372 ( 2.3)</td>
+<td style="text-align: left;">701 ( 1.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2013-05-30,2014-01-02)</td>
+<td style="text-align: left;">1277 ( 1.8)</td>
+<td style="text-align: left;">211 ( 1.1)</td>
+<td style="text-align: left;">353 ( 2.2)</td>
+<td style="text-align: left;">712 ( 2.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2014-01-02,2014-07-11)</td>
+<td style="text-align: left;">1279 ( 1.8)</td>
+<td style="text-align: left;">224 ( 1.1)</td>
+<td style="text-align: left;">360 ( 2.2)</td>
+<td style="text-align: left;">694 ( 1.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2014-07-11,2014-12-18)</td>
+<td style="text-align: left;">1276 ( 1.8)</td>
+<td style="text-align: left;">188 ( 1.0)</td>
+<td style="text-align: left;">355 ( 2.2)</td>
+<td style="text-align: left;">732 ( 2.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2014-12-18,2015-05-26)</td>
+<td style="text-align: left;">1279 ( 1.8)</td>
+<td style="text-align: left;">208 ( 1.1)</td>
+<td style="text-align: left;">340 ( 2.1)</td>
+<td style="text-align: left;">729 ( 2.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2015-05-26,2015-10-28)</td>
+<td style="text-align: left;">1275 ( 1.8)</td>
+<td style="text-align: left;">214 ( 1.1)</td>
+<td style="text-align: left;">339 ( 2.1)</td>
+<td style="text-align: left;">722 ( 2.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2015-10-28,2016-03-31)</td>
+<td style="text-align: left;">1279 ( 1.8)</td>
+<td style="text-align: left;">237 ( 1.2)</td>
+<td style="text-align: left;">339 ( 2.1)</td>
+<td style="text-align: left;">703 ( 1.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2016-03-31,2016-08-30)</td>
+<td style="text-align: left;">1272 ( 1.8)</td>
+<td style="text-align: left;">216 ( 1.1)</td>
+<td style="text-align: left;">327 ( 2.0)</td>
+<td style="text-align: left;">729 ( 2.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2016-08-30,2017-01-25)</td>
+<td style="text-align: left;">1274 ( 1.8)</td>
+<td style="text-align: left;">228 ( 1.2)</td>
+<td style="text-align: left;">365 ( 2.3)</td>
+<td style="text-align: left;">681 ( 1.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2017-01-25,2017-06-20)</td>
+<td style="text-align: left;">1280 ( 1.8)</td>
+<td style="text-align: left;">242 ( 1.2)</td>
+<td style="text-align: left;">342 ( 2.1)</td>
+<td style="text-align: left;">696 ( 1.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2017-06-20,2017-11-16)</td>
+<td style="text-align: left;">1277 ( 1.8)</td>
+<td style="text-align: left;">246 ( 1.2)</td>
+<td style="text-align: left;">346 ( 2.1)</td>
+<td style="text-align: left;">685 ( 1.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2017-11-16,2018-04-23)</td>
+<td style="text-align: left;">1281 ( 1.8)</td>
+<td style="text-align: left;">246 ( 1.2)</td>
+<td style="text-align: left;">333 ( 2.1)</td>
+<td style="text-align: left;">702 ( 1.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2018-04-23,2018-09-27)</td>
+<td style="text-align: left;">1276 ( 1.8)</td>
+<td style="text-align: left;">240 ( 1.2)</td>
+<td style="text-align: left;">344 ( 2.1)</td>
+<td style="text-align: left;">692 ( 1.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2018-09-27,2019-03-21)</td>
+<td style="text-align: left;">1275 ( 1.8)</td>
+<td style="text-align: left;">268 ( 1.4)</td>
+<td style="text-align: left;">353 ( 2.2)</td>
+<td style="text-align: left;">654 ( 1.8)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[2019-03-21,2019-11-13]</td>
+<td style="text-align: left;">1280 ( 1.8)</td>
+<td style="text-align: left;">253 ( 1.3)</td>
+<td style="text-align: left;">376 ( 2.3)</td>
+<td style="text-align: left;">651 ( 1.8)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[Missing]</td>
+<td style="text-align: left;">49413 (68.3)</td>
+<td style="text-align: left;">15780 (79.8)</td>
+<td style="text-align: left;">9835 (60.9)</td>
+<td style="text-align: left;">23794 (65.3)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Binned birth date (%)</td>
+<td style="text-align: left;">[1929-03-20,1959-04-19)</td>
+<td style="text-align: left;">4020 ( 5.6)</td>
+<td style="text-align: left;">1869 ( 9.4)</td>
+<td style="text-align: left;">467 ( 2.9)</td>
+<td style="text-align: left;">1682 ( 4.6)</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.347</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1959-04-19,1964-03-06)</td>
+<td style="text-align: left;">4016 ( 5.5)</td>
+<td style="text-align: left;">1619 ( 8.2)</td>
+<td style="text-align: left;">574 ( 3.6)</td>
+<td style="text-align: left;">1823 ( 5.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1964-03-06,1967-08-18)</td>
+<td style="text-align: left;">4029 ( 5.6)</td>
+<td style="text-align: left;">1467 ( 7.4)</td>
+<td style="text-align: left;">615 ( 3.8)</td>
+<td style="text-align: left;">1946 ( 5.3)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1967-08-18,1970-07-08)</td>
+<td style="text-align: left;">4019 ( 5.6)</td>
+<td style="text-align: left;">1331 ( 6.7)</td>
+<td style="text-align: left;">716 ( 4.4)</td>
+<td style="text-align: left;">1971 ( 5.4)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1970-07-08,1972-10-12)</td>
+<td style="text-align: left;">4022 ( 5.6)</td>
+<td style="text-align: left;">1219 ( 6.2)</td>
+<td style="text-align: left;">740 ( 4.6)</td>
+<td style="text-align: left;">2062 ( 5.7)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1972-10-12,1974-10-31)</td>
+<td style="text-align: left;">4022 ( 5.6)</td>
+<td style="text-align: left;">1201 ( 6.1)</td>
+<td style="text-align: left;">768 ( 4.8)</td>
+<td style="text-align: left;">2052 ( 5.6)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1974-10-31,1976-11-02)</td>
+<td style="text-align: left;">4019 ( 5.6)</td>
+<td style="text-align: left;">1153 ( 5.8)</td>
+<td style="text-align: left;">853 ( 5.3)</td>
+<td style="text-align: left;">2013 ( 5.5)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1976-11-02,1978-11-17)</td>
+<td style="text-align: left;">4026 ( 5.6)</td>
+<td style="text-align: left;">1081 ( 5.5)</td>
+<td style="text-align: left;">832 ( 5.2)</td>
+<td style="text-align: left;">2113 ( 5.8)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1978-11-17,1980-07-18)</td>
+<td style="text-align: left;">4021 ( 5.6)</td>
+<td style="text-align: left;">982 ( 5.0)</td>
+<td style="text-align: left;">908 ( 5.6)</td>
+<td style="text-align: left;">2130 ( 5.8)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1980-07-18,1981-12-23)</td>
+<td style="text-align: left;">4027 ( 5.6)</td>
+<td style="text-align: left;">999 ( 5.1)</td>
+<td style="text-align: left;">988 ( 6.1)</td>
+<td style="text-align: left;">2040 ( 5.6)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1981-12-23,1983-04-23)</td>
+<td style="text-align: left;">4020 ( 5.6)</td>
+<td style="text-align: left;">956 ( 4.8)</td>
+<td style="text-align: left;">919 ( 5.7)</td>
+<td style="text-align: left;">2144 ( 5.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1983-04-23,1984-10-24)</td>
+<td style="text-align: left;">4019 ( 5.6)</td>
+<td style="text-align: left;">891 ( 4.5)</td>
+<td style="text-align: left;">985 ( 6.1)</td>
+<td style="text-align: left;">2143 ( 5.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1984-10-24,1986-05-24)</td>
+<td style="text-align: left;">4021 ( 5.6)</td>
+<td style="text-align: left;">861 ( 4.4)</td>
+<td style="text-align: left;">1051 ( 6.5)</td>
+<td style="text-align: left;">2109 ( 5.8)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1986-05-24,1988-01-04)</td>
+<td style="text-align: left;">4022 ( 5.6)</td>
+<td style="text-align: left;">859 ( 4.3)</td>
+<td style="text-align: left;">1022 ( 6.3)</td>
+<td style="text-align: left;">2141 ( 5.9)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1988-01-04,1989-08-02)</td>
+<td style="text-align: left;">4024 ( 5.6)</td>
+<td style="text-align: left;">884 ( 4.5)</td>
+<td style="text-align: left;">1059 ( 6.6)</td>
+<td style="text-align: left;">2081 ( 5.7)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1989-08-02,1991-04-30)</td>
+<td style="text-align: left;">4024 ( 5.6)</td>
+<td style="text-align: left;">816 ( 4.1)</td>
+<td style="text-align: left;">1126 ( 7.0)</td>
+<td style="text-align: left;">2082 ( 5.7)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1991-04-30,1993-10-01)</td>
+<td style="text-align: left;">4019 ( 5.6)</td>
+<td style="text-align: left;">784 ( 4.0)</td>
+<td style="text-align: left;">1187 ( 7.3)</td>
+<td style="text-align: left;">2047 ( 5.6)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[1993-10-01,2004-11-20]</td>
+<td style="text-align: left;">4026 ( 5.6)</td>
+<td style="text-align: left;">806 ( 4.1)</td>
+<td style="text-align: left;">1345 ( 8.3)</td>
+<td style="text-align: left;">1874 ( 5.1)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">[Missing]</td>
+<td style="text-align: left;">1 ( 0.0)</td>
+<td style="text-align: left;">0 ( 0.0)</td>
+<td style="text-align: left;">0 ( 0.0)</td>
+<td style="text-align: left;">1 ( 0.0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class="co">#kable(size=10, format=&quot;html&quot;,caption= &quot;Summary descriptives, by Baseline Treatment Status&quot;) %&gt;%     kableExtra::kable_classic()</span></span></code></pre>
+</div>
+</details>
+<div class="message">
+<p>Time for this code chunk to run: 0.1 minutes</p>
+</div>
 </div>
 </div>
 <p><br></p>
@@ -11965,7 +12951,7 @@ Show code
 </div>
 </details>
 <table>
-<caption><span id="tab:exp-surv1">Table 3: </span>Glimpse of the survival analysis, Offending
+<caption><span id="tab:exp-surv1">Table 4: </span>Glimpse of the survival analysis, Offending
 from admission by Cause of Discharge of the First Treatment</caption>
 <colgroup>
 <col style="width: 44%" />
@@ -12051,7 +13037,7 @@ Show code
 <p>select: dropped one variable (motivodeegreso_mod_imp_rec)</p>
 </div>
 <table style="width:100%;">
-<caption><span id="tab:exp-surv1">Table 3: </span>Glimpse of the survival analysis, Offending
+<caption><span id="tab:exp-surv1">Table 4: </span>Glimpse of the survival analysis, Offending
 from admission by Cause of Discharge of the First Treatment</caption>
 <colgroup>
 <col style="width: 64%" />
@@ -12235,60 +13221,6 @@ Show code
 </div>
 <div class="message">
 <p>Time for this code chunk to run: 0.3 minutes</p>
-</div>
-</div>
-<p><br></p>
-<h1 id="characteristics">Characteristics</h1>
-<p><br></p>
-<div class="controlly">
-<div class="layout-chunk" data-layout="l-body">
-<details>
-<summary>
-Show code
-</summary>
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class="co"># Health </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Age (admission to treatment) </span></span>
-<span><span class="co"># Educational Attainment </span></span>
-<span><span class="co"># Primary Substance (admission to treatment) </span></span>
-<span><span class="co"># Substance use frequency (primary substance) </span></span>
-<span><span class="co"># Age of Onset (primary substance) </span></span>
-<span><span class="co"># Bio-psychosocial status </span></span>
-<span><span class="co"># Housing situation (tenure status of households) </span></span>
-<span><span class="co"># Co-occurring SUD </span></span>
-<span><span class="co"># Comorbidity (*solo si esta disponible)</span></span>
-<span><span class="co"># Treatment status (Early dropout/Late dropout/Treatment completion) </span></span>
-<span><span class="co"># Days in treatment </span></span>
-<span><span class="co"># Treatment modality </span></span>
-<span><span class="co">#</span></span>
-<span><span class="co"># Crime </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># Any contact post-treatment  </span></span>
-<span><span class="co"># Pre-treatment Criminality (Dichotomous)  </span></span>
-<span><span class="co"># Violent crime, Pre-treatment Criminality **</span></span>
-<span><span class="co"># Acquisitive crime, Pre-treatment Criminality **</span></span>
-<span><span class="co"># Substance use-related crime, Pre-treatment Criminality **</span></span>
-<span><span class="co"># Other crime, Pre-treatment Criminality **</span></span>
-<span></span>
-<span></span>
-<span><span class="va">tbone_sent_def_cond</span><span class="op">&lt;-</span></span>
-<span><span class="fu">CreateTableOne</span><span class="op">(</span>vars<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">myVars</span>,<span class="st">&quot;cut_com_del2&quot;</span>,<span class="st">&quot;cut_fec_nac2&quot;</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">&quot;gls_comuna&quot;</span>, <span class="st">&quot;gls_sitiosuceso&quot;</span>, <span class="st">&quot;tipo_sujeto_vic&quot;</span>, <span class="st">&quot;reg&quot;</span>, <span class="st">&quot;encontrado_como_victima&quot;</span>, <span class="st">&quot;gls_mottermino&quot;</span><span class="op">)</span><span class="op">)</span>, data<span class="op">=</span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">Base_fiscalia_v13</span>, sent_def_cond<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">agrupa_terminos</span><span class="op">==</span><span class="st">&quot;SENTENCIA DEFINITIVA CONDENATORIA&quot;</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>,cut_fec_nac2<span class="op">=</span><span class="fu">cut2</span><span class="op">(</span><span class="va">imp_birth_date</span>, cuts<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="fu">dlookr</span><span class="fu">::</span><span class="fu"><a href="https://choonghyunryu.github.io/dlookr/reference/binning.html">binning</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">imp_birth_date</span><span class="op">)</span><span class="op">)</span>,<span class="st">&quot;breaks&quot;</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,cut_com_del2<span class="op">=</span><span class="fu">cut2</span><span class="op">(</span><span class="va">fec_comision_simple</span>, cuts<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="fu">dlookr</span><span class="fu">::</span><span class="fu"><a href="https://choonghyunryu.github.io/dlookr/reference/binning.html">binning</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">fec_comision_simple</span><span class="op">)</span><span class="op">)</span>,<span class="st">&quot;breaks&quot;</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">data.table</span><span class="op">(</span><span class="op">)</span>, factorVars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="va">catVars</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">&quot;gls_comuna&quot;</span>, <span class="st">&quot;gls_sitiosuceso&quot;</span>, <span class="st">&quot;reg&quot;</span>, <span class="st">&quot;tipo_termino&quot;</span><span class="op">)</span><span class="op">)</span>, smd<span class="op">=</span><span class="cn">T</span>, strata<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">&quot;sent_def_cond&quot;</span>, <span class="st">&quot;encontrado_como_imputado&quot;</span><span class="op">)</span>, addOverall <span class="op">=</span> <span class="cn">T</span>, includeNA<span class="op">=</span><span class="cn">T</span>,test<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">as.data.frame.TableOne</span><span class="op">(</span><span class="va">tbone_sent_def_cond</span>, smd<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>char2<span class="op">=</span><span class="va">characteristic</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/fill.html">fill</a></span><span class="op">(</span><span class="va">char2</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">char2</span>,<span class="fu">everything</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>level<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">level</span><span class="op">)</span>,<span class="st">&quot;[Missing]&quot;</span>,<span class="va">level</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>char2<span class="op">=</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span><span class="va">characteristic</span><span class="op">==</span><span class="st">&quot;NA&quot;</span><span class="op">~</span><span class="cn">NA_character_</span>,<span class="cn">T</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">characteristic</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">format_cells</span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span>, <span class="st">&quot;bold&quot;</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">kable</span><span class="op">(</span>size<span class="op">=</span><span class="fl">10</span>, format<span class="op">=</span><span class="st">&quot;markdown&quot;</span>,caption<span class="op">=</span> <span class="st">&quot;Summary descriptives, Condemnatory sentence (1) &amp; Found as an imputed (YES)&quot;</span><span class="op">)</span></span></code></pre>
-</div>
-</details>
-<div class="message">
-<p>Time for this code chunk to run: 0 minutes</p>
-</div>
 </div>
 </div>
 <p><br></p>
@@ -12753,8 +13685,8 @@ Show code
 <span>        <span class="st">&quot;}&quot;</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre>
 </div>
 </details>
-<div id="htmlwidget-12e46180dbb3dd43fa59" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-12e46180dbb3dd43fa59">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","caption":"<caption style=\"caption-side: top; text-align: left;\">\n  \n  <em>Packages<\/em>\n<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136","137","138","139","140","141","142","143","144","145","146","147","148","149","150","151","152","153","154","155","156","157","158","159","160","161","162","163","164","165","166","167","168","169","170","171","172","173","174","175","176","177","178","179","180","181","182","183","184","185","186","187","188","189","190","191","192","193","194","195","196","197","198","199","200","201","202","203","204","205","206","207","208","209","210","211","212","213","214","215","216","217","218","219","220","221","222","223","224","225","226","227","228","229","230","231","232","233","234","235","236","237","238","239","240","241","242","243","244","245","246","247","248","249","250","251","252","253","254","255","256","257","258","259","260","261","262","263","264","265","266","267","268","269","270","271","272","273","274","275","276","277","278","279","280","281","282","283","284","285","286","287","288","289","290"],["abind","admisc","Amelia","APCtools","assertthat","backports","base64enc","bayestestR","BiasedUrn","biostat3","bit","bit64","blob","boot","bpmn","brio","broom","bslib","cachem","callr","car","carData","caret","cellranger","checkmate","chron","class","classInt","cli","clisymbols","cluster","ClusterR","cobalt","coda","codebook","codetools","colorspace","compareGroups","correlation","crayon","crul","curl","daff","data.table","datawizard","DBI","dbplyr","desc","deSolve","devtools","DiagrammeR","DiagrammeRsvg","digest","distill","dlookr","doRNG","downlit","dplyr","DT","e1071","easystats","effectsize","eha","ellipsis","emmeans","epiR","estimability","evaluate","explore","extrafont","extrafontdb","fansi","farver","fastmap","finalfit","flexsurv","flextable","forcats","foreach","foreign","Formula","fs","future","future.apply","gdtools","generics","ggeffects","ggfittext","ggfortify","ggiraph","ggpattern","ggplot2","ggpubr","ggside","ggsignif","ggstatsplot","gistr","globals","glue","gmp","googleVis","gower","gridExtra","gsubfn","gtable","gtools","hardhat","HardyWeinberg","haven","hexbin","highr","Hmisc","hms","hrbrthemes","htmlTable","htmltools","htmlwidgets","httpcode","httpuv","httr","igraph","insight","inum","ipred","iterators","itertools","janitor","job","jpeg","jquerylib","jsonlite","jtools","kableExtra","KernSmooth","km.ci","KMsurv","knitr","labeling","labelled","later","lattice","latticeExtra","lava","lazyeval","libcoin","lifecycle","listenv","lme4","lsmeans","lubridate","magick","magrittr","maps","MASS","MatchIt","Matrix","matrixStats","mc2d","memoise","Metrics","mgcv","mice","mime","minqa","missForest","mitools","modelbased","ModelMetrics","modelr","mstate","muhaz","munsell","mvtnorm","nlme","nloptr","nnet","numDeriv","officer","pacman","pagedown","paletteer","pander","panelr","parallelly","parameters","partykit","patchwork","performance","pillar","pkgbuild","pkgconfig","pkgload","plotly","plyr","png","polycor","prettyunits","pROC","processx","prodlim","promises","proto","proxy","pryr","ps","purrr","quadprog","R6","randomForest","rbokeh","RColorBrewer","Rcpp","reactable","readr","readxl","recipes","rematch2","remotes","report","reprex","reshape","reshape2","rlang","rmarkdown","rngtools","rpart","rpivotTable","rprojroot","Rsolnp","RSQLite","rstatix","rstudioapi","rsvg","Rttf2pt1","rvest","sass","scales","see","sessioninfo","sf","shiny","showtext","showtextdb","sjlabelled","sjmisc","sjPlot","sjstats","snakecase","sqldf","stargazer","statsExpressions","stringi","stringr","survey","survival","survminer","survMisc","svglite","sysfonts","systemfonts","tableone","testthat","tibble","tidylog","tidyr","tidyselect","tidyverse","timeDate","treemapify","truncnorm","tzdb","units","usethis","utf8","uuid","V8","vctrs","viridisLite","visNetwork","webshot","withr","writexl","WRS2","xfun","xml2","xtable","yaml","zeallot","zip","zoo"],["1.4-5","0.26","1.8.0","1.0.1","0.2.1","1.4.1","0.1-3","0.12.1","1.07","0.1.6","4.0.4","4.0.5","1.2.2","1.3-28","0.1.0","1.1.3","0.7.12","0.3.1","1.0.6","3.7.0","3.0-12","3.0-5","6.0-91","1.1.0","2.0.0","2.3-56","7.3-19","0.4-3","3.2.0","1.2.0","2.1.2","1.2.6","4.3.2","0.19-4","0.9.2","0.2-18","2.0-3","4.5.1","0.8.2.2","1.5.0","1.2.0","4.3.2","0.3.5","1.14.2","0.5.1","1.1.2","2.1.1","1.4.1","1.30","2.4.3","1.0.9","0.1","0.6.29","1.4","0.6.0","1.8.2","0.4.2","1.0.8","0.21","1.7-9","0.5.2","0.7.0.5","2.9.0","0.3.2","1.7.2","2.0.43","1.3","0.15","0.8.0","0.18","1.0","1.0.2","2.1.0","1.1.0","1.0.4","2.1","0.7.0","0.5.1","1.5.2","0.8-81","1.2-4","1.5.2","1.24.0","1.8.1","0.2.4","0.1.2","1.1.1","0.9.1","0.4.14","0.8.2","1.0.0","3.3.6","0.4.0","0.2.0","0.6.3","0.9.1","0.9.0","0.14.0","1.6.2","0.6-4","0.7.0","1.0.0","2.3","0.7","0.3.0","3.9.2","0.2.0","1.7.4","2.4.3","1.28.2","0.9","4.6-0","1.1.1","0.8.0","2.4.0","0.5.2","1.5.4","0.3.0","1.6.5","1.4.2","1.2.11","0.18.2","1.0-4","0.9-12","1.0.14","0.1-3","2.1.0","0.3.0","0.1-9","0.1.4","1.8.0","2.1.4","1.3.4","2.23-20","0.5-2","0.1-5","1.37","0.4.2","2.9.0","1.3.0","0.20-45","0.6-29","1.6.10","0.2.2","1.0-9","1.0.1","0.8.0","1.1-28","2.30-0","1.8.0","2.7.3","2.0.2","3.4.0","7.3-54","4.4.0","1.3-4","0.61.0","0.1-21","2.0.1","0.1.4","1.8-38","3.14.0","0.12","1.2.4","1.5","2.4","0.8.5","1.2.2.2","0.1.8","0.3.2","1.2.6.4","0.5.0","1.1-3","3.1-153","2.0.0","7.3-16","2016.8-1.1","0.4.1","0.5.1","0.17","1.4.0","0.6.4","0.7.6","1.30.0","0.18.2","1.2-16","1.1.1","0.9.2","1.7.0","1.3.1","2.0.3","1.2.4","4.10.0","1.8.6","0.1-7","0.8-1","1.1.1","1.18.0","3.5.2","2019.11.13","1.2.0.1","1.0.0","0.4-26","0.1.5","1.6.0","0.3.4","1.5-8","2.5.1","4.7-1.1","0.5.2","1.1-2","1.0.8","0.3.0","2.1.2","1.3.1","0.2.0","2.1.2","2.4.2","0.5.5.1","2.0.1","0.8.8","1.4.4","1.0.2","2.13","1.5.2","4.1-15","0.3.0","2.0.2","1.16","2.2.10","0.7.0","0.13","2.3.1","1.3.11","1.0.2","0.4.0","1.1.1","0.7.2","1.2.2","1.0-7","1.7.1","0.9-5","3.0","1.1.8","2.8.9","2.8.10","0.18.1","0.11.0","0.4-11","5.2.3","1.3.0","1.7.6","1.4.0","4.1-1","3.2-13","0.4.9","0.5.5","2.1.0","0.8.8","1.0.4","0.13.0","3.1.2","3.1.6","1.0.2","1.2.0","1.1.2","1.3.1","3043.102","2.5.5","1.0-8","0.2.0","0.8-0","2.1.5","1.2.2","1.0-3","4.1.0","0.3.8","0.4.0","2.1.0","0.5.2","2.5.0","1.4.0","1.1-3","0.30","1.3.3","1.8-4","2.3.5","0.1.0","2.2.0","1.8-9"],["CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","Github (bergant/bpmn@628d3efaa27544c221b2fd7f1895301a63b70c49)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","https://easystats.r-universe.dev (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","https://easystats.r-universe.dev (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Row number<\/th>\n      <th>Variable<\/th>\n      <th>Percentage<\/th>\n      <th>source<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"initComplete":"function(settings, json) {\n$(this.api().tables().body()).css({\n            'font-family': 'Helvetica Neue',\n            'font-size': '50%', \n            'code-inline-font-size': '15%', \n            'white-space': 'nowrap',\n            'line-height': '0.75em',\n            'min-height': '0.5em'\n            });\n}","columnDefs":[],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true}},"evals":["options.initComplete"],"jsHooks":[]}</script>
+<div id="htmlwidget-b837690eceb36be8bc58" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b837690eceb36be8bc58">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","caption":"<caption style=\"caption-side: top; text-align: left;\">\n  \n  <em>Packages<\/em>\n<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136","137","138","139","140","141","142","143","144","145","146","147","148","149","150","151","152","153","154","155","156","157","158","159","160","161","162","163","164","165","166","167","168","169","170","171","172","173","174","175","176","177","178","179","180","181","182","183","184","185","186","187","188","189","190","191","192","193","194","195","196","197","198","199","200","201","202","203","204","205","206","207","208","209","210","211","212","213","214","215","216","217","218","219","220","221","222","223","224","225","226","227","228","229","230","231","232","233","234","235","236","237","238","239","240","241","242","243","244","245","246","247","248","249","250","251","252","253","254","255","256","257","258","259","260","261","262","263","264","265","266","267","268","269","270","271","272","273","274","275","276","277","278","279","280","281","282","283","284","285","286","287","288","289","290"],["abind","admisc","Amelia","APCtools","assertthat","backports","base64enc","bayestestR","BiasedUrn","biostat3","bit","bit64","blob","boot","bpmn","brio","broom","bslib","cachem","callr","car","carData","caret","cellranger","checkmate","chron","class","classInt","cli","clisymbols","cluster","ClusterR","cobalt","coda","codebook","codetools","colorspace","compareGroups","correlation","crayon","crul","curl","daff","data.table","datawizard","DBI","dbplyr","desc","deSolve","devtools","DiagrammeR","DiagrammeRsvg","digest","distill","dlookr","doRNG","downlit","dplyr","DT","e1071","easystats","effectsize","eha","ellipsis","emmeans","epiR","estimability","evaluate","explore","extrafont","extrafontdb","fansi","farver","fastmap","finalfit","flexsurv","flextable","forcats","foreach","foreign","Formula","fs","future","future.apply","gdtools","generics","ggeffects","ggfittext","ggfortify","ggiraph","ggpattern","ggplot2","ggpubr","ggside","ggsignif","ggstatsplot","gistr","globals","glue","gmp","googleVis","gower","gridExtra","gsubfn","gtable","gtools","hardhat","HardyWeinberg","haven","hexbin","highr","Hmisc","hms","hrbrthemes","htmlTable","htmltools","htmlwidgets","httpcode","httpuv","httr","igraph","insight","inum","ipred","iterators","itertools","janitor","job","jpeg","jquerylib","jsonlite","jtools","kableExtra","KernSmooth","km.ci","KMsurv","knitr","labeling","labelled","later","lattice","latticeExtra","lava","lazyeval","libcoin","lifecycle","listenv","lme4","lsmeans","lubridate","magick","magrittr","maps","MASS","MatchIt","Matrix","matrixStats","mc2d","memoise","Metrics","mgcv","mice","mime","minqa","missForest","mitools","modelbased","ModelMetrics","modelr","mstate","muhaz","munsell","mvtnorm","nlme","nloptr","nnet","numDeriv","officer","pacman","pagedown","paletteer","pander","panelr","parallelly","parameters","partykit","patchwork","performance","pillar","pkgbuild","pkgconfig","pkgload","plotly","plyr","png","polycor","prettyunits","pROC","processx","prodlim","promises","proto","proxy","pryr","ps","purrr","quadprog","R6","randomForest","rbokeh","RColorBrewer","Rcpp","reactable","readr","readxl","recipes","rematch2","remotes","report","reprex","reshape","reshape2","rlang","rmarkdown","rngtools","rpart","rpivotTable","rprojroot","Rsolnp","RSQLite","rstatix","rstudioapi","rsvg","Rttf2pt1","rvest","sass","scales","see","sessioninfo","sf","shiny","showtext","showtextdb","sjlabelled","sjmisc","sjPlot","sjstats","snakecase","sqldf","stargazer","statsExpressions","stringi","stringr","survey","survival","survminer","survMisc","svglite","sysfonts","systemfonts","tableone","testthat","tibble","tidylog","tidyr","tidyselect","tidyverse","timeDate","treemapify","truncnorm","tzdb","units","usethis","utf8","uuid","V8","vctrs","viridisLite","visNetwork","webshot","withr","writexl","WRS2","xfun","xml2","xtable","yaml","zeallot","zip","zoo"],["1.4-5","0.26","1.8.0","1.0.1","0.2.1","1.4.1","0.1-3","0.12.1","1.07","0.1.6","4.0.4","4.0.5","1.2.2","1.3-28","0.1.0","1.1.3","0.7.12","0.3.1","1.0.6","3.7.0","3.0-12","3.0-5","6.0-91","1.1.0","2.0.0","2.3-56","7.3-19","0.4-3","3.2.0","1.2.0","2.1.2","1.2.6","4.3.2","0.19-4","0.9.2","0.2-18","2.0-3","4.5.1","0.8.2.2","1.5.0","1.2.0","4.3.2","0.3.5","1.14.2","0.5.1","1.1.2","2.1.1","1.4.1","1.30","2.4.3","1.0.9","0.1","0.6.29","1.4","0.6.0","1.8.2","0.4.2","1.0.8","0.21","1.7-9","0.5.2","0.7.0.5","2.9.0","0.3.2","1.7.2","2.0.43","1.3","0.15","0.8.0","0.18","1.0","1.0.2","2.1.0","1.1.0","1.0.4","2.1","0.7.0","0.5.1","1.5.2","0.8-81","1.2-4","1.5.2","1.24.0","1.8.1","0.2.4","0.1.2","1.1.1","0.9.1","0.4.14","0.8.2","1.0.0","3.3.6","0.4.0","0.2.0","0.6.3","0.9.1","0.9.0","0.14.0","1.6.2","0.6-4","0.7.0","1.0.0","2.3","0.7","0.3.0","3.9.2","0.2.0","1.7.4","2.4.3","1.28.2","0.9","4.6-0","1.1.1","0.8.0","2.4.0","0.5.2","1.5.4","0.3.0","1.6.5","1.4.2","1.2.11","0.18.2","1.0-4","0.9-12","1.0.14","0.1-3","2.1.0","0.3.0","0.1-9","0.1.4","1.8.0","2.1.4","1.3.4","2.23-20","0.5-2","0.1-5","1.37","0.4.2","2.9.0","1.3.0","0.20-45","0.6-29","1.6.10","0.2.2","1.0-9","1.0.1","0.8.0","1.1-28","2.30-0","1.8.0","2.7.3","2.0.2","3.4.0","7.3-54","4.4.0","1.3-4","0.61.0","0.1-21","2.0.1","0.1.4","1.8-38","3.14.0","0.12","1.2.4","1.5","2.4","0.8.5","1.2.2.2","0.1.8","0.3.2","1.2.6.4","0.5.0","1.1-3","3.1-153","2.0.0","7.3-16","2016.8-1.1","0.4.1","0.5.1","0.17","1.4.0","0.6.4","0.7.6","1.30.0","0.18.2","1.2-16","1.1.1","0.9.2","1.7.0","1.3.1","2.0.3","1.2.4","4.10.0","1.8.6","0.1-7","0.8-1","1.1.1","1.18.0","3.5.2","2019.11.13","1.2.0.1","1.0.0","0.4-26","0.1.5","1.6.0","0.3.4","1.5-8","2.5.1","4.7-1.1","0.5.2","1.1-2","1.0.8","0.3.0","2.1.2","1.3.1","0.2.0","2.1.2","2.4.2","0.5.5.1","2.0.1","0.8.8","1.4.4","1.0.2","2.13","1.5.2","4.1-15","0.3.0","2.0.2","1.16","2.2.10","0.7.0","0.13","2.3.1","1.3.11","1.0.2","0.4.0","1.1.1","0.7.2","1.2.2","1.0-7","1.7.1","0.9-5","3.0","1.1.8","2.8.9","2.8.10","0.18.1","0.11.0","0.4-11","5.2.3","1.3.0","1.7.6","1.4.0","4.1-1","3.2-13","0.4.9","0.5.5","2.1.0","0.8.8","1.0.4","0.13.0","3.1.2","3.1.6","1.0.2","1.2.0","1.1.2","1.3.1","3043.102","2.5.5","1.0-8","0.2.0","0.8-0","2.1.5","1.2.2","1.0-3","4.1.0","0.3.8","0.4.0","2.1.0","0.5.2","2.5.0","1.4.0","1.1-3","0.30","1.3.3","1.8-4","2.3.5","0.1.0","2.2.0","1.8-9"],["CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","Github (bergant/bpmn@628d3efaa27544c221b2fd7f1895301a63b70c49)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","https://easystats.r-universe.dev (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.1)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","https://easystats.r-universe.dev (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.2)","CRAN (R 4.1.3)","CRAN (R 4.1.3)","CRAN (R 4.1.3)"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Row number<\/th>\n      <th>Variable<\/th>\n      <th>Percentage<\/th>\n      <th>source<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"initComplete":"function(settings, json) {\n$(this.api().tables().body()).css({\n            'font-family': 'Helvetica Neue',\n            'font-size': '50%', \n            'code-inline-font-size': '15%', \n            'white-space': 'nowrap',\n            'line-height': '0.75em',\n            'min-height': '0.5em'\n            });\n}","columnDefs":[],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true}},"evals":["options.initComplete"],"jsHooks":[]}</script>
 <div class="message">
 <p>Time for this code chunk to run: 0.1 minutes</p>
 </div>
