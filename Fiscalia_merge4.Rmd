@@ -453,8 +453,8 @@ c('rut_enc_saf' = 'id',
 'clasificacion_pena_55' = 's_kindprison_2',
 'imp_birth_date' = 'dateofbirth_imp',
 'obs' = 'obs',
-'edad_comision_imp' = 'date_offending_imp',
-'edad_ter_rel_imp' = 'age_offending_imp',
+'edad_comision_imp' = 'age_offending_imp',
+'edad_ter_rel_imp' = 'age_finish_rel_imp',
 'familia_delito_rec' = 'crime_code_group_rec',
 'familia_delito_rec_prof' = 'crime_code_group_rec_prof',
 'sex_imp' = 'sex_imp',
@@ -489,12 +489,12 @@ We ended with `r nrow(Base_fiscalia_v9) %>% format(big.mark=",")` relationships 
 Base_fiscalia_v9<-
   Base_fiscalia_v9 %>% 
   dplyr::mutate(s_kindprison_1=dplyr::case_when(
-    s_kindprison_1== 'Presidio Mayor grado medio' ~ 'Prison Major medium grade',
-    s_kindprison_1== 'Presidio Mayor grado máximo' ~ 'Prison Major maximum grade',
-    s_kindprison_1== 'Presidio Mayor grado mínimo' ~ 'Prison Mayor minimum degree',
-    s_kindprison_1== 'Presidio Menor grado medio' ~ 'Prison Menor medium grade',
-    s_kindprison_1== 'Presidio Menor grado máximo' ~ 'Prison Menor maximum degree',
-    s_kindprison_1== 'Presidio Menor grado mínimo' ~ 'Minimum minimum term of imprisonment',
+    s_kindprison_1== 'Presidio Mayor grado medio' ~ 'Major Prison medium grade',
+    s_kindprison_1== 'Presidio Mayor grado máximo' ~ 'Major Prison maximum grade',
+    s_kindprison_1== 'Presidio Mayor grado mínimo' ~ 'Major Prison minimum degree',
+    s_kindprison_1== 'Presidio Menor grado medio' ~ 'Minor Prison medium grade',
+    s_kindprison_1== 'Presidio Menor grado máximo' ~ 'Minor Prison maximum degree',
+    s_kindprison_1== 'Presidio Menor grado mínimo' ~ 'Minimum term of imprisonment',
     s_kindprison_1== 'Presidio Perpetuo calificado' ~ 'Life imprisonment, qualified degree',
     s_kindprison_1== 'Presidio Perpetuo simple' ~ 'Simple life imprisonment',
     s_kindprison_1== 'Prisión' ~ 'Prison',
@@ -550,7 +550,7 @@ Most cases had only one relationship, and nearly 95% had only one offense (even 
 Base_fiscalia_v9 %>% 
   dplyr::filter(caseid %in%
 as.character(unlist(distinct(dplyr::filter(dplyr::ungroup(concatenated_run_ruc_n_rel_n_offenses),n>1),caseid)))) %>% 
-  dplyr::select(id, dateofbirth_imp, sex_imp, country_a, caseid, id_relac, id_victim, age_offending_imp, date_offending_imp, crime_code_c, reg_c, end_type_2, s_sentence_1, s__fine_1, s_kindprison_1, s_sentence_2, s__fine_2, s_kindprison_2) %>%
+  dplyr::select(id, dateofbirth_imp, sex_imp, country_a, caseid, id_relac, id_victim, age_offending_imp, age_finish_rel_imp, crime_code_c, reg_c, end_type_2, s_sentence_1, s__fine_1, s_kindprison_1, s_sentence_2, s__fine_2, s_kindprison_2) %>%
   slice(1:40) %>% 
   knitr::kable("markdown", caption="Glimpse of the database")
 ```
@@ -673,7 +673,9 @@ CONS_C1_df_dup_SEP_2020_22_b %>%
   dplyr::mutate(edad_al_ing_imp= dplyr::case_when(!is.na(dob_imp) & fech_nac!= dob_imp~ difftime(fech_ing, dob_imp)/365.25, !is.na(dob_imp) & is.na(fech_nac)~ (fech_ing- dob_imp)/365.25, T~ as.numeric(edad_al_ing_1)))%>% 
 # replace year at discharge (2022-11-01)
   dplyr::mutate(edad_al_egres_imp= dplyr::case_when(!is.na(dob_imp) & fech_nac!= dob_imp~ lubridate::time_length(lubridate::interval(dob_imp, fech_egres_imp),unit="years"), !is.na(dob_imp) & is.na(fech_nac)~ lubridate::time_length(lubridate::interval(dob_imp, fech_egres_imp),unit="years"), T~ as.numeric(edad_al_egres_1)))%>%   
-  dplyr::select(-sex_imp, -sexo_2, -edad_al_ing_1_b, -edad_al_ing_imp)
+  dplyr::select(-sex_imp, -sexo_2, -edad_al_ing_1_b, -edad_al_ing_imp) %>% 
+#2022-11-01
+  dplyr::mutate(fech_nac_rec=dplyr::case_when(!is.na(dob_imp) & fech_nac!= dob_imp~ dob_imp, !is.na(dob_imp) & is.na(fech_nac)~ dob_imp, T~ fech_nac))
 
 # Age at admission for each treatment: if the date of birth (PO) is not empty and the date of birth of senda is different of date of birth, for each age at admission (for different admissions), we compute the difference of the date of admission (at each admission) with the date of birth (PO) and divided by years; if the date of birth (PO) is not empty but SENDA is empty, we compute the difference of the date of admission (at each admission) with the date of birth (PO) and divided by years; else will be taken from the date at admission from the date of birth of SENDA.
 #The same for age at discharge
@@ -690,11 +692,9 @@ for (i in 1:10) {
   CONS_C1_df_dup_SEP_2020_22_d <- 
     CONS_C1_df_dup_SEP_2020_22_d %>% 
   #age at admission
-    dplyr::mutate(!!log_column_name := dplyr::case_when(!is.na(dob_imp) & fech_nac!= dob_imp~ lubridate::time_length(lubridate::interval(dob_imp, !!rlang::sym(column_name)), unit="years"), 
-        !is.na(dob_imp) & is.na(fech_nac)~ lubridate::time_length(lubridate::interval(dob_imp, !!rlang::sym(column_name)), unit="years"), T~ lubridate::time_length(lubridate::interval(fech_nac, !!rlang::sym(column_name)), unit="years"))) %>% 
+    dplyr::mutate(!!log_column_name := lubridate::time_length(lubridate::interval(fech_nac_rec, !!rlang::sym(column_name)), unit="years")) %>% 
   #age at discharge  
-    dplyr::mutate(!!log_column_name2 := dplyr::case_when(!is.na(dob_imp) & fech_nac!= dob_imp~ lubridate::time_length(lubridate::interval(dob_imp, !!rlang::sym(column_name2)), unit="years"), 
-        !is.na(dob_imp) & is.na(fech_nac)~ lubridate::time_length(lubridate::interval(dob_imp, !!rlang::sym(column_name2)), unit="years"), T~ lubridate::time_length(lubridate::interval(fech_nac, !!rlang::sym(column_name2)), unit="years"))) %>% 
+    dplyr::mutate(!!log_column_name2 := lubridate::time_length(lubridate::interval(fech_nac_rec, !!rlang::sym(column_name2)), unit="years")) %>% 
     as.data.table()%>% 
   purrr::when(nrow(.)>nrow(CONS_C1_df_dup_SEP_2020_22) ~ stop("More cases in the new database"), ~.) 
     
@@ -720,9 +720,11 @@ invisible("La edad está bien definida en términos relativos (entre ingresos), 
 ```
 :::
 
-Once standardization is complete, we joined the databases `CONS_C1_df_dup_SEP_2020_22_b` and `Base_fiscalia_v9` into a single one.  The master database was SENDAs treatments, and we only used records of POs database which had an age of offending equal or posterior to the age of admission to treatment. Hence, we can see
+Once standardization is complete, we **joined** the databases `CONS_C1_df_dup_SEP_2020_22_b` and `Base_fiscalia_v9` into a single one.  The master database was SENDAs treatments, and we only used records of POs database which had an age of offending equal or posterior to the age of admission to treatment. Hence, we can see
 
 ```{r join1, echo=T, fig.align='center', message=T, error=T, eval=T}
+# #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#join
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #WHERE rn_id = 1
 Base_fiscalia_v10<-
@@ -734,48 +736,67 @@ sqldf("SELECT *
   ON x.hash_key == y.id AND 
   x.edad_al_egres_1 <= y.age_offending_imp")
 
-paste0("Observations of SENDA database: ",nrow(CONS_C1_df_dup_SEP_2020_22_b))#109756)
-paste0("Observations of PO database: ", nrow(Base_fiscalia_v10))#204,115 nrow
+invisible("It might be that those discharged not necessarily were, because this date corresponded to a referral")
 
-#must use these vectors to run iterations correctly
+paste0("Observations of SENDA database: ",nrow(CONS_C1_df_dup_SEP_2020_22_d))#109756)
+paste0("Observations of PO database: ", nrow(Base_fiscalia_v10))#204,115 nrow
 
 Base_fiscalia_v11<-
 Base_fiscalia_v10 %>% 
   #discrepancies in names of variables
   janitor::clean_names() %>%   #janitor::tabyl(!is.na(dob_imp_num))
   #previously recoded, 
-  dplyr::select(-sex, -dateofbirth_imp, -country, -victim, -id_victim, -crime_code_c , -reg_c, -end_type_2c, -cod_comunadelito, -cod_lugarocurrencia, -date_offending_imp, -sex_imp, -region_delito, -filter, -id)%>%
+  dplyr::select(-sex, -dateofbirth_imp, -country, -victim, -id_victim, -crime_code_c , -reg_c, -end_type_2c, -cod_comunadelito, -cod_lugarocurrencia, -sex_imp, -region_delito, -filter, -id)%>%
   plyr::rename(c("sex_2"="sex", "dateofbirth_imp_2"="dateofbirth_imp")) %>% 
   dplyr::ungroup() %>% 
   #_#_#_#_#_#_#_#_
   #generates errors with survival setting
   #make censorship date of age of comission
+  purrr::when(dplyr::filter(., is.na(fech_nac_rec)) %>% nrow() >7 ~ stop("Missing values in the age"), ~.) %>% 
   dplyr::mutate(age_offending_imp= dplyr::case_when(is.na(age_offending_imp)~
-lubridate::time_length(lubridate::interval(dob_imp, as.Date("2019-11-13")),unit="years"), T~ age_offending_imp)) %>% 
+lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years"), T~ age_offending_imp)) %>% 
   dplyr::group_by(hash_key) %>% 
-  dplyr::slice_min(age_offending_imp, with_ties = T) %>% 
+  #select the first and without ties (only one)
+  dplyr::slice_min(age_offending_imp, n = 1, with_ties = T) %>% 
   dplyr::ungroup() %>% 
   purrr::when(nrow(dplyr::filter(.,age_offending_imp-edad_al_ing_1<0))>0 ~ stop("Cases with negaative time after admission to commission of crime"), ~.) %>% 
    dplyr::mutate(motivodeegreso_mod_imp_rec= dplyr::case_when(grepl("Therapeutic",motivodeegreso_mod_imp)~ "Treatment completion", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 <90) ~  "Treatment non-completion (Early)", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 >=90) ~ "Treatment non-completion (Late)", grepl("Referral|Death|Ongoing", motivodeegreso_mod_imp)~ "Censored", T~NA_character_))
 
+warning(paste0("There are ",nrow(dplyr::filter(Base_fiscalia_v11,is.na(fech_nac_rec))),"missing cases in date of birth (were 7 in v.10)"))
+
+  # 2022-11-01, filter
+Base_fiscalia_v12<-
+  dplyr::filter(Base_fiscalia_v11, !grepl("Referral|Death",motivodeegreso_mod_imp))
   
 invisible("Ver por qué los valores negativos-R: por que entre la admisión y terminar el tratamiento hay casos que registraron un delito")
 invisible("ver por qué no recodifica a los motivo de egresos de manera iterativa")
 invisible("QUEDA POR LIMPIAR LA BASE DE FISCALIA")
 invisible("Qué hacer con Death, Referral to another treatment, Ongoing treatment")
 
-Base_fiscalia_v11 %>% 
+Base_fiscalia_v12 %>% 
+  dplyr::select(hash_key, fech_nac, fech_nac_rec, motivodeegreso_mod_imp_rec, age_offending_imp, edad_al_ing_1, edad_comision, fec_comision_simple, caseid, crime_code_group_rec_prof, end_type_2, gls_proctermino, s_sentence_1, s_restorative_3, s_kindprison_1) %>% 
+dplyr::filter(hash_key=="1951c4d080cda8b68759d638a840d82f") %>% 
+  knitr::kable("markdown")
+
+Base_fiscalia_v12 %>% 
+  dplyr::select(hash_key, fech_nac, fech_nac_rec, motivodeegreso_mod_imp_rec, age_offending_imp, edad_al_ing_1, caseid, crime_code_group_rec_prof, end_type_2, gls_proctermino, s_sentence_1, s_restorative_3, s_kindprison_1) %>% 
     dplyr::group_by(hash_key) %>% 
     count() %>% 
     dplyr::filter(n>1) %>% 
     dplyr::ungroup() %>% 
-    dplyr::summarise(total=n(),max=max(n), min=min(n), mean=round(mean(n),2), p025=quantile(n, .025), p25=quantile(n, .25), median=quantile(n, .5), p75=quantile(n, .75),p975=quantile(n, .975)) %>% 
+    dplyr::summarise(total= n(),max= max(n), min= min(n), mean=round(mean(n),2), p025= quantile(n, .025), p25= quantile(n, .25), median= quantile(n, .5), p75= quantile(n, .75), p975= quantile(n, .975)) %>% 
   data.frame() %>% 
   kable("markdown", caption= "Summary descvriptive of users with more than one closest offense committed after the first admission")
 ```
 
-
-
+```{r join1a, echo=T, fig.align='center', message=T, error=T, eval=T}
+Base_fiscalia_v13<-
+Base_fiscalia_v12 %>% 
+    dplyr::group_by(hash_key) %>% 
+  #select the first and without ties (only one)
+  dplyr::slice_min(age_offending_imp, n = 1, with_ties = F) %>% 
+  dplyr::ungroup()  
+```
 
 ```{r join1b, echo=T, fig.align='center', message=T, error=T, eval=F}
 
@@ -843,23 +864,23 @@ Base_fiscalia_v12b%>%
 
 ```{r exp-surv1, echo=T, fig.align='center', message=T, error=T, eval=T}
 
-biostat3::survRate(Surv((age_offending_imp-edad_al_ing_1), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_1, data=Base_fiscalia_v11) %>% dplyr::mutate_if(is.numeric,~round(.,2)) %>%  knitr::kable("markdown", caption= "Glimpse of the survival analysis, Offending from admission by Cause of Discharge of the First Treatment")
+biostat3::survRate(Surv((age_offending_imp-edad_al_ing_1), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_1, data=Base_fiscalia_v13) %>% dplyr::mutate_if(is.numeric,~round(.,2)) %>%  knitr::kable("markdown", caption= "Glimpse of the survival analysis, Offending from admission by Cause of Discharge of the First Treatment")
 
-biostat3::survRate(Surv((age_offending_imp-edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_1, data= dplyr::filter(Base_fiscalia_v11,age_offending_imp-edad_al_egres_imp>=0))  %>% dplyr::mutate_if(is.numeric,~round(.,2)) %>%  knitr::kable("markdown", caption= "Glimpse of the survival analysis, Offending from admission by Cause of Discharge of the First Treatment")
+biostat3::survRate(Surv((age_offending_imp-edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_1, data= dplyr::filter(Base_fiscalia_v13,age_offending_imp-edad_al_egres_imp>=0))  %>% dplyr::mutate_if(is.numeric,~round(.,2)) %>%  knitr::kable("markdown", caption= "Glimpse of the survival analysis, Offending from admission by Cause of Discharge of the First Treatment")
 
 
 
-biostat3::survRate(Surv((age_offending_imp-edad_al_ing_1), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v11) %>%
+biostat3::survRate(Surv((age_offending_imp-edad_al_ing_1), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v13) %>%
   select(-1) %>% dplyr::mutate_if(is.numeric,~round(.,2)) %>%  knitr::kable("markdown", caption= "Glimpse of the survival analysis, Offending from admission by Cause of Discharge of the First Treatment")
 
-biostat3::survRate(Surv((age_offending_imp-edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec, data= dplyr::filter(Base_fiscalia_v11,age_offending_imp-edad_al_egres_imp>=0))  %>% select(-1) %>%  dplyr::mutate_if(is.numeric,~round(.,2)) %>%  knitr::kable("markdown", caption= "Glimpse of the survival analysis, Offending from admission by Cause of Discharge of the First Treatment")
+biostat3::survRate(Surv((age_offending_imp-edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec, data= dplyr::filter(Base_fiscalia_v13,age_offending_imp-edad_al_egres_imp>=0))  %>% select(-1) %>%  dplyr::mutate_if(is.numeric,~round(.,2)) %>%  knitr::kable("markdown", caption= "Glimpse of the survival analysis, Offending from admission by Cause of Discharge of the First Treatment")
 ```
 
 `r paste0("We discarded cases with ", nrow(dplyr::filter(Base_fiscalia_v11, age_offending_imp-edad_al_egres_imp<0)) %>% format(big.mark=","), " relationships with a contact with the system before finishing treatment")`
 
 ```{r exp-surv2, echo=T, fig.align='center', message=T, error=T, eval=T}
 
-mot_egreso_fit<- survfit(Surv(age_offending_imp-edad_al_ing_1,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v11,age_offending_imp-edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
+mot_egreso_fit<- survfit(Surv(age_offending_imp-edad_al_ing_1,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v13,age_offending_imp-edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
                                type      = "kaplan-meier",
                                 error     = "greenwood",
                                 conf.type = "log-log") 
@@ -881,7 +902,7 @@ ggsurvplot(mot_egreso_fit,
            #break.time.by = 365.25,
            pval = T,
            #ylim=c(0,10),
-           legend = c(0.88, 0.15), 
+           legend = c(0.88, 0.2), 
            legend.title="Cause of discharge",
            xlab= "Time (in years)", 
            #cumevents=T,
@@ -894,7 +915,7 @@ ggsurvplot(mot_egreso_fit,
 
 ```{r exp_surv3, echo=T, fig.align='center', message=T, error=T, eval=T}
 
-mot_egreso_fit2<- survfit(Surv(age_offending_imp-edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v11,age_offending_imp-edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
+mot_egreso_fit2<- survfit(Surv(age_offending_imp-edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v13,age_offending_imp-edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
                                type      = "kaplan-meier",
                                 error     = "greenwood",
                                 conf.type = "log-log") 
@@ -916,7 +937,7 @@ ggsurvplot(mot_egreso_fit2,
            #break.time.by = 365.25,
            pval = T,
            #xlim=c(0,5),
-           legend = c(0.88, 0.15), 
+           legend = c(0.88, 0.2), 
            legend.title="Cause of discharge",
            xlab= "Time (in years)", 
            #cumevents=T,
