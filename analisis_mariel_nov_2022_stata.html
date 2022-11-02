@@ -1,0 +1,311 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+</head>
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+</head>
+<pre><code>. clear all
+
+. 
+. cap noi which tabout
+c:\ado\plus\t\tabout.ado
+*! 2.0.8 Ian Watson 15mar2019
+*! tabout version 3 (beta) available at: http://tabout.net.au
+
+. if _rc==111 {
+.         cap noi ssc install tabout
+.         }
+
+. cap noi which pathutil
+c:\ado\plus\p\pathutil.ado
+*! version 2.2.0 19nov2020 daniel klein
+
+. if _rc==111 {
+.         cap noi net install pathutil, from(&quot;http://fmwww.bc.edu/repec/bocode/p/&quot;) 
+.         }
+
+. cap noi which pathutil
+c:\ado\plus\p\pathutil.ado
+*! version 2.2.0 19nov2020 daniel klein
+
+. if _rc==111 {
+.         ssc install dirtools    
+.         }
+
+. cap noi which pathutil
+c:\ado\plus\p\pathutil.ado
+*! version 2.2.0 19nov2020 daniel klein
+
+. if _rc==111 {   
+.         ssc install project
+.         }
+
+</code></pre>
+<h1><a href="#exercise" id="exercise">Exercise</a></h1>
+<p>Date created: 15:24:11  2 Nov 2022.</p>
+<p>Get the folder</p>
+<pre><code>
+E:\Mi unidad\Alvacast\SISTRAT 2022 (github)
+
+
+Fecha:  2 Nov 2022, considerando un SO Windows para el usuario: andre
+
+</code></pre>
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+</head>
+<p>Path data= ;</p>
+<p>Tiempo:  2 Nov 2022, considerando un SO Windows</p>
+<p>The file is located and named as: E:\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA.dta</p>
+<p>=============================================================================</p>
+<h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
+<p>=============================================================================</p>
+<p>We open the files</p>
+<pre><code>. use &quot;fiscalia_mariel_oct_2022_match_SENDA.dta&quot;, clear
+
+. 
+</code></pre>
+<p>Luego configuramos la base de datos en formato de supervivencia.</p>
+<pre><code>. *si no está perdido cod_region, significa que hubo un registro (0/1) y el tiempo es el tiempo desde 
+. *set the indicator
+. gen event=0
+
+. replace event=1 if !missing(offender_d)
+(22,986 real changes made)
+
+. *replace event=1 if !missing(sex)
+. 
+. gen diff= age_offending_imp-edad_al_egres_1
+
+. 
+. stset diff, failure(event ==1) 
+
+     failure event:  event == 1
+obs. time interval:  (0, diff]
+ exit on or before:  failure
+
+------------------------------------------------------------------------------
+     72,397  total observations
+          1  observation ends on or before enter()
+------------------------------------------------------------------------------
+     72,396  observations remaining, representing
+     22,986  failures in single-record/single-failure data
+ 235,173.72  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =  10.75828
+
+. *stset, id(id) failure(!miss(cod_region) enter(edad_al_ing_fmt) exit 
+. 
+. stdescribe, weight
+
+         failure _d:  event == 1
+   analysis time _t:  diff
+
+                                   |-------------- per subject --------------|
+Category                   total        mean         min     median        max
+------------------------------------------------------------------------------
+no. of subjects            72396   
+no. of records             72396           1           1          1          1
+
+(first) entry time                         0           0          0          0
+(final) exit time                   3.248435    .0000449   2.681378   10.75828
+
+subjects with gap              0   
+time on gap if gap             0   
+time at risk           235173.72    3.248435    .0000449   2.681378   10.75828
+
+failures                   22986    .3175037           0          0          1
+------------------------------------------------------------------------------
+
+</code></pre>
+<p>We calculate the incidence rate.</p>
+<pre><code>. stsum, by (motivodeegreso_mod_imp_rec)
+
+         failure _d:  event == 1
+   analysis time _t:  diff
+
+         |               Incidence     Number of   |------ Survival time -----|
+motivo~c | Time at risk       rate      subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+Treatmen |  65,972.3734   .0606011         19777    4.67397         .         .
+Treatmen |  48,004.6959   .1316746         16155   1.454264  6.784765         .
+Treatmen |  121,171.027   .1044887         36454   2.021185         .         .
+---------+---------------------------------------------------------------------
+   Total |  235,148.096   .0977256         72386   2.268309         .         .
+
+</code></pre>
+<p>=============================================================================</p>
+<h2><a href="#descriptives" id="descriptives">Descriptives</a></h2>
+<p>=============================================================================</p>
+<pre><code>. gen     motivodeegreso_mod_imp_rec3 = 1
+
+. replace motivodeegreso_mod_imp_rec3 = 2 if strpos(motivodeegreso_mod_imp_rec,&quot;Early&quot;)&gt;0
+(16,155 real changes made)
+
+. replace motivodeegreso_mod_imp_rec3 = 3 if strpos(motivodeegreso_mod_imp_rec,&quot;Late&quot;)&gt;0
+(36,454 real changes made)
+
+. 
+. local ttl `&quot; &quot;Tr Completion&quot; &quot;Tr Disch (Early)&quot; &quot;Tr Disch (Late)&quot; &quot;' 
+
+. forvalues i = 1/3 {
+  2. cap drop sum_*
+  3.         gettoken title ttl: ttl
+  4. cap qui egen sum_`i' = total(_t) if motivodeegreso_mod_imp_rec3==`i'
+  5. cap qui tab _d motivodeegreso_mod_imp_rec3 if _d==1 &amp; motivodeegreso_mod_imp_rec3==`i'
+  6. scalar n_eventos`i' =r(N)
+  7. qui tabstat sum_`i', save
+  8. scalar sum_`i'_total =r(StatTotal)[1,1]
+  9. scalar ir_t = round((n_eventos`i'/sum_`i'_total)*1000,.1)
+ 10. *di ir_t
+. *es numérico, para no generar incompatibilidad, se pasa a escalar
+. global dens_inc`i' &quot;Incidence rate ratio for `title' (`i') (x1,000 person-days):  `=scalar(ir_t)'&quot;
+ 11. *di %9.1f (n_eventos`i'/sum_`i'_total)*1000
+. }
+
+</code></pre>
+<ul>
+<li>
+<p>Incidence rate ratio for Tr Completion (1) (x1,000 person-days):  60.7</p>
+</li>
+<li>
+<p>Incidence rate ratio for Tr Disch (Early) (2) (x1,000 person-days):  131.7</p>
+</li>
+<li>
+<p>Incidence rate ratio for Tr Disch (Late) (3) (x1,000 person-days):  104.5</p>
+</li>
+</ul>
+<p>We recode the discharge cause to contrast them</p>
+<pre><code>. cap noi recode motivodeegreso_mod_imp_rec3 (1=0 &quot;Tr Completion&quot; ) ///
+&gt;                          (2=1 &quot;Early Disch&quot;) ///
+&gt;                          (else=.), gen(tto_2_1)
+(72397 differences between motivodeegreso_mod_imp_rec3 and tto_2_1)
+
+. cap noi recode motivodeegreso_mod_imp_rec3 (1=0 &quot;Tr Completion&quot; ) ///
+&gt;                          (3=1 &quot;Late Disch&quot;) ///
+&gt;                          (else=.), gen(tto_3_1)
+(72397 differences between motivodeegreso_mod_imp_rec3 and tto_3_1)
+
+. cap noi recode motivodeegreso_mod_imp_rec3 (2=0 &quot;Early Disch&quot; ) ///
+&gt;                          (3=1 &quot;Late Disch&quot;) ///
+&gt;                          (else=.), gen(tto_3_2)
+(72397 differences between motivodeegreso_mod_imp_rec3 and tto_3_2)
+
+</code></pre>
+<p>We explored the inicidence rate ratios IRR (razón de tasa de densidad de incidencia) of each cause of discharge.</p>
+<pre><code>. 
+. *set trace on
+. local stname `&quot; &quot;2_1&quot; &quot;3_1&quot; &quot;3_2&quot; &quot;' 
+
+. local titl `&quot; &quot;Early Disch vs Tr Completion&quot; &quot;Late Disch vs Tr Completion&quot; &quot;Late vs Early Disch&quot; &quot;' 
+
+. foreach s of local stname {
+  2.         gettoken title titl: titl
+  3. cap noi qui ir _d tto_`s' _t
+  4. scalar ir_`s' =round(r(irr),.01)
+  5. *di ir_`s'
+. scalar ir_`s'_lb =round(r(lb_irr),.01) 
+  6. *di ir_`s'_lb
+. scalar ir_`s'_ub =round(r(ub_irr),.01)
+  7. *di ir_`s'_ub
+. local ir1= ir_`s'
+  8. local ir2= ir_`s'_lb
+  9. local ir3= ir_`s'_ub
+ 10. *di  in gr _col(13) &quot; `title': IRR `ir1' (IC 95% `ir2' - `ir3') &quot;
+. global irr_`s' &quot; `title': IRR `ir1' (IC 95% `ir2' - `ir3') &quot;
+ 11. global ir_`s' &quot;`ir1' (IC 95% `ir2' - `ir3')&quot;
+ 12. }       
+
+</code></pre>
+<p>We generated a log-rank test to compare the expected to the observed result, obtaining that:</p>
+<ul>
+<li>
+<p>Early Disch vs Tr Completion: IRR 2.17 (IC 95% 2.09 - 2.26) , so patients with an Early Discharge had a greater incidence rate than patients in Tr Completion</p>
+</li>
+<li>
+<p>Late Disch vs Tr Completion: IRR 1.72 (IC 95% 1.66 - 1.79) , so patients with a Late Discharge had a greater incidence rate than patients in Tr Completion</p>
+</li>
+<li>
+<p>Late vs Early Disch: IRR .79 (IC 95% .77 - .8200000000000001) , so patients with a Late Discharge had a lower incidence rate than patients with an Early Discharge</p>
+</li>
+</ul>
+<pre><code>. *set trace on
+. local stname `&quot; &quot;2_1&quot; &quot;3_1&quot; &quot;3_2&quot; &quot;' 
+
+. local titl `&quot; &quot;Early Disch vs Tr Completion&quot; &quot;Late Disch vs Tr Completion&quot; &quot;Late vs Early Disch&quot; &quot;' 
+
+. foreach s of local stname {
+  2.         gettoken title titl: titl
+  3. cap noi qui sts test tto_`s', logrank
+  4. scalar logrank_chi`s'= round(r(chi2),.01)
+  5. scalar logrank_df`s'= r(df)
+  6. scalar logrank_p_`s'= round(chiprob(r(df),r(chi2)),.001)
+  7. local lr1= logrank_chi`s'
+  8. local lr2= logrank_df`s'
+  9. local lr3= logrank_p_`s'
+ 10. global logrank_`s' &quot; Chi^2(`lr2')=`lr1',p=`lr3'&quot;
+ 11. }
+
+. *set trace off
+</code></pre>
+<ul>
+<li>
+<p>With a value of  Chi^2(1)=1459.4,p=0, survival curves between patients that had an Early Disch y Tr Completion were significantly different.</p>
+</li>
+<li>
+<p>With a value of  Chi^2(1)=937.3000000000001,p=0, survival curves between patients that had an Late Disch y Tr Completion were significantly different.</p>
+</li>
+<li>
+<p>With a value of  Chi^2(1)=174.91,p=0, survival curves between patients that had an Late y Early Disch were significantly different.</p>
+</li>
+</ul>
+<p>=============================================================================</p>
+<h2><a href="#graph" id="graph">Graph</a></h2>
+<p>=============================================================================</p>
+<p>We generated a graph with every type of treatment and the Nelson-Aalen estimate.</p>
+<pre><code>. sts graph, na by (motivodeegreso_mod_imp_rec) ci ///
+&gt; title(&quot;Comission of an offense&quot;) /// 
+&gt; subtitle(&quot;Nelson-Aalen Cum Hazards w/ Confidence Intervals 95%&quot;) ///
+&gt; risktable(, size(*.5) order(1 &quot;Tr Completion&quot; 2 &quot;Early Disch&quot; 3 &quot;Late Disch&quot;)) ///
+&gt; ytitle(&quot;Cum. Hazards&quot;) ylabel(#8) ///
+&gt; xtitle(&quot;Years Follow-up&quot;) xlabel(#8) ///
+&gt; note(&quot;Source: nDP, SENDA's SUD Treatments &amp; POs Office Data period 2010-2019 &quot;) ///
+&gt; legend(rows(3)) ///
+&gt; legend(cols(4)) ///
+&gt; graphregion(color(white) lwidth(large)) bgcolor(white) ///
+&gt; plotregion(fcolor(white)) graphregion(fcolor(white) ) ///
+&gt; text(.5 1 &quot;IR = 0.655&quot;) ///
+&gt; legend(order(1 &quot;95CI Tr Completion&quot; 2 &quot;Tr Completion&quot; 3 &quot;95CI Early Tr Disch&quot; 4 &quot;Early Tr Disch &quot; 5 &quot;95CI Late Tr Disch&quot; 6 &quot;Late Tr Disch&quot; )size(*.5)region(lstyle(none)) region(c(no
+&gt; ne)) nobox)
+
+         failure _d:  event == 1
+   analysis time _t:  diff
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+
+. graph save &quot;tto.gph&quot;, replace
+(file tto.gph saved)
+
+</code></pre>
+<p><img src="tto.svg" width="800" ></p>
