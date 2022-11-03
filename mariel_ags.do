@@ -5,7 +5,6 @@
 ~~~~
 <<dd_do>>
 clear all
-
 cap noi which tabout
 if _rc==111 {
 	cap noi ssc install tabout
@@ -18,7 +17,7 @@ cap noi which pathutil
 if _rc==111 {
 	ssc install dirtools	
 	}
-cap noi which pathutil
+cap noi which project
 if _rc==111 {	
 	ssc install project
 	}
@@ -61,7 +60,18 @@ We open the files
 ~~~~
 <<dd_do>>
 use "fiscalia_mariel_oct_2022_match_SENDA.dta", clear
+encode escolaridad_rec, generate(esc_rec)
+encode sex, generate(sex_enc)
+encode sus_principal_mod, generate(sus_prin_mod)
+encode freq_cons_sus_prin, generate(fr_sus_prin)
+encode compromiso_biopsicosocial, generate(comp_biosoc)
+encode tenencia_de_la_vivienda_mod, generate(ten_viv)
+*encode dg_cie_10_rec, generate(dg_cie_10_mental_h) *already numeric
+encode dg_trs_cons_sus_or, generate(sud_severity_icd10)
+encode macrozona, generate(macrozone)
+*encode policonsumo, generate(policon) *already numeric
 
+*motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_10_rec i.dg_trs_cons_sus_or i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth
 <</dd_do>>
 ~~~~
 
@@ -75,10 +85,10 @@ gen event=0
 replace event=1 if !missing(offender_d)
 *replace event=1 if !missing(sex)
 
-gen diff= age_offending_imp-edad_al_egres_1
+gen diff= age_offending_imp-edad_al_egres_imp
 
-stset diff, failure(event ==1) 
-*stset, id(id) failure(!miss(cod_region) enter(edad_al_ing_fmt) exit 
+*age time
+stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
 
 stdescribe, weight
 <</dd_do>>
@@ -223,13 +233,12 @@ title("Comission of an offense") ///
 subtitle("Nelson-Aalen Cum Hazards w/ Confidence Intervals 95%") ///
 risktable(, size(*.5) order(1 "Tr Completion" 2 "Early Disch" 3 "Late Disch")) ///
 ytitle("Cum. Hazards") ylabel(#8) ///
-xtitle("Years Follow-up") xlabel(#8) ///
+xtitle("Years of age") xlabel(#8) ///
 note("Source: nDP, SENDA's SUD Treatments & POs Office Data period 2010-2019 ") ///
 legend(rows(3)) ///
 legend(cols(4)) ///
 graphregion(color(white) lwidth(large)) bgcolor(white) ///
-plotregion(fcolor(white)) graphregion(fcolor(white) ) ///
-text(.5 1 "IR = 0.655") ///
+plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
 legend(order(1 "95CI Tr Completion" 2 "Tr Completion" 3 "95CI Early Tr Disch" 4 "Early Tr Disch " 5 "95CI Late Tr Disch" 6 "Late Tr Disch" )size(*.5)region(lstyle(none)) region(c(none)) nobox)
 graph save "tto.gph", replace
 <</dd_do>>
@@ -237,6 +246,215 @@ graph save "tto.gph", replace
 
 <<dd_graph: saving(tto.svg) width(800) replace>>
 
+
+
+=============================================================================
+## Survival Analyses
+=============================================================================
+
+We tested the schoefeld residuals.
+
+~~~~
+<<dd_do>>
+*c("edad_al_ing_fmt", "edad_ini_cons", "dias_treat_imp_sin_na_1", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "compromiso_biopsicosocial", "tenencia_de_la_vivienda_mod", "dg_cie_10_rec", "dg_trs_cons_sus_or", "macrozona", "policonsumo", "n_prev_off", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth")
+
+global sim 1e5 //5e1 1e5 
+global boots 1e3 //5e1 2e3
+
+
+global covs "edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth"
+global covs_2 "i.motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth"
+
+
+stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
+estat phtest, log detail
+scalar chi2_scho_test = r(chi2)
+
+mat mat_scho_test = r(phtest)
+
+esttab matrix(stats_1) using "mat_scho_test.csv", replace
+esttab matrix(stats_1) using "mat_scho_test.html", replace
+
+<</dd_do>>
+~~~~
+
+<<dd_include: "${pathdata2}mat_scho_test.html" >>
+
+~~~~
+<<dd_do>>
+/*
+stphplot, by(n_off_vio) adjust($covs_health) ///
+ xtitle("Log Time (days)", size(small)) ///
+	ylabel(-4(2)8, labsize(vsmall)) ///	
+	legend(pos(7) ring(0) col(1) symysize(zero) keygap(1) symxsize(large) order( 1 2) lab(1 "Outpatient") lab(2 "Residential") size(small)) ///
+	ytitle("Schoenfeld residuals", size(small)) scheme(sj) graphregion(color(white)) ///
+	note("{it:Note. Means and 95% CI's; Bandwidth=.8; Natural log of analysis time used.}",size(vsmall)) ///
+	title("Plot of −ln{−ln(survival)} vs. ln(analysis time)" "by Treatment Modality at Baseline", size(medium)) ///
+	subtitle("{it: Fourth transition}",size(small)) ///
+	name(stphplot_trans_4, replace)  ///
+	saving(stphplot_trans_4.gph, replace)
+*/
+
+<</dd_do>>
+~~~~
+
+We generated a list of parametric survival models with different distributions (Exponential, Weibull, Gompertz, Log-logistic, Log-normal & Generalized gamma). Aditionally, we defined a series of Royston-Parmar models with a function of restricted cubic splines, in which the knots (#df -1) are defined in each percentile of the distribution. We saved the estimates in the file called `parmodels_m2_nov_22'.
+
+
+~~~~
+<<dd_do>>
+		// Cox w/tvc
+	forvalues j=1/7 {
+		di in yellow "{bf: ***********}"
+		di in yellow "{bf: family Cox tvc `j'}"
+		di in yellow "{bf: ***********}"
+		set seed 2125
+		qui cap noi stmerlin $covs_2 , dist(exponential) tvc(motivodeegreso_mod_imp_rec3) dftvc(`j')
+		estimates store m2_1_cox`j'	
+	}
+	// Exponential
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Exp}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(exponential)
+	estimates store m2_1_exp
+
+	// Weibull
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Wei}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(weibull)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(weibull, fail(_status)))
+	estimates store m2_1_weib
+
+	// Gompertz
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Gomp}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(gompertz)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(gompertz, fail(_status)))
+	estimates store m2_1_gom
+
+	// Log logistic
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Logl}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(loglogistic)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(loglogistic, fail(_status)))
+	estimates store m2_1_logl
+
+	// Log normal
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Logn}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(lognormal)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(lognormal, fail(_status)))
+	estimates store m2_1_logn
+	
+	// Generalised gamma
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Ggam}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(ggamma)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(ggamma, fail(_status)))
+	estimates store m2_1_ggam
+
+	// Royston Parmar models
+	forvalues j=1/10 {
+		di in yellow "{bf: ***********}"
+		di in yellow "{bf: family RP`j'}"
+		di in yellow "{bf: ***********}"
+		set seed 2125
+		qui cap noi stmerlin covs_2covs , dist(rp) df(`j')
+		//qui cap noi merlin (_time $covs if _trans == 1, family(rp, df(`j') fail(_status)))
+		estimates store m2_1_rp`j'
+		*estimates save "${pathdata2}parmodels.ster", append	
+	}	
+}
+*rcs(time, df(3) orthog)
+estwrite _all using "${pathdata2}parmodels_m2_nov_22.sters", replace
+<</dd_do>>
+~~~~
+
+~~~~
+<<dd_do>>
+*file:///G:/Mi%20unidad/Alvacast/SISTRAT%202019%20(github)/_supp_mstates/stata/1806.01615.pdf
+*rcs - restricted cubic splines on log hazard scale
+*rp - Royston-Parmar model (restricted cubic spline on log cumulative hazard scale)
+qui count if _d == 1
+	// we count the amount of cases with the event in the strata
+	//we call the estimates stored, and the results...
+estimates stat m1_*, n(`r(N)')
+	//we store in a matrix de survival
+matrix stats_1=r(S)
+
+
+estimates clear
+
+** to order AICs
+*https://www.statalist.org/forums/forum/general-stata-discussion/general/1665263-sorting-matrix-including-rownames
+mata :
+
+void st_sort_matrix(
+//argumento de la matriz
+    string scalar matname, 
+//argumento de las columnas
+    real   rowvector columns
+    )
+{
+    string matrix   rownames
+    real  colvector sort_order
+// defino una base	
+	Y = st_matrix(matname)
+	//[.,(1, 2, 3, 4, 6, 5)]
+ //ordeno las columnas  
+    rownames = st_matrixrowstripe(matname) //[.,(1, 2, 3, 4, 6, 5)]
+    sort_order = order(st_matrix(matname),  (columns))
+    st_replacematrix(matname, st_matrix(matname)[sort_order,.])
+    st_matrixrowstripe(matname, rownames[sort_order,.])
+}
+
+end
+//mata: mata drop st_sort_matrix()
+
+mata : st_sort_matrix("stats_1", 5)
+esttab matrix(stats_1) using "testreg_aic_nov_22.csv", replace
+esttab matrix(stats_1) using "testreg_aic_nov_22.html", replace
+
+<</dd_do>>
+~~~~
+
+<<dd_include: "${pathdata2}testreg_aic_nov_22.html" >>
+
+
+In case of the more flexible parametric models (non-standard), we selected the models that showed the best trade-off between lower complexity and better fit, and this is why we also considered the BIC. If a model with less parameters had greater or equal AIC (or differences lower than 2) but also had better BIC (<=2), we favoured the model with less parameters.
+
+
+We estimated a Survival-time inverse-probability weighting, these estimate the weights attributed to the treatment-assignment (likelihood of being treated) and time-to-censoring models, and use them to estimate the weighted averages of the outcomes for each treatment level. 
+
+~~~~
+<<dd_do>>
+*reset time, only compatible with stteffects (same entry times)
+stset diff, failure(event ==1) 
+
+stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, gamma), vce(bootstrap, nodots seed(2125) rep(300) saving(bsreg1))
+*steffects ra
+
+stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, 
+lnormal), vce(bootstrap, nodots seed(2125) rep(300) saving(bsreg2))
+* No me deja meterla, porque introduce desbalance: dias_treat_imp_sin_na_1 
+
+*count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_fmt, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, policonsumo, n_off_vio, n_off_acq, n_off_sud, n_off_oth)
+<</dd_do>>
+~~~~
+
+The model indicated that is complicated to include the days in treatment, because of collinearity.
 
 <<dd_do: nocommand>>
 /*
@@ -250,3 +468,13 @@ dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags.do", saving("E:\M
 
 */
 <</dd_do>>
+
+   
+<<dd_display: "Saved at= `c(current_time)' `c(current_date)'">>
+
+~~~~
+<<dd_do:nocommand>>
+	cap qui save "${pathdata2}archivo_multiestado0_jul_22_corr2_cc_3y.dta", all replace emptyok
+	* estimates use "${pathdata2}parmodels.ster"
+<</dd_do>>
+~~~~
