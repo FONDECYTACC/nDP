@@ -69,6 +69,10 @@ encode tenencia_de_la_vivienda_mod, generate(ten_viv)
 *encode dg_cie_10_rec, generate(dg_cie_10_mental_h) *already numeric
 encode dg_trs_cons_sus_or, generate(sud_severity_icd10)
 encode macrozona, generate(macrozone)
+gen     motivodeegreso_mod_imp_rec3 = 1
+replace motivodeegreso_mod_imp_rec3 = 2 if strpos(motivodeegreso_mod_imp_rec,"Early")>0
+replace motivodeegreso_mod_imp_rec3 = 3 if strpos(motivodeegreso_mod_imp_rec,"Late")>0
+
 *encode policonsumo, generate(policon) *already numeric
 
 *motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_10_rec i.dg_trs_cons_sus_or i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth
@@ -111,9 +115,6 @@ stsum, by (motivodeegreso_mod_imp_rec)
 
 ~~~~
 <<dd_do>>
-gen     motivodeegreso_mod_imp_rec3 = 1
-replace motivodeegreso_mod_imp_rec3 = 2 if strpos(motivodeegreso_mod_imp_rec,"Early")>0
-replace motivodeegreso_mod_imp_rec3 = 3 if strpos(motivodeegreso_mod_imp_rec,"Late")>0
 
 local ttl `" "Tr Completion" "Tr Disch (Early)" "Tr Disch (Late)" "' 
 forvalues i = 1/3 {
@@ -263,7 +264,7 @@ global boots 1e3 //5e1 2e3
 
 
 global covs "edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth"
-global covs_2 "i.motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth"
+global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth"
 
 
 stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
@@ -312,31 +313,6 @@ We generated a list of parametric survival models with different distributions (
 		qui cap noi stmerlin $covs_2 , dist(exponential) tvc(motivodeegreso_mod_imp_rec3) dftvc(`j')
 		estimates store m2_1_cox`j'	
 	}
-	// Exponential
-	di in yellow "{bf: ***********}"
-	di in yellow "{bf: family Exp}"
-	di in yellow "{bf: ***********}"
-	set seed 2125
-	qui cap noi stmerlin $covs_2 , dist(exponential)
-	estimates store m2_1_exp
-
-	// Weibull
-	di in yellow "{bf: ***********}"
-	di in yellow "{bf: family Wei}"
-	di in yellow "{bf: ***********}"
-	set seed 2125
-	qui cap noi stmerlin $covs_2 , dist(weibull)
-	//qui cap noi merlin (_time $covs if _trans == 1, family(weibull, fail(_status)))
-	estimates store m2_1_weib
-
-	// Gompertz
-	di in yellow "{bf: ***********}"
-	di in yellow "{bf: family Gomp}"
-	di in yellow "{bf: ***********}"
-	set seed 2125
-	qui cap noi stmerlin $covs_2 , dist(gompertz)
-	//qui cap noi merlin (_time $covs if _trans == 1, family(gompertz, fail(_status)))
-	estimates store m2_1_gom
 
 	// Log logistic
 	di in yellow "{bf: ***********}"
@@ -443,12 +419,12 @@ We estimated a Survival-time inverse-probability weighting, these estimate the w
 *reset time, only compatible with stteffects (same entry times)
 stset diff, failure(event ==1) 
 
-stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, gamma), vce(bootstrap, nodots seed(2125) rep(300) saving(bsreg1))
-*steffects ra
+stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, gamma), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg1))
+cap stteffects ra
 
 stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, 
-lnormal), vce(bootstrap, nodots seed(2125) rep(300) saving(bsreg2))
-* No me deja meterla, porque introduce desbalance: dias_treat_imp_sin_na_1 
+lnormal), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg2))
+cap stteffects ra
 
 *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_fmt, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, policonsumo, n_off_vio, n_off_acq, n_off_sud, n_off_oth)
 <</dd_do>>

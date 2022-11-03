@@ -254,17 +254,17 @@ if(!require(pacman)){install.packages("pacman")}
 if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
 
 pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf, ipw, install=T)
+
 try(webshot::install_phantomjs())
 
-if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade =F))}
+if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade ="never"))}
+if(!require(Statamarkdown)){try(devtools::install_github("Hemken/Statamarkdown",upgrade ="never"))}
 
 #easystats::install_suggested()
-
 
 options(scipen=2) #display numbers rather scientific number
 
 #remotes::install_github("chjackson/flexsurv-dev", upgrade = "never")
-#devtools::install_github("stulacy/multistateutils", build_vignettes=TRUE, upgrade = "never")
 #devtools::install_github("hputter/mstate", upgrade = "never")
 
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
