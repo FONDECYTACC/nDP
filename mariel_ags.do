@@ -21,6 +21,22 @@ cap noi which project
 if _rc==111 {	
 	ssc install project
 	}
+cap noi which stipw
+if _rc==111 {	
+	ssc install stipw
+	}
+cap noi which stpm2
+if _rc==111 {	
+	ssc install stpm2
+	}	
+cap noi which rcsgen
+if _rc==111 {	
+	ssc install rcsgen
+	}	
+cap noi which matselrc
+if _rc==111 {		
+cap noi net install dm79, from(http://www.stata.com/stb/stb56)
+	}
 <</dd_do>>
 ~~~~
 
@@ -158,7 +174,7 @@ cap noi recode motivodeegreso_mod_imp_rec3 (2=0 "Early Disch" ) ///
 ~~~~
 
 
-We explored the inicidence rate ratios IRR (razón de tasa de densidad de incidencia) of each cause of discharge.
+We explored the inicidence rate ratios (IRR) of each cause of discharge.
 
 ~~~~
 <<dd_do>>
@@ -261,7 +277,8 @@ We tested the schoefeld residuals.
 
 global sim 1e5 //5e1 1e5 
 global boots 1e3 //5e1 2e3
-
+global times 0 90 365 1096 1826
+range timevar0 90 1826 90
 
 global covs "edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth"
 global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth"
@@ -376,6 +393,8 @@ estwrite _all using "${pathdata2}parmodels_m2_nov_22.sters", replace
 <</dd_do>>
 ~~~~
 
+We obtained a summary of distributions by AICs and BICs.
+
 ~~~~
 <<dd_do>>
 *file:///G:/Mi%20unidad/Alvacast/SISTRAT%202019%20(github)/_supp_mstates/stata/1806.01615.pdf
@@ -439,6 +458,8 @@ We estimated a Survival-time inverse-probability weighting, these estimate the w
 *reset time, only compatible with stteffects (same entry times)
 stset diff, failure(event ==1) 
 
+cap rm bsreg1.dta bsreg2.dta
+
 stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, gamma), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg1, replace))
 cap stteffects ra
 
@@ -449,8 +470,62 @@ cap stteffects ra
 <</dd_do>>
 ~~~~
 
-The model indicated that is complicated to include the days in treatment, because of collinearity.
+The model indicated that is complicated to include the days in treatment, because of collinearity. However, there was no statistically significant average effect of a type of treatment.
 
+
+### IPTW Royston-Parmar
+
+First we calculated the difference between those patients who did and did not complete baseline treatment, given that the analysis is restricted to .
+
+~~~~
+<<dd_do>>
+*Micki Hill & Paul C Lambert & Michael J Crowther, 2021. "Introducing stipw: inverse probability weighted parametric survival models," London Stata Conference 2021 15, Stata Users Group.
+*https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&wdOrigin=BROWSELINK
+
+*Treatment variable should be a binary variable with values 0 and 1.
+gen     motivodeegreso_mod_imp_rec2 = 0
+replace motivodeegreso_mod_imp_rec2 = 1 if strpos(motivodeegreso_mod_imp_rec,"Early")>0
+replace motivodeegreso_mod_imp_rec2 = 1 if strpos(motivodeegreso_mod_imp_rec,"Late")>0
+
+stpm2 motivodeegreso_mod_imp_rec2, scale(hazard) df(10) eform
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+
+predict rmst03 in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
+predict rmst13 in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
+predictnl drmst= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_se)
+
+cap list rmst03 rmst13  drmst in 1
+<</dd_do>>
+~~~~
+
+We used another model with only 4 degrees of freedom according to the lowest BIC 
+   
+~~~~
+<<dd_do>>
+
+stpm2 motivodeegreso_mod_imp_rec2, scale(hazard) df(4) eform
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth), distribution(rp) df(4) ipwtype(stabilised) vce(mestimation) eform
+
+predict rmst03_b in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
+predict rmst13_b in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
+predictnl drmst_b= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_b_se)
+
+cap list rmst03_b rmst13_b  drmst_b in 1
+<</dd_do>>
+~~~~
+   
+<<dd_display: "Saved at= `c(current_time)' `c(current_date)'">>
+
+~~~~
+<<dd_do:nocommand>>
+	cap qui save "mariel_nov_22.dta", all replace emptyok
+<</dd_do>>
+~~~~
+
+
+   
 <<dd_do: nocommand>>
 /*
 FORMA DE EXPORTAR LOS DATOS Y EL MARKDOWN
@@ -466,13 +541,3 @@ copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_m
 _outputs
 */
 <</dd_do>>
-
-   
-<<dd_display: "Saved at= `c(current_time)' `c(current_date)'">>
-
-~~~~
-<<dd_do:nocommand>>
-	cap qui save "${pathdata2}mariel_nov_22.dta", all replace emptyok
-	* estimates use "${pathdata2}parmodels.ster"
-<</dd_do>>
-~~~~

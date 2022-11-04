@@ -264,7 +264,11 @@ pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stri
 try(webshot::install_phantomjs())
 
 if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade ="never"))}
-if(!require(Statamarkdown)){try(devtools::install_github("Hemken/Statamarkdown",upgrade ="never"))}
+
+#if(!require(Statamarkdown)){try(devtools::install_github("Hemken/Statamarkdown",upgrade ="never"))}
+# #Error in if (options$noisey == TRUE) message(paste("\n", options$engine,  : 
+#   argumento tiene longitud cero
+# Calls: <Anonymous> ... sew.list -> lapply -> FUN -> sew.character -> <Anonymous>
 
 #easystats::install_suggested()
 
@@ -974,11 +978,11 @@ biostat3::survRate(Surv((age_offending_imp- edad_al_egres_imp), !is.na(dateofbir
 
 `r paste0("We discarded cases with ", nrow(dplyr::filter(Base_fiscalia_v11, age_offending_imp- edad_al_egres_imp<0)) %>% format(big.mark=","), " relationships with a contact with the system before finishing treatment")`
 
-**Difference with age of offense from admission**
+**Difference with age of offense from discharge**
 
-```{r exp-surv2, echo=T, fig.align='center', message=T, error=T, eval=T, fig.cap= "Difference with age of offense from admission"}
+```{r exp-surv2, echo=T, fig.align='center', message=T, error=T, eval=T, fig.cap= "Difference with age of offense from discharge"}
 
-mot_egreso_fit<- survfit(Surv(age_offending_imp-edad_al_ing_1,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v13,age_offending_imp- edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
+mot_egreso_fit<- survfit(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v13,age_offending_imp- edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
                                type      = "kaplan-meier",
                                 error     = "greenwood",
                                 conf.type = "log-log") 
@@ -1010,39 +1014,22 @@ ggsurvplot(mot_egreso_fit,
 #
 ```
 
-**Difference with age of offense from discharge**
+Given that our data has a staggered entry to the analysis (depending on the discharge)
+
+**Survival of ages of offense from discharge (staggered entry)**
 
 ```{r exp-surv3, echo=T, fig.align='center', message=T, error=T, eval=T, fig.cap= "Difference with age of offense from discharge"}
 
-mot_egreso_fit2<- survfit(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v13,age_offending_imp- edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
-                               type      = "kaplan-meier",
-                                error     = "greenwood",
+mot_egreso_fit2<- survfit(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v13,age_offending_imp- edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
+                               type      = "fleming-harrington",
                                 conf.type = "log-log") 
 
-mot_egreso_fit_na2 <- mot_egreso_fit2 %>% fortify %>% group_by(strata) %>% mutate(CumHaz = cumsum(n.event/n.risk))
-
-ggsurvplot(mot_egreso_fit2,
-           fun = "cumhaz",
-           conf.int = TRUE,
-           legend.labs = c("Tr Comp", "Tr Non-Comp (Early)", "Tr Non-Comp (Late)"), 
-           risk.table = "abs_pct",
-           #ncensor.plot = TRUE,
-           ggtheme = theme_classic2(base_size=10),
-           risk.table.y.text.col = F,
-           risk.table.col="black",
-           font.tickslab = c(10),
-           risk.table.height = .2,
-           risk.table.fontsize = 2.5,
-           #break.time.by = 365.25,
-           pval = T,
-           #xlim=c(0,5),
-           legend = c(0.88, 0.2), 
-           legend.title="Cause of discharge",
-           xlab= "Time (in years)", 
-           #cumevents=T,
-           surv.connect = T,
-           censor= F
-           )
+fortify(mot_egreso_fit2, fun = "cumhaz") %>% 
+  data.frame() %>% 
+  ggplot(aes(x=time, y=surv, fill=strata, color=strata, group=strata))+
+  geom_step(size=.8)+
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .2) +
+  theme_classic2(base_size=10)
 ```
 
 <br>
@@ -1356,7 +1343,7 @@ subset(Base_fiscalia_v13, select=c("hash_key", cont_vars_desc, cat_vars_desc, ca
 ```
 
 
-:: controlly
+::: controlly
 ```{r label_to_stata, echo=T, paged.print=TRUE}
 file<- "fiscalia_mariel_oct_2022_match_SENDA.dta"
 
@@ -1374,7 +1361,6 @@ rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear
 
 write.table(rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear'),export_lab_stata_merge), file = paste0(path,"/_label_var_to_stata.do"), sep = "",row.names = FALSE, quote = FALSE, fileEncoding="UTF-8")
 ```
-
 :::
 
 <br>
