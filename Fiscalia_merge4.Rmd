@@ -202,6 +202,10 @@ function myFunction2() {
 
 ```{r prev-setup, include = FALSE, cache=T, error=T}
 rm(list=ls());gc()
+
+#If you render multiple documents from the same script or R session, you should detach("Statamarkdown") in between documents.
+try(detach("Statamarkdown"))
+
 if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
 path<-getwd()#we define it again later in setup chunk
 if (grepl("CISS Fondecyt",path)==T){
@@ -253,7 +257,9 @@ pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando pa
 if(!require(pacman)){install.packages("pacman")}
 if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
 
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf, ipw, install=T)
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf, RISCA, adjustedCurves, install=T)
+
+#Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
 
 try(webshot::install_phantomjs())
 
@@ -803,7 +809,7 @@ Base_fiscalia_v12 %>%
 
 <br>
 
-We took `Base_fiscalia_v9` (only offenders that had a final judgment as guilty) and joined with SENDA data but only based on records before the first treatment date (`Base_fiscalia_v10b`). From them, we selected the first relationship of each combination of HASH KEY, judiciary case & type of crime (`hash_key`-`caseid`-`crime_code_group_rec_prof`), and counted the number of offenses depending and dichotomized it into the presence of a record or not (Pre-treatment criminality or `n_prev_off`). We also did the same thing for  Acquisitive (`n_off_acq`),  violent (`n_off_vio`), substance use-related (`n_off_sud`) and other (`n_off_oth`)offenses.
+We took `Base_fiscalia_v9` (only offenders that had a final judgment as guilty) and joined with SENDA data but only based on records before the first treatment date (`Base_fiscalia_v10b`). From them, we selected the first relationship of each combination of HASH KEY, judiciary case & type of crime (`hash_key`-`caseid`-`crime_code_group_rec_prof`), and counted the number of offenses depending and dichotomized it into the presence of a record or not (Pre-treatment criminality or `n_prev_off`). We also did the same thing for  Acquisitive (`n_off_acq`),  violent (`n_off_vio`), substance use-related (`n_off_sud`) and other (`n_off_oth`) offenses.
 
 <br>
 
@@ -1047,6 +1053,7 @@ ggsurvplot(mot_egreso_fit2,
 #https://rpubs.com/linpearl89/TTE-RCT
 #https://search.r-project.org/CRAN/refmans/adjustedCurves/html/surv_aiptw_pseudo.html
 #https://search.r-project.org/CRAN/refmans/adjustedCurves/html/surv_iptw_cox.html
+#https://cran.r-project.org/web/packages/RISCA/RISCA.pdf
 
 coxfit <- coxph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud + n_off_oth, ties="efron", data= Base_fiscalia_v13)
 
@@ -1252,8 +1259,6 @@ webshot(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/
 # Label
 
 ```{r change-labels,echo=T, paged.print=TRUE, eval=T}
-#age_offending_imp-edad_al_egres_imp, motivodeegreso_mod_imp_rec age_offending_imp- edad_al_egres_imp
-
 vars_desc <- c("age_offending_imp", "edad_al_egres_imp", "fech_nac_rec", "motivodeegreso_mod_imp_rec")
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#

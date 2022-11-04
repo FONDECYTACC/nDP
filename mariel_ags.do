@@ -273,8 +273,8 @@ scalar chi2_scho_test = r(chi2)
 
 mat mat_scho_test = r(phtest)
 
-esttab matrix(stats_1) using "mat_scho_test.csv", replace
-esttab matrix(stats_1) using "mat_scho_test.html", replace
+esttab matrix(mat_scho_test) using "mat_scho_test.csv", replace
+esttab matrix(mat_scho_test) using "mat_scho_test.html", replace
 
 <</dd_do>>
 ~~~~
@@ -314,6 +314,24 @@ We generated a list of parametric survival models with different distributions (
 		estimates store m2_1_cox`j'	
 	}
 
+	// Gompertz
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Gomp}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(gompertz)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(gompertz, fail(_status)))
+	estimates store m2_1_gom
+
+	// Weibull
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Weibull}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(weibull)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(gompertz, fail(_status)))
+	estimates store m2_1_wei
+	
 	// Log logistic
 	di in yellow "{bf: ***********}"
 	di in yellow "{bf: family Logl}"
@@ -347,12 +365,12 @@ We generated a list of parametric survival models with different distributions (
 		di in yellow "{bf: family RP`j'}"
 		di in yellow "{bf: ***********}"
 		set seed 2125
-		qui cap noi stmerlin covs_2covs , dist(rp) df(`j')
+		qui cap noi stmerlin $covs_2, dist(rp) df(`j')
 		//qui cap noi merlin (_time $covs if _trans == 1, family(rp, df(`j') fail(_status)))
 		estimates store m2_1_rp`j'
 		*estimates save "${pathdata2}parmodels.ster", append	
 	}	
-}
+
 *rcs(time, df(3) orthog)
 estwrite _all using "${pathdata2}parmodels_m2_nov_22.sters", replace
 <</dd_do>>
@@ -366,7 +384,7 @@ estwrite _all using "${pathdata2}parmodels_m2_nov_22.sters", replace
 qui count if _d == 1
 	// we count the amount of cases with the event in the strata
 	//we call the estimates stored, and the results...
-estimates stat m1_*, n(`r(N)')
+estimates stat m2_1_*, n(`r(N)')
 	//we store in a matrix de survival
 matrix stats_1=r(S)
 
@@ -412,6 +430,8 @@ esttab matrix(stats_1) using "testreg_aic_nov_22.html", replace
 In case of the more flexible parametric models (non-standard), we selected the models that showed the best trade-off between lower complexity and better fit, and this is why we also considered the BIC. If a model with less parameters had greater or equal AIC (or differences lower than 2) but also had better BIC (<=2), we favoured the model with less parameters.
 
 
+### IPTCW
+
 We estimated a Survival-time inverse-probability weighting, these estimate the weights attributed to the treatment-assignment (likelihood of being treated) and time-to-censoring models, and use them to estimate the weighted averages of the outcomes for each treatment level. 
 
 ~~~~
@@ -419,11 +439,10 @@ We estimated a Survival-time inverse-probability weighting, these estimate the w
 *reset time, only compatible with stteffects (same entry times)
 stset diff, failure(event ==1) 
 
-stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, gamma), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg1))
+stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, gamma), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg1, replace))
 cap stteffects ra
 
-stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, 
-lnormal), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg2))
+stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, lnormal), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg2, replace))
 cap stteffects ra
 
 *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_fmt, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, policonsumo, n_off_vio, n_off_acq, n_off_sud, n_off_oth)
@@ -434,14 +453,17 @@ The model indicated that is complicated to include the days in treatment, becaus
 
 <<dd_do: nocommand>>
 /*
-*#n: Como p-valor es menor a 0.05, hay evidencia suficiente para rechazar la 
-*#hipótesis, por lo tanto, las curvas de sobrevida de hombres y mujeres son significativamente 
-*#distintas.
+FORMA DE EXPORTAR LOS DATOS Y EL MARKDOWN
+
+cap rm "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_nov_2022_stata.html"
+dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags.do", saving("E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_nov_2022_stata.html") replace nostop 
+copy "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_nov_2022_stata.html" "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_nov_2022_stata.html", replace
 
 cap rm "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2012 (github)/analisis_mariel_nov_2022_stata.html"
-dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags.do", saving("E:\Mi unidad\Alvacast/SISTRAT 2022 (github)\analisis_mariel_nov_2022_stata.html") replace nostop 
+dyndoc "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags.do", saving("C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_nov_2022_stata.html") replace nostop 
+copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_nov_2022_stata.html" "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_nov_2022_stata.html", replace
 
-
+_outputs
 */
 <</dd_do>>
 
@@ -450,7 +472,7 @@ dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags.do", saving("E:\M
 
 ~~~~
 <<dd_do:nocommand>>
-	cap qui save "${pathdata2}archivo_multiestado0_jul_22_corr2_cc_3y.dta", all replace emptyok
+	cap qui save "${pathdata2}mariel_nov_22.dta", all replace emptyok
 	* estimates use "${pathdata2}parmodels.ster"
 <</dd_do>>
 ~~~~
