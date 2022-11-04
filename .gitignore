@@ -90,3 +90,4 @@ renv.lock
 *.rda
 *.RDataTmp
 *prueba_g_methods.xlsx
+*.sters
