@@ -38,3 +38,7 @@ output:
 - [Chilean prosecutor’s office Data merge (Step 3.2)](Fiscalia_merge32.html)
 
 - [Chilean prosecutor’s office Data merge (Step 4)](Fiscalia_merge4.html)
+
+**Assessing the impact of substance use treatment for preventing criminal justice system contact in Chile**
+
+- [Descriptive glimpse and initial analysis ](analisis_mariel_nov_2022_stata.html)
