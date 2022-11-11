@@ -202,10 +202,6 @@ function myFunction2() {
 
 ```{r prev-setup, include = FALSE, cache=T, error=T}
 rm(list=ls());gc()
-
-#If you render multiple documents from the same script or R session, you should detach("Statamarkdown") in between documents.
-try(detach("Statamarkdown"))
-
 if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
 path<-getwd()#we define it again later in setup chunk
 if (grepl("CISS Fondecyt",path)==T){
@@ -257,24 +253,18 @@ pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando pa
 if(!require(pacman)){install.packages("pacman")}
 if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
 
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf, RISCA, adjustedCurves, install=T)
-
-#Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
-
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf, ipw, install=T)
 try(webshot::install_phantomjs())
 
-if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade ="never"))}
-
-#if(!require(Statamarkdown)){try(devtools::install_github("Hemken/Statamarkdown",upgrade ="never"))}
-# #Error in if (options$noisey == TRUE) message(paste("\n", options$engine,  : 
-#   argumento tiene longitud cero
-# Calls: <Anonymous> ... sew.list -> lapply -> FUN -> sew.character -> <Anonymous>
+if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade =F))}
 
 #easystats::install_suggested()
+
 
 options(scipen=2) #display numbers rather scientific number
 
 #remotes::install_github("chjackson/flexsurv-dev", upgrade = "never")
+#devtools::install_github("stulacy/multistateutils", build_vignettes=TRUE, upgrade = "never")
 #devtools::install_github("hputter/mstate", upgrade = "never")
 
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
@@ -813,7 +803,7 @@ Base_fiscalia_v12 %>%
 
 <br>
 
-We took `Base_fiscalia_v9` (only offenders that had a final judgment as guilty) and joined with SENDA data but only based on records before the first treatment date (`Base_fiscalia_v10b`). From them, we selected the first relationship of each combination of HASH KEY, judiciary case & type of crime (`hash_key`-`caseid`-`crime_code_group_rec_prof`), and counted the number of offenses depending and dichotomized it into the presence of a record or not (Pre-treatment criminality or `n_prev_off`). We also did the same thing for  Acquisitive (`n_off_acq`),  violent (`n_off_vio`), substance use-related (`n_off_sud`) and other (`n_off_oth`) offenses.
+We took `Base_fiscalia_v9` (only offenders that had a final judgment as guilty) and joined with SENDA data but only based on records before the first treatment date (`Base_fiscalia_v10b`). From them, we selected the first relationship of each combination of HASH KEY, judiciary case & type of crime (`hash_key`-`caseid`-`crime_code_group_rec_prof`), and counted the number of offenses depending and dichotomized it into the presence of a record or not (Pre-treatment criminality or `n_prev_off`). We also did the same thing for  Acquisitive (`n_off_acq`),  violent (`n_off_vio`), substance use-related (`n_off_sud`) and other (`n_off_oth`)offenses.
 
 <br>
 
@@ -826,7 +816,7 @@ sqldf("SELECT *
              FROM Base_fiscalia_v9
              ) AS y
   ON x.hash_key == y.id AND 
-  x. edad_al_egres_imp > y.age_offending_imp") #changed the direction to past events, where age at discharge is greater than the age of commission
+  x. edad_al_egres_imp <= y.age_offending_imp") #change the direction to past events
 
 
 Base_fiscalia_v11b<-
@@ -842,13 +832,7 @@ Base_fiscalia_v10b %>%
   dplyr::slice(1) %>% 
   dplyr::ungroup() %>% 
   dplyr::group_by(hash_key) %>% 
-  summarise(n_off_acq= ifelse(sum(crime_code_group_rec_prof=="Acquisitive", na.rm=T)>0, 1,0), n_off_vio= ifelse(sum(crime_code_group_rec_prof=="Violent", na.rm=T)>0, 1,0), n_off_sud= ifelse(sum(crime_code_group_rec_prof== "Substance-related", na.rm=T)>0, 1,0), n_off_oth=  ifelse(sum(crime_code_group_rec_prof== "Other", na.rm=T)>0, 1,0)) %>% 
-  dplyr::ungroup() %>% 
-  dplyr::mutate(n_prev_off= rowSums(select(., starts_with("n_")))) 
-
-warning(paste0("Users in the database of previous crimes: ",format(length(unique(Base_fiscalia_v11b$hash_key)), big.mark=",")))
-
-warning(paste0("Users in the merged database (after filtering for observations coded as referrals, deaths, censored at baseline treatment or with ongoing treatments) : ",format(length(unique(Base_fiscalia_v12$hash_key)), big.mark=",")))
+  summarise(n_off_acq= ifelse(sum(crime_code_group_rec_prof=="Acquisitive", na.rm=T)>0, 1,0), n_off_vio= ifelse(sum(crime_code_group_rec_prof=="Violent", na.rm=T)>0, 1,0), n_off_sud= ifelse(sum(crime_code_group_rec_prof== "Substance-related", na.rm=T)>0, 1,0), n_off_oth=  ifelse(sum(crime_code_group_rec_prof== "Other", na.rm=T)>0, 1,0), n_prev_off=ifelse(n()>0,1,0))
 
 # Pre-treatment Criminality 
 Base_fiscalia_v13<-
@@ -858,8 +842,6 @@ Base_fiscalia_v12 %>%
   dplyr::slice_min(age_offending_imp, n = 1, with_ties = F) %>% 
   dplyr::ungroup() %>% 
   dplyr::inner_join(Base_fiscalia_v11b, by="hash_key") %>% 
-  #to see 
-  #dplyr::select(hash_key, fech_nac_rec, n_off_acq, )
   dplyr::mutate(policonsumo= ifelse(!is.na(otras_sus1_mod),1,0)) %>% 
   dplyr::mutate(cut_fec_nac=cut2(fech_nac_rec, cuts=as.Date(attr(dlookr::binning(as.numeric(fech_nac_rec)),"breaks"))),cut_com_del=cut2(fec_comision_simple, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>%
   dplyr::mutate(tr_modality=dplyr::case_when(grepl("PR", as.character(tipo_de_plan_2_1))~ "Residential", grepl("PAI|PAB", as.character(tipo_de_plan_2_1))~ "Ambulatory", T~ NA_character_)) %>% 
@@ -898,7 +880,7 @@ sqldf("SELECT *
              FROM CONS_TOP_2022
              ) AS y
   ON x.hash_key == y.HASH_KEY AND 
-  x. edad_al_egres_imp > y.age_offending_imp") #changed the direction to past events, where age at discharge is greater than the age of commission
+  x.age_offending_imp >= y.edad_a_ap_top_num")
 
 Base_fiscalia_v12b %>% 
   dplyr::filter(!is.na(HASH_KEY))
@@ -986,11 +968,11 @@ biostat3::survRate(Surv((age_offending_imp- edad_al_egres_imp), !is.na(dateofbir
 
 `r paste0("We discarded cases with ", nrow(dplyr::filter(Base_fiscalia_v11, age_offending_imp- edad_al_egres_imp<0)) %>% format(big.mark=","), " relationships with a contact with the system before finishing treatment")`
 
-**Difference with age of offense from discharge**
+**Difference with age of offense from admission**
 
-```{r exp-surv2, echo=T, fig.align='center', message=T, error=T, eval=T, fig.cap= "Difference with age of offense from discharge"}
+```{r exp-surv2, echo=T, fig.align='center', message=T, error=T, eval=T, fig.cap= "Difference with age of offense from admission"}
 
-mot_egreso_fit<- survfit(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v13,age_offending_imp- edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
+mot_egreso_fit<- survfit(Surv(age_offending_imp-edad_al_ing_1,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v13,age_offending_imp- edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
                                type      = "kaplan-meier",
                                 error     = "greenwood",
                                 conf.type = "log-log") 
@@ -1022,22 +1004,39 @@ ggsurvplot(mot_egreso_fit,
 #
 ```
 
-Given that our data has a staggered entry to the analysis (depending on the discharge)
-
-**Survival of ages of offense from discharge (staggered entry)**
+**Difference with age of offense from discharge**
 
 ```{r exp-surv3, echo=T, fig.align='center', message=T, error=T, eval=T, fig.cap= "Difference with age of offense from discharge"}
 
-mot_egreso_fit2<- survfit(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v13,age_offending_imp- edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
-                               type      = "fleming-harrington",
+mot_egreso_fit2<- survfit(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=dplyr::filter(Base_fiscalia_v13,age_offending_imp- edad_al_egres_imp>=0, motivodeegreso_mod_imp_rec!="Censored"),
+                               type      = "kaplan-meier",
+                                error     = "greenwood",
                                 conf.type = "log-log") 
 
-fortify(mot_egreso_fit2, fun = "cumhaz") %>% 
-  data.frame() %>% 
-  ggplot(aes(x=time, y=surv, fill=strata, color=strata, group=strata))+
-  geom_step(size=.8)+
-  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .2) +
-  theme_classic2(base_size=10)
+mot_egreso_fit_na2 <- mot_egreso_fit2 %>% fortify %>% group_by(strata) %>% mutate(CumHaz = cumsum(n.event/n.risk))
+
+ggsurvplot(mot_egreso_fit2,
+           fun = "cumhaz",
+           conf.int = TRUE,
+           legend.labs = c("Tr Comp", "Tr Non-Comp (Early)", "Tr Non-Comp (Late)"), 
+           risk.table = "abs_pct",
+           #ncensor.plot = TRUE,
+           ggtheme = theme_classic2(base_size=10),
+           risk.table.y.text.col = F,
+           risk.table.col="black",
+           font.tickslab = c(10),
+           risk.table.height = .2,
+           risk.table.fontsize = 2.5,
+           #break.time.by = 365.25,
+           pval = T,
+           #xlim=c(0,5),
+           legend = c(0.88, 0.2), 
+           legend.title="Cause of discharge",
+           xlab= "Time (in years)", 
+           #cumevents=T,
+           surv.connect = T,
+           censor= F
+           )
 ```
 
 <br>
@@ -1048,7 +1047,6 @@ fortify(mot_egreso_fit2, fun = "cumhaz") %>%
 #https://rpubs.com/linpearl89/TTE-RCT
 #https://search.r-project.org/CRAN/refmans/adjustedCurves/html/surv_aiptw_pseudo.html
 #https://search.r-project.org/CRAN/refmans/adjustedCurves/html/surv_iptw_cox.html
-#https://cran.r-project.org/web/packages/RISCA/RISCA.pdf
 
 coxfit <- coxph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud + n_off_oth, ties="efron", data= Base_fiscalia_v13)
 
@@ -1143,18 +1141,6 @@ tab7_lab_aft_d2<-
            format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v8, dplyr::case_when( grepl("REPARATORIO|CONDICIONAL",gls_mottermino) & is.na(agrupa_terminos)~F, grepl("REPARATORIO|SENTENCIA DEFINITIVA CONDENATORIA|240|MONIT", toupper(agrupa_terminos), ignore.case=F)~F, T~T)),ruc)), big.mark=","),";n= ",
            format(nrow(dplyr::filter(Base_fiscalia_v8, dplyr::case_when( grepl("REPARATORIO|CONDICIONAL",gls_mottermino) & is.na(agrupa_terminos)~F, grepl("REPARATORIO|SENTENCIA DEFINITIVA CONDENATORIA|240|MONIT", toupper(agrupa_terminos), ignore.case=F)~F, T~T))), big.mark=","),")")
 
-#FILTER USERS WITHOUT BIRTH DATE AFTER JOIN (7)
-tab7_lab_aft_d3<-
-    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(janitor::clean_names(Base_fiscalia_v10),is.na(fech_nac_rec)),hash_key)),big.mark=","),"; RUCs= ",
-           format(nrow(dplyr::distinct(dplyr::filter(janitor::clean_names(Base_fiscalia_v10),is.na(fech_nac_rec)),caseid)), big.mark=","), "(had no case ID)",";n= ",
-           format(nrow(dplyr::filter(janitor::clean_names(Base_fiscalia_v10),is.na(fech_nac_rec))), big.mark=","),")")
-
-#FILTER USERS THAT HAD AN ONGOING TREATMENT
-tab7_lab_aft_d4<-
-paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v11, grepl("Referral|Death|Censored|Ongoing",motivodeegreso_mod_imp)),hash_key)),big.mark=","),"; RUCs= ",
-           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v11, grepl("Referral|Death|Censored|Ongoing",motivodeegreso_mod_imp)),caseid)), big.mark=","),";n= ",
-           format(nrow(dplyr::filter(dplyr::filter(Base_fiscalia_v11, grepl("Referral|Death|Censored|Ongoing",motivodeegreso_mod_imp)))), big.mark=","),")")
-
 #_#_#_#_#_length(unique(Base_fiscalia_v10$id))
 #After join
 # tab7_lab_aft_d3<-
@@ -1162,7 +1148,7 @@ paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v11, grepl
 #            format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v8, dplyr::case_when( grepl("REPARATORIO|CONDICIONAL",gls_mottermino) & is.na(agrupa_terminos)~F, grepl("REPARATORIO|SENTENCIA DEFINITIVA CONDENATORIA|240|MONIT", toupper(agrupa_terminos), ignore.case=F)~F, T~T)),ruc)), big.mark=","),";n= ",
 #            format(nrow(dplyr::filter(Base_fiscalia_v8, dplyr::case_when( grepl("REPARATORIO|CONDICIONAL",gls_mottermino) & is.na(agrupa_terminos)~F, grepl("REPARATORIO|SENTENCIA DEFINITIVA CONDENATORIA|240|MONIT", toupper(agrupa_terminos), ignore.case=F)~F, T~T))), big.mark=","),")")
 
-tab7_lab_aft_d<- paste0('&#8226;Discard observations coded as victims rather than ofenders ',tab7_lab_aft_d1,'\\\\\\l&#8226;Discard observations depending on the values of the end of the proceedings ',tab7_lab_aft_d2,'          \\\\\\l&#8226;Discard observations without birth date ',tab7_lab_aft_d3,'\\\\\\l&#8226;Discard observations coded as referrals, deaths, censored at baseline treatment or with ongoing treatments ',tab7_lab_aft_d4,'         \\\\\\l&#8226;Long-to-wide relationships/crimes, end of judicial proceedings, penalty         \\\\\\l&#8226;Group crimes into violent, drug-related, etc.         \\\\\\l')
+tab7_lab_aft_d<- paste0('&#8226;Discard observations coded as victims rather than ofenders ',tab7_lab_aft_d1,'\\\\\\l&#8226;Discard observations depending on the values of the end of the proceedings ',tab7_lab_aft_d2,'          \\\\\\l&#8226;Long-to-wide relationships/crimes, end of judicial proceedings, penalty         \\\\\\l&#8226;Group crimes into violent, drug-related, etc.         \\\\\\l&#8226;Check overlapping events (e.g., incarcerated while completing a residential treatment)         \\\\\\l')
 
 
 library(DiagrammeR) #⋉
@@ -1266,6 +1252,8 @@ webshot(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/
 # Label
 
 ```{r change-labels,echo=T, paged.print=TRUE, eval=T}
+#age_offending_imp-edad_al_egres_imp, motivodeegreso_mod_imp_rec age_offending_imp- edad_al_egres_imp
+
 vars_desc <- c("age_offending_imp", "edad_al_egres_imp", "fech_nac_rec", "motivodeegreso_mod_imp_rec")
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
@@ -1363,7 +1351,7 @@ subset(Base_fiscalia_v13, select=c("hash_key", cont_vars_desc, cat_vars_desc, ca
 ```
 
 
-::: controlly
+:: controlly
 ```{r label_to_stata, echo=T, paged.print=TRUE}
 file<- "fiscalia_mariel_oct_2022_match_SENDA.dta"
 
@@ -1381,13 +1369,14 @@ rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear
 
 write.table(rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear'),export_lab_stata_merge), file = paste0(path,"/_label_var_to_stata.do"), sep = "",row.names = FALSE, quote = FALSE, fileEncoding="UTF-8")
 ```
+
 :::
 
 <br>
 
 <div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:350px; overflow-x: scroll; width:100%">
 
-```{stata 2, collectcode=F, include=T, error=T, cleanlog=F}
+```{stata 2, error=T, cleanlog=F, collectcode=F, engine.path="C:/Program Files/Stata16/StataMP-64.exe", include=T}
 *should be in the same folder of the .Rmd to work
 cap noi do _label_var_to_stata.do
 ```
