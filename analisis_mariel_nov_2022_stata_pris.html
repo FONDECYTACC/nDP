@@ -1,0 +1,843 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+</head>
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+</head>
+<pre><code>. clear all
+
+. cap noi which tabout
+c:\ado\plus\t\tabout.ado
+*! 2.0.8 Ian Watson 15mar2019
+*! tabout version 3 (beta) available at: http://tabout.net.au
+
+. if _rc==111 {
+.         cap noi ssc install tabout
+.         }
+
+. cap noi which pathutil
+c:\ado\plus\p\pathutil.ado
+*! version 2.2.0 19nov2020 daniel klein
+
+. if _rc==111 {
+.         cap noi net install pathutil, from(&quot;http://fmwww.bc.edu/repec/bocode/p/&quot;) 
+.         }
+
+. cap noi which pathutil
+c:\ado\plus\p\pathutil.ado
+*! version 2.2.0 19nov2020 daniel klein
+
+. if _rc==111 {
+.         ssc install dirtools    
+.         }
+
+. cap noi which project
+c:\ado\plus\p\project.ado
+*! version 1.3.1  22dec2013  picard@netbox.com
+
+. if _rc==111 {   
+.         ssc install project
+.         }
+
+. cap noi which stipw
+c:\ado\plus\s\stipw.ado
+*! Version 1.0.0 17Jan2022
+
+. if _rc==111 {   
+.         ssc install stipw
+.         }
+
+. cap noi which stpm2
+c:\ado\plus\s\stpm2.ado
+*! version 1.7.5 May2021
+
+. if _rc==111 {   
+.         ssc install stpm2
+.         }       
+
+. cap noi which rcsgen
+c:\ado\plus\r\rcsgen.ado
+*! version 1.5.9 13FEB2022
+
+. if _rc==111 {   
+.         ssc install rcsgen
+.         }       
+
+. cap noi which matselrc
+c:\ado\plus\m\matselrc.ado
+*! NJC 1.1.0 20 Apr 2000  (STB-56: dm79)
+
+. if _rc==111 {           
+. cap noi net install dm79, from(http://www.stata.com/stb/stb56)
+.         }
+
+</code></pre>
+<h1><a href="#exercise" id="exercise">Exercise</a></h1>
+<p>Date created: 13:52:15 12 Nov 2022.</p>
+<p>Get the folder</p>
+<pre><code>
+E:\Mi unidad\Alvacast\SISTRAT 2022 (github)
+
+
+Fecha: 12 Nov 2022, considerando un SO Windows para el usuario: andre
+
+</code></pre>
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+</head>
+<p>Path data= ;</p>
+<p>Tiempo: 12 Nov 2022, considerando un SO Windows</p>
+<p>The file is located and named as: E:\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA.dta</p>
+<p>=============================================================================</p>
+<h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
+<p>=============================================================================</p>
+<p>We open the files</p>
+<pre><code>. use &quot;fiscalia_mariel_oct_2022_match_SENDA_pris.dta&quot;, clear
+
+. encode escolaridad_rec, gen(esc_rec)
+
+. encode sex, generate(sex_enc)
+
+. encode sus_principal_mod, generate(sus_prin_mod)
+
+. encode freq_cons_sus_prin, generate(fr_sus_prin)
+
+. encode compromiso_biopsicosocial, generate(comp_biosoc)
+
+. encode tenencia_de_la_vivienda_mod, generate(ten_viv)
+
+. *encode dg_cie_10_rec, generate(dg_cie_10_mental_h) *already numeric
+. encode dg_trs_cons_sus_or, generate(sud_severity_icd10)
+
+. encode macrozona, generate(macrozone)
+
+. gen     motivodeegreso_mod_imp_rec3 = 1
+
+. replace motivodeegreso_mod_imp_rec3 = 2 if strpos(motivodeegreso_mod_imp_rec,&quot;Early&quot;)&gt;0
+(16,150 real changes made)
+
+. replace motivodeegreso_mod_imp_rec3 = 3 if strpos(motivodeegreso_mod_imp_rec,&quot;Late&quot;)&gt;0
+(36,453 real changes made)
+
+. 
+. *encode policonsumo, generate(policon) *already numeric
+. 
+. *motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_10_rec i.dg_trs_cons_sus_or i.macrozona i
+&gt; .n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth
+</code></pre>
+<p>Luego configuramos la base de datos en formato de supervivencia.</p>
+<pre><code>. *si no está perdido cod_region, significa que hubo un registro (0/1) y el tiempo es el tiempo desde 
+. *set the indicator
+. gen event=0
+
+. replace event=1 if !missing(offender_d)
+(5,301 real changes made)
+
+. *replace event=1 if !missing(sex)
+. 
+. gen diff= age_offending_imp-edad_al_egres_imp
+
+. 
+. *age time
+. stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
+
+     failure event:  event == 1
+obs. time interval:  (0, age_offending_imp]
+ enter on or after:  time edad_al_egres_imp
+ exit on or before:  failure
+
+------------------------------------------------------------------------------
+     72,391  total observations
+          1  observation ends on or before enter()
+------------------------------------------------------------------------------
+     72,390  observations remaining, representing
+      5,301  failures in single-record/single-failure data
+ 310,765.79  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =  10.95068
+                                          last observed exit t =  90.65027
+
+. 
+. stdescribe, weight
+
+         failure _d:  event == 1
+   analysis time _t:  age_offending_imp
+  enter on or after:  time edad_al_egres_imp
+
+                                   |-------------- per subject --------------|
+Category                   total        mean         min     median        max
+------------------------------------------------------------------------------
+no. of subjects            72390   
+no. of records             72390           1           1          1          1
+
+(first) entry time                  36.48891    10.95068   34.59726   88.91507
+(final) exit time                   40.78185    14.98082   39.06831   90.65027
+
+subjects with gap              0   
+time on gap if gap             0   
+time at risk           310765.79    4.292938    .0000449          4   10.75828
+
+failures                    5301    .0732283           0          0          1
+------------------------------------------------------------------------------
+
+</code></pre>
+<p>We calculate the incidence rate.</p>
+<pre><code>. stsum, by (motivodeegreso_mod_imp_rec)
+
+         failure _d:  event == 1
+   analysis time _t:  age_offending_imp
+  enter on or after:  time edad_al_egres_imp
+
+         |               Incidence     Number of   |------ Survival time -----|
+motivo~c | Time at risk       rate      subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+Treatmen |  79,274.0615   .0087671         19777   35.12663         .         .
+Treatmen |  67,651.3597   .0260749         16150   23.44695   34.7707         .
+Treatmen |  163,796.124   .0173325         36453    25.3744  48.78303         .
+---------+---------------------------------------------------------------------
+   Total |  310,721.545   .0170506         72380   24.86516  46.29158         .
+
+</code></pre>
+<p>We open the files</p>
+<pre><code>. *si no está perdido cod_region, significa que hubo un registro (0/1) y el tiempo es el tiempo desde 
+. *set the indicator
+. gen event=0
+variable event already defined
+r(110);
+
+. replace event=1 if !missing(offender_d)
+(0 real changes made)
+
+. *replace event=1 if !missing(sex)
+. 
+. gen diff= age_offending_imp-edad_al_egres_imp
+variable diff already defined
+r(110);
+
+. 
+. *age time
+. stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
+
+     failure event:  event == 1
+obs. time interval:  (0, age_offending_imp]
+ enter on or after:  time edad_al_egres_imp
+ exit on or before:  failure
+
+------------------------------------------------------------------------------
+     72,391  total observations
+          1  observation ends on or before enter()
+------------------------------------------------------------------------------
+     72,390  observations remaining, representing
+      5,301  failures in single-record/single-failure data
+ 310,765.79  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =  10.95068
+                                          last observed exit t =  90.65027
+
+. 
+. stdescribe, weight
+
+         failure _d:  event == 1
+   analysis time _t:  age_offending_imp
+  enter on or after:  time edad_al_egres_imp
+
+                                   |-------------- per subject --------------|
+Category                   total        mean         min     median        max
+------------------------------------------------------------------------------
+no. of subjects            72390   
+no. of records             72390           1           1          1          1
+
+(first) entry time                  36.48891    10.95068   34.59726   88.91507
+(final) exit time                   40.78185    14.98082   39.06831   90.65027
+
+subjects with gap              0   
+time on gap if gap             0   
+time at risk           310765.79    4.292938    .0000449          4   10.75828
+
+failures                    5301    .0732283           0          0          1
+------------------------------------------------------------------------------
+
+</code></pre>
+<p>We calculate the incidence rate.</p>
+<pre><code>. stsum, by (motivodeegreso_mod_imp_rec)
+
+         failure _d:  event == 1
+   analysis time _t:  age_offending_imp
+  enter on or after:  time edad_al_egres_imp
+
+         |               Incidence     Number of   |------ Survival time -----|
+motivo~c | Time at risk       rate      subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+Treatmen |  79,274.0615   .0087671         19777   35.12663         .         .
+Treatmen |  67,651.3597   .0260749         16150   23.44695   34.7707         .
+Treatmen |  163,796.124   .0173325         36453    25.3744  48.78303         .
+---------+---------------------------------------------------------------------
+   Total |  310,721.545   .0170506         72380   24.86516  46.29158         .
+
+</code></pre>
+<p>=============================================================================</p>
+<h2><a href="#descriptives" id="descriptives">Descriptives</a></h2>
+<p>=============================================================================</p>
+<pre><code>. 
+. local ttl `&quot; &quot;Tr Completion&quot; &quot;Tr Disch (Early)&quot; &quot;Tr Disch (Late)&quot; &quot;' 
+
+. forvalues i = 1/3 {
+  2. cap drop sum_*
+  3.         gettoken title ttl: ttl
+  4. cap qui egen sum_`i' = total(_t) if motivodeegreso_mod_imp_rec3==`i'
+  5. cap qui tab _d motivodeegreso_mod_imp_rec3 if _d==1 &amp; motivodeegreso_mod_imp_rec3==`i'
+  6. scalar n_eventos`i' =r(N)
+  7. qui tabstat sum_`i', save
+  8. scalar sum_`i'_total =r(StatTotal)[1,1]
+  9. scalar ir_t = round((n_eventos`i'/sum_`i'_total)*1000,.1)
+ 10. *di ir_t
+. *es numérico, para no generar incompatibilidad, se pasa a escalar
+. global dens_inc`i' &quot;Incidence rate ratio for `title' (`i') (x1,000 person-days):  `=scalar(ir_t)'&quot;
+ 11. *di %9.1f (n_eventos`i'/sum_`i'_total)*1000
+. }
+
+</code></pre>
+<ul>
+<li>
+<p>Incidence rate ratio for Tr Completion (1) (x1,000 person-days):  .8</p>
+</li>
+<li>
+<p>Incidence rate ratio for Tr Disch (Early) (2) (x1,000 person-days):  2.9</p>
+</li>
+<li>
+<p>Incidence rate ratio for Tr Disch (Late) (3) (x1,000 person-days):  1.9</p>
+</li>
+</ul>
+<p>We recode the discharge cause to contrast them</p>
+<pre><code>. cap noi recode motivodeegreso_mod_imp_rec3 (1=0 &quot;Tr Completion&quot; ) ///
+&gt;                          (2=1 &quot;Early Disch&quot;) ///
+&gt;                          (else=.), gen(tto_2_1)
+(72391 differences between motivodeegreso_mod_imp_rec3 and tto_2_1)
+
+. cap noi recode motivodeegreso_mod_imp_rec3 (1=0 &quot;Tr Completion&quot; ) ///
+&gt;                          (3=1 &quot;Late Disch&quot;) ///
+&gt;                          (else=.), gen(tto_3_1)
+(72391 differences between motivodeegreso_mod_imp_rec3 and tto_3_1)
+
+. cap noi recode motivodeegreso_mod_imp_rec3 (2=0 &quot;Early Disch&quot; ) ///
+&gt;                          (3=1 &quot;Late Disch&quot;) ///
+&gt;                          (else=.), gen(tto_3_2)
+(72391 differences between motivodeegreso_mod_imp_rec3 and tto_3_2)
+
+</code></pre>
+<p>We explored the inicidence rate ratios (IRR) of each cause of discharge.</p>
+<pre><code>. 
+. *set trace on
+. local stname `&quot; &quot;2_1&quot; &quot;3_1&quot; &quot;3_2&quot; &quot;' 
+
+. local titl `&quot; &quot;Early Disch vs Tr Completion&quot; &quot;Late Disch vs Tr Completion&quot; &quot;Late vs Early Disch&quot; &quot;' 
+
+. foreach s of local stname {
+  2.         gettoken title titl: titl
+  3. cap noi qui ir _d tto_`s' _t
+  4. scalar ir_`s' =round(r(irr),.01)
+  5. *di ir_`s'
+. scalar ir_`s'_lb =round(r(lb_irr),.01) 
+  6. *di ir_`s'_lb
+. scalar ir_`s'_ub =round(r(ub_irr),.01)
+  7. *di ir_`s'_ub
+. local ir1= ir_`s'
+  8. local ir2= ir_`s'_lb
+  9. local ir3= ir_`s'_ub
+ 10. *di  in gr _col(13) &quot; `title': IRR `ir1' (IC 95% `ir2' - `ir3') &quot;
+. global irr_`s' &quot; `title': IRR `ir1' (IC 95% `ir2' - `ir3') &quot;
+ 11. global ir_`s' &quot;`ir1' (IC 95% `ir2' - `ir3')&quot;
+ 12. }       
+
+</code></pre>
+<p>We generated a log-rank test to compare the expected to the observed result, obtaining that:</p>
+<ul>
+<li>
+<p>Early Disch vs Tr Completion: IRR 3.58 (IC 95% 3.28 - 3.91) , so patients with an Early Discharge had a greater incidence rate than patients in Tr Completion</p>
+</li>
+<li>
+<p>Late Disch vs Tr Completion: IRR 2.4 (IC 95% 2.21 - 2.61) , so patients with a Late Discharge had a greater incidence rate than patients in Tr Completion</p>
+</li>
+<li>
+<p>Late vs Early Disch: IRR .67 (IC 95% .63 - .71) , so patients with a Late Discharge had a lower incidence rate than patients with an Early Discharge</p>
+</li>
+</ul>
+<pre><code>. *set trace on
+. local stname `&quot; &quot;2_1&quot; &quot;3_1&quot; &quot;3_2&quot; &quot;' 
+
+. local titl `&quot; &quot;Early Disch vs Tr Completion&quot; &quot;Late Disch vs Tr Completion&quot; &quot;Late vs Early Disch&quot; &quot;' 
+
+. foreach s of local stname {
+  2.         gettoken title titl: titl
+  3. cap noi qui sts test tto_`s', logrank
+  4. scalar logrank_chi`s'= round(r(chi2),.01)
+  5. scalar logrank_df`s'= r(df)
+  6. scalar logrank_p_`s'= round(chiprob(r(df),r(chi2)),.001)
+  7. local lr1= logrank_chi`s'
+  8. local lr2= logrank_df`s'
+  9. local lr3= logrank_p_`s'
+ 10. global logrank_`s' &quot; Chi^2(`lr2')=`lr1',p=`lr3'&quot;
+ 11. }
+
+. *set trace off
+</code></pre>
+<ul>
+<li>
+<p>With a value of  Chi^2(1)=340.14,p=0, survival curves between patients that had an Early Disch y Tr Completion were significantly different.</p>
+</li>
+<li>
+<p>With a value of  Chi^2(1)=146.13,p=0, survival curves between patients that had an Late Disch y Tr Completion were significantly different.</p>
+</li>
+<li>
+<p>With a value of  Chi^2(1)=99.41,p=0, survival curves between patients that had an Late y Early Disch were significantly different.</p>
+</li>
+</ul>
+<p>=============================================================================</p>
+<h2><a href="#graph" id="graph">Graph</a></h2>
+<p>=============================================================================</p>
+<p>We generated a graph with every type of treatment and the Nelson-Aalen estimate.</p>
+<pre><code>. sts graph, na by (motivodeegreso_mod_imp_rec) ci ///
+&gt; title(&quot;Comission of an offense&quot;) /// 
+&gt; subtitle(&quot;Nelson-Aalen Cum Hazards w/ Confidence Intervals 95%&quot;) ///
+&gt; risktable(, size(*.5) order(1 &quot;Tr Completion&quot; 2 &quot;Early Disch&quot; 3 &quot;Late Disch&quot;)) ///
+&gt; ytitle(&quot;Cum. Hazards&quot;) ylabel(#8) ///
+&gt; xtitle(&quot;Years of age&quot;) xlabel(#8) ///
+&gt; note(&quot;Source: nDP, SENDA's SUD Treatments &amp; POs Office Data period 2010-2019 &quot;) ///
+&gt; legend(rows(3)) ///
+&gt; legend(cols(4)) ///
+&gt; graphregion(color(white) lwidth(large)) bgcolor(white) ///
+&gt; plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001&quot;) ///
+&gt; legend(order(1 &quot;95CI Tr Completion&quot; 2 &quot;Tr Completion&quot; 3 &quot;95CI Early Tr Disch&quot; 4 &quot;Early Tr Disch &quot; 5 &quot;95CI Late Tr Disch&quot; 6 &quot;Late Tr Disch&quot; )size(*.5)region(lstyle(none)) region(c(none)) nobox)
+
+         failure _d:  event == 1
+   analysis time _t:  age_offending_imp
+  enter on or after:  time edad_al_egres_imp
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+
+. graph save &quot;tto2.gph&quot;, replace
+(file tto2.gph saved)
+
+</code></pre>
+<p><img src="tto2.svg" width="800" ></p>
+<p>=============================================================================</p>
+<h2><a href="#survival-analyses" id="survival-analyses">Survival Analyses</a></h2>
+<p>=============================================================================</p>
+<p>We tested the schoefeld residuals.</p>
+<pre><code>. *c(&quot;edad_al_ing_fmt&quot;, &quot;edad_ini_cons&quot;, &quot;dias_treat_imp_sin_na_1&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;, &quot;compromiso_biopsicosocial&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;macrozona&quot;, &quot;policonsu
+&gt; mo&quot;, &quot;n_prev_off&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;, &quot;n_off_sud&quot;, &quot;n_off_oth&quot;)
+. 
+. global sim 1e5 //5e1 1e5 
+
+. global boots 1e3 //5e1 2e3
+
+. global times 0 90 365 1096 1826
+
+. range timevar0 90 1826 90
+(72,301 missing values generated)
+
+. 
+. global covs &quot;edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth&quot;
+
+. global covs_2 &quot;motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth&quot;
+
+. 
+. 
+. stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
+
+         failure _d:  event == 1
+   analysis time _t:  age_offending_imp
+  enter on or after:  time edad_al_egres_imp
+
+Cox regression -- Efron method for ties
+
+No. of subjects      =       61,154             Number of obs    =      61,154
+No. of failures      =        4,088
+Time at risk         =  240603.4232
+                                                Wald chi2(17)    =     3062.24
+Log pseudolikelihood =   -34543.285             Prob &gt; chi2      =      0.0000
+
+---------------------------------------------------------------------------------------------
+                            |               Robust
+                         _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------------+----------------------------------------------------------------
+motivodeegreso_mod_imp_rec3 |   1.108854    .022809     5.02   0.000     1.065039    1.154472
+            edad_al_ing_fmt |   1.086704   .0072585    12.45   0.000     1.072571    1.101024
+              edad_ini_cons |    .976821   .0047518    -4.82   0.000     .9675519    .9861789
+                    sex_enc |   .6207382   .0272745   -10.85   0.000     .5695183    .6765646
+                    esc_rec |   1.260406   .0328536     8.88   0.000     1.197631    1.326471
+               sus_prin_mod |   1.208167   .0210306    10.86   0.000     1.167643    1.250097
+                fr_sus_prin |   1.042562   .0173005     2.51   0.012       1.0092    1.077028
+                comp_biosoc |   1.203528   .0361968     6.16   0.000     1.134634    1.276605
+                    ten_viv |   .9833343   .0156001    -1.06   0.289     .9532292     1.01439
+              dg_cie_10_rec |   1.046368   .0191372     2.48   0.013     1.009524    1.084556
+         sud_severity_icd10 |   .9277995   .0393764    -1.77   0.077     .8537459    1.008276
+                  macrozone |   1.215963   .0291879     8.15   0.000      1.16008    1.274537
+                policonsumo |   1.051829   .0506969     1.05   0.294      .957014    1.156038
+                  n_off_vio |   1.268235   .0443501     6.80   0.000     1.184223    1.358208
+                  n_off_acq |   2.942118   .1062604    29.88   0.000     2.741052    3.157933
+                  n_off_sud |   1.196664   .0416383     5.16   0.000     1.117775    1.281121
+                  n_off_oth |   1.496489     .05219    11.56   0.000     1.397616    1.602356
+---------------------------------------------------------------------------------------------
+
+. estat phtest, log detail
+
+      Test of proportional-hazards assumption
+
+      Time:  Log(t)
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob&gt;chi2
+      ------------+---------------------------------------------------
+      motivodeeg~3|     -0.01340         0.63        1         0.4287
+      edad_al_in~t|     -0.04480        10.58        1         0.0011
+      edad_ini_c~s|      0.03907         7.50        1         0.0062
+      sex_enc     |      0.03501         5.26        1         0.0218
+      esc_rec     |     -0.05337        11.33        1         0.0008
+      sus_prin_mod|     -0.01027         0.33        1         0.5629
+      fr_sus_prin |     -0.00594         0.15        1         0.6995
+      comp_biosoc |     -0.03218         4.41        1         0.0358
+      ten_viv     |     -0.02938         3.91        1         0.0480
+      dg_cie_10_~c|     -0.00193         0.01        1         0.9038
+      sud_sever~10|      0.02209         2.07        1         0.1504
+      macrozone   |      0.00049         0.00        1         0.9759
+      policonsumo |      0.00552         0.13        1         0.7172
+      n_off_vio   |      0.02064         2.07        1         0.1504
+      n_off_acq   |      0.02800         4.15        1         0.0415
+      n_off_sud   |      0.08421        34.81        1         0.0000
+      n_off_oth   |      0.03115         4.61        1         0.0319
+      ------------+---------------------------------------------------
+      global test |                     94.58       17         0.0000
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+
+. scalar chi2_scho_test = r(chi2)
+
+. 
+. mat mat_scho_test = r(phtest)
+
+. 
+. esttab matrix(mat_scho_test) using &quot;mat_scho_test2.csv&quot;, replace
+(note: file mat_scho_test2.csv not found)
+(output written to mat_scho_test2.csv)
+
+. esttab matrix(mat_scho_test) using &quot;mat_scho_test2.html&quot;, replace
+(note: file mat_scho_test2.html not found)
+(output written to mat_scho_test2.html)
+
+. 
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=5><hr></td></tr>
+<tr><td>            </td><td>mat_scho_test</td><td>            </td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>         rho</td><td>        chi2</td><td>          df</td><td>           p</td></tr>
+<tr><td colspan=5><hr></td></tr>
+<tr><td>motivodeegreso_mod_imp_rec3</td><td>   -.0134003</td><td>    .6263719</td><td>           1</td><td>    .4286892</td></tr>
+<tr><td>edad_al_ing_fmt</td><td>   -.0447967</td><td>    10.58332</td><td>           1</td><td>    .0011411</td></tr>
+<tr><td>edad_ini_cons</td><td>    .0390651</td><td>    7.498552</td><td>           1</td><td>    .0061749</td></tr>
+<tr><td>sex_enc     </td><td>    .0350091</td><td>    5.263401</td><td>           1</td><td>    .0217784</td></tr>
+<tr><td>esc_rec     </td><td>   -.0533656</td><td>    11.33353</td><td>           1</td><td>    .0007612</td></tr>
+<tr><td>sus_prin_mod</td><td>   -.0102728</td><td>    .3346588</td><td>           1</td><td>    .5629286</td></tr>
+<tr><td>fr_sus_prin </td><td>   -.0059352</td><td>    .1489517</td><td>           1</td><td>    .6995392</td></tr>
+<tr><td>comp_biosoc </td><td>   -.0321766</td><td>    4.405142</td><td>           1</td><td>    .0358307</td></tr>
+<tr><td>ten_viv     </td><td>    -.029377</td><td>    3.910492</td><td>           1</td><td>    .0479855</td></tr>
+<tr><td>dg_cie_10_rec</td><td>   -.0019268</td><td>    .0146008</td><td>           1</td><td>    .9038228</td></tr>
+<tr><td>sud_severity_icd10</td><td>    .0220854</td><td>    2.067948</td><td>           1</td><td>    .1504238</td></tr>
+<tr><td>macrozone   </td><td>    .0004859</td><td>     .000915</td><td>           1</td><td>    .9758691</td></tr>
+<tr><td>policonsumo </td><td>    .0055164</td><td>    .1311653</td><td>           1</td><td>    .7172269</td></tr>
+<tr><td>n_off_vio   </td><td>    .0206411</td><td>    2.068304</td><td>           1</td><td>    .1503887</td></tr>
+<tr><td>n_off_acq   </td><td>    .0280037</td><td>    4.154339</td><td>           1</td><td>     .041528</td></tr>
+<tr><td>n_off_sud   </td><td>    .0842082</td><td>    34.81477</td><td>           1</td><td>    3.63e-09</td></tr>
+<tr><td>n_off_oth   </td><td>    .0311457</td><td>    4.605012</td><td>           1</td><td>    .0318786</td></tr>
+<tr><td colspan=5><hr></td></tr>
+</table>
+<h3><a href="#iptcw" id="iptcw">IPTCW</a></h3>
+<p>We estimated a Survival-time inverse-probability weighting, these estimate the weights attributed to the treatment-assignment (likelihood of being treated) and time-to-censoring models, and use them to estimate the weighted averages of the outcomes for each treatment level.</p>
+<pre><code>. *reset time, only compatible with stteffects (same entry times)
+. stset diff, failure(event ==1) 
+
+     failure event:  event == 1
+obs. time interval:  (0, diff]
+ exit on or before:  failure
+
+------------------------------------------------------------------------------
+     72,391  total observations
+          1  observation ends on or before enter()
+------------------------------------------------------------------------------
+     72,390  observations remaining, representing
+      5,301  failures in single-record/single-failure data
+ 310,765.79  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =  10.75828
+
+. 
+. cap rm bsreg12.dta bsreg22.dta
+
+. 
+. stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fe
+&gt; c_nac, gamma), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg12, replace))
+(note: file bsreg12.dta not found)
+
+Survival treatment-effects estimation           Number of obs     =     61,153
+Estimator      : inverse-probability weights
+Outcome model  : weighted mean
+Treatment model: logit
+Censoring model: gamma
+---------------------------------------------------------------------------------------------
+                            |   Observed   Bootstrap                         Normal-based
+                         _t |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------------+----------------------------------------------------------------
+ATE                         |
+motivodeegreso_mod_imp_rec3 |
+                  (2 vs 1)  |  -.4924721   .2139473    -2.30   0.021    -.9118012    -.073143
+                  (3 vs 1)  |  -.4920822   .1953451    -2.52   0.012    -.8749517   -.1092128
+----------------------------+----------------------------------------------------------------
+POmean                      |
+motivodeegreso_mod_imp_rec3 |
+                         1  |   3.670153   .1809592    20.28   0.000     3.315479    4.024826
+---------------------------------------------------------------------------------------------
+
+. cap stteffects ra
+
+. 
+. stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fe
+&gt; c_nac, lnormal), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg22, replace))
+(note: file bsreg22.dta not found)
+
+Survival treatment-effects estimation           Number of obs     =     61,153
+Estimator      : inverse-probability weights
+Outcome model  : weighted mean
+Treatment model: logit
+Censoring model: lnormal
+---------------------------------------------------------------------------------------------
+                            |   Observed   Bootstrap                         Normal-based
+                         _t |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------------+----------------------------------------------------------------
+ATE                         |
+motivodeegreso_mod_imp_rec3 |
+                  (2 vs 1)  |  -.4247485   .1687996    -2.52   0.012    -.7555896   -.0939074
+                  (3 vs 1)  |  -.3950087   .1589376    -2.49   0.013    -.7065208   -.0834967
+----------------------------+----------------------------------------------------------------
+POmean                      |
+motivodeegreso_mod_imp_rec3 |
+                         1  |   3.442487    .144998    23.74   0.000     3.158296    3.726678
+---------------------------------------------------------------------------------------------
+
+. cap stteffects ra
+
+. 
+. *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_fmt, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, policonsumo, n_off_vio, n_off_acq, n_off_s
+&gt; ud, n_off_oth)
+</code></pre>
+<p>The model indicated that is complicated to include the days in treatment, because of collinearity. However, there was no statistically significant average effect of a type of treatment.</p>
+<h3><a href="#iptw-royston-parmar" id="iptw-royston-parmar">IPTW Royston-Parmar</a></h3>
+<p>First we calculated the difference between those patients who did and did not complete baseline treatment, given that the analysis is restricted to .</p>
+<pre><code>. *Micki Hill &amp; Paul C Lambert &amp; Michael J Crowther, 2021. &quot;Introducing stipw: inverse probability weighted parametric survival models,&quot; London Stata Conference 2021 15, Stata Users Group.
+. *https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&amp;wdOrigin=BROWSELINK
+. 
+. *Treatment variable should be a binary variable with values 0 and 1.
+. gen     motivodeegreso_mod_imp_rec2 = 0
+
+. replace motivodeegreso_mod_imp_rec2 = 1 if strpos(motivodeegreso_mod_imp_rec,&quot;Early&quot;)&gt;0
+(16,150 real changes made)
+
+. replace motivodeegreso_mod_imp_rec2 = 1 if strpos(motivodeegreso_mod_imp_rec,&quot;Late&quot;)&gt;0
+(36,453 real changes made)
+
+. 
+. stpm2 motivodeegreso_mod_imp_rec2, scale(hazard) df(10) eform
+
+Iteration 0:   log likelihood = -25193.086  
+Iteration 1:   log likelihood = -25188.591  
+Iteration 2:   log likelihood = -25188.575  
+Iteration 3:   log likelihood = -25188.575  
+
+Log likelihood = -25188.575                     Number of obs     =     72,390
+
+---------------------------------------------------------------------------------------------
+                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------------+----------------------------------------------------------------
+xb                          |
+motivodeegreso_mod_imp_rec2 |   2.311036   .0938917    20.62   0.000     2.134148    2.502586
+                      _rcs1 |    2.04567   .0187732    77.99   0.000     2.009204    2.082797
+                      _rcs2 |   1.048621   .0073153     6.81   0.000     1.034381    1.063057
+                      _rcs3 |   1.034063   .0060242     5.75   0.000     1.022323    1.045937
+                      _rcs4 |   1.011806   .0042352     2.80   0.005     1.003539    1.020141
+                      _rcs5 |   1.011699   .0029628     3.97   0.000     1.005909    1.017523
+                      _rcs6 |    1.00725   .0023896     3.05   0.002     1.002578    1.011945
+                      _rcs7 |   1.009125   .0020828     4.40   0.000     1.005051    1.013216
+                      _rcs8 |   1.009692   .0019241     5.06   0.000     1.005928     1.01347
+                      _rcs9 |   1.007219   .0018084     4.01   0.000     1.003681     1.01077
+                     _rcs10 |   1.004381   .0015625     2.81   0.005     1.001323    1.007448
+                      _cons |   .0312061   .0011856   -91.26   0.000     .0289668    .0336186
+---------------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth), distribution(rp) df(1
+&gt; 0) ipwtype(stabilised) vce(mestimation) eform
+11237 observations have missing treatment and/or missing confounder values and/or _st = 0.
+These observations are excluded from the analysis, see variable _stipw_flag
+
+Fitting logistic regression to obtain denominator for weights
+
+Iteration 0:   log likelihood = -36017.868  
+Iteration 1:   log likelihood = -34156.459  
+Iteration 2:   log likelihood = -34122.599  
+Iteration 3:   log likelihood = -34122.559  
+Iteration 4:   log likelihood = -34122.559  
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+
+Iteration 0:   log likelihood = -36017.868  
+Iteration 1:   log likelihood = -36017.868  
+
+Fitting weighted survival model to obtain point estimates
+
+Iteration 0:   log pseudolikelihood = -19243.744  
+Iteration 1:   log pseudolikelihood = -19240.984  
+Iteration 2:   log pseudolikelihood = -19240.974  
+Iteration 3:   log pseudolikelihood = -19240.974  
+
+Displaying weighted survival model with M-estimation standard errors
+
+Log pseudolikelihood = -19240.974               Number of obs     =     61,154
+
+---------------------------------------------------------------------------------------------
+                            |            M-estimation
+                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------------+----------------------------------------------------------------
+xb                          |
+motivodeegreso_mod_imp_rec2 |   1.520404   .0745193     8.55   0.000     1.381145    1.673705
+                      _rcs1 |   2.078198   .0232276    65.45   0.000     2.033168    2.124225
+                      _rcs2 |   1.037425   .0085288     4.47   0.000     1.020843    1.054276
+                      _rcs3 |    1.02551   .0071727     3.60   0.000     1.011548    1.039665
+                      _rcs4 |   1.007995   .0051011     1.57   0.116     .9980465    1.018043
+                      _rcs5 |   1.009552   .0035592     2.70   0.007       1.0026    1.016552
+                      _rcs6 |   1.002781   .0029791     0.93   0.350     .9969586    1.008637
+                      _rcs7 |   1.007412   .0025948     2.87   0.004     1.002339     1.01251
+                      _rcs8 |    1.00696   .0023978     2.91   0.004     1.002272    1.011671
+                      _rcs9 |    1.00463   .0022849     2.03   0.042     1.000162    1.009118
+                     _rcs10 |   1.003412   .0019976     1.71   0.087     .9995048    1.007335
+                      _cons |   .0386917   .0017883   -70.36   0.000     .0353408    .0423604
+---------------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+. 
+. predict rmst03 in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
+
+. predict rmst13 in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
+
+. predictnl drmst= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_se)
+Warning: prediction doesn't vary with respect to e(b).
+(72,390 missing values generated)
+Warning: prediction constant over observations; perhaps you meant to run nlcom.
+
+. 
+. cap list rmst03 rmst13  drmst in 1
+
+</code></pre>
+<p>We used another model with only 4 degrees of freedom according to the lowest BIC</p>
+<pre><code>. 
+. stpm2 motivodeegreso_mod_imp_rec2, scale(hazard) df(4) eform
+
+Iteration 0:   log likelihood = -25221.193  
+Iteration 1:   log likelihood = -25202.837  
+Iteration 2:   log likelihood = -25202.699  
+Iteration 3:   log likelihood = -25202.699  
+
+Log likelihood = -25202.699                     Number of obs     =     72,390
+
+---------------------------------------------------------------------------------------------
+                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------------+----------------------------------------------------------------
+xb                          |
+motivodeegreso_mod_imp_rec2 |   2.312498     .09395    20.63   0.000       2.1355    2.504167
+                      _rcs1 |    2.04474   .0187438    78.03   0.000     2.008331    2.081809
+                      _rcs2 |   1.053118   .0074623     7.30   0.000     1.038593    1.067846
+                      _rcs3 |   1.029204   .0056411     5.25   0.000     1.018207     1.04032
+                      _rcs4 |    1.01079   .0038372     2.83   0.005     1.003297    1.018339
+                      _cons |   .0311945   .0011852   -91.27   0.000      .028956    .0336061
+---------------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth), distribution(rp) df(4
+&gt; ) ipwtype(stabilised) vce(mestimation) eform
+11237 observations have missing treatment and/or missing confounder values and/or _st = 0.
+These observations are excluded from the analysis, see variable _stipw_flag
+
+Fitting logistic regression to obtain denominator for weights
+
+Iteration 0:   log likelihood = -36017.868  
+Iteration 1:   log likelihood = -34156.459  
+Iteration 2:   log likelihood = -34122.599  
+Iteration 3:   log likelihood = -34122.559  
+Iteration 4:   log likelihood = -34122.559  
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+
+Iteration 0:   log likelihood = -36017.868  
+Iteration 1:   log likelihood = -36017.868  
+
+Fitting weighted survival model to obtain point estimates
+
+Iteration 0:   log pseudolikelihood = -19255.845  
+Iteration 1:   log pseudolikelihood = -19248.262  
+Iteration 2:   log pseudolikelihood = -19248.235  
+Iteration 3:   log pseudolikelihood = -19248.235  
+
+Displaying weighted survival model with M-estimation standard errors
+
+Log pseudolikelihood = -19248.235               Number of obs     =     61,154
+
+---------------------------------------------------------------------------------------------
+                            |            M-estimation
+                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------------+----------------------------------------------------------------
+xb                          |
+motivodeegreso_mod_imp_rec2 |    1.52099    .074548     8.56   0.000     1.381677    1.674349
+                      _rcs1 |   2.077275   .0232114    65.43   0.000     2.032276     2.12327
+                      _rcs2 |   1.040496   .0091713     4.50   0.000     1.022675    1.058628
+                      _rcs3 |   1.021694   .0069369     3.16   0.002     1.008188    1.035381
+                      _rcs4 |    1.00646   .0046988     1.38   0.168     .9972923    1.015711
+                      _cons |   .0386817   .0017878   -70.37   0.000     .0353316    .0423494
+---------------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+. 
+. predict rmst03_b in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
+
+. predict rmst13_b in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
+
+. predictnl drmst_b= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_b_se)
+Warning: prediction doesn't vary with respect to e(b).
+(72,390 missing values generated)
+Warning: prediction constant over observations; perhaps you meant to run nlcom.
+
+. 
+. cap list rmst03_b rmst13_b  drmst_b in 1
+
+</code></pre>
+<p>Saved at= 15:00:00 12 Nov 2022</p>
+<pre><code>
+</code></pre>

@@ -95,7 +95,7 @@ replace motivodeegreso_mod_imp_rec3 = 3 if strpos(motivodeegreso_mod_imp_rec,"La
 <</dd_do>>
 ~~~~
 
-Luego configuramos la base de datos en formato de supervivencia.
+Then we set the database in survival format
 
 ~~~~
 <<dd_do>>
