@@ -590,7 +590,6 @@ CONS_C1_df_dup_SEP_2020$edad_al_ing_fmt <-
 #lubridate::time_length(lubridate::ymd(CONS_C1_df_dup_SEP_2020$fech_ing), lubridate::ymd(CONS_C1_df_dup_SEP_2020 $fech_nac),"years")
 lubridate::time_length(lubridate::interval(lubridate::ymd(CONS_C1_df_dup_SEP_2020 $fech_nac),lubridate::ymd(CONS_C1_df_dup_SEP_2020$fech_ing)),unit="years")
 
-invisible("origen_ingreso_mod numero_de_hijos_mod, add!!!!!")
 
 CONS_C1_df_dup_SEP_2020_22<-
 CONS_C1_df_dup_SEP_2020 %>% 
