@@ -77,7 +77,7 @@ We open the files
 <<dd_do>>
 use "fiscalia_mariel_oct_2022_match_SENDA.dta", clear
 encode escolaridad_rec, generate(esc_rec)
-encode sex, generate(sex_enc)
+encode sex, gen(sex_enc)
 encode sus_principal_mod, generate(sus_prin_mod)
 encode freq_cons_sus_prin, generate(fr_sus_prin)
 encode compromiso_biopsicosocial, generate(comp_biosoc)
@@ -246,7 +246,7 @@ We generated a graph with every type of treatment and the Nelson-Aalen estimate.
 ~~~~
 <<dd_do>>
 sts graph, na by (motivodeegreso_mod_imp_rec) ci ///
-title("Comission of an offense") /// 
+title("Comission of an offense (end with imprisonment)") /// 
 subtitle("Nelson-Aalen Cum Hazards w/ Confidence Intervals 95%") ///
 risktable(, size(*.5) order(1 "Tr Completion" 2 "Early Disch" 3 "Late Disch")) ///
 ytitle("Cum. Hazards") ylabel(#8) ///
