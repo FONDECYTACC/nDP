@@ -16,7 +16,7 @@ author:
     url: https://github.com/nDP
     affiliation: Ph.D. student, Griffith University, Australia
     affiliation_url: 
-    email: mdmateo@uc.cl
+    email: mariel.mateopinones@griffithuni.edu.au
     orcid_id: 0000-0002-9607-7541
 description: |
  A small part of the research done and available in https://www.nucleondp.cl/ 
@@ -44,3 +44,5 @@ output:
 - [Descriptive glimpse and initial analysis ](analisis_mariel_nov_2022_stata.html)
 
 - [Descriptive glimpse and initial analysis (Imprisonment only)](analisis_mariel_nov_2022_stata_pris.html)
+
+- [Poster (idea)](pres_dic_22.html)
