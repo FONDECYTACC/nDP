@@ -257,7 +257,7 @@ pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando pa
 if(!require(pacman)){install.packages("pacman")}
 if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
 
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf, RISCA, adjustedCurves, ggpmisc, install=T)
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf,  adjustedCurves, ggpmisc, install=T)
 
 #Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
 
@@ -1393,7 +1393,84 @@ warning(paste0("Number of users with age of offending lower than age at discharg
 ```
 :::
 
+## Commentary
 
+```{r com1, echo=T, fig.align='center', message=T, error=T, eval=T}
+invisible("1.Aberrant ages")
+errors_age_after_join<-
+Base_fiscalia_v13 %>% 
+  dplyr::filter(edad_al_egres_imp<=14|edad_al_egres_imp>=80|age_offending_imp<=14|age_offending_imp>=80)
+
+errors_age_after_join_pris<-
+Base_fiscalia_v13_pris %>% 
+  dplyr::filter(edad_al_egres_imp<=14|edad_al_egres_imp>=80|age_offending_imp<=14|age_offending_imp>=80)
+  #dplyr::filter(hash_key %in% errores_edad)
+```
+
+
+`r paste0(dplyr::filter(Base_fiscalia_v13, edad_al_egres_imp<=14|edad_al_egres_imp>=80) %>% nrow(), " patients being discharged at 14 years of age or less, or at 80 years of age or more ")`
+
+`r paste0(dplyr::filter(Base_fiscalia_v13, age_offending_imp<=14|age_offending_imp>=80) %>% nrow(), " patients that offended and ended with prison at 14 years of age or less, or at 80 years of age or more ")`
+In total, these cases represent the `r scales::percent(nrow(errors_age_after_join)/nrow(Base_fiscalia_v13), accuracy=.01)` of the database.
+
+
+`r paste0(dplyr::filter(Base_fiscalia_v13_pris, edad_al_egres_imp<=14|edad_al_egres_imp>=80) %>% nrow(), " patients being discharged at 14 years of age or less, or at 80 years of age or more ")`
+
+`r paste0(dplyr::filter(Base_fiscalia_v13_pris, age_offending_imp<=14|age_offending_imp>=80) %>% nrow(), " patients that offended and ended with prison at 14 years of age or less, or at 80 years of age or more ")`
+In total, these cases represent the `r scales::percent(nrow(errors_age_after_join_pris)/nrow(Base_fiscalia_v13_pris), accuracy=.01)` of the database.
+
+  
+```{r com2, echo=T, fig.align='center', message=T, error=T, eval=T}
+
+#_#_#_#_#_#_#_#_#_
+invisible("2.Explore RUCs")
+
+paste0("Number of unique RUCs: ", length(unique(Base_fiscalia_v13$caseid)), " of ", length(Base_fiscalia_v13$caseid)," rows")
+paste0("Number of unique RUCs (imprisonment): ", length(unique(Base_fiscalia_v13_pris$caseid)), " of ", length(Base_fiscalia_v13_pris$caseid)," rows")
+
+warning(paste0("Records that share a RUC n= ",
+Base_fiscalia_v13 %>% 
+    dplyr::ungroup() %>% 
+    dplyr::group_by(caseid) %>% 
+    dplyr::mutate(dis_rut=n_distinct(hash_key)) %>% 
+    dplyr::ungroup() %>% 
+    #filter people that was not paired but keep people with more than one RUC
+    dplyr::filter(dis_rut>1,dis_rut<5000) %>% nrow()
+))
+
+
+warning(paste0("Records that share a RUC (imprisonment) n= ",
+Base_fiscalia_v13_pris %>% 
+    dplyr::ungroup() %>% 
+    dplyr::group_by(caseid) %>% 
+    dplyr::mutate(dis_rut=n_distinct(hash_key)) %>% 
+    dplyr::ungroup() %>% 
+    #filter people that was not paired but keep people with more than one RUC
+    dplyr::filter(dis_rut>1,dis_rut<5000) %>% nrow()
+))
+
+Base_fiscalia_v13 %>% 
+  dplyr::ungroup() %>% 
+  dplyr::group_by(caseid) %>% 
+  dplyr::mutate(dis_rut=n_distinct(hash_key)) %>% 
+  dplyr::ungroup() %>% 
+  #filter people that was not paired but keep people with more than one RUC
+  dplyr::filter(dis_rut<5000) %>%
+   dplyr::summarise(total= n(),max= max(dis_rut), min= min(dis_rut), mean=round(mean(dis_rut),2), p025= quantile(dis_rut, .025), p25= quantile(dis_rut, .25), median= quantile(dis_rut, .5), p75= quantile(dis_rut, .75), p975= quantile(dis_rut, .975)) %>% 
+knitr::kable("markdown", caption="Summary descriptives, distinct IDs by Case ID")
+#table(Base_fiscalia_v13$caseid) %>% data.frame() %>%  arrange(-Freq) %>% slice(1:10)
+#table(Base_fiscalia_v13_pris$caseid) %>% data.frame() %>%  arrange(-Freq) %>% slice(1:10)
+
+Base_fiscalia_v13_pris %>% 
+  dplyr::ungroup() %>% 
+  dplyr::group_by(caseid) %>% 
+  dplyr::mutate(dis_rut=n_distinct(hash_key)) %>% 
+  dplyr::ungroup() %>% 
+  #filter people that was not paired but keep people with more than one RUC
+  dplyr::filter(dis_rut<5000) %>%
+   dplyr::summarise(total= n(),max= max(dis_rut), min= min(dis_rut), mean=round(mean(dis_rut),2), p025= quantile(dis_rut, .025), p25= quantile(dis_rut, .25), median= quantile(dis_rut, .5), p75= quantile(dis_rut, .75), p975= quantile(dis_rut, .975)) %>% 
+knitr::kable("markdown", caption="Summary descriptives, distinct IDs by Case ID (Imprisonment)")
+```
 
 <br>
 
