@@ -351,7 +351,7 @@ format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethr
       df[[c]] <- as.character( df[[c]])
 
       # Update formatting
-      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, df[r, c], markup))
+      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, gsub(" ", "", df[r, c]), markup))
     }
   }
 
@@ -697,7 +697,11 @@ CONS_C1_df_dup_SEP_2020_22_b %>%
 #The same for age at discharge
 
 
-CONS_C1_df_dup_SEP_2020_22_d <- CONS_C1_df_dup_SEP_2020_22_c
+#2022-11-25
+CONS_C1_df_dup_SEP_2020_22_d <- CONS_C1_df_dup_SEP_2020_22_c %>% 
+                    group_by(hash_key) %>% slice_min(fech_egres_num) %>%  ungroup()            
+
+
 for (i in 1:10) {
   yr<- 365.25
   column_name <- paste0("fech_ing_",1:10)[i]
@@ -753,8 +757,8 @@ sqldf("SELECT *
              FROM Base_fiscalia_v9
              ) AS y
   ON x.hash_key == y.id AND 
-  x. edad_al_egres_imp <= y.age_offending_imp")
-
+  x. edad_al_egres_imp <= y.age_offending_imp AND x.dup = 1") #2022-11-25  added dup
+#183307
 invisible("It might be that those discharged not necessarily were, because this date corresponded to a referral")
 
 paste0("Observations of SENDA database: ",nrow(CONS_C1_df_dup_SEP_2020_22_d))#109756)
@@ -778,7 +782,7 @@ lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),
   #select the first and without ties (only one)
   dplyr::slice_min(age_offending_imp, n = 1, with_ties = T) %>% 
   dplyr::ungroup() %>% 
-  purrr::when(nrow(dplyr::filter(.,age_offending_imp-edad_al_ing_1<0))>0 ~ stop("Cases with negaative time after admission to commission of crime"), ~.) %>% 
+  purrr::when(nrow(dplyr::filter(.,age_offending_imp-edad_al_ing_1<0))>0 ~ stop("Cases with negative time after admission to commission of crime"), ~.) %>% 
    dplyr::mutate(motivodeegreso_mod_imp_rec= dplyr::case_when(grepl("Therapeutic",motivodeegreso_mod_imp)~ "Treatment completion", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 <90) ~  "Treatment non-completion (Early)", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 >=90) ~ "Treatment non-completion (Late)", grepl("Referral|Death|Ongoing", motivodeegreso_mod_imp)~ "Censored", T~NA_character_))
 
 warning(paste0("There are ",nrow(dplyr::filter(Base_fiscalia_v11,is.na(fech_nac_rec)))," missing cases in date of birth (were ",nrow(dplyr::filter(janitor::clean_names(Base_fiscalia_v10),is.na(fech_nac_rec)))," in Base_fiscalia_v10)"))
@@ -798,6 +802,8 @@ Base_fiscalia_v12 %>%
   dplyr::select(hash_key, fech_nac, fech_nac_rec, motivodeegreso_mod_imp_rec, age_offending_imp, edad_al_ing_1, edad_comision, fec_comision_simple, caseid, crime_code_group_rec_prof, end_type_2, gls_proctermino, s_sentence_1, s_restorative_3, s_kindprison_1) %>% 
 dplyr::filter(hash_key=="1951c4d080cda8b68759d638a840d82f") %>% 
   knitr::kable("markdown", caption="Example of database")
+
+#23d88c2b8c6da2d8abf3f88b7ce8a4c0 anomalus case
 ```
 
 :::
@@ -819,7 +825,7 @@ sqldf("SELECT *
              FROM Base_fiscalia_v9
              ) AS y
   ON x.hash_key == y.id AND 
-  x. edad_al_egres_imp <= y.age_offending_imp AND y.prision_fact = '1'")
+  x. edad_al_egres_imp <= y.age_offending_imp AND y.prision_fact = '1' AND x.dup = 1") #2022-11-25  added dup
 
 invisible("It might be that those discharged not necessarily were, because this date corresponded to a referral")
 
@@ -888,7 +894,7 @@ Base_fiscalia_v12_pris %>%
 
 <br>
 
-We took `Base_fiscalia_v9` (only offenders that had a final judgment as guilty) and joined with SENDA data but only based on records before the first treatment date (`Base_fiscalia_v10b`). From them, we selected the first relationship of each combination of HASH KEY, judiciary case & type of crime (`hash_key`-`caseid`-`crime_code_group_rec_prof`), and counted the number of offenses depending and dichotomized it into the presence of a record or not (Pre-treatment criminality or `n_prev_off`). We also did the same thing for Acquisitive (`n_off_acq`),  violent (`n_off_vio`), substance use-related (`n_off_sud`) and other (`n_off_oth`) offenses. We replicated these actions with the database of imprisonments only.
+We took `Base_fiscalia_v9` (only offenders that had a final judgment as guilty) and joined with SENDA data but only based on records before the first treatment discharge date (`Base_fiscalia_v10b`). From them, we selected the first relationship of each combination of HASH KEY, judiciary case & type of crime (`hash_key`-`caseid`-`crime_code_group_rec_prof`), and counted the number of offenses depending and dichotomized it into the presence of a record or not (Pre-treatment criminality or `n_prev_off`). We also did the same thing for Acquisitive (`n_off_acq`),  violent (`n_off_vio`), substance use-related (`n_off_sud`) and other (`n_off_oth`) offenses. We replicated these actions with the database of imprisonments only.
 
 <br>
 
@@ -901,7 +907,7 @@ sqldf("SELECT *
              FROM Base_fiscalia_v9
              ) AS y
   ON x.hash_key == y.id AND 
-  x. edad_al_egres_imp > y.age_offending_imp") #changed the direction to past events, where age at discharge is greater than the age of commission
+  x.edad_al_egres_imp > y.age_offending_imp AND x.dup = 1") #2022-11-25  added dup // #changed the direction to past events, where age at discharge is greater than the age of commission
 
 
 Base_fiscalia_v11b<-
@@ -957,10 +963,11 @@ Base_fiscalia_v12_pris_sel<-
 Base_fiscalia_v12_pris %>% 
     dplyr::group_by(hash_key) %>% 
   #select the first and without ties (only one)
-  dplyr::slice_min(age_offending_imp, n = 1, with_ties = F) %>% 
+  dplyr::slice_min(edad_al_egres_imp, n = 1, with_ties = F) %>% 
   dplyr::ungroup() %>% 
-  dplyr::select(hash_key, age_offending_imp)
+  dplyr::select(hash_key, edad_al_egres_imp)
 
+#obtained crimes that were committed only before the matched crime age
 Base_fiscalia_v10b_pris<-
 sqldf("SELECT *
   FROM Base_fiscalia_v12_pris_sel AS x  
@@ -968,7 +975,7 @@ sqldf("SELECT *
              FROM Base_fiscalia_v9
              ) AS y
   ON x.hash_key == y.id AND 
-  x.age_offending_imp > y.age_offending_imp") #changed the direction to past events, where age at discharge is greater than the age of commission
+  x.edad_al_egres_imp > y.age_offending_imp")
 
 
 Base_fiscalia_v11b_pris<-
@@ -1112,7 +1119,7 @@ as.data.frame.TableOne(tbone_desc_merge4, smd=T, nonnormal= T)%>%
   dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
   format_cells(1, 1:length(names(.)), "bold") %>%
   dplyr::select(-1) %>% 
-  kable(size=10, format="markdown",caption= "Summary descriptives, Condemnatory sentence(1), Found as an imputed (YES), by Baseline Treatment Status", escape=T)
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, Condemnatory sentence(1), Found as an imputed (YES), by Baseline Treatment Status", escape=T)
 #kable(size=10, format="html",caption= "Summary descriptives, by Baseline Treatment Status") %>%     kableExtra::kable_classic()
 ```
 :::
@@ -1208,7 +1215,7 @@ ggsurvplot(mot_egreso_fit,
            legend.labs = c("Tr Comp", "Tr Non-Comp (Early)", "Tr Non-Comp (Late)"), 
            risk.table = "abs_pct",
            #ncensor.plot = TRUE,
-           ggtheme = theme_classic2(base_size=10),
+           ggtheme = theme_classic2(base_size=15),
            risk.table.y.text.col = F,
            risk.table.col="black",
            font.tickslab = c(10),
@@ -1247,7 +1254,7 @@ ggsurvplot(mot_egreso_fit_pris,
            legend.labs = c("Tr Comp", "Tr Non-Comp (Early)", "Tr Non-Comp (Late)"), 
            risk.table = "abs_pct",
            #ncensor.plot = TRUE,
-           ggtheme = theme_classic2(base_size=10),
+           ggtheme = theme_classic2(base_size=15),
            risk.table.y.text.col = F,
            risk.table.col="black",
            font.tickslab = c(10),
@@ -1285,7 +1292,7 @@ fortify(mot_egreso_fit2, fun = "cumhaz") %>%
   ggplot(aes(x=time, y=surv, fill=strata, color=strata, group=strata))+
   geom_step(size=.8)+
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .2) +
-  theme_classic2(base_size=10)+
+  theme_classic2(base_size=15)+
   annotate(geom = "table",
            x = 3,
            y = 8,
@@ -1312,7 +1319,7 @@ fortify(mot_egreso_fit2_pris, fun = "cumhaz") %>%
   ggplot(aes(x=time, y=surv, fill=strata, color=strata, group=strata))+
   geom_step(size=.8)+
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .2) +
-  theme_classic2(base_size=10)+
+  theme_classic2(base_size=15)+
   annotate(geom = "table",
            x = 3,
            y = 1.75,
@@ -1472,12 +1479,67 @@ Base_fiscalia_v13_pris %>%
 knitr::kable("markdown", caption="Summary descriptives, distinct IDs by Case ID (Imprisonment)")
 ```
 
-
+::: controlly
 ```{r com3, echo=T, fig.align='center', message=T, error=T, eval=T}
 
 #_#_#_#_#_#_#_#_#_
-invisible("3.Cox")
+invisible("3.Cox, collinearity")
+library(rms) 
 
+f1 <- cph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
+warning("X matrix deemed to be singular; variable n_off_oth")
+
+cvif <- rms::vif(f1)
+
+f2 <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
+warning("X matrix deemed to be singular; variable n_off_oth")
+
+cvif2 <- rms::vif(f2)
+
+
+f3 <- cph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
+warning("X matrix deemed to be singular; variable n_off_oth")
+
+cvif3 <- rms::vif(f3)
+
+f4 <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
+warning("X matrix deemed to be singular; variable n_off_oth")
+
+cvif4 <- rms::vif(f4)
+
+cbind.data.frame(Time0_cond_sent=cvif,
+                 Time0_prison=cvif2,
+                 Stag_ent_cond_sent=cvif3,
+                 Stag_ent_prison=cvif4) %>% 
+  knitr::kable("markdown", caption= "Variance Inflation Factors in Cox Regressions")
+```
+:::
+
+
+```{r com4, echo=T, fig.align='center', message=T, error=T, eval=T}
+
+#_#_#_#_#_#_#_#_#_
+invisible("4.Why there are more patients in prison database than contacts with sentence data base?")
+#unique(Base_fiscalia_v13_pris$hash_key)
+#unique(Base_fiscalia_v13$hash_key)
+
+warning(paste0("Patients that are registered in the sentence database but not in the prison data base: ",
+
+Base_fiscalia_v13 %>% 
+  dplyr::filter(!hash_key %in% unique(Base_fiscalia_v13_pris$hash_key)) %>% nrow()
+))
+
+warning(paste0("Patients that are registered in the prison database but not in the sentence data base: ",
+Base_fiscalia_v13_pris %>% 
+  dplyr::filter(!hash_key %in% unique(Base_fiscalia_v13$hash_key)) %>% nrow()
+))
+
+hash_key_non_sentence_but_pris<-
+Base_fiscalia_v12_pris %>% 
+  dplyr::filter(!hash_key %in% unique(Base_fiscalia_v13$hash_key)) %>% distinct(hash_key) %>% unlist(as.character())
+
+#23d88c2b8c6da2d8abf3f88b7ce8a4c0
+#In case of the patient above, when he was matched with the requirements of prison (wich is more stringent), it allowed that 2 treatments were elligible to match: one in 2011-01-06 to 2011-02-28 and another in 2011-12-05 to 2012-03-05. The problem is that we wanted to match with baseline treatments, hence prison skips the first treatment that ended in a referral and ended matching with the second. At 2022-11-25 I ended correcting it.
 ```
 
 <br>
@@ -1616,10 +1678,10 @@ paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v11_pris, 
 tab7b_lab_aft_d<- paste0('&#8226;Discard observations coded as victims rather than ofenders ',tab7b_lab_aft_d1,'\\\\\\l&#8226;Discard observations depending on the values of the end of the proceedings among offenders',tab7b_lab_aft_d2,'          \\\\\\l&#8226;Discard observations not ending in prison among offenders that ended proceedings with a sentence',tab7b_lab_aft_d25,'          \\\\\\l&#8226;Discard observations without birth date ',tab7b_lab_aft_d3,'\\\\\\l&#8226;Discard observations coded as referrals, deaths, censored at baseline treatment or with ongoing treatments ',tab7b_lab_aft_d4,'         \\\\\\l&#8226;Long-to-wide relationships/crimes, end of judicial proceedings, penalty         \\\\\\l&#8226;Group crimes into violent, drug-related, etc.         \\\\\\l')
 
 tab9_merged<-
-paste0("Contacts\n(p= ",format(nrow(dplyr::distinct(Base_fiscalia_v13,hash_key)),big.mark=","),";\nRUCs= ", format(nrow(dplyr::distinct(Base_fiscalia_v13,caseid)),big.mark=","),";\nno. PO= ", format(nrow(dplyr::filter(Base_fiscalia_v13,!is.na(prision_fact))), big.mark=","),";\nn= ", format(nrow(Base_fiscalia_v13), big.mark=","),")")
+paste0("Contacts\n(p= ",format(nrow(dplyr::distinct(Base_fiscalia_v13,hash_key)),big.mark=","),";\nRUCs= ", format(nrow(dplyr::distinct(Base_fiscalia_v13,caseid)),big.mark=","),";\nno.PO= ", format(nrow(dplyr::filter(Base_fiscalia_v13,!is.na(prision_fact))), big.mark=","),";\nn= ", format(nrow(Base_fiscalia_v13), big.mark=","),")")
 
 tab10_merged<-
-paste0("Prison\n(p= ",format(nrow(dplyr::distinct(Base_fiscalia_v13_pris,hash_key)),big.mark=","),";\nRUCs= ", format(nrow(dplyr::distinct(Base_fiscalia_v13_pris,caseid)),big.mark=","),";\n no. PO= ", format(nrow(dplyr::filter(Base_fiscalia_v13_pris,!is.na(prision_fact))), big.mark=","),";\nn= ", format(nrow(Base_fiscalia_v13_pris), big.mark=","),")")
+paste0("Prison\n(p= ",format(nrow(dplyr::distinct(Base_fiscalia_v13_pris,hash_key)),big.mark=","),";\nRUCs= ", format(nrow(dplyr::distinct(Base_fiscalia_v13_pris,caseid)),big.mark=","),";\nno.PO= ", format(nrow(dplyr::filter(Base_fiscalia_v13_pris,!is.na(prision_fact))), big.mark=","),";\nn= ", format(nrow(Base_fiscalia_v13_pris), big.mark=","),")")
 
 library(DiagrammeR) #⋉
 plot_merge_flowchart_after_dates<-
@@ -1724,7 +1786,7 @@ plot_merge_flowchart_after_dates %>%
 plot_merge_flowchart_after_dates %>% export_svg()%>%charToRaw %>% rsvg(width = WidthCM *(DPI/2.54), height = HeightCM *(DPI/2.54)) %>% png::writePNG(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_wo_fmt3.png"))
 
 htmlwidgets::saveWidget(plot_merge_flowchart_after_dates, paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_222_3.html"))
-webshot(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_222_3.html"), paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_formatted_3.png"),vwidth = 1200, vheight = 900,
+webshot::webshot(paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_222_3.html"), paste0(sub("2019 \\(github\\)/SUD_CL","2022 \\(github\\)",path),"/_figs/_flowchart_merge_formatted_3.png"),vwidth = 1200, vheight = 900,
         zoom = 2)
 ```
 

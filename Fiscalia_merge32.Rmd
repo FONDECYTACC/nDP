@@ -312,7 +312,7 @@ format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethr
       df[[c]] <- as.character( df[[c]])
 
       # Update formatting
-      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, df[r, c], markup))
+      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, gsub(" ", "", df[r, c]), markup))
     }
   }
 

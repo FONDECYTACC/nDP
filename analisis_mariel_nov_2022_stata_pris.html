@@ -85,13 +85,13 @@ c:\ado\plus\m\matselrc.ado
 
 </code></pre>
 <h1><a href="#exercise" id="exercise">Exercise</a></h1>
-<p>Date created: 13:52:15 12 Nov 2022.</p>
+<p>Date created: 07:41:02 26 Nov 2022.</p>
 <p>Get the folder</p>
 <pre><code>
 E:\Mi unidad\Alvacast\SISTRAT 2022 (github)
 
 
-Fecha: 12 Nov 2022, considerando un SO Windows para el usuario: andre
+Fecha: 26 Nov 2022, considerando un SO Windows para el usuario: andre
 
 </code></pre>
 <head>
@@ -104,8 +104,8 @@ Fecha: 12 Nov 2022, considerando un SO Windows para el usuario: andre
 </script>
 </head>
 <p>Path data= ;</p>
-<p>Tiempo: 12 Nov 2022, considerando un SO Windows</p>
-<p>The file is located and named as: E:\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA.dta</p>
+<p>Tiempo: 26 Nov 2022, considerando un SO Windows</p>
+<p>The file is located and named as: E:\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA_pris.dta</p>
 <p>=============================================================================</p>
 <h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
 <p>=============================================================================</p>
@@ -132,16 +132,16 @@ Fecha: 12 Nov 2022, considerando un SO Windows para el usuario: andre
 . gen     motivodeegreso_mod_imp_rec3 = 1
 
 . replace motivodeegreso_mod_imp_rec3 = 2 if strpos(motivodeegreso_mod_imp_rec,&quot;Early&quot;)&gt;0
-(16,150 real changes made)
+(15,797 real changes made)
 
 . replace motivodeegreso_mod_imp_rec3 = 3 if strpos(motivodeegreso_mod_imp_rec,&quot;Late&quot;)&gt;0
-(36,453 real changes made)
+(35,781 real changes made)
 
 . 
 . *encode policonsumo, generate(policon) *already numeric
 . 
-. *motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_10_rec i.dg_trs_cons_sus_or i.macrozona i
-&gt; .n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth
+. *motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_10_rec i.dg_trs_con
+&gt; s_sus_or i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth
 </code></pre>
 <p>Luego configuramos la base de datos en formato de supervivencia.</p>
 <pre><code>. *si no está perdido cod_region, significa que hubo un registro (0/1) y el tiempo es el tiempo desde 
@@ -149,7 +149,7 @@ Fecha: 12 Nov 2022, considerando un SO Windows para el usuario: andre
 . gen event=0
 
 . replace event=1 if !missing(offender_d)
-(5,301 real changes made)
+(5,144 real changes made)
 
 . *replace event=1 if !missing(sex)
 . 
@@ -165,12 +165,12 @@ obs. time interval:  (0, age_offending_imp]
  exit on or before:  failure
 
 ------------------------------------------------------------------------------
-     72,391  total observations
+     70,863  total observations
           1  observation ends on or before enter()
 ------------------------------------------------------------------------------
-     72,390  observations remaining, representing
-      5,301  failures in single-record/single-failure data
- 310,765.79  total analysis time at risk and under observation
+     70,862  observations remaining, representing
+      5,144  failures in single-record/single-failure data
+ 302,812.78  total analysis time at risk and under observation
                                                 at risk from t =         0
                                      earliest observed entry t =  10.95068
                                           last observed exit t =  90.65027
@@ -185,17 +185,17 @@ obs. time interval:  (0, age_offending_imp]
                                    |-------------- per subject --------------|
 Category                   total        mean         min     median        max
 ------------------------------------------------------------------------------
-no. of subjects            72390   
-no. of records             72390           1           1          1          1
+no. of subjects            70862   
+no. of records             70862           1           1          1          1
 
-(first) entry time                  36.48891    10.95068   34.59726   88.91507
-(final) exit time                   40.78185    14.98082   39.06831   90.65027
+(first) entry time                  36.52205    10.95068    34.6274   88.91507
+(final) exit time                   40.79532    14.98082    39.0765   90.65027
 
 subjects with gap              0   
 time on gap if gap             0   
-time at risk           310765.79    4.292938    .0000449          4   10.75828
+time at risk           302812.78    4.273275    .0000449   3.964384   10.75828
 
-failures                    5301    .0732283           0          0          1
+failures                    5144    .0725918           0          0          1
 ------------------------------------------------------------------------------
 
 </code></pre>
@@ -209,11 +209,11 @@ failures                    5301    .0732283           0          0          1
          |               Incidence     Number of   |------ Survival time -----|
 motivo~c | Time at risk       rate      subjects        25%       50%       75%
 ---------+---------------------------------------------------------------------
-Treatmen |  79,274.0615   .0087671         19777   35.12663         .         .
-Treatmen |  67,651.3597   .0260749         16150   23.44695   34.7707         .
-Treatmen |  163,796.124   .0173325         36453    25.3744  48.78303         .
+Treatmen |  76,631.0344   .0086649         19275   34.88843         .         .
+Treatmen |  65,879.5067   .0259717         15797   23.57016  34.91855         .
+Treatmen |  160,259.188   .0172595         35781   25.36071  48.78303         .
 ---------+---------------------------------------------------------------------
-   Total |  310,721.545   .0170506         72380   24.86516  46.29158         .
+   Total |  302,769.729   .0169799         70853   24.87337  46.45585         .
 
 </code></pre>
 <p>We open the files</p>
@@ -242,12 +242,12 @@ obs. time interval:  (0, age_offending_imp]
  exit on or before:  failure
 
 ------------------------------------------------------------------------------
-     72,391  total observations
+     70,863  total observations
           1  observation ends on or before enter()
 ------------------------------------------------------------------------------
-     72,390  observations remaining, representing
-      5,301  failures in single-record/single-failure data
- 310,765.79  total analysis time at risk and under observation
+     70,862  observations remaining, representing
+      5,144  failures in single-record/single-failure data
+ 302,812.78  total analysis time at risk and under observation
                                                 at risk from t =         0
                                      earliest observed entry t =  10.95068
                                           last observed exit t =  90.65027
@@ -262,17 +262,17 @@ obs. time interval:  (0, age_offending_imp]
                                    |-------------- per subject --------------|
 Category                   total        mean         min     median        max
 ------------------------------------------------------------------------------
-no. of subjects            72390   
-no. of records             72390           1           1          1          1
+no. of subjects            70862   
+no. of records             70862           1           1          1          1
 
-(first) entry time                  36.48891    10.95068   34.59726   88.91507
-(final) exit time                   40.78185    14.98082   39.06831   90.65027
+(first) entry time                  36.52205    10.95068    34.6274   88.91507
+(final) exit time                   40.79532    14.98082    39.0765   90.65027
 
 subjects with gap              0   
 time on gap if gap             0   
-time at risk           310765.79    4.292938    .0000449          4   10.75828
+time at risk           302812.78    4.273275    .0000449   3.964384   10.75828
 
-failures                    5301    .0732283           0          0          1
+failures                    5144    .0725918           0          0          1
 ------------------------------------------------------------------------------
 
 </code></pre>
@@ -286,11 +286,11 @@ failures                    5301    .0732283           0          0          1
          |               Incidence     Number of   |------ Survival time -----|
 motivo~c | Time at risk       rate      subjects        25%       50%       75%
 ---------+---------------------------------------------------------------------
-Treatmen |  79,274.0615   .0087671         19777   35.12663         .         .
-Treatmen |  67,651.3597   .0260749         16150   23.44695   34.7707         .
-Treatmen |  163,796.124   .0173325         36453    25.3744  48.78303         .
+Treatmen |  76,631.0344   .0086649         19275   34.88843         .         .
+Treatmen |  65,879.5067   .0259717         15797   23.57016  34.91855         .
+Treatmen |  160,259.188   .0172595         35781   25.36071  48.78303         .
 ---------+---------------------------------------------------------------------
-   Total |  310,721.545   .0170506         72380   24.86516  46.29158         .
+   Total |  302,769.729   .0169799         70853   24.87337  46.45585         .
 
 </code></pre>
 <p>=============================================================================</p>
@@ -330,17 +330,17 @@ Treatmen |  163,796.124   .0173325         36453    25.3744  48.78303         .
 <pre><code>. cap noi recode motivodeegreso_mod_imp_rec3 (1=0 &quot;Tr Completion&quot; ) ///
 &gt;                          (2=1 &quot;Early Disch&quot;) ///
 &gt;                          (else=.), gen(tto_2_1)
-(72391 differences between motivodeegreso_mod_imp_rec3 and tto_2_1)
+(70863 differences between motivodeegreso_mod_imp_rec3 and tto_2_1)
 
 . cap noi recode motivodeegreso_mod_imp_rec3 (1=0 &quot;Tr Completion&quot; ) ///
 &gt;                          (3=1 &quot;Late Disch&quot;) ///
 &gt;                          (else=.), gen(tto_3_1)
-(72391 differences between motivodeegreso_mod_imp_rec3 and tto_3_1)
+(70863 differences between motivodeegreso_mod_imp_rec3 and tto_3_1)
 
 . cap noi recode motivodeegreso_mod_imp_rec3 (2=0 &quot;Early Disch&quot; ) ///
 &gt;                          (3=1 &quot;Late Disch&quot;) ///
 &gt;                          (else=.), gen(tto_3_2)
-(72391 differences between motivodeegreso_mod_imp_rec3 and tto_3_2)
+(70863 differences between motivodeegreso_mod_imp_rec3 and tto_3_2)
 
 </code></pre>
 <p>We explored the inicidence rate ratios (IRR) of each cause of discharge.</p>
@@ -371,10 +371,10 @@ Treatmen |  163,796.124   .0173325         36453    25.3744  48.78303         .
 <p>We generated a log-rank test to compare the expected to the observed result, obtaining that:</p>
 <ul>
 <li>
-<p>Early Disch vs Tr Completion: IRR 3.58 (IC 95% 3.28 - 3.91) , so patients with an Early Discharge had a greater incidence rate than patients in Tr Completion</p>
+<p>Early Disch vs Tr Completion: IRR 3.62 (IC 95% 3.31 - 3.96) , so patients with an Early Discharge had a greater incidence rate than patients in Tr Completion</p>
 </li>
 <li>
-<p>Late Disch vs Tr Completion: IRR 2.4 (IC 95% 2.21 - 2.61) , so patients with a Late Discharge had a greater incidence rate than patients in Tr Completion</p>
+<p>Late Disch vs Tr Completion: IRR 2.43 (IC 95% 2.23 - 2.65) , so patients with a Late Discharge had a greater incidence rate than patients in Tr Completion</p>
 </li>
 <li>
 <p>Late vs Early Disch: IRR .67 (IC 95% .63 - .71) , so patients with a Late Discharge had a lower incidence rate than patients with an Early Discharge</p>
@@ -401,13 +401,13 @@ Treatmen |  163,796.124   .0173325         36453    25.3744  48.78303         .
 </code></pre>
 <ul>
 <li>
-<p>With a value of  Chi^2(1)=340.14,p=0, survival curves between patients that had an Early Disch y Tr Completion were significantly different.</p>
+<p>With a value of  Chi^2(1)=328.66,p=0, survival curves between patients that had an Early Disch y Tr Completion were significantly different.</p>
 </li>
 <li>
-<p>With a value of  Chi^2(1)=146.13,p=0, survival curves between patients that had an Late Disch y Tr Completion were significantly different.</p>
+<p>With a value of  Chi^2(1)=142.23,p=0, survival curves between patients that had an Late Disch y Tr Completion were significantly different.</p>
 </li>
 <li>
-<p>With a value of  Chi^2(1)=99.41,p=0, survival curves between patients that had an Late y Early Disch were significantly different.</p>
+<p>With a value of  Chi^2(1)=97.22,p=0, survival curves between patients that had an Late y Early Disch were significantly different.</p>
 </li>
 </ul>
 <p>=============================================================================</p>
@@ -415,7 +415,7 @@ Treatmen |  163,796.124   .0173325         36453    25.3744  48.78303         .
 <p>=============================================================================</p>
 <p>We generated a graph with every type of treatment and the Nelson-Aalen estimate.</p>
 <pre><code>. sts graph, na by (motivodeegreso_mod_imp_rec) ci ///
-&gt; title(&quot;Comission of an offense&quot;) /// 
+&gt; title(&quot;Comission of an offense (end with imprisonment)&quot;) /// 
 &gt; subtitle(&quot;Nelson-Aalen Cum Hazards w/ Confidence Intervals 95%&quot;) ///
 &gt; risktable(, size(*.5) order(1 &quot;Tr Completion&quot; 2 &quot;Early Disch&quot; 3 &quot;Late Disch&quot;)) ///
 &gt; ytitle(&quot;Cum. Hazards&quot;) ylabel(#8) ///
@@ -444,8 +444,8 @@ Treatmen |  163,796.124   .0173325         36453    25.3744  48.78303         .
 <h2><a href="#survival-analyses" id="survival-analyses">Survival Analyses</a></h2>
 <p>=============================================================================</p>
 <p>We tested the schoefeld residuals.</p>
-<pre><code>. *c(&quot;edad_al_ing_fmt&quot;, &quot;edad_ini_cons&quot;, &quot;dias_treat_imp_sin_na_1&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;, &quot;compromiso_biopsicosocial&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;macrozona&quot;, &quot;policonsu
-&gt; mo&quot;, &quot;n_prev_off&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;, &quot;n_off_sud&quot;, &quot;n_off_oth&quot;)
+<pre><code>. *c(&quot;edad_al_ing_fmt&quot;, &quot;edad_ini_cons&quot;, &quot;dias_treat_imp_sin_na_1&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;, &quot;compromiso_biopsicosocial&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;
+&gt; macrozona&quot;, &quot;policonsumo&quot;, &quot;n_prev_off&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;, &quot;n_off_sud&quot;, &quot;n_off_oth&quot;)
 . 
 . global sim 1e5 //5e1 1e5 
 
@@ -454,12 +454,12 @@ Treatmen |  163,796.124   .0173325         36453    25.3744  48.78303         .
 . global times 0 90 365 1096 1826
 
 . range timevar0 90 1826 90
-(72,301 missing values generated)
+(70,773 missing values generated)
 
 . 
-. global covs &quot;edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth&quot;
+. global covs &quot;edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud &quot;
 
-. global covs_2 &quot;motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth&quot;
+. global covs_2 &quot;motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud &quot;
 
 . 
 . 
@@ -471,33 +471,32 @@ Treatmen |  163,796.124   .0173325         36453    25.3744  48.78303         .
 
 Cox regression -- Efron method for ties
 
-No. of subjects      =       61,154             Number of obs    =      61,154
-No. of failures      =        4,088
-Time at risk         =  240603.4232
-                                                Wald chi2(17)    =     3062.24
-Log pseudolikelihood =   -34543.285             Prob &gt; chi2      =      0.0000
+No. of subjects      =       59,757             Number of obs    =      59,757
+No. of failures      =        3,948
+Time at risk         =  233412.3596
+                                                Wald chi2(16)    =     2772.72
+Log pseudolikelihood =   -33334.266             Prob &gt; chi2      =      0.0000
 
 ---------------------------------------------------------------------------------------------
                             |               Robust
                          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
 ----------------------------+----------------------------------------------------------------
-motivodeegreso_mod_imp_rec3 |   1.108854    .022809     5.02   0.000     1.065039    1.154472
-            edad_al_ing_fmt |   1.086704   .0072585    12.45   0.000     1.072571    1.101024
-              edad_ini_cons |    .976821   .0047518    -4.82   0.000     .9675519    .9861789
-                    sex_enc |   .6207382   .0272745   -10.85   0.000     .5695183    .6765646
-                    esc_rec |   1.260406   .0328536     8.88   0.000     1.197631    1.326471
-               sus_prin_mod |   1.208167   .0210306    10.86   0.000     1.167643    1.250097
-                fr_sus_prin |   1.042562   .0173005     2.51   0.012       1.0092    1.077028
-                comp_biosoc |   1.203528   .0361968     6.16   0.000     1.134634    1.276605
-                    ten_viv |   .9833343   .0156001    -1.06   0.289     .9532292     1.01439
-              dg_cie_10_rec |   1.046368   .0191372     2.48   0.013     1.009524    1.084556
-         sud_severity_icd10 |   .9277995   .0393764    -1.77   0.077     .8537459    1.008276
-                  macrozone |   1.215963   .0291879     8.15   0.000      1.16008    1.274537
-                policonsumo |   1.051829   .0506969     1.05   0.294      .957014    1.156038
-                  n_off_vio |   1.268235   .0443501     6.80   0.000     1.184223    1.358208
-                  n_off_acq |   2.942118   .1062604    29.88   0.000     2.741052    3.157933
-                  n_off_sud |   1.196664   .0416383     5.16   0.000     1.117775    1.281121
-                  n_off_oth |   1.496489     .05219    11.56   0.000     1.397616    1.602356
+motivodeegreso_mod_imp_rec3 |   1.134025   .0235338     6.06   0.000     1.088825    1.181101
+            edad_al_ing_fmt |   1.075766   .0077872    10.09   0.000     1.060611    1.091137
+              edad_ini_cons |   .9772519    .004835    -4.65   0.000     .9678213    .9867744
+                    sex_enc |   .6032639   .0270931   -11.25   0.000     .5524324    .6587725
+                    esc_rec |    1.28778   .0339887     9.58   0.000     1.222857     1.35615
+               sus_prin_mod |   1.240096   .0212963    12.53   0.000     1.199051    1.282546
+                fr_sus_prin |   1.038557   .0174933     2.25   0.025     1.004831    1.073416
+                comp_biosoc |   1.251368   .0381732     7.35   0.000     1.178743    1.328468
+                    ten_viv |   .9758095   .0157934    -1.51   0.130     .9453409     1.00726
+              dg_cie_10_rec |   1.038028   .0192885     2.01   0.045     1.000903    1.076529
+         sud_severity_icd10 |   .8947439   .0383561    -2.59   0.009     .8226388     .973169
+                  macrozone |   1.254628    .029964     9.50   0.000     1.197253    1.314753
+                policonsumo |   1.088796   .0536696     1.73   0.084     .9885276    1.199236
+                  n_off_vio |   1.468218   .0560158    10.07   0.000     1.362434    1.582216
+                  n_off_acq |   2.949391   .1035302    30.81   0.000     2.753299     3.15945
+                  n_off_sud |   1.368846   .0514656     8.35   0.000     1.271603    1.473527
 ---------------------------------------------------------------------------------------------
 
 . estat phtest, log detail
@@ -508,25 +507,24 @@ motivodeegreso_mod_imp_rec3 |   1.108854    .022809     5.02   0.000     1.06503
       ----------------------------------------------------------------
                   |       rho            chi2       df       Prob&gt;chi2
       ------------+---------------------------------------------------
-      motivodeeg~3|     -0.01340         0.63        1         0.4287
-      edad_al_in~t|     -0.04480        10.58        1         0.0011
-      edad_ini_c~s|      0.03907         7.50        1         0.0062
-      sex_enc     |      0.03501         5.26        1         0.0218
-      esc_rec     |     -0.05337        11.33        1         0.0008
-      sus_prin_mod|     -0.01027         0.33        1         0.5629
-      fr_sus_prin |     -0.00594         0.15        1         0.6995
-      comp_biosoc |     -0.03218         4.41        1         0.0358
-      ten_viv     |     -0.02938         3.91        1         0.0480
-      dg_cie_10_~c|     -0.00193         0.01        1         0.9038
-      sud_sever~10|      0.02209         2.07        1         0.1504
-      macrozone   |      0.00049         0.00        1         0.9759
-      policonsumo |      0.00552         0.13        1         0.7172
-      n_off_vio   |      0.02064         2.07        1         0.1504
-      n_off_acq   |      0.02800         4.15        1         0.0415
-      n_off_sud   |      0.08421        34.81        1         0.0000
-      n_off_oth   |      0.03115         4.61        1         0.0319
+      motivodeeg~3|      0.00751         0.19        1         0.6666
+      edad_al_in~t|     -0.06386        22.96        1         0.0000
+      edad_ini_c~s|      0.02934         4.05        1         0.0441
+      sex_enc     |      0.02826         3.36        1         0.0669
+      esc_rec     |     -0.04656         8.23        1         0.0041
+      sus_prin_mod|     -0.00512         0.08        1         0.7794
+      fr_sus_prin |     -0.00583         0.14        1         0.7093
+      comp_biosoc |     -0.02349         2.23        1         0.1355
+      ten_viv     |     -0.02733         3.29        1         0.0698
+      dg_cie_10_~c|     -0.00471         0.08        1         0.7715
+      sud_sever~10|      0.02638         2.85        1         0.0916
+      macrozone   |      0.00911         0.30        1         0.5846
+      policonsumo |      0.01430         0.86        1         0.3539
+      n_off_vio   |      0.02046         1.92        1         0.1655
+      n_off_acq   |      0.01785         1.51        1         0.2198
+      n_off_sud   |      0.05887        16.09        1         0.0001
       ------------+---------------------------------------------------
-      global test |                     94.58       17         0.0000
+      global test |                     66.34       16         0.0000
       ----------------------------------------------------------------
 
 note: robust variance-covariance matrix used.
@@ -538,11 +536,9 @@ note: robust variance-covariance matrix used.
 
 . 
 . esttab matrix(mat_scho_test) using &quot;mat_scho_test2.csv&quot;, replace
-(note: file mat_scho_test2.csv not found)
 (output written to mat_scho_test2.csv)
 
 . esttab matrix(mat_scho_test) using &quot;mat_scho_test2.html&quot;, replace
-(note: file mat_scho_test2.html not found)
 (output written to mat_scho_test2.html)
 
 . 
@@ -552,27 +548,25 @@ note: robust variance-covariance matrix used.
 <tr><td>            </td><td>mat_scho_test</td><td>            </td><td>            </td><td>            </td></tr>
 <tr><td>            </td><td>         rho</td><td>        chi2</td><td>          df</td><td>           p</td></tr>
 <tr><td colspan=5><hr></td></tr>
-<tr><td>motivodeegreso_mod_imp_rec3</td><td>   -.0134003</td><td>    .6263719</td><td>           1</td><td>    .4286892</td></tr>
-<tr><td>edad_al_ing_fmt</td><td>   -.0447967</td><td>    10.58332</td><td>           1</td><td>    .0011411</td></tr>
-<tr><td>edad_ini_cons</td><td>    .0390651</td><td>    7.498552</td><td>           1</td><td>    .0061749</td></tr>
-<tr><td>sex_enc     </td><td>    .0350091</td><td>    5.263401</td><td>           1</td><td>    .0217784</td></tr>
-<tr><td>esc_rec     </td><td>   -.0533656</td><td>    11.33353</td><td>           1</td><td>    .0007612</td></tr>
-<tr><td>sus_prin_mod</td><td>   -.0102728</td><td>    .3346588</td><td>           1</td><td>    .5629286</td></tr>
-<tr><td>fr_sus_prin </td><td>   -.0059352</td><td>    .1489517</td><td>           1</td><td>    .6995392</td></tr>
-<tr><td>comp_biosoc </td><td>   -.0321766</td><td>    4.405142</td><td>           1</td><td>    .0358307</td></tr>
-<tr><td>ten_viv     </td><td>    -.029377</td><td>    3.910492</td><td>           1</td><td>    .0479855</td></tr>
-<tr><td>dg_cie_10_rec</td><td>   -.0019268</td><td>    .0146008</td><td>           1</td><td>    .9038228</td></tr>
-<tr><td>sud_severity_icd10</td><td>    .0220854</td><td>    2.067948</td><td>           1</td><td>    .1504238</td></tr>
-<tr><td>macrozone   </td><td>    .0004859</td><td>     .000915</td><td>           1</td><td>    .9758691</td></tr>
-<tr><td>policonsumo </td><td>    .0055164</td><td>    .1311653</td><td>           1</td><td>    .7172269</td></tr>
-<tr><td>n_off_vio   </td><td>    .0206411</td><td>    2.068304</td><td>           1</td><td>    .1503887</td></tr>
-<tr><td>n_off_acq   </td><td>    .0280037</td><td>    4.154339</td><td>           1</td><td>     .041528</td></tr>
-<tr><td>n_off_sud   </td><td>    .0842082</td><td>    34.81477</td><td>           1</td><td>    3.63e-09</td></tr>
-<tr><td>n_off_oth   </td><td>    .0311457</td><td>    4.605012</td><td>           1</td><td>    .0318786</td></tr>
+<tr><td>motivodeegreso_mod_imp_rec3</td><td>    .0075146</td><td>    .1855867</td><td>           1</td><td>    .6666155</td></tr>
+<tr><td>edad_al_ing_fmt</td><td>   -.0638624</td><td>    22.96145</td><td>           1</td><td>    1.65e-06</td></tr>
+<tr><td>edad_ini_cons</td><td>     .029341</td><td>    4.052009</td><td>           1</td><td>    .0441188</td></tr>
+<tr><td>sex_enc     </td><td>    .0282639</td><td>    3.356685</td><td>           1</td><td>    .0669327</td></tr>
+<tr><td>esc_rec     </td><td>   -.0465633</td><td>    8.226314</td><td>           1</td><td>    .0041287</td></tr>
+<tr><td>sus_prin_mod</td><td>   -.0051212</td><td>    .0784674</td><td>           1</td><td>    .7793852</td></tr>
+<tr><td>fr_sus_prin </td><td>   -.0058271</td><td>    .1389927</td><td>           1</td><td>    .7092844</td></tr>
+<tr><td>comp_biosoc </td><td>   -.0234904</td><td>    2.227797</td><td>           1</td><td>     .135547</td></tr>
+<tr><td>ten_viv     </td><td>   -.0273294</td><td>    3.287269</td><td>           1</td><td>     .069819</td></tr>
+<tr><td>dg_cie_10_rec</td><td>   -.0047058</td><td>    .0843414</td><td>           1</td><td>    .7714981</td></tr>
+<tr><td>sud_severity_icd10</td><td>    .0263805</td><td>    2.846791</td><td>           1</td><td>    .0915565</td></tr>
+<tr><td>macrozone   </td><td>    .0091135</td><td>    .2988424</td><td>           1</td><td>     .584609</td></tr>
+<tr><td>policonsumo </td><td>    .0143047</td><td>    .8592715</td><td>           1</td><td>    .3539426</td></tr>
+<tr><td>n_off_vio   </td><td>    .0204607</td><td>    1.923589</td><td>           1</td><td>    .1654615</td></tr>
+<tr><td>n_off_acq   </td><td>    .0178472</td><td>    1.505424</td><td>           1</td><td>    .2198387</td></tr>
+<tr><td>n_off_sud   </td><td>    .0588681</td><td>    16.09195</td><td>           1</td><td>    .0000603</td></tr>
 <tr><td colspan=5><hr></td></tr>
 </table>
-<h3><a href="#iptcw" id="iptcw">IPTCW</a></h3>
-<p>We estimated a Survival-time inverse-probability weighting, these estimate the weights attributed to the treatment-assignment (likelihood of being treated) and time-to-censoring models, and use them to estimate the weighted averages of the outcomes for each treatment level.</p>
+<h3><a href="#iptw-royston-parmar" id="iptw-royston-parmar">IPTW Royston-Parmar</a></h3>
 <pre><code>. *reset time, only compatible with stteffects (same entry times)
 . stset diff, failure(event ==1) 
 
@@ -581,77 +575,24 @@ obs. time interval:  (0, diff]
  exit on or before:  failure
 
 ------------------------------------------------------------------------------
-     72,391  total observations
+     70,863  total observations
           1  observation ends on or before enter()
 ------------------------------------------------------------------------------
-     72,390  observations remaining, representing
-      5,301  failures in single-record/single-failure data
- 310,765.79  total analysis time at risk and under observation
+     70,862  observations remaining, representing
+      5,144  failures in single-record/single-failure data
+ 302,812.78  total analysis time at risk and under observation
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =  10.75828
 
+. *stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
 . 
 . cap rm bsreg12.dta bsreg22.dta
 
 . 
-. stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fe
-&gt; c_nac, gamma), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg12, replace))
-(note: file bsreg12.dta not found)
-
-Survival treatment-effects estimation           Number of obs     =     61,153
-Estimator      : inverse-probability weights
-Outcome model  : weighted mean
-Treatment model: logit
-Censoring model: gamma
----------------------------------------------------------------------------------------------
-                            |   Observed   Bootstrap                         Normal-based
-                         _t |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-----------------------------+----------------------------------------------------------------
-ATE                         |
-motivodeegreso_mod_imp_rec3 |
-                  (2 vs 1)  |  -.4924721   .2139473    -2.30   0.021    -.9118012    -.073143
-                  (3 vs 1)  |  -.4920822   .1953451    -2.52   0.012    -.8749517   -.1092128
-----------------------------+----------------------------------------------------------------
-POmean                      |
-motivodeegreso_mod_imp_rec3 |
-                         1  |   3.670153   .1809592    20.28   0.000     3.315479    4.024826
----------------------------------------------------------------------------------------------
-
-. cap stteffects ra
-
-. 
-. stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fe
-&gt; c_nac, lnormal), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg22, replace))
-(note: file bsreg22.dta not found)
-
-Survival treatment-effects estimation           Number of obs     =     61,153
-Estimator      : inverse-probability weights
-Outcome model  : weighted mean
-Treatment model: logit
-Censoring model: lnormal
----------------------------------------------------------------------------------------------
-                            |   Observed   Bootstrap                         Normal-based
-                         _t |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-----------------------------+----------------------------------------------------------------
-ATE                         |
-motivodeegreso_mod_imp_rec3 |
-                  (2 vs 1)  |  -.4247485   .1687996    -2.52   0.012    -.7555896   -.0939074
-                  (3 vs 1)  |  -.3950087   .1589376    -2.49   0.013    -.7065208   -.0834967
-----------------------------+----------------------------------------------------------------
-POmean                      |
-motivodeegreso_mod_imp_rec3 |
-                         1  |   3.442487    .144998    23.74   0.000     3.158296    3.726678
----------------------------------------------------------------------------------------------
-
-. cap stteffects ra
-
-. 
-. *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_fmt, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, policonsumo, n_off_vio, n_off_acq, n_off_s
-&gt; ud, n_off_oth)
+. *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_fmt, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, policonsumo, n_off_v
+&gt; io, n_off_acq, n_off_sud, n_off_oth)
 </code></pre>
-<p>The model indicated that is complicated to include the days in treatment, because of collinearity. However, there was no statistically significant average effect of a type of treatment.</p>
-<h3><a href="#iptw-royston-parmar" id="iptw-royston-parmar">IPTW Royston-Parmar</a></h3>
 <p>First we calculated the difference between those patients who did and did not complete baseline treatment, given that the analysis is restricted to .</p>
 <pre><code>. *Micki Hill &amp; Paul C Lambert &amp; Michael J Crowther, 2021. &quot;Introducing stipw: inverse probability weighted parametric survival models,&quot; London Stata Conference 2021 15, Stata Users Group.
 . *https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&amp;wdOrigin=BROWSELINK
@@ -660,86 +601,146 @@ motivodeegreso_mod_imp_rec3 |
 . gen     motivodeegreso_mod_imp_rec2 = 0
 
 . replace motivodeegreso_mod_imp_rec2 = 1 if strpos(motivodeegreso_mod_imp_rec,&quot;Early&quot;)&gt;0
-(16,150 real changes made)
+(15,797 real changes made)
 
 . replace motivodeegreso_mod_imp_rec2 = 1 if strpos(motivodeegreso_mod_imp_rec,&quot;Late&quot;)&gt;0
-(36,453 real changes made)
+(35,781 real changes made)
 
 . 
-. stpm2 motivodeegreso_mod_imp_rec2, scale(hazard) df(10) eform
+. recode motivodeegreso_mod_imp_rec3 (1=0 &quot;Tr Completion&quot;) (3=1 &quot;Tr Non-completion (Late)&quot;) (2=2 &quot;Tr Non-completion (Early)&quot;), gen(caus_disch_mod_imp_rec) 
+(55066 differences between motivodeegreso_mod_imp_rec3 and caus_disch_mod_imp_rec)
 
-Iteration 0:   log likelihood = -25193.086  
-Iteration 1:   log likelihood = -25188.591  
-Iteration 2:   log likelihood = -25188.575  
-Iteration 3:   log likelihood = -25188.575  
+. lab var caus_disch_mod_imp_rec &quot;Baseline treatment outcome&quot; 
 
-Log likelihood = -25188.575                     Number of obs     =     72,390
+. 
+. global covs_3 &quot;i.caus_disch_mod_imp_rec edad_al_ing_fmt edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_ac
+&gt; q i.n_off_sud &quot;
 
----------------------------------------------------------------------------------------------
-                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-----------------------------+----------------------------------------------------------------
-xb                          |
-motivodeegreso_mod_imp_rec2 |   2.311036   .0938917    20.62   0.000     2.134148    2.502586
-                      _rcs1 |    2.04567   .0187732    77.99   0.000     2.009204    2.082797
-                      _rcs2 |   1.048621   .0073153     6.81   0.000     1.034381    1.063057
-                      _rcs3 |   1.034063   .0060242     5.75   0.000     1.022323    1.045937
-                      _rcs4 |   1.011806   .0042352     2.80   0.005     1.003539    1.020141
-                      _rcs5 |   1.011699   .0029628     3.97   0.000     1.005909    1.017523
-                      _rcs6 |    1.00725   .0023896     3.05   0.002     1.002578    1.011945
-                      _rcs7 |   1.009125   .0020828     4.40   0.000     1.005051    1.013216
-                      _rcs8 |   1.009692   .0019241     5.06   0.000     1.005928     1.01347
-                      _rcs9 |   1.007219   .0018084     4.01   0.000     1.003681     1.01077
-                     _rcs10 |   1.004381   .0015625     2.81   0.005     1.001323    1.007448
-                      _cons |   .0312061   .0011856   -91.26   0.000     .0289668    .0336186
----------------------------------------------------------------------------------------------
+. 
+. stpm2 $covs_3, scale(hazard) df(10) eform
+
+Iteration 0:   log likelihood = -17234.692  
+Iteration 1:   log likelihood =  -17231.52  
+Iteration 2:   log likelihood = -17231.506  
+Iteration 3:   log likelihood = -17231.506  
+
+Log likelihood = -17231.506                     Number of obs     =     59,757
+
+-------------------------------------------------------------------------------------------------------------
+                                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+--------------------------------------------+----------------------------------------------------------------
+xb                                          |
+                     caus_disch_mod_imp_rec |
+                  Tr Non-completion (Late)  |   1.572572   .0797645     8.93   0.000     1.423756    1.736943
+                 Tr Non-completion (Early)  |   1.775434   .1069948     9.53   0.000     1.577639    1.998027
+                                            |
+                            edad_al_ing_fmt |   .9651649   .0020822   -16.44   0.000     .9610924    .9692546
+                              edad_ini_cons |   .9759071    .004581    -5.20   0.000     .9669696    .9849272
+                                            |
+                                    sex_enc |
+                                     Women  |    .598919   .0265337   -11.57   0.000     .5491077    .6532488
+                                            |
+                                    esc_rec |
+           2-Completed high school or less  |   1.343031    .077827     5.09   0.000     1.198836    1.504569
+        3-Completed primary school or less  |   1.567123   .0962413     7.32   0.000     1.389404    1.767575
+                                            |
+                               sus_prin_mod |
+                     Cocaine hydrochloride  |   1.200347   .0795254     2.76   0.006     1.054176    1.366786
+                             Cocaine paste  |   2.034646   .1064767    13.57   0.000     1.836302    2.254415
+                                 Marijuana  |   1.334536   .1050041     3.67   0.000     1.143815    1.557057
+                                     Other  |   1.873559   .2761882     4.26   0.000     1.403423    2.501187
+                                            |
+                                fr_sus_prin |
+                        2 to 3 days a week  |   1.008064   .0813797     0.10   0.921     .8605412    1.180876
+                        4 to 6 days a week  |    1.04181   .0879393     0.49   0.627     .8829553    1.229246
+                                     Daily  |   1.075747   .0856451     0.92   0.359     .9203269    1.257414
+                    Less than 1 day a week  |   1.038587   .1174291     0.33   0.738     .8321486    1.296239
+                                            |
+                                comp_biosoc |
+                                2-Moderate  |   1.267618   .0999544     3.01   0.003     1.086099    1.479474
+                                  3-Severe  |   1.504675    .125498     4.90   0.000     1.277756    1.771893
+                                            |
+                                    ten_viv |
+                                    Others  |   1.048791   .1520432     0.33   0.742     .7893874    1.393438
+Owner/Transferred dwellings/Pays Dividends  |   .8257825    .102741    -1.54   0.124     .6470862    1.053827
+                                   Renting  |   .8916532   .1132284    -0.90   0.366     .6951915    1.143635
+         Stays temporarily with a relative  |   .8358716   .1031619    -1.45   0.146     .6562747    1.064617
+                                            |
+                              dg_cie_10_rec |
+           Diagnosis unknown (under study)  |   1.103547   .0540016     2.01   0.044     1.002623     1.21463
+              With psychiatric comorbidity  |   1.084199   .0415734     2.11   0.035     1.005703    1.168821
+                                            |
+                         sud_severity_icd10 |
+                     Hazardous consumption  |   .9463024   .0406705    -1.28   0.199     .8698547    1.029469
+                                            |
+                                  macrozone |
+                                     North  |   1.443867    .057176     9.28   0.000     1.336042    1.560393
+                                     South  |    1.48294   .0908617     6.43   0.000     1.315132     1.67216
+                                            |
+                              1.policonsumo |    1.07393   .0525904     1.46   0.145     .9756465    1.182114
+                                1.n_off_vio |   1.468043   .0536235    10.51   0.000     1.366616    1.576996
+                                1.n_off_acq |     2.7616   .0936307    29.96   0.000     2.584052    2.951348
+                                1.n_off_sud |   1.327573   .0476782     7.89   0.000     1.237339    1.424388
+                                      _rcs1 |   2.122583   .0233499    68.42   0.000     2.077308    2.168845
+                                      _rcs2 |   1.031932   .0082474     3.93   0.000     1.015893    1.048223
+                                      _rcs3 |    1.02549   .0069449     3.72   0.000     1.011969    1.039193
+                                      _rcs4 |   1.008816   .0050959     1.74   0.082     .9988779    1.018854
+                                      _rcs5 |   1.009579   .0036464     2.64   0.008     1.002457    1.016751
+                                      _rcs6 |   1.004404   .0029706     1.49   0.137     .9985984    1.010243
+                                      _rcs7 |   1.006301   .0026239     2.41   0.016     1.001171    1.011457
+                                      _rcs8 |   1.006962   .0024085     2.90   0.004     1.002253    1.011694
+                                      _rcs9 |   1.003933   .0023005     1.71   0.087     .9994344    1.008452
+                                     _rcs10 |   1.003583   .0020092     1.79   0.074     .9996528    1.007529
+                                      _cons |   .0393576    .008207   -15.51   0.000     .0261537    .0592278
+-------------------------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth), distribution(rp) df(1
-&gt; 0) ipwtype(stabilised) vce(mestimation) eform
-11237 observations have missing treatment and/or missing confounder values and/or _st = 0.
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribut
+&gt; ion(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
 Fitting logistic regression to obtain denominator for weights
 
-Iteration 0:   log likelihood = -36017.868  
-Iteration 1:   log likelihood = -34156.459  
-Iteration 2:   log likelihood = -34122.599  
-Iteration 3:   log likelihood = -34122.559  
-Iteration 4:   log likelihood = -34122.559  
+Iteration 0:   log likelihood = -35121.799  
+Iteration 1:   log likelihood = -33472.744  
+Iteration 2:   log likelihood = -33447.693  
+Iteration 3:   log likelihood = -33447.674  
+Iteration 4:   log likelihood = -33447.674  
 Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
 
-Iteration 0:   log likelihood = -36017.868  
-Iteration 1:   log likelihood = -36017.868  
+Iteration 0:   log likelihood = -35121.799  
+Iteration 1:   log likelihood = -35121.799  
 
 Fitting weighted survival model to obtain point estimates
 
-Iteration 0:   log pseudolikelihood = -19243.744  
-Iteration 1:   log pseudolikelihood = -19240.984  
-Iteration 2:   log pseudolikelihood = -19240.974  
-Iteration 3:   log pseudolikelihood = -19240.974  
+Iteration 0:   log pseudolikelihood = -18613.293  
+Iteration 1:   log pseudolikelihood = -18610.527  
+Iteration 2:   log pseudolikelihood = -18610.517  
+Iteration 3:   log pseudolikelihood = -18610.517  
 
 Displaying weighted survival model with M-estimation standard errors
 
-Log pseudolikelihood = -19240.974               Number of obs     =     61,154
+Log pseudolikelihood = -18610.517               Number of obs     =     59,757
 
 ---------------------------------------------------------------------------------------------
                             |            M-estimation
                             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
 ----------------------------+----------------------------------------------------------------
 xb                          |
-motivodeegreso_mod_imp_rec2 |   1.520404   .0745193     8.55   0.000     1.381145    1.673705
-                      _rcs1 |   2.078198   .0232276    65.45   0.000     2.033168    2.124225
-                      _rcs2 |   1.037425   .0085288     4.47   0.000     1.020843    1.054276
-                      _rcs3 |    1.02551   .0071727     3.60   0.000     1.011548    1.039665
-                      _rcs4 |   1.007995   .0051011     1.57   0.116     .9980465    1.018043
-                      _rcs5 |   1.009552   .0035592     2.70   0.007       1.0026    1.016552
-                      _rcs6 |   1.002781   .0029791     0.93   0.350     .9969586    1.008637
-                      _rcs7 |   1.007412   .0025948     2.87   0.004     1.002339     1.01251
-                      _rcs8 |    1.00696   .0023978     2.91   0.004     1.002272    1.011671
-                      _rcs9 |    1.00463   .0022849     2.03   0.042     1.000162    1.009118
-                     _rcs10 |   1.003412   .0019976     1.71   0.087     .9995048    1.007335
-                      _cons |   .0386917   .0017883   -70.36   0.000     .0353408    .0423604
+motivodeegreso_mod_imp_rec2 |   1.673637   .0839185    10.27   0.000     1.516984    1.846468
+                      _rcs1 |   2.074141   .0232527    65.08   0.000     2.029064     2.12022
+                      _rcs2 |   1.037841   .0086129     4.48   0.000     1.021096     1.05486
+                      _rcs3 |   1.026169   .0071989     3.68   0.000     1.012156    1.040376
+                      _rcs4 |   1.008235   .0051219     1.61   0.106     .9982461    1.018324
+                      _rcs5 |   1.011225   .0035771     3.16   0.002     1.004239    1.018261
+                      _rcs6 |   1.004526   .0029592     1.53   0.125     .9987432    1.010343
+                      _rcs7 |   1.007877    .002571     3.08   0.002      1.00285    1.012929
+                      _rcs8 |   1.007718   .0023623     3.28   0.001     1.003099    1.012359
+                      _rcs9 |   1.004932   .0022304     2.22   0.027     1.000571    1.009313
+                     _rcs10 |   1.003594   .0019528     1.84   0.065     .9997738    1.007429
+                      _cons |   .0353273   .0016802   -70.29   0.000      .032183    .0387789
 ---------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
@@ -750,7 +751,7 @@ Note: Estimates are transformed only in the first equation.
 
 . predictnl drmst= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_se)
 Warning: prediction doesn't vary with respect to e(b).
-(72,390 missing values generated)
+(70,862 missing values generated)
 Warning: prediction constant over observations; perhaps you meant to run nlcom.
 
 . 
@@ -758,69 +759,118 @@ Warning: prediction constant over observations; perhaps you meant to run nlcom.
 
 </code></pre>
 <p>We used another model with only 4 degrees of freedom according to the lowest BIC</p>
-<pre><code>. 
-. stpm2 motivodeegreso_mod_imp_rec2, scale(hazard) df(4) eform
+<pre><code>. stpm2 $covs_3, scale(hazard) df(4) eform
 
-Iteration 0:   log likelihood = -25221.193  
-Iteration 1:   log likelihood = -25202.837  
-Iteration 2:   log likelihood = -25202.699  
-Iteration 3:   log likelihood = -25202.699  
+Iteration 0:   log likelihood = -17243.558  
+Iteration 1:   log likelihood = -17236.829  
+Iteration 2:   log likelihood = -17236.809  
+Iteration 3:   log likelihood = -17236.809  
 
-Log likelihood = -25202.699                     Number of obs     =     72,390
+Log likelihood = -17236.809                     Number of obs     =     59,757
 
----------------------------------------------------------------------------------------------
-                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-----------------------------+----------------------------------------------------------------
-xb                          |
-motivodeegreso_mod_imp_rec2 |   2.312498     .09395    20.63   0.000       2.1355    2.504167
-                      _rcs1 |    2.04474   .0187438    78.03   0.000     2.008331    2.081809
-                      _rcs2 |   1.053118   .0074623     7.30   0.000     1.038593    1.067846
-                      _rcs3 |   1.029204   .0056411     5.25   0.000     1.018207     1.04032
-                      _rcs4 |    1.01079   .0038372     2.83   0.005     1.003297    1.018339
-                      _cons |   .0311945   .0011852   -91.27   0.000      .028956    .0336061
----------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+                                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+--------------------------------------------+----------------------------------------------------------------
+xb                                          |
+                     caus_disch_mod_imp_rec |
+                  Tr Non-completion (Late)  |   1.573168   .0797926     8.93   0.000     1.424299    1.737596
+                 Tr Non-completion (Early)  |   1.774745   .1069422     9.52   0.000     1.577046    1.997227
+                                            |
+                            edad_al_ing_fmt |   .9651973   .0020822   -16.42   0.000     .9611248    .9692871
+                              edad_ini_cons |   .9758841   .0045807    -5.20   0.000     .9669473    .9849034
+                                            |
+                                    sex_enc |
+                                     Women  |   .5986639    .026522   -11.58   0.000     .5488747    .6529695
+                                            |
+                                    esc_rec |
+           2-Completed high school or less  |   1.342809   .0778132     5.09   0.000      1.19864    1.504318
+        3-Completed primary school or less  |   1.566877   .0962245     7.31   0.000     1.389189    1.767293
+                                            |
+                               sus_prin_mod |
+                     Cocaine hydrochloride  |   1.199328   .0794552     2.74   0.006     1.053286     1.36562
+                             Cocaine paste  |   2.032382   .1063527    13.55   0.000     1.834268    2.251894
+                                 Marijuana  |   1.332874   .1048684     3.65   0.000     1.142399    1.555107
+                                     Other  |    1.87062    .275753     4.25   0.000     1.401225    2.497258
+                                            |
+                                fr_sus_prin |
+                        2 to 3 days a week  |    1.00755   .0813379     0.09   0.926     .8601032    1.180274
+                        4 to 6 days a week  |   1.041321    .087898     0.48   0.631       .88254    1.228668
+                                     Daily  |   1.075556   .0856299     0.91   0.360     .9201633     1.25719
+                    Less than 1 day a week  |   1.037873   .1173484     0.33   0.742     .8315766    1.295348
+                                            |
+                                comp_biosoc |
+                                2-Moderate  |   1.266999   .0999012     3.00   0.003     1.085576    1.478742
+                                  3-Severe  |   1.503074   .1253547     4.89   0.000     1.276412    1.769985
+                                            |
+                                    ten_viv |
+                                    Others  |    1.04737   .1518369     0.32   0.750     .7883181    1.391549
+Owner/Transferred dwellings/Pays Dividends  |   .8265434   .1028366    -1.53   0.126      .647681      1.0548
+                                   Renting  |   .8920484   .1132795    -0.90   0.368     .6954982    1.144144
+         Stays temporarily with a relative  |   .8361165   .1031938    -1.45   0.147     .6564644    1.064933
+                                            |
+                              dg_cie_10_rec |
+           Diagnosis unknown (under study)  |   1.104106   .0540206     2.02   0.043     1.003145    1.215227
+              With psychiatric comorbidity  |   1.084601   .0415875     2.12   0.034     1.006079    1.169252
+                                            |
+                         sud_severity_icd10 |
+                     Hazardous consumption  |   .9462356   .0406664    -1.29   0.198     .8697955    1.029393
+                                            |
+                                  macrozone |
+                                     North  |   1.443356   .0571552     9.27   0.000      1.33557     1.55984
+                                     South  |   1.482676    .090845     6.43   0.000     1.314899    1.671861
+                                            |
+                              1.policonsumo |   1.073353   .0525627     1.45   0.148     .9751219     1.18148
+                                1.n_off_vio |   1.469662    .053691    10.54   0.000     1.368109    1.578754
+                                1.n_off_acq |   2.766613   .0938101    30.01   0.000     2.588725    2.956724
+                                1.n_off_sud |   1.329262   .0477428     7.92   0.000     1.238905    1.426208
+                                      _rcs1 |   2.122175   .0233264    68.46   0.000     2.076944     2.16839
+                                      _rcs2 |   1.034718   .0083947     4.21   0.000     1.018395    1.051303
+                                      _rcs3 |   1.022593   .0066309     3.45   0.001     1.009679    1.035672
+                                      _rcs4 |   1.007134   .0046704     1.53   0.125     .9980218     1.01633
+                                      _cons |   .0393531    .008206   -15.51   0.000     .0261508    .0592208
+-------------------------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth), distribution(rp) df(4
-&gt; ) ipwtype(stabilised) vce(mestimation) eform
-11237 observations have missing treatment and/or missing confounder values and/or _st = 0.
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribut
+&gt; ion(rp) df(4) ipwtype(stabilised) vce(mestimation) eform
+11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
 Fitting logistic regression to obtain denominator for weights
 
-Iteration 0:   log likelihood = -36017.868  
-Iteration 1:   log likelihood = -34156.459  
-Iteration 2:   log likelihood = -34122.599  
-Iteration 3:   log likelihood = -34122.559  
-Iteration 4:   log likelihood = -34122.559  
+Iteration 0:   log likelihood = -35121.799  
+Iteration 1:   log likelihood = -33472.744  
+Iteration 2:   log likelihood = -33447.693  
+Iteration 3:   log likelihood = -33447.674  
+Iteration 4:   log likelihood = -33447.674  
 Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
 
-Iteration 0:   log likelihood = -36017.868  
-Iteration 1:   log likelihood = -36017.868  
+Iteration 0:   log likelihood = -35121.799  
+Iteration 1:   log likelihood = -35121.799  
 
 Fitting weighted survival model to obtain point estimates
 
-Iteration 0:   log pseudolikelihood = -19255.845  
-Iteration 1:   log pseudolikelihood = -19248.262  
-Iteration 2:   log pseudolikelihood = -19248.235  
-Iteration 3:   log pseudolikelihood = -19248.235  
+Iteration 0:   log pseudolikelihood = -18626.407  
+Iteration 1:   log pseudolikelihood = -18617.917  
+Iteration 2:   log pseudolikelihood = -18617.881  
+Iteration 3:   log pseudolikelihood = -18617.881  
 
 Displaying weighted survival model with M-estimation standard errors
 
-Log pseudolikelihood = -19248.235               Number of obs     =     61,154
+Log pseudolikelihood = -18617.881               Number of obs     =     59,757
 
 ---------------------------------------------------------------------------------------------
                             |            M-estimation
                             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
 ----------------------------+----------------------------------------------------------------
 xb                          |
-motivodeegreso_mod_imp_rec2 |    1.52099    .074548     8.56   0.000     1.381677    1.674349
-                      _rcs1 |   2.077275   .0232114    65.43   0.000     2.032276     2.12327
-                      _rcs2 |   1.040496   .0091713     4.50   0.000     1.022675    1.058628
-                      _rcs3 |   1.021694   .0069369     3.16   0.002     1.008188    1.035381
-                      _rcs4 |    1.00646   .0046988     1.38   0.168     .9972923    1.015711
-                      _cons |   .0386817   .0017878   -70.37   0.000     .0353316    .0423494
+motivodeegreso_mod_imp_rec2 |   1.674026   .0839281    10.28   0.000     1.517354    1.846875
+                      _rcs1 |   2.073253   .0232568    65.00   0.000     2.028168     2.11934
+                      _rcs2 |   1.041102   .0093764     4.47   0.000     1.022886    1.059642
+                      _rcs3 |   1.022272    .007025     3.21   0.001     1.008596    1.036134
+                      _rcs4 |   1.008885   .0046952     1.90   0.057     .9997242    1.018129
+                      _cons |   .0353222   .0016798   -70.30   0.000     .0321786    .0387729
 ---------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
@@ -831,13 +881,112 @@ Note: Estimates are transformed only in the first equation.
 
 . predictnl drmst_b= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_b_se)
 Warning: prediction doesn't vary with respect to e(b).
-(72,390 missing values generated)
+(70,862 missing values generated)
 Warning: prediction constant over observations; perhaps you meant to run nlcom.
 
 . 
 . cap list rmst03_b rmst13_b  drmst_b in 1
 
 </code></pre>
-<p>Saved at= 15:00:00 12 Nov 2022</p>
+<pre><code>. stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
+
+     failure event:  event == 1
+obs. time interval:  (0, age_offending_imp]
+ enter on or after:  time edad_al_egres_imp
+ exit on or before:  failure
+
+------------------------------------------------------------------------------
+     70,863  total observations
+          1  observation ends on or before enter()
+------------------------------------------------------------------------------
+     70,862  observations remaining, representing
+      5,144  failures in single-record/single-failure data
+ 302,812.78  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =  10.95068
+                                          last observed exit t =  90.65027
+
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribut
+&gt; ion(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
+These observations are excluded from the analysis, see variable _stipw_flag
+
+Fitting logistic regression to obtain denominator for weights
+
+Iteration 0:   log likelihood = -35121.799  
+Iteration 1:   log likelihood = -33472.744  
+Iteration 2:   log likelihood = -33447.693  
+Iteration 3:   log likelihood = -33447.674  
+Iteration 4:   log likelihood = -33447.674  
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+
+Iteration 0:   log likelihood = -35121.799  
+Iteration 1:   log likelihood = -35121.799  
+
+Fitting weighted survival model to obtain point estimates
+note: delayed entry models are being fitted
+
+Iteration 0:   log pseudolikelihood = -5529.4632  
+Iteration 1:   log pseudolikelihood = -5517.6745  
+Iteration 2:   log pseudolikelihood = -5509.1319  
+Iteration 3:   log pseudolikelihood =  -5507.724  
+Iteration 4:   log pseudolikelihood = -5507.2976  
+Iteration 5:   log pseudolikelihood = -5507.2834  
+Iteration 6:   log pseudolikelihood = -5507.2746  
+Iteration 7:   log pseudolikelihood = -5507.2733  
+Iteration 8:   log pseudolikelihood = -5507.2733  
+
+Displaying weighted survival model with M-estimation standard errors
+
+Log pseudolikelihood = -5507.2733               Number of obs     =     59,757
+
+---------------------------------------------------------------------------------------------
+                            |            M-estimation
+                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------------+----------------------------------------------------------------
+xb                          |
+motivodeegreso_mod_imp_rec2 |   1.612425   .0818458     9.41   0.000     1.459732    1.781091
+                      _rcs1 |   1.174931    .085579     2.21   0.027     1.018622    1.355226
+                      _rcs2 |   1.058443   .0362624     1.66   0.097      .989704    1.131957
+                      _rcs3 |   .9996646   .0055893    -0.06   0.952     .9887695     1.01068
+                      _rcs4 |   1.001878   .0015904     1.18   0.237     .9987654       1.005
+                      _rcs5 |   1.001882    .000936     2.01   0.044     1.000049    1.003718
+                      _rcs6 |   1.000996   .0008027     1.24   0.214     .9994242    1.002571
+                      _rcs7 |   1.000069   .0008805     0.08   0.938     .9983442    1.001796
+                      _rcs8 |   .9997849   .0007801    -0.28   0.783     .9982571    1.001315
+                      _rcs9 |   1.000156   .0005957     0.26   0.794      .998989    1.001324
+                     _rcs10 |   1.000224   .0005106     0.44   0.661     .9992236    1.001225
+                      _cons |   .6260855   .2670583    -1.10   0.272     .2713635    1.444494
+---------------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+</code></pre>
+<pre><code>. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribut
+&gt; ion(rp) df(4) ipwtype(stabilised) vce(mestimation) eform
+11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
+These observations are excluded from the analysis, see variable _stipw_flag
+
+Fitting logistic regression to obtain denominator for weights
+
+Iteration 0:   log likelihood = -35121.799  
+Iteration 1:   log likelihood = -33472.744  
+Iteration 2:   log likelihood = -33447.693  
+Iteration 3:   log likelihood = -33447.674  
+Iteration 4:   log likelihood = -33447.674  
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+
+Iteration 0:   log likelihood = -35121.799  
+Iteration 1:   log likelihood = -35121.799  
+
+Fitting weighted survival model to obtain point estimates
+note: delayed entry models are being fitted
+
+initial values not feasible
+r(1400);
+
+</code></pre>
+<p>Saved at= 07:47:32 26 Nov 2022</p>
 <pre><code>
 </code></pre>

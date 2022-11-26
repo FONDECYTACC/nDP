@@ -280,14 +280,14 @@ global boots 1e3 //5e1 2e3
 global times 0 90 365 1096 1826
 range timevar0 90 1826 90
 
-global covs "edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth"
-global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth"
+global covs "edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud "
+global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud "
 
 
 stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
 estat phtest, log detail
 scalar chi2_scho_test = r(chi2)
-
+ 
 mat mat_scho_test = r(phtest)
 
 esttab matrix(mat_scho_test) using "mat_scho_test.csv", replace
@@ -321,6 +321,7 @@ We generated a list of parametric survival models with different distributions (
 
 ~~~~
 <<dd_do>>
+
 		// Cox w/tvc
 	forvalues j=1/7 {
 		di in yellow "{bf: ***********}"
@@ -449,31 +450,20 @@ esttab matrix(stats_1) using "testreg_aic_nov_22.html", replace
 In case of the more flexible parametric models (non-standard), we selected the models that showed the best trade-off between lower complexity and better fit, and this is why we also considered the BIC. If a model with less parameters had greater or equal AIC (or differences lower than 2) but also had better BIC (<=2), we favoured the model with less parameters.
 
 
-### IPTCW
-
-We estimated a Survival-time inverse-probability weighting, these estimate the weights attributed to the treatment-assignment (likelihood of being treated) and time-to-censoring models, and use them to estimate the weighted averages of the outcomes for each treatment level. 
+### IPTW Royston-Parmar
 
 ~~~~
 <<dd_do>>
 *reset time, only compatible with stteffects (same entry times)
 stset diff, failure(event ==1) 
+*stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
 
 cap rm bsreg1.dta bsreg2.dta
-
-stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, gamma), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg1, replace))
-cap stteffects ra
-
-stteffects ipw (motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth) (comp_biosoc cut_fec_nac, lnormal), vce(bootstrap, nodots seed(2125) rep(200) saving(bsreg2, replace))
-cap stteffects ra
 
 *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_fmt, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, policonsumo, n_off_vio, n_off_acq, n_off_sud, n_off_oth)
 <</dd_do>>
 ~~~~
 
-The model indicated that is complicated to include the days in treatment, because of collinearity. However, there was no statistically significant average effect of a type of treatment.
-
-
-### IPTW Royston-Parmar
 
 First we calculated the difference between those patients who did and did not complete baseline treatment, given that the analysis is restricted to .
 
@@ -487,9 +477,14 @@ gen     motivodeegreso_mod_imp_rec2 = 0
 replace motivodeegreso_mod_imp_rec2 = 1 if strpos(motivodeegreso_mod_imp_rec,"Early")>0
 replace motivodeegreso_mod_imp_rec2 = 1 if strpos(motivodeegreso_mod_imp_rec,"Late")>0
 
-stpm2 motivodeegreso_mod_imp_rec2, scale(hazard) df(10) eform
+recode motivodeegreso_mod_imp_rec3 (1=0 "Tr Completion") (3=1 "Tr Non-completion (Late)") (2=2 "Tr Non-completion (Early)"), gen(caus_disch_mod_imp_rec) 
+lab var caus_disch_mod_imp_rec "Baseline treatment outcome" 
 
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+global covs_3 "i.caus_disch_mod_imp_rec edad_al_ing_fmt edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud "
+
+stpm2 $covs_3 , scale(hazard) df(10) eform
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
 
 predict rmst03 in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
 predict rmst13 in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
@@ -504,9 +499,9 @@ We used another model with only 4 degrees of freedom according to the lowest BIC
 ~~~~
 <<dd_do>>
 
-stpm2 motivodeegreso_mod_imp_rec2, scale(hazard) df(4) eform
+stpm2 $covs_3, scale(hazard) df(4) eform
 
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud n_off_oth), distribution(rp) df(4) ipwtype(stabilised) vce(mestimation) eform
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(4) ipwtype(stabilised) vce(mestimation) eform
 
 predict rmst03_b in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
 predict rmst13_b in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
@@ -515,6 +510,25 @@ predictnl drmst_b= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- pred
 cap list rmst03_b rmst13_b  drmst_b in 1
 <</dd_do>>
 ~~~~
+
+
+~~~~
+<<dd_do>>
+stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+<</dd_do>>
+~~~~
+
+
+~~~~
+<<dd_do>>
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(4) ipwtype(stabilised) vce(mestimation) eform
+<</dd_do>>
+~~~~
+
+
    
 <<dd_display: "Saved at= `c(current_time)' `c(current_date)'">>
 
