@@ -623,12 +623,17 @@ library(coin)
 #http://archive.bio.ed.ac.uk/jdeacon/statistics/tress9.html
 #https://towardsdatascience.com/survival-analysis-in-clinical-trials-log-rank-test-8f1229e7f0f0
 
-fit0 <- coxph(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~factor(motivodeegreso_mod_imp_rec), data=Base_fiscalia_v13, iter=0, na.action=na.exclude)
-o.minus.e <- tapply(resid(fit0), Base_fiscalia_v13$motivodeegreso_mod_imp_rec, sum)
-obs       <- tapply(!is.na(Base_fiscalia_v13$dateofbirth_imp), Base_fiscalia_v13$motivodeegreso_mod_imp_rec, sum)
-db1 <- cbind.data.frame(observed=obs, expected= obs- o.minus.e, "o-e"=o.minus.e)
-pchisq(((db1$`o-e`)[3]^2)/db1$expected[3],2, F)+ #3 categories = n-1
-pchisq(((db1$`o-e`)[2]^2)/db1$expected[2],2, T) #3 categories = n-1
+model <- coxph(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=Base_fiscalia_v13) 
+model2 <- coxph(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=Base_fiscalia_v13_pris) 
+
+# define pairwise comparison
+glht_rx <- multcomp::glht(model, linfct=multcomp::mcp(motivodeegreso_mod_imp_rec="Tukey"))
+smry_rx <- summary(glht_rx)
+glht_rx2 <- multcomp::glht(model2, linfct=multcomp::mcp(motivodeegreso_mod_imp_rec="Tukey"))
+smry_rx2 <- summary(glht_rx2)
+
+xx <- survobrien(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~factor(motivodeegreso_mod_imp_rec), data=Base_fiscalia_v13) 
+xx <- survobrien(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~factor(motivodeegreso_mod_imp_rec), data=Base_fiscalia_v13) 
 
 no_at_risk$risk.factor<- c("Tr. comp.", "Tr. non-comp(Early)", "Tr. non-comp(Late)")
 plot_cond_sent<-
@@ -643,6 +648,8 @@ fortify(mot_egreso_fit2, fun = "cumhaz") %>%
            y = 8,
            label = list(no_at_risk),
            table.theme = ttheme_gtminimal(base_size=13))+ #10 default
+  annotate("text", y = 1.5, x = 65, label = "Cox, Post Hoc Tukey HSD test Late-Early= -0.15, p<0.001",
+  parse = F)+
   ylab("Cumulative hazards")+ xlab("Age (in years)")+
     scale_fill_manual(values=c("gray60", "#21177A", "#FE4A17"))+
     scale_color_manual(values=c("gray60", "#21177A", "#FE4A17"))+
@@ -667,9 +674,11 @@ fortify(mot_egreso_fit2_pris, fun = "cumhaz") %>%
     annotate(geom = "table",
              x = 3,
              y = 1.75,
-             label = list(no_at_risk_pris),
+             label = list(no_at_risk),
              table.theme = ttheme_gtminimal(base_size=13))+ #10 default
-  ylab(NULL)+ xlab("Age (in years)")+
+    annotate("text", y = .25, x = 65, label = "Cox, Post Hoc Tukey HSD test Late-Early= -0.30, p<0.001",
+    parse = F)+  
+    ylab(NULL)+ xlab("Age (in years)")+
     scale_fill_manual(values=c("gray60", "#21177A", "#FE4A17"))+
     scale_color_manual(values=c("gray60", "#21177A", "#FE4A17"))+
   theme(legend.position="bottom")+

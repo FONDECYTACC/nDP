@@ -10,6 +10,7 @@ if (grepl("CISS Fondecyt",path)==T){
 } else {
   try(setwd(paste0(path)));load(paste0(gsub("SUD_CL","",gsub("2022","2019",path)),"/14.Rdata"))
 }
+library(tidyverse)
 
 #2022-11-01, added the age at discharge.
 CONS_C1_df_dup_SEP_2020$edad_al_egres <-
@@ -20,11 +21,11 @@ CONS_C1_df_dup_SEP_2020$edad_al_ing_fmt <-
   #lubridate::time_length(lubridate::ymd(CONS_C1_df_dup_SEP_2020$fech_ing), lubridate::ymd(CONS_C1_df_dup_SEP_2020 $fech_nac),"years")
   lubridate::time_length(lubridate::interval(lubridate::ymd(CONS_C1_df_dup_SEP_2020 $fech_nac),lubridate::ymd(CONS_C1_df_dup_SEP_2020$fech_ing)),unit="years")
 
-
+#2022-11-29, added nombre_centro y tipo_centro_pub
 CONS_C1_df_dup_SEP_2020_22<-
   CONS_C1_df_dup_SEP_2020 %>% 
   subset(select= c("hash_key", "fech_nac", "fech_ing", "fech_egres_imp", "dup", "ano_bd_first", "duplicates_filtered", "id_centro", "tipo_centro", "tipo_de_programa_2", "tipo_de_plan_2", "senda", "macrozona", "nombre_region", "comuna_residencia_cod", "escolaridad_rec", "estado_conyugal_2", "compromiso_biopsicosocial", "sexo_2", "edad_al_ing", "edad_al_ing_fmt", "edad_al_egres", "edad_ini_cons", "edad_ini_sus_prin" ,"edad_ini_sus_prin_grupos", "freq_cons_sus_prin", "via_adm_sus_prin_act", 
-                   "sus_ini_2_mod", "sus_ini_3_mod", "sus_ini_mod", "con_quien_vive", "sus_principal_mod",
+                   "sus_ini_2_mod", "sus_ini_3_mod", "sus_ini_mod", "con_quien_vive", "sus_principal_mod", "nombre_centro",
                    "origen_ingreso_mod", "numero_de_hijos_mod", "tipo_de_vivienda_mod", "tenencia_de_la_vivienda_mod", "rubro_trabaja_mod", "cat_ocupacional", "estatus_ocupacional", "sus_ini_mod_mvv","cat_ocupacional_corr", "condicion_ocupacional_corr", "otras_sus1_mod", "otras_sus2_mod",  "otras_sus3_mod", "fech_ing_num", "fech_egres_num", "motivodeegreso_mod_imp","motivoegreso_derivacion", "evaluacindelprocesoteraputico",
                    paste0("tipo_de_plan_2_",1:10),paste0("motivodeegreso_mod_imp_",1:10),
                    paste0("dias_treat_imp_sin_na_",1:10), "dg_trs_cons_sus_or", "dg_total_cie_10", "dg_cie_10_rec", "dg_total_dsm_iv", "dg_dsm_iv_rec", "cnt_diagnostico_trs_fisico", "diagnostico_trs_fisico", "dg_fis_anemia", "dg_fis_card", "dg_fis_in_study", "dg_fis_enf_som", "dg_fis_ets", "dg_fis_hep_alc", "dg_fis_hep_b", "dg_fis_hep_cro", "dg_fis_inf", "dg_fis_otr_cond_fis_ries_vit", "dg_fis_otr_cond_fis", "dg_fis_pat_buc", "dg_fis_pat_ges_intrau", "dg_fis_trau_sec", "otros_pr_sm_abu_sex", "otros_pr_sm_exp_com_sex", "otros_pr_sm_otros", "otros_pr_sm_vif")) %>% 
@@ -50,12 +51,12 @@ CONS_C1_df_dup_SEP_2020_22<-
   dplyr::group_by(hash_key) %>% 
   dplyr::mutate(rn_hash_discard=row_number())%>% 
   dplyr::ungroup() %>% 
-  dplyr::mutate(fech_ing_num_discard=fech_ing_num, fech_egres_num_discard= fech_egres_num, fech_ing_discard= fech_ing, fech_egres_imp_discard=fech_egres_imp)%>% 
+  dplyr::mutate(tipo_centro_pub_discard=tipo_centro_pub, nombre_centro_discard= nombre_centro, fech_ing_num_discard=fech_ing_num, fech_egres_num_discard= fech_egres_num, fech_ing_discard= fech_ing, fech_egres_imp_discard=fech_egres_imp)%>% 
   #WIDE
   tidyr::pivot_wider(
     names_from =  rn_hash_discard, 
     names_sep="_",
-    values_from = c(fech_ing_num_discard, fech_egres_num_discard, edad_al_ing, edad_al_egres, fech_ing_discard, fech_egres_imp_discard))%>%
+    values_from = c(fech_ing_num_discard, fech_egres_num_discard, edad_al_ing, edad_al_egres, fech_ing_discard, fech_egres_imp_discard, tipo_centro_pub_discard, nombre_centro_discard))%>%
   #FILL COLUMNS BY PATIENT
   dplyr::group_by(hash_key)%>%
   dplyr::mutate_at(vars(fech_ing_num_discard_1:fech_egres_num_discard_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
@@ -68,14 +69,18 @@ CONS_C1_df_dup_SEP_2020_22<-
   purrr::when(nrow(.)>nrow(CONS_C1_df_dup_SEP_2020) ~ stop("More cases in the new database"), ~.)
 
 
-name_vec <- setNames(c(paste0("fech_ing_num_discard_",1:10), paste0("fech_egres_num_discard_",1:10), paste0("fech_ing_discard_",1:10), paste0("fech_egres_imp_discard_",1:10)),                      
+name_vec <- setNames(c(paste0("fech_ing_num_discard_",1:10), paste0("fech_egres_num_discard_",1:10), 
+                       paste0("fech_ing_discard_",1:10), paste0("fech_egres_imp_discard_",1:10), 
+                       paste0("tipo_centro_pub_discard_",1:10), paste0("nombre_centro_discard_",1:10)),
                      #names:                     
-                     c(paste0("fech_ing_num_",1:10), paste0("fech_egres_num_",1:10), paste0("fech_ing_",1:10), paste0("fech_egres_imp_",1:10)))
+                     c(paste0("fech_ing_num_",1:10), paste0("fech_egres_num_",1:10), paste0("fech_ing_",1:10), 
+                       paste0("fech_egres_imp_",1:10),paste0("tipo_centro_pub_",1:10), paste0("nombre_centro_",1:10)))
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_# #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_# #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 # Transform into numeric wide variables
+library(data.table)
 CONS_C1_df_dup_SEP_2020_22_b<-
   CONS_C1_df_dup_SEP_2020_22 %>% 
   rename(!!!name_vec) %>% 
@@ -83,6 +88,10 @@ CONS_C1_df_dup_SEP_2020_22_b<-
   dplyr::mutate_at(vars(fech_egres_num_1:fech_egres_num_10),~suppressWarnings(as.numeric(.)))%>% 
   dplyr::mutate_at(vars(edad_al_ing_1:edad_al_ing_10),~suppressWarnings(as.numeric(.)))%>%
   dplyr::mutate_at(vars(edad_al_egres_1:edad_al_egres_10),~suppressWarnings(as.numeric(.)))%>%
+  dplyr::group_by(hash_key)%>%
+  dplyr::mutate_at(vars(nombre_centro_1:nombre_centro_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
+  dplyr::mutate_at(vars(tipo_centro_pub_1:tipo_centro_pub_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
+  dplyr::ungroup()%>%
   as.data.table()%>% 
   purrr::when(nrow(.)>nrow(CONS_C1_df_dup_SEP_2020_22) ~ stop("More cases in the new database"), ~.)
 
@@ -143,9 +152,8 @@ for (i in 1:10) {
   
 }
 
-
-
 #_#_#_#_#_#__#_#_#_#_#_#_
+#https://github.com/hputter/mstate/blob/master/R/plot.MarkovTest.R
 
 # Base_fiscalia_v8 %>% 
 #   #arrange the rut from the first date of comission of a crime, but we are not detecting if he/she is the victim or not
@@ -153,7 +161,8 @@ for (i in 1:10) {
 #   dplyr::right_join(subset(CONS_C1_df_dup_SEP_2020_22_d, subset= dup==1),by=c("rut_enc_saf"="hash_key")) %>%
   subset(CONS_C1_df_dup_SEP_2020_22_d, subset= dup==1) %>% 
   data.frame() %>% 
-  rio::export(file = paste0("_ig_borquez/fiscalia_ig_bo_nov_2022_SENDA.dta"))
+   # janitor::tabyl(tipo_centro_pub_10)
+  rio::export(file = paste0("_ig_borquez/fiscalia_ig_bo_dic_2022_SENDA.dta"))
 
 #table(is.na(subset(CONS_C1_df_dup_SEP_2020_22_d, subset= dup==1)$sex))
 #table(is.na(subset(CONS_C1_df_dup_SEP_2020_22_d, subset= dup==1)$fech_nac_rec))  
