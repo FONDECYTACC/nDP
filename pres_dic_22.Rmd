@@ -49,10 +49,11 @@ output:
     number_sections: false
     css: xaringan-themer.css
     csl: ./_bibs/revista-medica-de-chile #american-medical-association-10th-edition.csl
-knit: pagedown::chrome_print    
+knit: pagedown::chrome_print
 ---
 
 <!---
+knit: pagedown::chrome_print    
 #https://github.com/brentthorne/posterdown/wiki/posterdown_betterport
 #despues de number_section
 #knit: pagedown::chrome_print
@@ -487,21 +488,18 @@ We analyse Chile as a case study and examine the impact of SUT on the prevention
 
 This research relies on a population-based record-linkage retrospective cohort design. We used a deterministic linkage process (using encryption of the Chilean Unique National ID) to merge electronic records of individuals in publicly funded Chilean SUT programs with the Prosecutor’s Office data at the national level between 2010 and 2019.
 
-We described the cumulative incidence rate  and incidence rate ratio of offenses that ended with a condemnatory sentence and of offenses that ended with imprisonment after baseline treatment outcome, and its variation by baseline treatment outcome: Treatment completion, Late Discharge (>= 3months) Early Discharge (withdraw within the first 3 months of treatment. 
+We described the cumulative incidence rate and incidence rate ratio of offenses that ended with a condemnatory sentence and of offenses that ended with imprisonment after baseline treatment outcome, and its variation by baseline treatment outcome: Treatment completion, Late (>= 3months) & Early Discharge (within the first 3 months of treatment). 
+Posteriorly, we aim to calculate the association between Baseline treatment outcome and Contact with justice system through Royston-Parmar models while adjusting for several covariates, and using 2-step inverse probability weigthing Royston-Parmar survival regression and adjusting for covariates$`r Cite(myBib, c("s457128"))`$.
 
-Posteriorly, we aim to calculate the association between Baseline treatment outcome and Contact with justice system through flexible Royston-Parmar models while adjusting for several covariates, as well as using a 2-step inverse probability weigthing Royston-Parmar survival regression and adjusting for covariates$`r Cite(myBib, c("s457128"))`$.
-
-Mentioned analyses are depicted in the following equations:
+Analyses are depicted in the following equations:
 
 ::: text_40
-
 $$
 \begin{eqnarray*}
 ln(H(t)|x_i)_{offense\,judged\,with\,condemnatory\,sentence}=s(ln(t)|\eta,k_0)+ Bx_i \\
 \\
 \end{eqnarray*}
 $$
-
 $$
 \begin{eqnarray*}
 ln(H(t)|x_i)_{offense\,judged\,with\,prison\,sentence}=s(ln(t)|\eta,k_0)+ Bx_i \\
@@ -509,6 +507,7 @@ where\ x\hat{\beta}_i= \\
 & & \mathrm{Treatment\ non-completion\ (Early)} \\
 & & \mathrm{Treatment\ non-completion\ (Late)} \\
 & & \mathrm{Age\ at\ admission\ to\ treatment} \\
+& & \mathrm{Substance\ use\ onset\ age} \\
 & & \mathrm{Educational\ attainment} \\
 & & \mathrm{Substance\ Use\ Onset} \\
 & & \mathrm{Primary\ Substance\ At\ Admission} \\
@@ -517,25 +516,27 @@ where\ x\hat{\beta}_i= \\
 & & \mathrm{Biopsychosocial\ Compromise} \\
 & & \mathrm{Number\ of\ children} \\
 & & \mathrm{Substance\ use\ severity} \\
+& & \mathrm{Tenure\ status\ of\ households} \\
+& & \mathrm{Macrozone} \\
+& & \mathrm{Poly-drug\ use} \\
 & & \mathrm{Number\ of\ previous\ offenses\ (violent)} \\
 & & \mathrm{Number\ of\ previous\ offenses\ (acquisitive)} \\
 & & \mathrm{Number\ of\ previous\ offenses\ (SUD)} \\
+& & \mathrm{Urban/Rural Municipallity} \\
+& & \mathrm{Employment\ Status} \\
 \\
 \end{eqnarray*}
 $$
-
+:::
 <!----
 # https://diagnprognres.biomedcentral.com/articles/10.1186/s41512-018-0026-5
 ---->
-
-:::
 
 # Preliminary Results
 
 Of the `r format(nrow(CONS_C1_df_dup_SEP_2020_22_d), big.mark=",")` SENDA patients,  `r format(nrow(Base_fiscalia_v13), big.mark=",")` (`r scales::percent(nrow(Base_fiscalia_v13)/nrow(CONS_C1_df_dup_SEP_2020_22_d))`) were eligible to be matched with the Prossecutor's Office database. Of the sample, `r format(nrow(dplyr::filter(Base_fiscalia_v13, !is.na(dateofbirth_imp))), big.mark=",")` (`r scales::percent(nrow(dplyr::filter(Base_fiscalia_v13, !is.na(dateofbirth_imp)))/nrow(Base_fiscalia_v13))`) had at least an offense that ended with a condemnatory sentence after baseline treatment. Those that had at least an offense that ended with imprisonment after baseline treatment were `r format(nrow(dplyr::filter(Base_fiscalia_v13_pris, !is.na(dateofbirth_imp))), big.mark=",")` (`r scales::percent(nrow(dplyr::filter(Base_fiscalia_v13_pris, !is.na(dateofbirth_imp)))/nrow(Base_fiscalia_v13_pris))`).
 
 <div class="fold s o">
-
 ```{r exp-surv1, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
 library(tidyverse)
 dplyr::bind_rows(
@@ -547,12 +548,7 @@ data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres
   format_cells(4, 1:length(names(.)), "bold") %>%
   knitr::kable("markdown", size=3, col.names= c("Outcome", "Person-time","Event", "Rate", "LoCI95%", "UpCI95%"), caption= "Offending with condemnatory sentence from Baseline Treatment Outcome (x1000 person-years)")
 ```
-
 </div>
-
-<br>
-
-<br>
 
 ```{r exp-surv2, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
 Base_fiscalia_v13_comp<-
@@ -591,6 +587,9 @@ irrs_early_late_drop_pris<-irrs(x="mot_egres_earlywdl_late", z="timetoevent", y=
 irrs_late_drop<-irrs(x="mot_egres_latewdl", z="timetoevent", y="event", db="Base_fiscalia_v13_comp")
 irrs_late_drop_pris<-irrs(x="mot_egres_latewdl", z="timetoevent", y="event", db="Base_fiscalia_v13_pris_comp")
 ```
+
+<br> 
+
 <div class="fold s o">
 ```{r exp-surv2-2, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
 dplyr::bind_rows(
@@ -602,15 +601,13 @@ data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres
   format_cells(4, 1:length(names(.)), "bold") %>%
   knitr::kable("markdown", size=3, col.names= c("Outcome", "Person-time","Event", "Rate", "LoCI95%", "UpCI95%"), caption= "Offending with imprisonment from Baseline Treatment Outcome (x1000 person-years)")
 ```
-
 </div>
 
 -	Compared to those receiving no treatment (early drop-out), those completing SUT took longer to contact the criminal justice system (IRR [Incidence rate ratio]= `r sprintf("%1.2f", irrs_early_drop$estimate[1])` 95% IC `r sprintf("%1.2f", irrs_early_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_early_drop$conf.int[2])`) and to commit an offence leading to imprisonment `r sprintf("%1.2f", irrs_early_drop_pris$estimate[1])` (95% IC `r sprintf("%1.2f", irrs_early_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_early_drop_pris$conf.int[2])`).
 
--	Compared to receiving some treatment (late drop-out), those completing SUT took longer (IRR= `r sprintf("%1.2f", irrs_late_drop$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop$conf.int[2])`) to contact the criminal justice system and to commit an offence leading to imprisonment (IRR= `r sprintf("%1.2f", irrs_late_drop_pris$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop_pris$conf.int[2])`). 
+-	Compared to receiving some treatment (late drop-out), those completing SUT took longer (IRR= `r sprintf("%1.2f", irrs_late_drop$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop$conf.int[2])`) to contact the criminal justice system and to imprisonment (IRR= `r sprintf("%1.2f", irrs_late_drop_pris$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop_pris$conf.int[2])`). 
 
 -	However, the difference was lower when we compared those who received some treatment with those who no SUT for some period (late drop-out) regarding the time to contact the criminal justice system (IRR= `r sprintf("%1.2f", irrs_early_late_drop$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_early_late_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_early_late_drop$conf.int[2])`) and imprisonment (IRR= `r sprintf("%1.2f", irrs_early_late_drop_pris$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_early_late_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_early_late_drop_pris$conf.int[2])`).
-
 
 ```{r exp-surv3-pris, eval=T, include=F, eval=FALSE}
 #str(knitr::opts_chunk$get()) 
@@ -706,12 +703,9 @@ knitr::include_graphics("./_figs/test.png")
 ```
 
 # References
-
 ::: text_70
-
 ```{r refs1, echo=FALSE, results="asis", warning=F}
 suppressWarnings(PrintBibliography(myBib))
 #https://github.com/ropensci/RefManageR/blob/master/R/rmdCite.R
 ```
-
 :::

@@ -1026,7 +1026,7 @@ nrow(cbind.data.frame(round(Base_fiscalia_v13_pris$edad_al_egres_imp,4),round(Ba
 CONS_TOP_2022<-
   # 107307
 CONS_TOP%>% 
-  dplyr::left_join(subset(dplyr::mutate(dplyr::group_by(Base_fiscalia_v11b, hash_key), hash_rn=row_number())%>% ungroup(), hash_rn==1), by= c("HASH_KEY" = "hash_key"))%>% 
+  dplyr::left_join(subset(dplyr::mutate(dplyr::group_by(Base_fiscalia_v13, hash_key), hash_rn=row_number())%>% ungroup(), hash_rn==1), by= c("HASH_KEY" = "hash_key"))%>% 
     dplyr::mutate(fech_ap_top_num= as.numeric(as.Date(str_sub(as.character(lubridate::parse_date_time(Fecha.Aplicación.TOP, c("%Y-%m-%d"),exact=T)),1,10))))%>% #No parse failures
   dplyr::select(HASH_KEY,fech_ap_top_num, dateofbirth_imp, Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro) %>% 
   dplyr::filter(!is.na(HASH_KEY)) %>% 
