@@ -1086,7 +1086,7 @@ attr(Base_fiscalia_v13$dg_trs_cons_sus_or,"label") <- "SUD Severity (Dependence 
 attr(Base_fiscalia_v13$dias_treat_imp_sin_na_1,"label") <- "Days in treatment"
 attr(Base_fiscalia_v13$tr_modality,"label") <- "Treatment Modality"
 
-attr(Base_fiscalia_v13$tipo_centro,"label") <- "Center ID"
+attr(Base_fiscalia_v13$tipo_centro,"label") <- "Type of Center"
 attr(Base_fiscalia_v13$condicion_ocupacional_cor,"label") <- "Occupational Status Corrected"
 attr(Base_fiscalia_v13$origen_ingreso_mod,"label") <- "Motive of Admission to Treatment"
 attr(Base_fiscalia_v13$numero_de_hijos_mod,"label") <- "Number of Children "
@@ -1147,7 +1147,7 @@ attr(Base_fiscalia_v13_pris$dg_trs_cons_sus_or,"label") <- "SUD Severity (Depend
 attr(Base_fiscalia_v13_pris$dias_treat_imp_sin_na_1,"label") <- "Days in treatment"
 attr(Base_fiscalia_v13_pris$tr_modality,"label") <- "Treatment Modality"
 
-attr(Base_fiscalia_v13_pris$tipo_centro,"label") <- "Center ID"
+attr(Base_fiscalia_v13_pris$tipo_centro,"label") <- "Type of Center"
 attr(Base_fiscalia_v13_pris$condicion_ocupacional_cor,"label") <- "Occupational Status Corrected"
 attr(Base_fiscalia_v13_pris$origen_ingreso_mod,"label") <- "Motive of Admission to Treatment"
 attr(Base_fiscalia_v13_pris$numero_de_hijos_mod,"label") <- "Number of Children "

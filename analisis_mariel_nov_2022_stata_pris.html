@@ -19,7 +19,7 @@
 <pre><code>. clear all
 
 . cap noi which tabout
-c:\ado\plus\t\tabout.ado
+C:\Users\CISS Fondecyt\ado\plus\t\tabout.ado
 *! 2.0.8 Ian Watson 15mar2019
 *! tabout version 3 (beta) available at: http://tabout.net.au
 
@@ -28,7 +28,7 @@ c:\ado\plus\t\tabout.ado
 .         }
 
 . cap noi which pathutil
-c:\ado\plus\p\pathutil.ado
+C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
 *! version 2.2.0 19nov2020 daniel klein
 
 . if _rc==111 {
@@ -36,7 +36,7 @@ c:\ado\plus\p\pathutil.ado
 .         }
 
 . cap noi which pathutil
-c:\ado\plus\p\pathutil.ado
+C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
 *! version 2.2.0 19nov2020 daniel klein
 
 . if _rc==111 {
@@ -44,7 +44,7 @@ c:\ado\plus\p\pathutil.ado
 .         }
 
 . cap noi which project
-c:\ado\plus\p\project.ado
+C:\Users\CISS Fondecyt\ado\plus\p\project.ado
 *! version 1.3.1  22dec2013  picard@netbox.com
 
 . if _rc==111 {   
@@ -52,7 +52,7 @@ c:\ado\plus\p\project.ado
 .         }
 
 . cap noi which stipw
-c:\ado\plus\s\stipw.ado
+C:\Users\CISS Fondecyt\ado\plus\s\stipw.ado
 *! Version 1.0.0 17Jan2022
 
 . if _rc==111 {   
@@ -60,7 +60,7 @@ c:\ado\plus\s\stipw.ado
 .         }
 
 . cap noi which stpm2
-c:\ado\plus\s\stpm2.ado
+C:\Users\CISS Fondecyt\ado\plus\s\stpm2.ado
 *! version 1.7.5 May2021
 
 . if _rc==111 {   
@@ -68,7 +68,7 @@ c:\ado\plus\s\stpm2.ado
 .         }       
 
 . cap noi which rcsgen
-c:\ado\plus\r\rcsgen.ado
+C:\Users\CISS Fondecyt\ado\plus\r\rcsgen.ado
 *! version 1.5.9 13FEB2022
 
 . if _rc==111 {   
@@ -76,7 +76,7 @@ c:\ado\plus\r\rcsgen.ado
 .         }       
 
 . cap noi which matselrc
-c:\ado\plus\m\matselrc.ado
+C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
 *! NJC 1.1.0 20 Apr 2000  (STB-56: dm79)
 
 . if _rc==111 {           
@@ -85,13 +85,13 @@ c:\ado\plus\m\matselrc.ado
 
 </code></pre>
 <h1><a href="#exercise" id="exercise">Exercise</a></h1>
-<p>Date created: 07:41:02 26 Nov 2022.</p>
+<p>Date created: 17:28:24 19 Dec 2022.</p>
 <p>Get the folder</p>
 <pre><code>
-E:\Mi unidad\Alvacast\SISTRAT 2022 (github)
+C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
 
 
-Fecha: 26 Nov 2022, considerando un SO Windows para el usuario: andre
+Fecha: 19 Dec 2022, considerando un SO Windows para el usuario: CISS Fondecyt
 
 </code></pre>
 <head>
@@ -104,8 +104,8 @@ Fecha: 26 Nov 2022, considerando un SO Windows para el usuario: andre
 </script>
 </head>
 <p>Path data= ;</p>
-<p>Tiempo: 26 Nov 2022, considerando un SO Windows</p>
-<p>The file is located and named as: E:\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA_pris.dta</p>
+<p>Tiempo: 19 Dec 2022, considerando un SO Windows</p>
+<p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA_pris.dta</p>
 <p>=============================================================================</p>
 <h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
 <p>=============================================================================</p>
@@ -140,10 +140,111 @@ Fecha: 26 Nov 2022, considerando un SO Windows para el usuario: andre
 . 
 . *encode policonsumo, generate(policon) *already numeric
 . 
-. *motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_10_rec i.dg_trs_con
-&gt; s_sus_or i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth
+. *motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_1
+&gt; 0_rec i.dg_trs_cons_sus_or i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth
 </code></pre>
-<p>Luego configuramos la base de datos en formato de supervivencia.</p>
+<p>Then we set the data base in surirval format and bring the urban-rural classification of municipallities from this <a href="&quot;https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.masvidarural.gob.cl%2Fwp-content%2Fuploads%2F2021%2F04%2FClasificacion-comunas-PNDR.xlsx&amp;wdOrigin=BROWSELINK&quot;">link</a>.</p>
+<pre><code>. cap qui noi frame create temp
+
+. frame temp: import excel &quot;Clasificacion-comunas-PNDR.xlsx&quot;, firstrow clear
+(11 vars, 345 obs)
+
+. *frame temp: browse
+. frame change default
+
+. 
+. *select code of municipality
+. gen str20 comuna = ustrregexs(1) if ustrregexm(comuna_residencia_cod,&quot;([\d,]+)&quot;)
+(2 missing values generated)
+
+. 
+. *recode comuna if 
+. *http://www.sinim.cl/archivos/centro_descargas/modificacion_instructivo_pres_codigos.pdf
+. *file:///C:/Users/CISSFO~1/AppData/Local/Temp/MicrosoftEdgeDownloads/4ef08de9-6832-4db6-8124-f69a7b256270/codigoComunas-20180801%20(1).pdf
+. 
+. replace comuna= &quot;16101&quot; if strpos(strlower(comuna),&quot;8401&quot;)&gt;0
+(434 real changes made)
+
+. replace comuna= &quot;16102&quot; if strpos(strlower(comuna),&quot;8402&quot;)&gt;0
+(10 real changes made)
+
+. replace comuna= &quot;16103&quot; if strpos(strlower(comuna),&quot;8406&quot;)&gt;0
+(32 real changes made)
+
+. replace comuna= &quot;16104&quot; if strpos(strlower(comuna),&quot;8407&quot;)&gt;0
+(2 real changes made)
+
+. replace comuna= &quot;16105&quot; if strpos(strlower(comuna),&quot;8410&quot;)&gt;0
+(1 real change made)
+
+. replace comuna= &quot;16106&quot; if strpos(strlower(comuna),&quot;8411&quot;)&gt;0
+(8 real changes made)
+
+. replace comuna= &quot;16107&quot; if strpos(strlower(comuna),&quot;8413&quot;)&gt;0
+(12 real changes made)
+
+. replace comuna= &quot;16108&quot; if strpos(strlower(comuna),&quot;8418&quot;)&gt;0
+(4 real changes made)
+
+. replace comuna= &quot;16109&quot; if strpos(strlower(comuna),&quot;8421&quot;)&gt;0
+(6 real changes made)
+
+. replace comuna= &quot;16201&quot; if strpos(strlower(comuna),&quot;8414&quot;)&gt;0
+(22 real changes made)
+
+. replace comuna= &quot;16202&quot; if strpos(strlower(comuna),&quot;8403&quot;)&gt;0
+(0 real changes made)
+
+. replace comuna= &quot;16203&quot; if strpos(strlower(comuna),&quot;8404&quot;)&gt;0
+(13 real changes made)
+
+. replace comuna= &quot;16204&quot; if strpos(strlower(comuna),&quot;8408&quot;)&gt;0
+(1 real change made)
+
+. replace comuna= &quot;16205&quot; if strpos(strlower(comuna),&quot;8412&quot;)&gt;0
+(1 real change made)
+
+. replace comuna= &quot;16206&quot; if strpos(strlower(comuna),&quot;8415&quot;)&gt;0
+(2 real changes made)
+
+. replace comuna= &quot;16207&quot; if strpos(strlower(comuna),&quot;8420&quot;)&gt;0
+(1 real change made)
+
+. replace comuna= &quot;16301&quot; if strpos(strlower(comuna),&quot;8416&quot;)&gt;0
+(12 real changes made)
+
+. replace comuna= &quot;16302&quot; if strpos(strlower(comuna),&quot;8405&quot;)&gt;0
+(6 real changes made)
+
+. replace comuna= &quot;16303&quot; if strpos(strlower(comuna),&quot;8409&quot;)&gt;0
+(0 real changes made)
+
+. replace comuna= &quot;16304&quot; if strpos(strlower(comuna),&quot;8417&quot;)&gt;0
+(0 real changes made)
+
+. replace comuna= &quot;16305&quot; if strpos(strlower(comuna),&quot;8419&quot;)&gt;0
+(0 real changes made)
+
+. 
+. destring comuna, replace
+comuna: all characters numeric; replaced as int
+(2 missing values generated)
+
+. 
+. *frame temp: gen str20 comuna = ustrregexs(1) if ustrregexm(cod_com,&quot;([\d,]+)&quot;)
+. 
+. frlink m:1 comuna, frame(temp cod_com) //*Clasificación
+  (2 observations in frame default unmatched)
+
+. frget Clasificación, from(temp)
+(2 missing values generated)
+  (1 variable copied from linked frame)
+
+. 
+. encode Clasificación, generate(clas)
+
+. *70,863
+</code></pre>
 <pre><code>. *si no está perdido cod_region, significa que hubo un registro (0/1) y el tiempo es el tiempo desde 
 . *set the indicator
 . gen event=0
@@ -414,7 +515,9 @@ Treatmen |  160,259.188   .0172595         35781   25.36071  48.78303         .
 <h2><a href="#graph" id="graph">Graph</a></h2>
 <p>=============================================================================</p>
 <p>We generated a graph with every type of treatment and the Nelson-Aalen estimate.</p>
-<pre><code>. sts graph, na by (motivodeegreso_mod_imp_rec) ci ///
+<pre><code>. cap rm &quot;tto2.svg&quot;
+
+. sts graph, na by (motivodeegreso_mod_imp_rec) ci ///
 &gt; title(&quot;Comission of an offense (end with imprisonment)&quot;) /// 
 &gt; subtitle(&quot;Nelson-Aalen Cum Hazards w/ Confidence Intervals 95%&quot;) ///
 &gt; risktable(, size(*.5) order(1 &quot;Tr Completion&quot; 2 &quot;Early Disch&quot; 3 &quot;Late Disch&quot;)) ///
@@ -444,8 +547,8 @@ Treatmen |  160,259.188   .0172595         35781   25.36071  48.78303         .
 <h2><a href="#survival-analyses" id="survival-analyses">Survival Analyses</a></h2>
 <p>=============================================================================</p>
 <p>We tested the schoefeld residuals.</p>
-<pre><code>. *c(&quot;edad_al_ing_fmt&quot;, &quot;edad_ini_cons&quot;, &quot;dias_treat_imp_sin_na_1&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;, &quot;compromiso_biopsicosocial&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;
-&gt; macrozona&quot;, &quot;policonsumo&quot;, &quot;n_prev_off&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;, &quot;n_off_sud&quot;, &quot;n_off_oth&quot;)
+<pre><code>. *c(&quot;edad_al_ing_fmt&quot;, &quot;edad_ini_cons&quot;, &quot;dias_treat_imp_sin_na_1&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;, &quot;compromiso_biopsicosocial&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_t
+&gt; rs_cons_sus_or&quot;, &quot;macrozona&quot;, &quot;policonsumo&quot;, &quot;n_prev_off&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;, &quot;n_off_sud&quot;, &quot;n_off_oth&quot;)
 . 
 . global sim 1e5 //5e1 1e5 
 
@@ -457,9 +560,11 @@ Treatmen |  160,259.188   .0172595         35781   25.36071  48.78303         .
 (70,773 missing values generated)
 
 . 
-. global covs &quot;edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud &quot;
+. global covs &quot;edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud c
+&gt; las&quot;
 
-. global covs_2 &quot;motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud &quot;
+. global covs_2 &quot;motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n
+&gt; _off_sud clas&quot;
 
 . 
 . 
@@ -471,32 +576,33 @@ Treatmen |  160,259.188   .0172595         35781   25.36071  48.78303         .
 
 Cox regression -- Efron method for ties
 
-No. of subjects      =       59,757             Number of obs    =      59,757
-No. of failures      =        3,948
-Time at risk         =  233412.3596
-                                                Wald chi2(16)    =     2772.72
-Log pseudolikelihood =   -33334.266             Prob &gt; chi2      =      0.0000
+No. of subjects      =       59,755             Number of obs    =      59,755
+No. of failures      =        3,947
+Time at risk         =  233401.5585
+                                                Wald chi2(17)    =     2776.01
+Log pseudolikelihood =   -33318.003             Prob &gt; chi2      =      0.0000
 
 ---------------------------------------------------------------------------------------------
                             |               Robust
                          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
 ----------------------------+----------------------------------------------------------------
-motivodeegreso_mod_imp_rec3 |   1.134025   .0235338     6.06   0.000     1.088825    1.181101
-            edad_al_ing_fmt |   1.075766   .0077872    10.09   0.000     1.060611    1.091137
-              edad_ini_cons |   .9772519    .004835    -4.65   0.000     .9678213    .9867744
-                    sex_enc |   .6032639   .0270931   -11.25   0.000     .5524324    .6587725
-                    esc_rec |    1.28778   .0339887     9.58   0.000     1.222857     1.35615
-               sus_prin_mod |   1.240096   .0212963    12.53   0.000     1.199051    1.282546
-                fr_sus_prin |   1.038557   .0174933     2.25   0.025     1.004831    1.073416
-                comp_biosoc |   1.251368   .0381732     7.35   0.000     1.178743    1.328468
-                    ten_viv |   .9758095   .0157934    -1.51   0.130     .9453409     1.00726
-              dg_cie_10_rec |   1.038028   .0192885     2.01   0.045     1.000903    1.076529
-         sud_severity_icd10 |   .8947439   .0383561    -2.59   0.009     .8226388     .973169
-                  macrozone |   1.254628    .029964     9.50   0.000     1.197253    1.314753
-                policonsumo |   1.088796   .0536696     1.73   0.084     .9885276    1.199236
-                  n_off_vio |   1.468218   .0560158    10.07   0.000     1.362434    1.582216
-                  n_off_acq |   2.949391   .1035302    30.81   0.000     2.753299     3.15945
-                  n_off_sud |   1.368846   .0514656     8.35   0.000     1.271603    1.473527
+motivodeegreso_mod_imp_rec3 |   1.136837   .0236731     6.16   0.000     1.091373    1.184195
+            edad_al_ing_fmt |   1.075893   .0077603    10.14   0.000      1.06079    1.091211
+              edad_ini_cons |   .9769383   .0048503    -4.70   0.000     .9674779    .9864912
+                    sex_enc |    .602225   .0270521   -11.29   0.000     .5514708    .6576503
+                    esc_rec |   1.294938   .0343051     9.76   0.000     1.229417    1.363951
+               sus_prin_mod |   1.236601   .0213188    12.32   0.000     1.195515    1.279099
+                fr_sus_prin |   1.037618   .0174686     2.19   0.028     1.003939    1.072427
+                comp_biosoc |   1.245938   .0380752     7.20   0.000     1.173503    1.322844
+                    ten_viv |   .9728843   .0157666    -1.70   0.090     .9424678    1.004282
+              dg_cie_10_rec |   1.042739   .0194612     2.24   0.025     1.005284    1.081588
+         sud_severity_icd10 |   .9040037   .0388305    -2.35   0.019     .8310129    .9834055
+                  macrozone |   1.270109   .0309392     9.82   0.000     1.210894     1.33222
+                policonsumo |   1.081898   .0533113     1.60   0.110     .9822966    1.191598
+                  n_off_vio |   1.480339   .0565051    10.28   0.000     1.373632    1.595335
+                  n_off_acq |   2.955005   .1037041    30.87   0.000     2.758582    3.165415
+                  n_off_sud |   1.368728   .0514882     8.34   0.000     1.271443    1.473456
+                       clas |   1.118771   .0332834     3.77   0.000     1.055402    1.185945
 ---------------------------------------------------------------------------------------------
 
 . estat phtest, log detail
@@ -507,24 +613,25 @@ motivodeegreso_mod_imp_rec3 |   1.134025   .0235338     6.06   0.000     1.08882
       ----------------------------------------------------------------
                   |       rho            chi2       df       Prob&gt;chi2
       ------------+---------------------------------------------------
-      motivodeeg~3|      0.00751         0.19        1         0.6666
-      edad_al_in~t|     -0.06386        22.96        1         0.0000
-      edad_ini_c~s|      0.02934         4.05        1         0.0441
-      sex_enc     |      0.02826         3.36        1         0.0669
-      esc_rec     |     -0.04656         8.23        1         0.0041
-      sus_prin_mod|     -0.00512         0.08        1         0.7794
-      fr_sus_prin |     -0.00583         0.14        1         0.7093
-      comp_biosoc |     -0.02349         2.23        1         0.1355
-      ten_viv     |     -0.02733         3.29        1         0.0698
-      dg_cie_10_~c|     -0.00471         0.08        1         0.7715
-      sud_sever~10|      0.02638         2.85        1         0.0916
-      macrozone   |      0.00911         0.30        1         0.5846
-      policonsumo |      0.01430         0.86        1         0.3539
-      n_off_vio   |      0.02046         1.92        1         0.1655
-      n_off_acq   |      0.01785         1.51        1         0.2198
-      n_off_sud   |      0.05887        16.09        1         0.0001
+      motivodeeg~3|      0.00648         0.14        1         0.7094
+      edad_al_in~t|     -0.06441        23.19        1         0.0000
+      edad_ini_c~s|      0.03035         4.36        1         0.0367
+      sex_enc     |      0.02914         3.57        1         0.0587
+      esc_rec     |     -0.04627         8.19        1         0.0042
+      sus_prin_mod|     -0.00482         0.07        1         0.7918
+      fr_sus_prin |     -0.00677         0.19        1         0.6653
+      comp_biosoc |     -0.02272         2.10        1         0.1475
+      ten_viv     |     -0.02640         3.07        1         0.0797
+      dg_cie_10_~c|     -0.00519         0.10        1         0.7473
+      sud_sever~10|      0.02487         2.53        1         0.1115
+      macrozone   |      0.00758         0.22        1         0.6425
+      policonsumo |      0.01315         0.73        1         0.3943
+      n_off_vio   |      0.02075         1.97        1         0.1602
+      n_off_acq   |      0.01731         1.42        1         0.2342
+      n_off_sud   |      0.05953        16.47        1         0.0000
+      clas        |     -0.01281         0.74        1         0.3900
       ------------+---------------------------------------------------
-      global test |                     66.34       16         0.0000
+      global test |                     67.67       17         0.0000
       ----------------------------------------------------------------
 
 note: robust variance-covariance matrix used.
@@ -548,23 +655,2247 @@ note: robust variance-covariance matrix used.
 <tr><td>            </td><td>mat_scho_test</td><td>            </td><td>            </td><td>            </td></tr>
 <tr><td>            </td><td>         rho</td><td>        chi2</td><td>          df</td><td>           p</td></tr>
 <tr><td colspan=5><hr></td></tr>
-<tr><td>motivodeegreso_mod_imp_rec3</td><td>    .0075146</td><td>    .1855867</td><td>           1</td><td>    .6666155</td></tr>
-<tr><td>edad_al_ing_fmt</td><td>   -.0638624</td><td>    22.96145</td><td>           1</td><td>    1.65e-06</td></tr>
-<tr><td>edad_ini_cons</td><td>     .029341</td><td>    4.052009</td><td>           1</td><td>    .0441188</td></tr>
-<tr><td>sex_enc     </td><td>    .0282639</td><td>    3.356685</td><td>           1</td><td>    .0669327</td></tr>
-<tr><td>esc_rec     </td><td>   -.0465633</td><td>    8.226314</td><td>           1</td><td>    .0041287</td></tr>
-<tr><td>sus_prin_mod</td><td>   -.0051212</td><td>    .0784674</td><td>           1</td><td>    .7793852</td></tr>
-<tr><td>fr_sus_prin </td><td>   -.0058271</td><td>    .1389927</td><td>           1</td><td>    .7092844</td></tr>
-<tr><td>comp_biosoc </td><td>   -.0234904</td><td>    2.227797</td><td>           1</td><td>     .135547</td></tr>
-<tr><td>ten_viv     </td><td>   -.0273294</td><td>    3.287269</td><td>           1</td><td>     .069819</td></tr>
-<tr><td>dg_cie_10_rec</td><td>   -.0047058</td><td>    .0843414</td><td>           1</td><td>    .7714981</td></tr>
-<tr><td>sud_severity_icd10</td><td>    .0263805</td><td>    2.846791</td><td>           1</td><td>    .0915565</td></tr>
-<tr><td>macrozone   </td><td>    .0091135</td><td>    .2988424</td><td>           1</td><td>     .584609</td></tr>
-<tr><td>policonsumo </td><td>    .0143047</td><td>    .8592715</td><td>           1</td><td>    .3539426</td></tr>
-<tr><td>n_off_vio   </td><td>    .0204607</td><td>    1.923589</td><td>           1</td><td>    .1654615</td></tr>
-<tr><td>n_off_acq   </td><td>    .0178472</td><td>    1.505424</td><td>           1</td><td>    .2198387</td></tr>
-<tr><td>n_off_sud   </td><td>    .0588681</td><td>    16.09195</td><td>           1</td><td>    .0000603</td></tr>
+<tr><td>motivodeegreso_mod_imp_rec3</td><td>    .0064779</td><td>    .1388789</td><td>           1</td><td>    .7093981</td></tr>
+<tr><td>edad_al_ing_fmt</td><td>    -.064406</td><td>     23.1914</td><td>           1</td><td>    1.47e-06</td></tr>
+<tr><td>edad_ini_cons</td><td>    .0303502</td><td>    4.363142</td><td>           1</td><td>    .0367245</td></tr>
+<tr><td>sex_enc     </td><td>    .0291438</td><td>    3.572415</td><td>           1</td><td>    .0587468</td></tr>
+<tr><td>esc_rec     </td><td>   -.0462727</td><td>    8.188352</td><td>           1</td><td>     .004216</td></tr>
+<tr><td>sus_prin_mod</td><td>    -.004818</td><td>     .069704</td><td>           1</td><td>    .7917683</td></tr>
+<tr><td>fr_sus_prin </td><td>   -.0067659</td><td>    .1871495</td><td>           1</td><td>    .6652997</td></tr>
+<tr><td>comp_biosoc </td><td>    -.022718</td><td>    2.098228</td><td>           1</td><td>    .1474699</td></tr>
+<tr><td>ten_viv     </td><td>   -.0264029</td><td>    3.071216</td><td>           1</td><td>    .0796898</td></tr>
+<tr><td>dg_cie_10_rec</td><td>   -.0051948</td><td>    .1038419</td><td>           1</td><td>     .747267</td></tr>
+<tr><td>sud_severity_icd10</td><td>    .0248734</td><td>     2.53343</td><td>           1</td><td>    .1114577</td></tr>
+<tr><td>macrozone   </td><td>     .007581</td><td>    .2154731</td><td>           1</td><td>    .6425111</td></tr>
+<tr><td>policonsumo </td><td>    .0131511</td><td>    .7256559</td><td>           1</td><td>    .3942949</td></tr>
+<tr><td>n_off_vio   </td><td>    .0207528</td><td>    1.972084</td><td>           1</td><td>    .1602269</td></tr>
+<tr><td>n_off_acq   </td><td>    .0173088</td><td>    1.415262</td><td>           1</td><td>    .2341849</td></tr>
+<tr><td>n_off_sud   </td><td>    .0595319</td><td>    16.46765</td><td>           1</td><td>    .0000495</td></tr>
+<tr><td>clas        </td><td>   -.0128055</td><td>    .7389668</td><td>           1</td><td>    .3899921</td></tr>
 <tr><td colspan=5><hr></td></tr>
+</table>
+<p>We generated a list of parametric survival models with different distributions (Exponential, Weibull, Gompertz, Log-logistic, Log-normal &amp; Generalized gamma). Aditionally, we defined a series of Royston-Parmar models with a function of restricted cubic splines, in which the knots (#df -1) are defined in each percentile of the distribution. We saved the estimates in the file called `parmodels_m2_nov_22_2&rsquo;.</p>
+<pre><code>. 
+.                 // Cox w/tvc
+.         forvalues j=1/7 {
+  2.                 di in yellow &quot;{bf: ***********}&quot;
+  3.                 di in yellow &quot;{bf: family Cox tvc `j'}&quot;
+  4.                 di in yellow &quot;{bf: ***********}&quot;
+  5.                 set seed 2125
+  6.                 qui cap noi stmerlin $covs_2 , dist(exponential) tvc(motivodeegreso_mod_imp_rec3) dftvc(`j')
+  7.                 estimates store m2_1_cox`j'     
+  8.         }
+ ***********
+ family Cox tvc 1
+ ***********
+note; a delayed entry model is being fitted
+variables created for model 1, component 18: _cmp_1_18_1 to _cmp_1_18_1
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -233401.56  
+Iteration 1:   log likelihood = -20469.617  
+Iteration 2:   log likelihood = -18692.148  
+Iteration 3:   log likelihood = -18112.305  
+Iteration 4:   log likelihood = -18111.288  
+Iteration 5:   log likelihood = -18111.288  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18111.288
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .0646591   .0228842     2.83   0.005      .019807    .1095113
+edad_al_in~t |  -.0093371   .0040204    -2.32   0.020    -.0172169   -.0014573
+edad_ini_c~s |  -.0249246   .0046355    -5.38   0.000      -.03401   -.0158392
+     sex_enc |  -.5091649   .0441754   -11.53   0.000    -.5957472   -.4225826
+     esc_rec |   .2295008   .0263751     8.70   0.000     .1778066     .281195
+sus_prin_mod |   .2152586   .0180668    11.91   0.000     .1798483     .250669
+ fr_sus_prin |   .0344136   .0166052     2.07   0.038      .001868    .0669591
+ comp_biosoc |   .2210367   .0301645     7.33   0.000     .1619153    .2801581
+     ten_viv |   -.018616   .0156717    -1.19   0.235    -.0493319    .0120999
+dg_cie_10_~c |   .0402913   .0185451     2.17   0.030     .0039435    .0766391
+sud_sever~10 |  -.1095212   .0422915    -2.59   0.010    -.1924111   -.0266314
+   macrozone |   .2377794   .0243291     9.77   0.000     .1900952    .2854636
+ policonsumo |   .0823618   .0486991     1.69   0.091    -.0130866    .1778103
+   n_off_vio |   .4125115   .0365558    11.28   0.000     .3408635    .4841595
+   n_off_acq |   1.116179   .0337223    33.10   0.000     1.050085    1.182274
+   n_off_sud |   .3481102   .0357883     9.73   0.000     .2779663     .418254
+        clas |   .1091379   .0286219     3.81   0.000       .05304    .1652357
+motivodeeg~( |  -.1204811   .0148864    -8.09   0.000    -.1496579   -.0913042
+       _cons |  -5.768047   .2427668   -23.76   0.000    -6.243861   -5.292233
+------------------------------------------------------------------------------
+ ***********
+ family Cox tvc 2
+ ***********
+note; a delayed entry model is being fitted
+variables created for model 1, component 18: _cmp_1_18_1 to _cmp_1_18_2
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -233401.56  
+Iteration 1:   log likelihood = -20468.566  
+Iteration 2:   log likelihood = -18716.508  
+Iteration 3:   log likelihood = -18086.689  
+Iteration 4:   log likelihood = -18083.022  
+Iteration 5:   log likelihood = -18083.017  
+Iteration 6:   log likelihood = -18083.017  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18083.017
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .0039939   .0247437     0.16   0.872    -.0445028    .0524906
+edad_al_in~t |   .0046054   .0044824     1.03   0.304    -.0041799    .0133908
+edad_ini_c~s |  -.0252201   .0046881    -5.38   0.000    -.0344086   -.0160316
+     sex_enc |  -.5090191    .044158   -11.53   0.000    -.5955671   -.4224711
+     esc_rec |    .248146   .0264922     9.37   0.000     .1962223    .3000697
+sus_prin_mod |   .2156867   .0181513    11.88   0.000     .1801108    .2512625
+ fr_sus_prin |   .0373521   .0165916     2.25   0.024     .0048331    .0698712
+ comp_biosoc |   .2209112   .0301722     7.32   0.000     .1617748    .2800476
+     ten_viv |  -.0239433   .0156736    -1.53   0.127    -.0546629    .0067763
+dg_cie_10_~c |   .0408526   .0185376     2.20   0.028     .0045195    .0771856
+sud_sever~10 |  -.1002251   .0423196    -2.37   0.018      -.18317   -.0172802
+   macrozone |   .2421891    .024317     9.96   0.000     .1945287    .2898495
+ policonsumo |   .0702178   .0486515     1.44   0.149    -.0251374    .1655731
+   n_off_vio |   .4129089   .0365217    11.31   0.000     .3413277      .48449
+   n_off_acq |   1.114817   .0336648    33.12   0.000     1.048836    1.180799
+   n_off_sud |   .3359574   .0358001     9.38   0.000     .2657906    .4061242
+        clas |   .1124069   .0286317     3.93   0.000     .0562898    .1685239
+motivodeeg~( |  -.2346439   .0220717   -10.63   0.000    -.2779037   -.1913842
+motivodeeg~( |   .0636872   .0087826     7.25   0.000     .0464737    .0809008
+       _cons |  -6.245557   .2533799   -24.65   0.000    -6.742173   -5.748942
+------------------------------------------------------------------------------
+ ***********
+ family Cox tvc 3
+ ***********
+note; a delayed entry model is being fitted
+variables created for model 1, component 18: _cmp_1_18_1 to _cmp_1_18_3
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -233401.56  
+Iteration 1:   log likelihood = -20468.432  
+Iteration 2:   log likelihood = -18709.449  
+Iteration 3:   log likelihood = -18082.315  
+Iteration 4:   log likelihood = -18079.679  
+Iteration 5:   log likelihood = -18079.676  
+Iteration 6:   log likelihood = -18079.676  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18079.676
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |  -.0073478   .0253725    -0.29   0.772    -.0570769    .0423813
+edad_al_in~t |   .0057635   .0045445     1.27   0.205    -.0031435    .0146705
+edad_ini_c~s |  -.0252347    .004698    -5.37   0.000    -.0344426   -.0160267
+     sex_enc |  -.5087334   .0441551   -11.52   0.000    -.5952758    -.422191
+     esc_rec |   .2483462   .0264819     9.38   0.000     .1964427    .3002498
+sus_prin_mod |   .2143009   .0181546    11.80   0.000     .1787185    .2498833
+ fr_sus_prin |   .0369191   .0165907     2.23   0.026     .0044019    .0694363
+ comp_biosoc |   .2197537   .0301778     7.28   0.000     .1606063    .2789012
+     ten_viv |  -.0237703   .0156715    -1.52   0.129    -.0544858    .0069452
+dg_cie_10_~c |   .0402712   .0185403     2.17   0.030     .0039329    .0766095
+sud_sever~10 |  -.1031437   .0423331    -2.44   0.015     -.186115   -.0201724
+   macrozone |   .2427652   .0243216     9.98   0.000     .1950958    .2904346
+ policonsumo |   .0676425   .0486169     1.39   0.164    -.0276449      .16293
+   n_off_vio |   .4125011   .0365228    11.29   0.000     .3409176    .4840846
+   n_off_acq |   1.114906   .0336573    33.13   0.000     1.048939    1.180873
+   n_off_sud |    .338409   .0358054     9.45   0.000     .2682317    .4085862
+        clas |   .1114482   .0286311     3.89   0.000     .0553324     .167564
+motivodeeg~( |  -.2568797   .0241676   -10.63   0.000    -.3042474   -.2095121
+motivodeeg~( |   .0831272   .0117263     7.09   0.000     .0601441    .1061103
+motivodeeg~( |   .0199913   .0066592     3.00   0.003     .0069395    .0330431
+       _cons |  -6.265781   .2541581   -24.65   0.000    -6.763922    -5.76764
+------------------------------------------------------------------------------
+ ***********
+ family Cox tvc 4
+ ***********
+note; a delayed entry model is being fitted
+variables created for model 1, component 18: _cmp_1_18_1 to _cmp_1_18_4
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -233401.56  
+Iteration 1:   log likelihood = -20467.828  
+Iteration 2:   log likelihood = -18704.647  
+Iteration 3:   log likelihood =  -18082.64  
+Iteration 4:   log likelihood = -18079.364  
+Iteration 5:   log likelihood = -18079.354  
+Iteration 6:   log likelihood = -18079.354  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18079.354
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |  -.0050509   .0255714    -0.20   0.843    -.0551698     .045068
+edad_al_in~t |   .0055109   .0045547     1.21   0.226    -.0034162    .0144381
+edad_ini_c~s |  -.0251816   .0046971    -5.36   0.000    -.0343878   -.0159753
+     sex_enc |  -.5090891   .0441569   -11.53   0.000     -.595635   -.4225433
+     esc_rec |   .2485394   .0264865     9.38   0.000     .1966268     .300452
+sus_prin_mod |   .2140892   .0181579    11.79   0.000     .1785005     .249678
+ fr_sus_prin |   .0369775   .0165893     2.23   0.026     .0044631     .069492
+ comp_biosoc |   .2195504   .0301787     7.28   0.000     .1604012    .2786997
+     ten_viv |  -.0237796   .0156731    -1.52   0.129    -.0544982    .0069391
+dg_cie_10_~c |   .0402966   .0185402     2.17   0.030     .0039585    .0766347
+sud_sever~10 |  -.1032868    .042335    -2.44   0.015    -.1862618   -.0203118
+   macrozone |   .2426126   .0243219     9.98   0.000     .1949425    .2902828
+ policonsumo |   .0681419   .0486299     1.40   0.161    -.0271709    .1634547
+   n_off_vio |   .4130435   .0365281    11.31   0.000     .3414499    .4846372
+   n_off_acq |    1.11546   .0336659    33.13   0.000     1.049476    1.181444
+   n_off_sud |   .3389429   .0358111     9.46   0.000     .2687543    .4091314
+        clas |   .1113687     .02863     3.89   0.000     .0552548    .1674825
+motivodeeg~( |  -.2526524   .0249867   -10.11   0.000    -.3016254   -.2036794
+motivodeeg~( |   .0787574    .013258     5.94   0.000     .0527721    .1047427
+motivodeeg~( |   .0182299    .007658     2.38   0.017     .0032204    .0332393
+motivodeeg~( |  -.0002482   .0071297    -0.03   0.972     -.014222    .0137257
+       _cons |  -6.258512    .254249   -24.62   0.000     -6.75683   -5.760193
+------------------------------------------------------------------------------
+ ***********
+ family Cox tvc 5
+ ***********
+note; a delayed entry model is being fitted
+variables created for model 1, component 18: _cmp_1_18_1 to _cmp_1_18_5
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -233401.56  
+Iteration 1:   log likelihood = -20467.823  
+Iteration 2:   log likelihood = -18703.396  
+Iteration 3:   log likelihood = -18082.858  
+Iteration 4:   log likelihood = -18079.496  
+Iteration 5:   log likelihood = -18079.486  
+Iteration 6:   log likelihood = -18079.485  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18079.485
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |  -.0055249   .0257121    -0.21   0.830    -.0559197      .04487
+edad_al_in~t |    .005566   .0045649     1.22   0.223     -.003381    .0145131
+edad_ini_c~s |  -.0251946   .0046974    -5.36   0.000    -.0344014   -.0159878
+     sex_enc |  -.5089932    .044157   -11.53   0.000    -.5955393   -.4224471
+     esc_rec |    .248485   .0264856     9.38   0.000     .1965741    .3003959
+sus_prin_mod |   .2141291   .0181587    11.79   0.000     .1785388    .2497194
+ fr_sus_prin |   .0369657   .0165907     2.23   0.026     .0044485     .069483
+ comp_biosoc |   .2195961   .0301811     7.28   0.000     .1604422    .2787501
+     ten_viv |  -.0237713   .0156728    -1.52   0.129    -.0544894    .0069468
+dg_cie_10_~c |   .0402809   .0185403     2.17   0.030     .0039426    .0766192
+sud_sever~10 |  -.1032777   .0423371    -2.44   0.015    -.1862569   -.0202986
+   macrozone |   .2426441   .0243233     9.98   0.000     .1949713    .2903168
+ policonsumo |    .068055   .0486295     1.40   0.162     -.027257     .163367
+   n_off_vio |   .4129336   .0365311    11.30   0.000      .341334    .4845333
+   n_off_acq |   1.115327   .0336661    33.13   0.000     1.049343    1.181312
+   n_off_sud |   .3388247    .035813     9.46   0.000     .2686326    .4090168
+        clas |   .1113877   .0286302     3.89   0.000     .0552735    .1675018
+motivodeeg~( |  -.2535157   .0256259    -9.89   0.000    -.3037416   -.2032898
+motivodeeg~( |   .0794048    .014264     5.57   0.000     .0514478    .1073618
+motivodeeg~( |   .0190394   .0076493     2.49   0.013      .004047    .0340318
+motivodeeg~( |   .0036473   .0078412     0.47   0.642    -.0117211    .0190157
+motivodeeg~( |  -.0004219   .0076393    -0.06   0.956    -.0153947    .0145509
+       _cons |  -6.260055   .2544258   -24.60   0.000     -6.75872    -5.76139
+------------------------------------------------------------------------------
+ ***********
+ family Cox tvc 6
+ ***********
+note; a delayed entry model is being fitted
+variables created for model 1, component 18: _cmp_1_18_1 to _cmp_1_18_6
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -233401.56  
+Iteration 1:   log likelihood = -20467.548  
+Iteration 2:   log likelihood = -18704.879  
+Iteration 3:   log likelihood = -18081.725  
+Iteration 4:   log likelihood = -18078.059  
+Iteration 5:   log likelihood = -18078.041  
+Iteration 6:   log likelihood = -18078.041  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18078.041
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |  -.0083424   .0258979    -0.32   0.747    -.0591014    .0424166
+edad_al_in~t |   .0057831   .0045798     1.26   0.207    -.0031932    .0147594
+edad_ini_c~s |  -.0251588   .0046979    -5.36   0.000    -.0343666   -.0159509
+     sex_enc |   -.509266   .0441564   -11.53   0.000     -.595811    -.422721
+     esc_rec |   .2488542   .0264915     9.39   0.000     .1969318    .3007766
+sus_prin_mod |   .2144031   .0181619    11.81   0.000     .1788065    .2499998
+ fr_sus_prin |   .0369475   .0165914     2.23   0.026     .0044289    .0694662
+ comp_biosoc |   .2196412    .030177     7.28   0.000     .1604954     .278787
+     ten_viv |  -.0239199   .0156726    -1.53   0.127    -.0546376    .0067978
+dg_cie_10_~c |   .0405257   .0185411     2.19   0.029     .0041858    .0768655
+sud_sever~10 |  -.1026928    .042337    -2.43   0.015    -.1856718   -.0197138
+   macrozone |   .2427443   .0243266     9.98   0.000     .1950651    .2904235
+ policonsumo |   .0669583   .0486238     1.38   0.168    -.0283427    .1622592
+   n_off_vio |   .4124432   .0365316    11.29   0.000     .3408426    .4840437
+   n_off_acq |   1.115388   .0336646    33.13   0.000     1.049406    1.181369
+   n_off_sud |   .3384891   .0358103     9.45   0.000     .2683021     .408676
+        clas |   .1113511   .0286331     3.89   0.000     .0552313    .1674709
+motivodeeg~( |  -.2590711    .026258    -9.87   0.000    -.3105359   -.2076062
+motivodeeg~( |    .085364   .0152186     5.61   0.000      .055536     .115192
+motivodeeg~( |   .0221244   .0077079     2.87   0.004     .0070173    .0372316
+motivodeeg~( |   .0098498   .0077817     1.27   0.206    -.0054021    .0251017
+motivodeeg~( |   .0012428   .0081226     0.15   0.878    -.0146773    .0171629
+motivodeeg~( |   .0107811    .008139     1.32   0.185    -.0051712    .0267333
+       _cons |   -6.26801   .2547462   -24.60   0.000    -6.767303   -5.768716
+------------------------------------------------------------------------------
+ ***********
+ family Cox tvc 7
+ ***********
+note; a delayed entry model is being fitted
+variables created for model 1, component 18: _cmp_1_18_1 to _cmp_1_18_7
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -233401.56  
+Iteration 1:   log likelihood = -20467.473  
+Iteration 2:   log likelihood = -18705.705  
+Iteration 3:   log likelihood = -18081.902  
+Iteration 4:   log likelihood = -18078.085  
+Iteration 5:   log likelihood = -18078.062  
+Iteration 6:   log likelihood = -18078.062  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18078.062
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |  -.0084267   .0259887    -0.32   0.746    -.0593637    .0425104
+edad_al_in~t |   .0057869   .0045837     1.26   0.207    -.0031969    .0147707
+edad_ini_c~s |  -.0251604   .0046981    -5.36   0.000    -.0343685   -.0159523
+     sex_enc |  -.5092524   .0441566   -11.53   0.000    -.5957978   -.4227069
+     esc_rec |   .2488403   .0264918     9.39   0.000     .1969172    .3007633
+sus_prin_mod |   .2144443   .0181628    11.81   0.000     .1788459    .2500426
+ fr_sus_prin |   .0369582   .0165917     2.23   0.026      .004439    .0694773
+ comp_biosoc |   .2196324   .0301776     7.28   0.000     .1604854    .2787794
+     ten_viv |  -.0239571   .0156726    -1.53   0.126    -.0546747    .0067606
+dg_cie_10_~c |   .0405454   .0185413     2.19   0.029     .0042052    .0768856
+sud_sever~10 |  -.1025848   .0423369    -2.42   0.015    -.1855636    -.019606
+   macrozone |   .2427837   .0243271     9.98   0.000     .1951035    .2904639
+ policonsumo |   .0669519   .0486258     1.38   0.169    -.0283529    .1622566
+   n_off_vio |   .4123962   .0365318    11.29   0.000     .3407953    .4839972
+   n_off_acq |   1.115315   .0336644    33.13   0.000     1.049334    1.181296
+   n_off_sud |   .3384668   .0358103     9.45   0.000     .2682799    .4086537
+        clas |    .111333   .0286335     3.89   0.000     .0552124    .1674535
+motivodeeg~( |  -.2592687     .02659    -9.75   0.000    -.3113842   -.2071532
+motivodeeg~( |   .0855795   .0157761     5.42   0.000      .054659       .1165
+motivodeeg~( |   .0216671   .0076931     2.82   0.005     .0065888    .0367453
+motivodeeg~( |   .0118744   .0077959     1.52   0.128    -.0034052     .027154
+motivodeeg~( |   .0002564   .0078518     0.03   0.974     -.015133    .0156457
+motivodeeg~( |   .0081522   .0083033     0.98   0.326    -.0081219    .0244263
+motivodeeg~( |     .00678   .0086116     0.79   0.431    -.0100985    .0236584
+       _cons |  -6.268181   .2548218   -24.60   0.000    -6.767622   -5.768739
+------------------------------------------------------------------------------
+
+. 
+.         // Gompertz
+.         di in yellow &quot;{bf: ***********}&quot;
+ ***********
+
+.         di in yellow &quot;{bf: family Gomp}&quot;
+ family Gomp
+
+.         di in yellow &quot;{bf: ***********}&quot;
+ ***********
+
+.         set seed 2125
+
+.         qui cap noi stmerlin $covs_2 , dist(gompertz)
+note; a delayed entry model is being fitted
+
+Fitting full model:
+
+Iteration 0:   log likelihood =  -23175439  
+Iteration 1:   log likelihood =  -25329.26  
+Iteration 2:   log likelihood =  -22700.55  
+Iteration 3:   log likelihood = -18270.887  
+Iteration 4:   log likelihood = -18016.368  
+Iteration 5:   log likelihood = -18004.201  
+Iteration 6:   log likelihood = -18004.166  
+Iteration 7:   log likelihood = -18004.166  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18004.166
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1312148   .0215626     6.09   0.000     .0889529    .1734768
+edad_al_in~t |   .0694969   .0064058    10.85   0.000     .0569418     .082052
+edad_ini_c~s |  -.0232351   .0046861    -4.96   0.000    -.0324196   -.0140506
+     sex_enc |  -.5078204   .0441613   -11.50   0.000    -.5943749   -.4212659
+     esc_rec |   .2414063   .0263901     9.15   0.000     .1896826    .2931299
+sus_prin_mod |   .2141908   .0181775    11.78   0.000     .1785636     .249818
+ fr_sus_prin |   .0347563   .0166201     2.09   0.037     .0021814    .0673312
+ comp_biosoc |   .2225802   .0301914     7.37   0.000     .1634062    .2817542
+     ten_viv |  -.0224084   .0156417    -1.43   0.152    -.0530655    .0082487
+dg_cie_10_~c |   .0409798   .0186463     2.20   0.028     .0044338    .0775257
+sud_sever~10 |  -.1067838   .0423032    -2.52   0.012    -.1896966   -.0238711
+   macrozone |   .2338811   .0243389     9.61   0.000     .1861778    .2815845
+ policonsumo |   .0955085    .048576     1.97   0.049     .0003013    .1907157
+   n_off_vio |   .3898645   .0365294    10.67   0.000     .3182681    .4614608
+   n_off_acq |   1.080728   .0337026    32.07   0.000     1.014672    1.146784
+   n_off_sud |   .3211379   .0357899     8.97   0.000      .250991    .3912847
+        clas |   .1119699   .0286052     3.91   0.000     .0559048     .168035
+       _cons |  -4.492883   .2151406   -20.88   0.000    -4.914551   -4.071215
+       gamma |  -.1097603   .0063075   -17.40   0.000    -.1221228   -.0973979
+------------------------------------------------------------------------------
+
+.         //qui cap noi merlin (_time $covs if _trans == 1, family(gompertz, fail(_status)))
+.         estimates store m2_1_gom
+
+. 
+.         // Weibull
+.         di in yellow &quot;{bf: ***********}&quot;
+ ***********
+
+.         di in yellow &quot;{bf: family Weibull}&quot;
+ family Weibull
+
+.         di in yellow &quot;{bf: ***********}&quot;
+ ***********
+
+.         set seed 2125
+
+.         qui cap noi stmerlin $covs_2 , dist(weibull)
+note; a delayed entry model is being fitted
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -233401.56  
+Iteration 1:   log likelihood =  -20488.04  (not concave)
+Iteration 2:   log likelihood =  -18603.41  
+Iteration 3:   log likelihood =  -18157.22  
+Iteration 4:   log likelihood = -18137.336  (not concave)
+Iteration 5:   log likelihood = -18136.876  
+Iteration 6:   log likelihood = -18131.842  
+Iteration 7:   log likelihood = -18125.865  
+Iteration 8:   log likelihood = -18118.072  
+Iteration 9:   log likelihood = -18114.172  
+Iteration 10:  log likelihood = -18109.031  
+Iteration 11:  log likelihood = -18106.253  
+Iteration 12:  log likelihood = -18101.621  
+Iteration 13:  log likelihood = -18100.714  
+Iteration 14:  log likelihood = -18098.586  (not concave)
+Iteration 15:  log likelihood = -18098.561  
+Iteration 16:  log likelihood = -18097.822  
+Iteration 17:  log likelihood =  -18095.32  
+Iteration 18:  log likelihood = -18094.708  
+Iteration 19:  log likelihood = -18093.629  
+Iteration 20:  log likelihood = -18093.368  
+Iteration 21:  log likelihood = -18093.292  
+Iteration 22:  log likelihood = -18093.244  
+Iteration 23:  log likelihood = -18093.228  
+Iteration 24:  log likelihood = -18093.219  
+Iteration 25:  log likelihood = -18093.217  
+Iteration 26:  log likelihood = -18093.216  
+Iteration 27:  log likelihood = -18093.216  
+Iteration 28:  log likelihood = -18093.216  
+Iteration 29:  log likelihood = -18093.216  (not concave)
+Iteration 30:  log likelihood = -18093.216  (not concave)
+Iteration 31:  log likelihood = -18093.216  (not concave)
+Iteration 32:  log likelihood = -18093.216  (not concave)
+Iteration 33:  log likelihood = -18093.216  (not concave)
+Iteration 34:  log likelihood = -18093.216  (not concave)
+Iteration 35:  log likelihood = -18093.216  (not concave)
+Iteration 36:  log likelihood = -18093.216  (not concave)
+Iteration 37:  log likelihood = -18093.216  (not concave)
+Iteration 38:  log likelihood = -18093.216  (not concave)
+Iteration 39:  log likelihood = -18093.216  (not concave)
+Iteration 40:  log likelihood = -18093.216  (not concave)
+Iteration 41:  log likelihood = -18093.216  (not concave)
+Iteration 42:  log likelihood = -18093.216  (not concave)
+Iteration 43:  log likelihood = -18093.216  (not concave)
+Iteration 44:  log likelihood = -18093.216  (not concave)
+Iteration 45:  log likelihood = -18093.216  (not concave)
+Iteration 46:  log likelihood = -18093.216  (not concave)
+Iteration 47:  log likelihood = -18093.216  (not concave)
+Iteration 48:  log likelihood = -18093.216  (not concave)
+Iteration 49:  log likelihood = -18093.216  (not concave)
+Iteration 50:  log likelihood = -18093.216  (not concave)
+Iteration 51:  log likelihood = -18093.216  (not concave)
+Iteration 52:  log likelihood = -18093.216  (not concave)
+Iteration 53:  log likelihood = -18093.216  (not concave)
+Iteration 54:  log likelihood = -18093.216  (not concave)
+Iteration 55:  log likelihood = -18093.216  (not concave)
+Iteration 56:  log likelihood = -18093.216  (not concave)
+Iteration 57:  log likelihood = -18093.216  (not concave)
+Iteration 58:  log likelihood = -18093.216  (not concave)
+Iteration 59:  log likelihood = -18093.216  (not concave)
+Iteration 60:  log likelihood = -18093.216  (not concave)
+Iteration 61:  log likelihood = -18093.216  (not concave)
+Iteration 62:  log likelihood = -18093.216  (not concave)
+Iteration 63:  log likelihood = -18093.216  (not concave)
+Iteration 64:  log likelihood = -18093.216  (not concave)
+Iteration 65:  log likelihood = -18093.216  (not concave)
+Iteration 66:  log likelihood = -18093.216  (not concave)
+Iteration 67:  log likelihood = -18093.216  (not concave)
+Iteration 68:  log likelihood = -18093.216  (not concave)
+Iteration 69:  log likelihood = -18093.216  (not concave)
+Iteration 70:  log likelihood = -18093.216  (not concave)
+Iteration 71:  log likelihood = -18093.216  (not concave)
+Iteration 72:  log likelihood = -18093.216  (not concave)
+Iteration 73:  log likelihood = -18093.216  (not concave)
+Iteration 74:  log likelihood = -18093.216  (not concave)
+Iteration 75:  log likelihood = -18093.216  (not concave)
+Iteration 76:  log likelihood = -18093.216  (not concave)
+Iteration 77:  log likelihood = -18093.216  (not concave)
+Iteration 78:  log likelihood = -18093.216  (not concave)
+Iteration 79:  log likelihood = -18093.216  (not concave)
+Iteration 80:  log likelihood = -18093.216  (not concave)
+Iteration 81:  log likelihood = -18093.216  (not concave)
+Iteration 82:  log likelihood = -18093.216  (not concave)
+Iteration 83:  log likelihood = -18093.216  (not concave)
+Iteration 84:  log likelihood = -18093.216  (not concave)
+Iteration 85:  log likelihood = -18093.216  (not concave)
+Iteration 86:  log likelihood = -18093.216  (not concave)
+Iteration 87:  log likelihood = -18093.216  (not concave)
+Iteration 88:  log likelihood = -18093.216  (not concave)
+Iteration 89:  log likelihood = -18093.216  (not concave)
+Iteration 90:  log likelihood = -18093.216  (not concave)
+Iteration 91:  log likelihood = -18093.216  (not concave)
+Iteration 92:  log likelihood = -18093.216  (not concave)
+Iteration 93:  log likelihood = -18093.216  (not concave)
+Iteration 94:  log likelihood = -18093.216  (not concave)
+Iteration 95:  log likelihood = -18093.216  (not concave)
+Iteration 96:  log likelihood = -18093.216  (not concave)
+Iteration 97:  log likelihood = -18093.216  (not concave)
+Iteration 98:  log likelihood = -18093.216  (not concave)
+Iteration 99:  log likelihood = -18093.216  (not concave)
+Iteration 100: log likelihood = -18093.216  (not concave)
+Iteration 101: log likelihood = -18093.216  (not concave)
+Iteration 102: log likelihood = -18093.216  (not concave)
+Iteration 103: log likelihood = -18093.216  (not concave)
+Iteration 104: log likelihood = -18093.216  (not concave)
+Iteration 105: log likelihood = -18093.216  (not concave)
+Iteration 106: log likelihood = -18093.216  (not concave)
+Iteration 107: log likelihood = -18093.216  (not concave)
+Iteration 108: log likelihood = -18093.216  (not concave)
+Iteration 109: log likelihood = -18093.216  (not concave)
+Iteration 110: log likelihood = -18093.216  (not concave)
+Iteration 111: log likelihood = -18093.216  (not concave)
+Iteration 112: log likelihood = -18093.216  (not concave)
+Iteration 113: log likelihood = -18093.216  (not concave)
+Iteration 114: log likelihood = -18093.216  (not concave)
+Iteration 115: log likelihood = -18093.216  (not concave)
+Iteration 116: log likelihood = -18093.216  (not concave)
+Iteration 117: log likelihood = -18093.216  (not concave)
+Iteration 118: log likelihood = -18093.216  (not concave)
+Iteration 119: log likelihood = -18093.216  (not concave)
+Iteration 120: log likelihood = -18093.216  (not concave)
+Iteration 121: log likelihood = -18093.216  (not concave)
+Iteration 122: log likelihood = -18093.216  (not concave)
+Iteration 123: log likelihood = -18093.216  (not concave)
+Iteration 124: log likelihood = -18093.216  (not concave)
+Iteration 125: log likelihood = -18093.216  (not concave)
+Iteration 126: log likelihood = -18093.216  (not concave)
+Iteration 127: log likelihood = -18093.216  (not concave)
+Iteration 128: log likelihood = -18093.216  (not concave)
+Iteration 129: log likelihood = -18093.216  (not concave)
+Iteration 130: log likelihood = -18093.216  (not concave)
+Iteration 131: log likelihood = -18093.216  (not concave)
+Iteration 132: log likelihood = -18093.216  (not concave)
+Iteration 133: log likelihood = -18093.216  (not concave)
+Iteration 134: log likelihood = -18093.216  (not concave)
+Iteration 135: log likelihood = -18093.216  (not concave)
+Iteration 136: log likelihood = -18093.216  (not concave)
+Iteration 137: log likelihood = -18093.216  (not concave)
+Iteration 138: log likelihood = -18093.216  (not concave)
+Iteration 139: log likelihood = -18093.216  (not concave)
+Iteration 140: log likelihood = -18093.216  (not concave)
+Iteration 141: log likelihood = -18093.216  (not concave)
+Iteration 142: log likelihood = -18093.216  (not concave)
+Iteration 143: log likelihood = -18093.216  (not concave)
+Iteration 144: log likelihood = -18093.216  (not concave)
+Iteration 145: log likelihood = -18093.216  (not concave)
+Iteration 146: log likelihood = -18093.216  (not concave)
+Iteration 147: log likelihood = -18093.216  (not concave)
+Iteration 148: log likelihood = -18093.216  (not concave)
+Iteration 149: log likelihood = -18093.216  (not concave)
+Iteration 150: log likelihood = -18093.216  (not concave)
+Iteration 151: log likelihood = -18093.216  (not concave)
+Iteration 152: log likelihood = -18093.216  (not concave)
+Iteration 153: log likelihood = -18093.216  (not concave)
+Iteration 154: log likelihood = -18093.216  (not concave)
+Iteration 155: log likelihood = -18093.216  (not concave)
+Iteration 156: log likelihood = -18093.216  (not concave)
+Iteration 157: log likelihood = -18093.216  (not concave)
+Iteration 158: log likelihood = -18093.216  (not concave)
+Iteration 159: log likelihood = -18093.216  (not concave)
+Iteration 160: log likelihood = -18093.216  (not concave)
+Iteration 161: log likelihood = -18093.216  (not concave)
+Iteration 162: log likelihood = -18093.216  (not concave)
+Iteration 163: log likelihood = -18093.216  (not concave)
+Iteration 164: log likelihood = -18093.216  (not concave)
+Iteration 165: log likelihood = -18093.216  (not concave)
+Iteration 166: log likelihood = -18093.216  (not concave)
+Iteration 167: log likelihood = -18093.216  (not concave)
+Iteration 168: log likelihood = -18093.216  (not concave)
+Iteration 169: log likelihood = -18093.216  (not concave)
+Iteration 170: log likelihood = -18093.216  (not concave)
+Iteration 171: log likelihood = -18093.216  (not concave)
+Iteration 172: log likelihood = -18093.216  (not concave)
+Iteration 173: log likelihood = -18093.216  (not concave)
+Iteration 174: log likelihood = -18093.216  (not concave)
+Iteration 175: log likelihood = -18093.216  (not concave)
+Iteration 176: log likelihood = -18093.216  (not concave)
+Iteration 177: log likelihood = -18093.216  (not concave)
+Iteration 178: log likelihood = -18093.216  (not concave)
+Iteration 179: log likelihood = -18093.216  (not concave)
+Iteration 180: log likelihood = -18093.216  (not concave)
+Iteration 181: log likelihood = -18093.216  (not concave)
+Iteration 182: log likelihood = -18093.216  (not concave)
+Iteration 183: log likelihood = -18093.216  (not concave)
+Iteration 184: log likelihood = -18093.216  (not concave)
+Iteration 185: log likelihood = -18093.216  (not concave)
+Iteration 186: log likelihood = -18093.216  (not concave)
+Iteration 187: log likelihood = -18093.216  (not concave)
+Iteration 188: log likelihood = -18093.216  (not concave)
+Iteration 189: log likelihood = -18093.216  (not concave)
+Iteration 190: log likelihood = -18093.216  (not concave)
+Iteration 191: log likelihood = -18093.216  (not concave)
+Iteration 192: log likelihood = -18093.216  (not concave)
+Iteration 193: log likelihood = -18093.216  (not concave)
+Iteration 194: log likelihood = -18093.216  (not concave)
+Iteration 195: log likelihood = -18093.216  (not concave)
+Iteration 196: log likelihood = -18093.216  (not concave)
+Iteration 197: log likelihood = -18093.216  (not concave)
+Iteration 198: log likelihood = -18093.216  (not concave)
+Iteration 199: log likelihood = -18093.216  (not concave)
+Iteration 200: log likelihood = -18093.216  (not concave)
+Iteration 201: log likelihood = -18093.216  (not concave)
+Iteration 202: log likelihood = -18093.216  (not concave)
+Iteration 203: log likelihood = -18093.216  (not concave)
+Iteration 204: log likelihood = -18093.216  (not concave)
+Iteration 205: log likelihood = -18093.216  (not concave)
+Iteration 206: log likelihood = -18093.216  (not concave)
+Iteration 207: log likelihood = -18093.216  (not concave)
+Iteration 208: log likelihood = -18093.216  (not concave)
+Iteration 209: log likelihood = -18093.216  (not concave)
+Iteration 210: log likelihood = -18093.216  (not concave)
+Iteration 211: log likelihood = -18093.216  (not concave)
+Iteration 212: log likelihood = -18093.216  (not concave)
+Iteration 213: log likelihood = -18093.216  (not concave)
+Iteration 214: log likelihood = -18093.216  (not concave)
+Iteration 215: log likelihood = -18093.216  (not concave)
+Iteration 216: log likelihood = -18093.216  (not concave)
+Iteration 217: log likelihood = -18093.216  (not concave)
+Iteration 218: log likelihood = -18093.216  (not concave)
+Iteration 219: log likelihood = -18093.216  (not concave)
+Iteration 220: log likelihood = -18093.216  (not concave)
+Iteration 221: log likelihood = -18093.216  (not concave)
+Iteration 222: log likelihood = -18093.216  (not concave)
+Iteration 223: log likelihood = -18093.216  (not concave)
+Iteration 224: log likelihood = -18093.216  (not concave)
+Iteration 225: log likelihood = -18093.216  (not concave)
+Iteration 226: log likelihood = -18093.216  (not concave)
+Iteration 227: log likelihood = -18093.216  (not concave)
+Iteration 228: log likelihood = -18093.216  (not concave)
+Iteration 229: log likelihood = -18093.216  (not concave)
+Iteration 230: log likelihood = -18093.216  (not concave)
+Iteration 231: log likelihood = -18093.216  (not concave)
+Iteration 232: log likelihood = -18093.216  (not concave)
+Iteration 233: log likelihood = -18093.216  (not concave)
+Iteration 234: log likelihood = -18093.216  (not concave)
+Iteration 235: log likelihood = -18093.216  (not concave)
+Iteration 236: log likelihood = -18093.216  (not concave)
+Iteration 237: log likelihood = -18093.216  (not concave)
+Iteration 238: log likelihood = -18093.216  (not concave)
+Iteration 239: log likelihood = -18093.216  (not concave)
+Iteration 240: log likelihood = -18093.216  (not concave)
+Iteration 241: log likelihood = -18093.216  (not concave)
+Iteration 242: log likelihood = -18093.216  (not concave)
+Iteration 243: log likelihood = -18093.216  (not concave)
+Iteration 244: log likelihood = -18093.216  (not concave)
+Iteration 245: log likelihood = -18093.216  (not concave)
+Iteration 246: log likelihood = -18093.216  (not concave)
+Iteration 247: log likelihood = -18093.216  (not concave)
+Iteration 248: log likelihood = -18093.216  (not concave)
+Iteration 249: log likelihood = -18093.216  (not concave)
+Iteration 250: log likelihood = -18093.216  (not concave)
+Iteration 251: log likelihood = -18093.216  (not concave)
+Iteration 252: log likelihood = -18093.216  (not concave)
+Iteration 253: log likelihood = -18093.216  (not concave)
+Iteration 254: log likelihood = -18093.216  (not concave)
+Iteration 255: log likelihood = -18093.216  (not concave)
+Iteration 256: log likelihood = -18093.216  (not concave)
+Iteration 257: log likelihood = -18093.216  (not concave)
+Iteration 258: log likelihood = -18093.216  (not concave)
+Iteration 259: log likelihood = -18093.216  (not concave)
+Iteration 260: log likelihood = -18093.216  (not concave)
+Iteration 261: log likelihood = -18093.216  (not concave)
+Iteration 262: log likelihood = -18093.216  (not concave)
+Iteration 263: log likelihood = -18093.216  (not concave)
+Iteration 264: log likelihood = -18093.216  (not concave)
+Iteration 265: log likelihood = -18093.216  (not concave)
+Iteration 266: log likelihood = -18093.216  (not concave)
+Iteration 267: log likelihood = -18093.216  (not concave)
+Iteration 268: log likelihood = -18093.216  (not concave)
+Iteration 269: log likelihood = -18093.216  (not concave)
+Iteration 270: log likelihood = -18093.216  (not concave)
+Iteration 271: log likelihood = -18093.216  (not concave)
+Iteration 272: log likelihood = -18093.216  (not concave)
+Iteration 273: log likelihood = -18093.216  (not concave)
+Iteration 274: log likelihood = -18093.216  (not concave)
+Iteration 275: log likelihood = -18093.216  (not concave)
+Iteration 276: log likelihood = -18093.216  (not concave)
+Iteration 277: log likelihood = -18093.216  (not concave)
+Iteration 278: log likelihood = -18093.216  (not concave)
+Iteration 279: log likelihood = -18093.216  (not concave)
+Iteration 280: log likelihood = -18093.216  (not concave)
+Iteration 281: log likelihood = -18093.216  (not concave)
+Iteration 282: log likelihood = -18093.216  (not concave)
+Iteration 283: log likelihood = -18093.216  (not concave)
+Iteration 284: log likelihood = -18093.216  (not concave)
+Iteration 285: log likelihood = -18093.216  (not concave)
+Iteration 286: log likelihood = -18093.216  (not concave)
+Iteration 287: log likelihood = -18093.216  (not concave)
+Iteration 288: log likelihood = -18093.216  (not concave)
+Iteration 289: log likelihood = -18093.216  (not concave)
+Iteration 290: log likelihood = -18093.216  (not concave)
+Iteration 291: log likelihood = -18093.216  (not concave)
+Iteration 292: log likelihood = -18093.216  (not concave)
+Iteration 293: log likelihood = -18093.216  (not concave)
+Iteration 294: log likelihood = -18093.216  (not concave)
+Iteration 295: log likelihood = -18093.216  (not concave)
+Iteration 296: log likelihood = -18093.216  (not concave)
+Iteration 297: log likelihood = -18093.216  (not concave)
+Iteration 298: log likelihood = -18093.216  (not concave)
+Iteration 299: log likelihood = -18093.216  (not concave)
+Iteration 300: log likelihood = -18093.216  (not concave)
+convergence not achieved
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18093.216
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1309662   .0214241     6.11   0.000     .0889756    .1729567
+edad_al_in~t |  -.0100558   .0020664    -4.87   0.000    -.0141059   -.0060056
+edad_ini_c~s |  -.0248791   .0046467    -5.35   0.000    -.0339865   -.0157717
+     sex_enc |    -.50858   .0441771   -11.51   0.000    -.5951655   -.4219945
+     esc_rec |   .2309862   .0263647     8.76   0.000     .1793123    .2826601
+sus_prin_mod |   .2147719   .0180825    11.88   0.000     .1793308     .250213
+ fr_sus_prin |   .0343687   .0166126     2.07   0.039     .0018085    .0669288
+ comp_biosoc |   .2197575   .0301562     7.29   0.000     .1606525    .2788626
+     ten_viv |  -.0191592   .0156629    -1.22   0.221    -.0498579    .0115395
+dg_cie_10_~c |   .0400954   .0185817     2.16   0.031     .0036759    .0765149
+sud_sever~10 |  -.1087944   .0422707    -2.57   0.010    -.1916434   -.0259453
+   macrozone |   .2387006    .024331     9.81   0.000     .1910128    .2863884
+ policonsumo |   .0787557   .0485762     1.62   0.105    -.0164519    .1739632
+   n_off_vio |   .4156909   .0364884    11.39   0.000     .3441749    .4872068
+   n_off_acq |   1.117479   .0336165    33.24   0.000     1.051592    1.183366
+   n_off_sud |   .3477115   .0357802     9.72   0.000     .2775835    .4178394
+        clas |   .1080148   .0286237     3.77   0.000     .0519133    .1641162
+       _cons |   14.57445          .        .       .            .           .
+  log(gamma) |   -16.7905   .2136065   -78.60   0.000    -17.20917   -16.37184
+------------------------------------------------------------------------------
+
+.         //qui cap noi merlin (_time $covs if _trans == 1, family(gompertz, fail(_status)))
+.         estimates store m2_1_wei
+
+.         
+.         // Log logistic
+.         di in yellow &quot;{bf: ***********}&quot;
+ ***********
+
+.         di in yellow &quot;{bf: family Logl}&quot;
+ family Logl
+
+.         di in yellow &quot;{bf: ***********}&quot;
+ ***********
+
+.         set seed 2125
+
+.         qui cap noi stmerlin $covs_2 , dist(loglogistic)
+note; a delayed entry model is being fitted
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -20064.873  (not concave)
+Iteration 1:   log likelihood = -20032.111  (not concave)
+Iteration 2:   log likelihood = -18727.288  (not concave)
+Iteration 3:   log likelihood = -18497.552  (not concave)
+Iteration 4:   log likelihood = -18404.626  (not concave)
+Iteration 5:   log likelihood = -18363.761  (not concave)
+Iteration 6:   log likelihood = -18343.627  (not concave)
+Iteration 7:   log likelihood = -18294.396  (not concave)
+Iteration 8:   log likelihood = -18282.328  (not concave)
+Iteration 9:   log likelihood =  -18275.41  
+Iteration 10:  log likelihood = -18168.267  
+Iteration 11:  log likelihood = -18132.515  
+Iteration 12:  log likelihood = -18131.257  
+Iteration 13:  log likelihood =  -18131.23  
+Iteration 14:  log likelihood =  -18131.23  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood =  -18131.23
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |  -.0964684   .0165945    -5.81   0.000     -.128993   -.0639438
+edad_al_in~t |   .0361332   .0016291    22.18   0.000     .0329402    .0393262
+edad_ini_c~s |   .0159894    .003203     4.99   0.000     .0097116    .0222672
+     sex_enc |   .3736202   .0364693    10.24   0.000     .3021418    .4450987
+     esc_rec |  -.1652733   .0212682    -7.77   0.000    -.2069583   -.1235884
+sus_prin_mod |  -.1488412   .0155348    -9.58   0.000    -.1792887   -.1183936
+ fr_sus_prin |  -.0346005    .012262    -2.82   0.005    -.0586336   -.0105674
+ comp_biosoc |  -.1584906   .0238566    -6.64   0.000    -.2052486   -.1117326
+     ten_viv |   .0153844    .012272     1.25   0.210    -.0086682     .039437
+dg_cie_10_~c |  -.0229036   .0143373    -1.60   0.110    -.0510043     .005197
+sud_sever~10 |   .0580327   .0308186     1.88   0.060    -.0023707    .1184361
+   macrozone |  -.1759498   .0220762    -7.97   0.000    -.2192184   -.1326813
+ policonsumo |  -.0261264   .0343626    -0.76   0.447    -.0934759    .0412231
+   n_off_vio |  -.4223831   .0405324   -10.42   0.000    -.5018251   -.3429412
+   n_off_acq |  -.9972725   .0708674   -14.07   0.000     -1.13617   -.8583749
+   n_off_sud |  -.3452011   .0374264    -9.22   0.000    -.4185555   -.2718467
+        clas |  -.0621687   .0216604    -2.87   0.004    -.1046224   -.0197151
+       _cons |   4.240877   .1620411    26.17   0.000     3.923282    4.558472
+       dap:1 |  -.8080338   .0375205   -21.54   0.000    -.8815726    -.734495
+------------------------------------------------------------------------------
+
+.         //qui cap noi merlin (_time $covs if _trans == 1, family(loglogistic, fail(_status)))
+.         estimates store m2_1_logl
+
+. 
+.         // Log normal
+.         di in yellow &quot;{bf: ***********}&quot;
+ ***********
+
+.         di in yellow &quot;{bf: family Logn}&quot;
+ family Logn
+
+.         di in yellow &quot;{bf: ***********}&quot;
+ ***********
+
+.         set seed 2125
+
+.         qui cap noi stmerlin $covs_2 , dist(lognormal)
+note; a delayed entry model is being fitted
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -33053.961  (not concave)
+Iteration 1:   log likelihood = -21469.498  (not concave)
+Iteration 2:   log likelihood = -19427.053  (not concave)
+Iteration 3:   log likelihood = -18719.754  (not concave)
+Iteration 4:   log likelihood =  -18554.52  (not concave)
+Iteration 5:   log likelihood =  -18340.81  
+Iteration 6:   log likelihood = -18183.905  
+Iteration 7:   log likelihood =   -18118.5  (not concave)
+Iteration 8:   log likelihood = -18112.318  
+Iteration 9:   log likelihood = -18102.787  
+Iteration 10:  log likelihood = -18093.673  
+Iteration 11:  log likelihood = -18089.652  
+Iteration 12:  log likelihood = -18086.846  
+Iteration 13:  log likelihood = -18086.663  
+Iteration 14:  log likelihood = -18086.662  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18086.662
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |  -.2733922   .0667308    -4.10   0.000    -.4041822   -.1426022
+edad_al_in~t |   .0526338   .0065958     7.98   0.000     .0397063    .0655613
+edad_ini_c~s |   .0401865   .0107709     3.73   0.000     .0190759    .0612972
+     sex_enc |   1.098427   .2165126     5.07   0.000     .6740704    1.522784
+     esc_rec |  -.4877972   .1038864    -4.70   0.000    -.6914107   -.2841837
+sus_prin_mod |  -.4560608   .0921715    -4.95   0.000    -.6367136    -.275408
+ fr_sus_prin |  -.1165514   .0420792    -2.77   0.006    -.1990251   -.0340777
+ comp_biosoc |   -.447984   .1031892    -4.34   0.000    -.6502311   -.2457369
+     ten_viv |   .0507311   .0382523     1.33   0.185    -.0242421    .1257042
+dg_cie_10_~c |  -.0720443   .0446634    -1.61   0.107     -.159583    .0154944
+sud_sever~10 |   .1496605   .0924022     1.62   0.105    -.0314444    .3307654
+   macrozone |  -.5357924   .1149422    -4.66   0.000    -.7610749   -.3105098
+ policonsumo |  -.1123717   .1017468    -1.10   0.269    -.3117917    .0870483
+   n_off_vio |  -1.292675   .2673948    -4.83   0.000    -1.816759   -.7685909
+   n_off_acq |  -3.268431   .6666308    -4.90   0.000    -4.575003   -1.961858
+   n_off_sud |  -1.098838   .2353958    -4.67   0.000    -1.560205   -.6374705
+        clas |  -.1969077   .0716294    -2.75   0.006    -.3372987   -.0565167
+       _cons |   5.932901    .573765    10.34   0.000     4.808342     7.05746
+       dap:1 |   .4441432   .1199174     3.70   0.000     .2091094    .6791771
+------------------------------------------------------------------------------
+
+.         //qui cap noi merlin (_time $covs if _trans == 1, family(lognormal, fail(_status)))
+.         estimates store m2_1_logn
+
+.         
+.         // Generalised gamma
+.         di in yellow &quot;{bf: ***********}&quot;
+ ***********
+
+.         di in yellow &quot;{bf: family Ggam}&quot;
+ family Ggam
+
+.         di in yellow &quot;{bf: ***********}&quot;
+ ***********
+
+.         set seed 2125
+
+.         qui cap noi stmerlin $covs_2 , dist(ggamma)
+note; a delayed entry model is being fitted
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -21405.054  (not concave)
+Iteration 1:   log likelihood = -19349.476  (not concave)
+Iteration 2:   log likelihood = -18760.123  (not concave)
+Iteration 3:   log likelihood = -18539.228  
+Iteration 4:   log likelihood = -18408.874  (not concave)
+Iteration 5:   log likelihood = -18382.623  (not concave)
+Iteration 6:   log likelihood = -18282.948  (not concave)
+Iteration 7:   log likelihood = -18259.615  (not concave)
+Iteration 8:   log likelihood = -18158.465  (not concave)
+Iteration 9:   log likelihood = -18119.106  
+Iteration 10:  log likelihood = -18106.911  
+Iteration 11:  log likelihood = -18088.996  
+Iteration 12:  log likelihood = -18086.114  
+Iteration 13:  log likelihood = -18077.055  
+Iteration 14:  log likelihood = -18074.426  
+Iteration 15:  log likelihood = -18072.112  
+Iteration 16:  log likelihood = -18070.513  (not concave)
+Iteration 17:  log likelihood = -18070.438  
+Iteration 18:  log likelihood = -18069.486  (not concave)
+Iteration 19:  log likelihood = -18068.453  (not concave)
+Iteration 20:  log likelihood = -18068.319  (not concave)
+Iteration 21:  log likelihood = -18068.169  (not concave)
+Iteration 22:  log likelihood = -18068.117  (not concave)
+Iteration 23:  log likelihood = -18068.093  (not concave)
+Iteration 24:  log likelihood = -18068.072  (not concave)
+Iteration 25:  log likelihood = -18068.049  
+Iteration 26:  log likelihood = -18067.323  (not concave)
+Iteration 27:  log likelihood = -18067.277  (not concave)
+Iteration 28:  log likelihood = -18067.191  (not concave)
+Iteration 29:  log likelihood = -18067.182  (not concave)
+Iteration 30:  log likelihood =  -18067.15  (not concave)
+Iteration 31:  log likelihood = -18067.142  (not concave)
+Iteration 32:  log likelihood = -18067.133  (not concave)
+Iteration 33:  log likelihood = -18067.116  (not concave)
+Iteration 34:  log likelihood = -18067.108  (not concave)
+Iteration 35:  log likelihood = -18067.098  (not concave)
+Iteration 36:  log likelihood = -18067.088  (not concave)
+Iteration 37:  log likelihood = -18067.085  (not concave)
+Iteration 38:  log likelihood = -18067.083  (not concave)
+Iteration 39:  log likelihood = -18067.056  (not concave)
+Iteration 40:  log likelihood = -18067.037  (not concave)
+Iteration 41:  log likelihood = -18066.971  (not concave)
+Iteration 42:  log likelihood = -18066.956  (not concave)
+Iteration 43:  log likelihood = -18066.947  (not concave)
+Iteration 44:  log likelihood = -18066.946  (not concave)
+Iteration 45:  log likelihood = -18066.945  (not concave)
+Iteration 46:  log likelihood = -18066.913  (not concave)
+Iteration 47:  log likelihood = -18066.903  (not concave)
+Iteration 48:  log likelihood = -18066.879  (not concave)
+Iteration 49:  log likelihood = -18066.877  (not concave)
+Iteration 50:  log likelihood = -18066.874  (not concave)
+Iteration 51:  log likelihood = -18066.871  (not concave)
+Iteration 52:  log likelihood = -18066.859  (not concave)
+Iteration 53:  log likelihood = -18066.856  (not concave)
+Iteration 54:  log likelihood = -18066.845  (not concave)
+Iteration 55:  log likelihood = -18066.825  (not concave)
+Iteration 56:  log likelihood = -18066.817  (not concave)
+Iteration 57:  log likelihood = -18066.811  (not concave)
+Iteration 58:  log likelihood = -18066.805  (not concave)
+Iteration 59:  log likelihood = -18066.794  (not concave)
+Iteration 60:  log likelihood = -18066.792  (not concave)
+Iteration 61:  log likelihood = -18066.785  (not concave)
+Iteration 62:  log likelihood = -18066.784  (not concave)
+Iteration 63:  log likelihood = -18066.773  (not concave)
+Iteration 64:  log likelihood = -18066.771  (not concave)
+Iteration 65:  log likelihood = -18066.764  (not concave)
+Iteration 66:  log likelihood = -18066.752  (not concave)
+Iteration 67:  log likelihood = -18066.745  (not concave)
+Iteration 68:  log likelihood = -18066.742  (not concave)
+Iteration 69:  log likelihood = -18066.737  (not concave)
+Iteration 70:  log likelihood = -18066.734  (not concave)
+Iteration 71:  log likelihood = -18066.731  (not concave)
+Iteration 72:  log likelihood = -18066.728  (not concave)
+Iteration 73:  log likelihood = -18066.722  (not concave)
+Iteration 74:  log likelihood = -18066.716  (not concave)
+Iteration 75:  log likelihood = -18066.712  (not concave)
+Iteration 76:  log likelihood = -18066.704  (not concave)
+Iteration 77:  log likelihood = -18066.702  (not concave)
+Iteration 78:  log likelihood =  -18066.69  (not concave)
+Iteration 79:  log likelihood = -18066.684  (not concave)
+Iteration 80:  log likelihood = -18066.683  (not concave)
+Iteration 81:  log likelihood = -18066.679  (not concave)
+Iteration 82:  log likelihood = -18066.675  (not concave)
+Iteration 83:  log likelihood = -18066.671  (not concave)
+Iteration 84:  log likelihood = -18066.668  (not concave)
+Iteration 85:  log likelihood = -18066.662  (not concave)
+Iteration 86:  log likelihood =  -18066.66  (not concave)
+Iteration 87:  log likelihood = -18066.658  (not concave)
+Iteration 88:  log likelihood = -18066.654  (not concave)
+Iteration 89:  log likelihood = -18066.652  (not concave)
+Iteration 90:  log likelihood = -18066.649  (not concave)
+Iteration 91:  log likelihood = -18066.646  (not concave)
+Iteration 92:  log likelihood = -18066.636  (not concave)
+Iteration 93:  log likelihood = -18066.632  (not concave)
+Iteration 94:  log likelihood = -18066.631  (not concave)
+Iteration 95:  log likelihood = -18066.618  (not concave)
+Iteration 96:  log likelihood =  -18066.61  (not concave)
+Iteration 97:  log likelihood = -18066.599  (not concave)
+Iteration 98:  log likelihood = -18066.595  (not concave)
+Iteration 99:  log likelihood = -18066.592  (not concave)
+Iteration 100: log likelihood = -18066.589  (not concave)
+Iteration 101: log likelihood = -18066.587  (not concave)
+Iteration 102: log likelihood = -18066.587  (not concave)
+Iteration 103: log likelihood = -18066.581  (not concave)
+Iteration 104: log likelihood = -18066.559  (not concave)
+Iteration 105: log likelihood = -18066.548  (not concave)
+Iteration 106: log likelihood = -18066.543  (not concave)
+Iteration 107: log likelihood = -18066.541  (not concave)
+Iteration 108: log likelihood = -18066.541  (not concave)
+Iteration 109: log likelihood = -18066.536  (not concave)
+Iteration 110: log likelihood = -18066.533  (not concave)
+Iteration 111: log likelihood = -18066.529  (not concave)
+Iteration 112: log likelihood = -18066.527  (not concave)
+Iteration 113: log likelihood = -18066.527  (not concave)
+Iteration 114: log likelihood = -18066.523  (not concave)
+Iteration 115: log likelihood = -18066.522  (not concave)
+Iteration 116: log likelihood = -18066.522  (not concave)
+Iteration 117: log likelihood = -18066.521  (not concave)
+Iteration 118: log likelihood = -18066.521  (not concave)
+Iteration 119: log likelihood = -18066.521  (not concave)
+Iteration 120: log likelihood = -18066.521  (not concave)
+Iteration 121: log likelihood = -18066.521  (not concave)
+Iteration 122: log likelihood = -18066.521  (not concave)
+Iteration 123: log likelihood = -18066.521  (not concave)
+Iteration 124: log likelihood = -18066.521  (not concave)
+Iteration 125: log likelihood = -18066.521  (not concave)
+Iteration 126: log likelihood = -18066.521  (not concave)
+Iteration 127: log likelihood = -18066.521  (not concave)
+Iteration 128: log likelihood = -18066.521  (not concave)
+Iteration 129: log likelihood = -18066.521  (not concave)
+Iteration 130: log likelihood = -18066.521  (not concave)
+Iteration 131: log likelihood = -18066.521  (not concave)
+Iteration 132: log likelihood = -18066.521  (not concave)
+Iteration 133: log likelihood = -18066.521  (not concave)
+Iteration 134: log likelihood = -18066.521  (not concave)
+Iteration 135: log likelihood = -18066.521  (not concave)
+Iteration 136: log likelihood = -18066.521  (not concave)
+Iteration 137: log likelihood = -18066.521  (not concave)
+Iteration 138: log likelihood = -18066.521  (not concave)
+Iteration 139: log likelihood = -18066.521  (not concave)
+Iteration 140: log likelihood = -18066.521  (not concave)
+Iteration 141: log likelihood = -18066.521  (not concave)
+Iteration 142: log likelihood = -18066.521  (not concave)
+Iteration 143: log likelihood = -18066.521  (not concave)
+Iteration 144: log likelihood = -18066.521  (not concave)
+Iteration 145: log likelihood = -18066.521  (not concave)
+Iteration 146: log likelihood = -18066.521  (not concave)
+Iteration 147: log likelihood = -18066.521  (not concave)
+Iteration 148: log likelihood = -18066.521  (not concave)
+Iteration 149: log likelihood = -18066.521  (not concave)
+Iteration 150: log likelihood = -18066.521  (not concave)
+Iteration 151: log likelihood = -18066.521  (not concave)
+Iteration 152: log likelihood = -18066.521  (not concave)
+Iteration 153: log likelihood = -18066.521  (not concave)
+Iteration 154: log likelihood = -18066.521  (not concave)
+Iteration 155: log likelihood = -18066.521  (not concave)
+Iteration 156: log likelihood = -18066.521  (not concave)
+Iteration 157: log likelihood = -18066.521  (not concave)
+Iteration 158: log likelihood = -18066.521  (not concave)
+Iteration 159: log likelihood = -18066.521  (not concave)
+Iteration 160: log likelihood = -18066.521  (not concave)
+Iteration 161: log likelihood = -18066.521  (not concave)
+Iteration 162: log likelihood = -18066.521  (not concave)
+Iteration 163: log likelihood = -18066.521  (not concave)
+Iteration 164: log likelihood = -18066.521  (not concave)
+Iteration 165: log likelihood = -18066.521  (not concave)
+Iteration 166: log likelihood = -18066.521  (not concave)
+Iteration 167: log likelihood = -18066.521  (not concave)
+Iteration 168: log likelihood = -18066.521  (not concave)
+Iteration 169: log likelihood = -18066.521  (not concave)
+Iteration 170: log likelihood = -18066.521  (not concave)
+Iteration 171: log likelihood = -18066.521  (not concave)
+Iteration 172: log likelihood = -18066.521  (not concave)
+Iteration 173: log likelihood = -18066.521  (not concave)
+Iteration 174: log likelihood = -18066.521  (not concave)
+Iteration 175: log likelihood = -18066.521  (not concave)
+Iteration 176: log likelihood = -18066.521  (not concave)
+Iteration 177: log likelihood = -18066.521  (not concave)
+Iteration 178: log likelihood = -18066.521  (not concave)
+Iteration 179: log likelihood = -18066.521  (not concave)
+Iteration 180: log likelihood = -18066.521  (not concave)
+Iteration 181: log likelihood = -18066.521  (not concave)
+Iteration 182: log likelihood = -18066.521  (not concave)
+Iteration 183: log likelihood = -18066.521  (not concave)
+Iteration 184: log likelihood = -18066.521  (not concave)
+Iteration 185: log likelihood = -18066.521  (not concave)
+Iteration 186: log likelihood = -18066.521  (not concave)
+Iteration 187: log likelihood = -18066.521  (not concave)
+Iteration 188: log likelihood = -18066.521  (not concave)
+Iteration 189: log likelihood = -18066.521  (not concave)
+Iteration 190: log likelihood = -18066.521  (not concave)
+Iteration 191: log likelihood = -18066.521  (not concave)
+Iteration 192: log likelihood = -18066.521  (not concave)
+Iteration 193: log likelihood = -18066.521  (not concave)
+Iteration 194: log likelihood = -18066.521  (not concave)
+Iteration 195: log likelihood = -18066.521  (not concave)
+Iteration 196: log likelihood = -18066.521  (not concave)
+Iteration 197: log likelihood = -18066.521  (not concave)
+Iteration 198: log likelihood = -18066.521  (not concave)
+Iteration 199: log likelihood = -18066.521  (not concave)
+Iteration 200: log likelihood = -18066.521  (not concave)
+Iteration 201: log likelihood = -18066.521  (not concave)
+Iteration 202: log likelihood = -18066.521  (not concave)
+Iteration 203: log likelihood = -18066.521  (not concave)
+Iteration 204: log likelihood = -18066.521  (not concave)
+Iteration 205: log likelihood = -18066.521  (not concave)
+Iteration 206: log likelihood = -18066.521  (not concave)
+Iteration 207: log likelihood = -18066.521  (not concave)
+Iteration 208: log likelihood = -18066.521  (not concave)
+Iteration 209: log likelihood = -18066.521  (not concave)
+Iteration 210: log likelihood = -18066.521  (not concave)
+Iteration 211: log likelihood = -18066.521  (not concave)
+Iteration 212: log likelihood = -18066.521  (not concave)
+Iteration 213: log likelihood = -18066.521  (not concave)
+Iteration 214: log likelihood = -18066.521  (not concave)
+Iteration 215: log likelihood = -18066.521  (not concave)
+Iteration 216: log likelihood = -18066.521  (not concave)
+Iteration 217: log likelihood = -18066.521  (not concave)
+Iteration 218: log likelihood = -18066.521  (not concave)
+Iteration 219: log likelihood = -18066.521  (not concave)
+Iteration 220: log likelihood = -18066.521  (not concave)
+Iteration 221: log likelihood = -18066.521  (not concave)
+Iteration 222: log likelihood = -18066.521  (not concave)
+Iteration 223: log likelihood = -18066.521  (not concave)
+Iteration 224: log likelihood = -18066.521  (not concave)
+Iteration 225: log likelihood = -18066.521  (not concave)
+Iteration 226: log likelihood = -18066.521  (not concave)
+Iteration 227: log likelihood = -18066.521  (not concave)
+Iteration 228: log likelihood = -18066.521  (not concave)
+Iteration 229: log likelihood = -18066.521  (not concave)
+Iteration 230: log likelihood = -18066.521  (not concave)
+Iteration 231: log likelihood = -18066.521  (not concave)
+Iteration 232: log likelihood = -18066.521  (not concave)
+Iteration 233: log likelihood = -18066.521  (not concave)
+Iteration 234: log likelihood = -18066.521  (not concave)
+Iteration 235: log likelihood = -18066.521  (not concave)
+Iteration 236: log likelihood = -18066.521  (not concave)
+Iteration 237: log likelihood = -18066.521  (not concave)
+Iteration 238: log likelihood = -18066.521  (not concave)
+Iteration 239: log likelihood = -18066.521  (not concave)
+Iteration 240: log likelihood = -18066.521  (not concave)
+Iteration 241: log likelihood = -18066.521  (not concave)
+Iteration 242: log likelihood = -18066.521  (not concave)
+Iteration 243: log likelihood = -18066.521  (not concave)
+Iteration 244: log likelihood = -18066.521  (not concave)
+Iteration 245: log likelihood = -18066.521  (not concave)
+Iteration 246: log likelihood = -18066.521  (not concave)
+Iteration 247: log likelihood = -18066.521  (not concave)
+Iteration 248: log likelihood = -18066.521  (not concave)
+Iteration 249: log likelihood = -18066.521  (not concave)
+Iteration 250: log likelihood = -18066.521  (not concave)
+Iteration 251: log likelihood = -18066.521  (not concave)
+Iteration 252: log likelihood = -18066.521  (not concave)
+Iteration 253: log likelihood = -18066.521  (not concave)
+Iteration 254: log likelihood = -18066.521  (not concave)
+Iteration 255: log likelihood = -18066.521  (not concave)
+Iteration 256: log likelihood = -18066.521  (not concave)
+Iteration 257: log likelihood = -18066.521  (not concave)
+Iteration 258: log likelihood = -18066.521  (not concave)
+Iteration 259: log likelihood = -18066.521  (not concave)
+Iteration 260: log likelihood = -18066.521  (not concave)
+Iteration 261: log likelihood = -18066.521  (not concave)
+Iteration 262: log likelihood = -18066.521  (not concave)
+Iteration 263: log likelihood = -18066.521  (not concave)
+Iteration 264: log likelihood = -18066.521  (not concave)
+Iteration 265: log likelihood = -18066.521  (not concave)
+Iteration 266: log likelihood = -18066.521  (not concave)
+Iteration 267: log likelihood = -18066.521  (not concave)
+Iteration 268: log likelihood = -18066.521  (not concave)
+Iteration 269: log likelihood = -18066.521  (not concave)
+Iteration 270: log likelihood = -18066.521  (not concave)
+Iteration 271: log likelihood = -18066.521  (not concave)
+Iteration 272: log likelihood = -18066.521  (not concave)
+Iteration 273: log likelihood = -18066.521  (not concave)
+Iteration 274: log likelihood = -18066.521  (not concave)
+Iteration 275: log likelihood = -18066.521  (not concave)
+Iteration 276: log likelihood = -18066.521  (not concave)
+Iteration 277: log likelihood = -18066.521  (not concave)
+Iteration 278: log likelihood = -18066.521  (not concave)
+Iteration 279: log likelihood = -18066.521  (not concave)
+Iteration 280: log likelihood = -18066.521  (not concave)
+Iteration 281: log likelihood = -18066.521  (not concave)
+Iteration 282: log likelihood = -18066.521  (not concave)
+Iteration 283: log likelihood = -18066.521  (not concave)
+Iteration 284: log likelihood = -18066.521  (not concave)
+Iteration 285: log likelihood = -18066.521  (not concave)
+Iteration 286: log likelihood = -18066.521  (not concave)
+Iteration 287: log likelihood = -18066.521  (not concave)
+Iteration 288: log likelihood = -18066.521  (not concave)
+Iteration 289: log likelihood = -18066.521  (not concave)
+Iteration 290: log likelihood = -18066.521  (not concave)
+Iteration 291: log likelihood = -18066.521  (not concave)
+Iteration 292: log likelihood = -18066.521  (not concave)
+Iteration 293: log likelihood = -18066.521  (not concave)
+Iteration 294: log likelihood = -18066.521  (not concave)
+Iteration 295: log likelihood = -18066.521  (not concave)
+Iteration 296: log likelihood = -18066.521  (not concave)
+Iteration 297: log likelihood = -18066.521  (not concave)
+Iteration 298: log likelihood = -18066.521  (not concave)
+Iteration 299: log likelihood = -18066.521  (not concave)
+Iteration 300: log likelihood = -18066.521  (not concave)
+convergence not achieved
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18066.521
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |  -.4580405          .        .       .            .           .
+edad_al_in~t |   .0676337   .0081956     8.25   0.000     .0515707    .0836967
+edad_ini_c~s |   .0731627   .0102298     7.15   0.000     .0531126    .0932128
+     sex_enc |   1.804797   .0367021    49.17   0.000     1.732862    1.876732
+     esc_rec |  -.8141798   .0857954    -9.49   0.000    -.9823358   -.6460239
+sus_prin_mod |  -.7579079    .044507   -17.03   0.000    -.8451401   -.6706757
+ fr_sus_prin |  -.1622499   .0356383    -4.55   0.000    -.2320997   -.0924002
+ comp_biosoc |  -.7551957          .        .       .            .           .
+     ten_viv |   .0814018    .040095     2.03   0.042      .002817    .1599866
+dg_cie_10_~c |  -.1263824   .0508752    -2.48   0.013     -.226096   -.0266689
+sud_sever~10 |   .3055314          .        .       .            .           .
+   macrozone |  -.8828125   .0943689    -9.35   0.000    -1.067772   -.6978528
+ policonsumo |  -.2071876          .        .       .            .           .
+   n_off_vio |  -1.880928          .        .       .            .           .
+   n_off_acq |  -4.610794   .1833059   -25.15   0.000    -4.970067   -4.251521
+   n_off_sud |  -1.573936   .1300731   -12.10   0.000    -1.828875   -1.318998
+        clas |  -.3464651          .        .       .            .           .
+       _cons |   6.952272          .        .       .            .           .
+  log(sigma) |   .8846476   .0271822    32.55   0.000     .8313715    .9379237
+       kappa |   .2776223          .        .       .            .           .
+------------------------------------------------------------------------------
+
+.         //qui cap noi merlin (_time $covs if _trans == 1, family(ggamma, fail(_status)))
+.         estimates store m2_1_ggam
+
+. 
+.         // Royston Parmar models
+.         forvalues j=1/10 {
+  2.                 di in yellow &quot;{bf: ***********}&quot;
+  3.                 di in yellow &quot;{bf: family RP`j'}&quot;
+  4.                 di in yellow &quot;{bf: ***********}&quot;
+  5.                 set seed 2125
+  6.                 qui cap noi stmerlin $covs_2, dist(rp) df(`j')
+  7.                 //qui cap noi merlin (_time $covs if _trans == 1, family(rp, df(`j') fail(_status)))
+.                 estimates store m2_1_rp`j'
+  8.                 *estimates save &quot;${pathdata2}parmodels.ster&quot;, append    
+.         }       
+ ***********
+ family RP1
+ ***********
+note; a delayed entry model is being fitted
+variables created: _rcs1_1 to _rcs1_1
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -36826.906  (not concave)
+Iteration 1:   log likelihood = -20925.963  
+Iteration 2:   log likelihood = -19960.951  (not concave)
+Iteration 3:   log likelihood = -18487.836  (not concave)
+Iteration 4:   log likelihood = -18179.463  
+Iteration 5:   log likelihood = -18127.473  
+Iteration 6:   log likelihood = -18113.172  (not concave)
+Iteration 7:   log likelihood = -18112.842  
+Iteration 8:   log likelihood = -18109.917  
+Iteration 9:   log likelihood = -18104.322  
+Iteration 10:  log likelihood = -18102.591  
+Iteration 11:  log likelihood = -18099.433  
+Iteration 12:  log likelihood =  -18097.94  
+Iteration 13:  log likelihood = -18097.537  
+Iteration 14:  log likelihood = -18095.869  (not concave)
+Iteration 15:  log likelihood = -18095.835  
+Iteration 16:  log likelihood = -18095.644  
+Iteration 17:  log likelihood = -18095.426  
+Iteration 18:  log likelihood = -18094.969  
+Iteration 19:  log likelihood = -18094.694  
+Iteration 20:  log likelihood = -18094.605  
+Iteration 21:  log likelihood = -18094.216  
+Iteration 22:  log likelihood = -18094.168  
+Iteration 23:  log likelihood = -18094.015  
+Iteration 24:  log likelihood =  -18093.93  
+Iteration 25:  log likelihood = -18093.847  
+Iteration 26:  log likelihood = -18093.815  
+Iteration 27:  log likelihood = -18093.724  (not concave)
+Iteration 28:  log likelihood = -18093.723  
+Iteration 29:  log likelihood =   -18093.7  
+Iteration 30:  log likelihood = -18093.666  
+Iteration 31:  log likelihood = -18093.621  
+Iteration 32:  log likelihood = -18093.614  
+Iteration 33:  log likelihood = -18093.573  (not concave)
+Iteration 34:  log likelihood = -18093.571  
+Iteration 35:  log likelihood = -18093.557  
+Iteration 36:  log likelihood = -18093.526  
+Iteration 37:  log likelihood = -18093.513  
+Iteration 38:  log likelihood = -18093.479  
+Iteration 39:  log likelihood = -18093.463  
+Iteration 40:  log likelihood =  -18093.45  
+Iteration 41:  log likelihood = -18093.424  
+Iteration 42:  log likelihood = -18093.419  
+Iteration 43:  log likelihood = -18093.403  (not concave)
+Iteration 44:  log likelihood = -18093.401  (not concave)
+Iteration 45:  log likelihood = -18093.401  
+Iteration 46:  log likelihood = -18093.401  
+Iteration 47:  log likelihood = -18093.385  (not concave)
+Iteration 48:  log likelihood = -18093.385  
+Iteration 49:  log likelihood =  -18093.38  
+Iteration 50:  log likelihood = -18093.372  
+Iteration 51:  log likelihood = -18093.364  
+Iteration 52:  log likelihood = -18093.357  
+Iteration 53:  log likelihood = -18093.345  
+Iteration 54:  log likelihood = -18093.338  
+Iteration 55:  log likelihood = -18093.333  
+Iteration 56:  log likelihood = -18093.327  
+Iteration 57:  log likelihood = -18093.317  
+Iteration 58:  log likelihood = -18093.315  
+Iteration 59:  log likelihood = -18093.311  
+Iteration 60:  log likelihood = -18093.304  
+Iteration 61:  log likelihood = -18093.299  
+Iteration 62:  log likelihood = -18093.296  
+Iteration 63:  log likelihood = -18093.292  
+Iteration 64:  log likelihood = -18093.289  
+Iteration 65:  log likelihood = -18093.285  
+Iteration 66:  log likelihood = -18093.283  
+Iteration 67:  log likelihood = -18093.278  
+Iteration 68:  log likelihood = -18093.276  
+Iteration 69:  log likelihood = -18093.274  
+Iteration 70:  log likelihood = -18093.271  
+Iteration 71:  log likelihood = -18093.269  
+Iteration 72:  log likelihood = -18093.266  
+Iteration 73:  log likelihood = -18093.265  
+Iteration 74:  log likelihood = -18093.261  (not concave)
+Iteration 75:  log likelihood = -18093.261  
+Iteration 76:  log likelihood =  -18093.26  
+Iteration 77:  log likelihood = -18093.256  
+Iteration 78:  log likelihood = -18093.254  
+Iteration 79:  log likelihood = -18093.253  
+Iteration 80:  log likelihood = -18093.251  
+Iteration 81:  log likelihood = -18093.251  
+Iteration 82:  log likelihood = -18093.249  (not concave)
+Iteration 83:  log likelihood = -18093.249  
+Iteration 84:  log likelihood = -18093.248  
+Iteration 85:  log likelihood = -18093.247  
+Iteration 86:  log likelihood = -18093.245  (not concave)
+Iteration 87:  log likelihood = -18093.245  (backed up)
+Iteration 88:  log likelihood = -18093.245  
+Iteration 89:  log likelihood = -18093.244  
+Iteration 90:  log likelihood = -18093.242  
+Iteration 91:  log likelihood = -18093.242  
+Iteration 92:  log likelihood = -18093.241  
+Iteration 93:  log likelihood =  -18093.24  
+Iteration 94:  log likelihood =  -18093.24  
+Iteration 95:  log likelihood = -18093.239  
+Iteration 96:  log likelihood = -18093.238  
+Iteration 97:  log likelihood = -18093.237  
+Iteration 98:  log likelihood = -18093.237  (not concave)
+Iteration 99:  log likelihood = -18093.237  (not concave)
+Iteration 100: log likelihood = -18093.237  (backed up)
+Iteration 101: log likelihood = -18093.236  
+Iteration 102: log likelihood = -18093.235  
+Iteration 103: log likelihood = -18093.235  
+Iteration 104: log likelihood = -18093.234  (not concave)
+Iteration 105: log likelihood = -18093.234  
+Iteration 106: log likelihood = -18093.234  
+Iteration 107: log likelihood = -18093.234  
+Iteration 108: log likelihood = -18093.233  
+Iteration 109: log likelihood = -18093.232  
+Iteration 110: log likelihood = -18093.232  
+Iteration 111: log likelihood = -18093.231  
+Iteration 112: log likelihood = -18093.231  
+Iteration 113: log likelihood =  -18093.23  
+Iteration 114: log likelihood =  -18093.23  
+Iteration 115: log likelihood =  -18093.23  
+Iteration 116: log likelihood = -18093.229  
+Iteration 117: log likelihood = -18093.229  
+Iteration 118: log likelihood = -18093.228  
+Iteration 119: log likelihood = -18093.228  
+Iteration 120: log likelihood = -18093.228  
+Iteration 121: log likelihood = -18093.227  
+Iteration 122: log likelihood = -18093.227  
+Iteration 123: log likelihood = -18093.227  
+Iteration 124: log likelihood = -18093.226  
+Iteration 125: log likelihood = -18093.226  
+Iteration 126: log likelihood = -18093.226  
+Iteration 127: log likelihood = -18093.226  
+Iteration 128: log likelihood = -18093.225  
+Iteration 129: log likelihood = -18093.225  
+Iteration 130: log likelihood = -18093.225  
+Iteration 131: log likelihood = -18093.225  
+Iteration 132: log likelihood = -18093.224  
+Iteration 133: log likelihood = -18093.224  
+Iteration 134: log likelihood = -18093.224  
+Iteration 135: log likelihood = -18093.224  
+Iteration 136: log likelihood = -18093.224  
+Iteration 137: log likelihood = -18093.224  
+Iteration 138: log likelihood = -18093.223  
+Iteration 139: log likelihood = -18093.223  
+Iteration 140: log likelihood = -18093.223  
+Iteration 141: log likelihood = -18093.223  
+Iteration 142: log likelihood = -18093.223  
+Iteration 143: log likelihood = -18093.223  
+Iteration 144: log likelihood = -18093.222  (not concave)
+Iteration 145: log likelihood = -18093.222  
+Iteration 146: log likelihood = -18093.222  
+Iteration 147: log likelihood = -18093.222  
+Iteration 148: log likelihood = -18093.222  
+Iteration 149: log likelihood = -18093.222  
+Iteration 150: log likelihood = -18093.222  (not concave)
+Iteration 151: log likelihood = -18093.222  
+Iteration 152: log likelihood = -18093.222  
+Iteration 153: log likelihood = -18093.222  
+Iteration 154: log likelihood = -18093.221  
+Iteration 155: log likelihood = -18093.221  
+Iteration 156: log likelihood = -18093.221  (not concave)
+Iteration 157: log likelihood = -18093.221  
+Iteration 158: log likelihood = -18093.221  
+Iteration 159: log likelihood = -18093.221  (not concave)
+Iteration 160: log likelihood = -18093.221  
+Iteration 161: log likelihood = -18093.221  
+Iteration 162: log likelihood = -18093.221  
+Iteration 163: log likelihood = -18093.221  
+Iteration 164: log likelihood =  -18093.22  
+Iteration 165: log likelihood =  -18093.22  
+Iteration 166: log likelihood =  -18093.22  
+Iteration 167: log likelihood =  -18093.22  
+Iteration 168: log likelihood =  -18093.22  
+Iteration 169: log likelihood =  -18093.22  
+Iteration 170: log likelihood =  -18093.22  
+Iteration 171: log likelihood =  -18093.22  
+Iteration 172: log likelihood =  -18093.22  
+Iteration 173: log likelihood =  -18093.22  
+Iteration 174: log likelihood =  -18093.22  (not concave)
+Iteration 175: log likelihood =  -18093.22  (backed up)
+Iteration 176: log likelihood =  -18093.22  
+Iteration 177: log likelihood =  -18093.22  (not concave)
+Iteration 178: log likelihood =  -18093.22  
+Iteration 179: log likelihood = -18093.219  
+Iteration 180: log likelihood = -18093.219  
+Iteration 181: log likelihood = -18093.219  (not concave)
+Iteration 182: log likelihood = -18093.219  
+Iteration 183: log likelihood = -18093.219  
+Iteration 184: log likelihood = -18093.219  (not concave)
+Iteration 185: log likelihood = -18093.219  
+Iteration 186: log likelihood = -18093.219  
+Iteration 187: log likelihood = -18093.219  
+Iteration 188: log likelihood = -18093.219  
+Iteration 189: log likelihood = -18093.219  
+Iteration 190: log likelihood = -18093.219  
+Iteration 191: log likelihood = -18093.219  
+Iteration 192: log likelihood = -18093.219  
+Iteration 193: log likelihood = -18093.219  (not concave)
+Iteration 194: log likelihood = -18093.219  (backed up)
+Iteration 195: log likelihood = -18093.219  
+Iteration 196: log likelihood = -18093.219  
+Iteration 197: log likelihood = -18093.219  
+Iteration 198: log likelihood = -18093.219  
+Iteration 199: log likelihood = -18093.219  
+Iteration 200: log likelihood = -18093.219  
+Iteration 201: log likelihood = -18093.218  (not concave)
+Iteration 202: log likelihood = -18093.218  (backed up)
+Iteration 203: log likelihood = -18093.218  
+Iteration 204: log likelihood = -18093.218  (not concave)
+Iteration 205: log likelihood = -18093.218  (backed up)
+Iteration 206: log likelihood = -18093.218  
+Iteration 207: log likelihood = -18093.218  
+Iteration 208: log likelihood = -18093.218  
+Iteration 209: log likelihood = -18093.218  
+Iteration 210: log likelihood = -18093.218  
+Iteration 211: log likelihood = -18093.218  
+Iteration 212: log likelihood = -18093.218  
+Iteration 213: log likelihood = -18093.218  
+Iteration 214: log likelihood = -18093.218  
+Iteration 215: log likelihood = -18093.218  
+Iteration 216: log likelihood = -18093.218  
+Iteration 217: log likelihood = -18093.218  
+Iteration 218: log likelihood = -18093.218  
+Iteration 219: log likelihood = -18093.218  
+Iteration 220: log likelihood = -18093.218  
+Iteration 221: log likelihood = -18093.218  
+Iteration 222: log likelihood = -18093.218  
+Iteration 223: log likelihood = -18093.218  
+Iteration 224: log likelihood = -18093.218  (not concave)
+Iteration 225: log likelihood = -18093.218  
+Iteration 226: log likelihood = -18093.218  
+Iteration 227: log likelihood = -18093.218  
+Iteration 228: log likelihood = -18093.218  
+Iteration 229: log likelihood = -18093.218  
+Iteration 230: log likelihood = -18093.218  
+Iteration 231: log likelihood = -18093.218  
+Iteration 232: log likelihood = -18093.218  
+Iteration 233: log likelihood = -18093.218  
+Iteration 234: log likelihood = -18093.218  
+Iteration 235: log likelihood = -18093.218  
+Iteration 236: log likelihood = -18093.218  
+Iteration 237: log likelihood = -18093.218  (not concave)
+Iteration 238: log likelihood = -18093.218  (backed up)
+Iteration 239: log likelihood = -18093.217  
+Iteration 240: log likelihood = -18093.217  (not concave)
+Iteration 241: log likelihood = -18093.217  (not concave)
+Iteration 242: log likelihood = -18093.217  (not concave)
+Iteration 243: log likelihood = -18093.217  (not concave)
+Iteration 244: log likelihood = -18093.217  (not concave)
+Iteration 245: log likelihood = -18093.217  (not concave)
+Iteration 246: log likelihood = -18093.217  (not concave)
+Iteration 247: log likelihood = -18093.217  (not concave)
+Iteration 248: log likelihood = -18093.217  (not concave)
+Iteration 249: log likelihood = -18093.217  (not concave)
+Iteration 250: log likelihood = -18093.217  (not concave)
+Iteration 251: log likelihood = -18093.217  (not concave)
+Iteration 252: log likelihood = -18093.217  (not concave)
+Iteration 253: log likelihood = -18093.217  (not concave)
+Iteration 254: log likelihood = -18093.217  (not concave)
+Iteration 255: log likelihood = -18093.217  (not concave)
+Iteration 256: log likelihood = -18093.217  (not concave)
+Iteration 257: log likelihood = -18093.217  (not concave)
+Iteration 258: log likelihood = -18093.217  (not concave)
+Iteration 259: log likelihood = -18093.217  (not concave)
+Iteration 260: log likelihood = -18093.217  (not concave)
+Iteration 261: log likelihood = -18093.217  (not concave)
+Iteration 262: log likelihood = -18093.217  (not concave)
+Iteration 263: log likelihood = -18093.217  (not concave)
+Iteration 264: log likelihood = -18093.217  (not concave)
+Iteration 265: log likelihood = -18093.217  (not concave)
+Iteration 266: log likelihood = -18093.217  (not concave)
+Iteration 267: log likelihood = -18093.217  (not concave)
+Iteration 268: log likelihood = -18093.217  (not concave)
+Iteration 269: log likelihood = -18093.217  (not concave)
+Iteration 270: log likelihood = -18093.217  (not concave)
+Iteration 271: log likelihood = -18093.217  (not concave)
+Iteration 272: log likelihood = -18093.217  (not concave)
+Iteration 273: log likelihood = -18093.217  (not concave)
+Iteration 274: log likelihood = -18093.217  (not concave)
+Iteration 275: log likelihood = -18093.217  (not concave)
+Iteration 276: log likelihood = -18093.217  (not concave)
+Iteration 277: log likelihood = -18093.217  (not concave)
+Iteration 278: log likelihood = -18093.217  (not concave)
+Iteration 279: log likelihood = -18093.217  (not concave)
+Iteration 280: log likelihood = -18093.217  (not concave)
+Iteration 281: log likelihood = -18093.217  (not concave)
+Iteration 282: log likelihood = -18093.217  (not concave)
+Iteration 283: log likelihood = -18093.217  (not concave)
+Iteration 284: log likelihood = -18093.217  (not concave)
+Iteration 285: log likelihood = -18093.217  (not concave)
+Iteration 286: log likelihood = -18093.217  (not concave)
+Iteration 287: log likelihood = -18093.217  (not concave)
+Iteration 288: log likelihood = -18093.217  (not concave)
+Iteration 289: log likelihood = -18093.217  (not concave)
+Iteration 290: log likelihood = -18093.217  (not concave)
+Iteration 291: log likelihood = -18093.217  (not concave)
+Iteration 292: log likelihood = -18093.217  (not concave)
+Iteration 293: log likelihood = -18093.217  (not concave)
+Iteration 294: log likelihood = -18093.217  (not concave)
+Iteration 295: log likelihood = -18093.217  (not concave)
+Iteration 296: log likelihood = -18093.217  (not concave)
+Iteration 297: log likelihood = -18093.217  (not concave)
+Iteration 298: log likelihood = -18093.217  (not concave)
+Iteration 299: log likelihood = -18093.217  (not concave)
+Iteration 300: log likelihood = -18093.217  (not concave)
+convergence not achieved
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -18093.217
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1309676   .0214243     6.11   0.000     .0889768    .1729585
+edad_al_in~t |  -.0100568   .0020666    -4.87   0.000    -.0141072   -.0060065
+edad_ini_c~s |  -.0248788   .0046468    -5.35   0.000    -.0339863   -.0157713
+     sex_enc |   -.508577    .044177   -11.51   0.000    -.5951623   -.4219917
+     esc_rec |   .2309882   .0263649     8.76   0.000      .179314    .2826624
+sus_prin_mod |   .2147731   .0180826    11.88   0.000     .1793319    .2502143
+ fr_sus_prin |   .0343698   .0166126     2.07   0.039     .0018097      .06693
+ comp_biosoc |   .2197591   .0301564     7.29   0.000     .1606536    .2788645
+     ten_viv |  -.0191582    .015663    -1.22   0.221    -.0498572    .0115407
+dg_cie_10_~c |   .0400968   .0185817     2.16   0.031     .0036774    .0765162
+sud_sever~10 |  -.1087908   .0422714    -2.57   0.010    -.1916412   -.0259405
+   macrozone |    .238703    .024331     9.81   0.000      .191015    .2863909
+ policonsumo |   .0787586   .0485764     1.62   0.105    -.0164494    .1739666
+   n_off_vio |   .4156934   .0364883    11.39   0.000     .3441777    .4872091
+   n_off_acq |   1.117482   .0336164    33.24   0.000     1.051595    1.183369
+   n_off_sud |   .3477138   .0357801     9.72   0.000     .2775861    .4178415
+        clas |   .1080163   .0286242     3.77   0.000     .0519138    .1641188
+       _cons |   7.885649          .        .       .            .           .
+------------------------------------------------------------------------------
+    Warning: Baseline spline coefficients not shown - use ml display
+ ***********
+ family RP2
+ ***********
+note; a delayed entry model is being fitted
+Obtaining initial values
+convergence not achieved
+variables created: _rcs1_1 to _rcs1_2
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -18093.217  (not concave)
+Iteration 1:   log likelihood = -18093.005  (not concave)
+Iteration 2:   log likelihood = -18089.572  (not concave)
+Iteration 3:   log likelihood = -18088.163  (not concave)
+Iteration 4:   log likelihood = -18087.668  (not concave)
+Iteration 5:   log likelihood =  -18087.19  (not concave)
+Iteration 6:   log likelihood = -18086.269  (not concave)
+Iteration 7:   log likelihood = -18085.617  (not concave)
+Iteration 8:   log likelihood = -18085.147  (not concave)
+Iteration 9:   log likelihood = -18084.671  (not concave)
+Iteration 10:  log likelihood = -18079.256  (not concave)
+Iteration 11:  log likelihood =  -18072.78  (not concave)
+Iteration 12:  log likelihood = -18071.962  (not concave)
+Iteration 13:  log likelihood = -18066.785  (not concave)
+Iteration 14:  log likelihood = -18061.244  (not concave)
+Iteration 15:  log likelihood = -18060.187  (not concave)
+Iteration 16:  log likelihood = -18059.308  (not concave)
+Iteration 17:  log likelihood =  -18058.47  (not concave)
+Iteration 18:  log likelihood =  -18056.88  (not concave)
+Iteration 19:  log likelihood =  -18055.61  (not concave)
+Iteration 20:  log likelihood = -18054.393  (not concave)
+Iteration 21:  log likelihood = -18053.371  (not concave)
+Iteration 22:  log likelihood = -18052.314  (not concave)
+Iteration 23:  log likelihood =  -18051.34  (not concave)
+Iteration 24:  log likelihood = -18050.356  (not concave)
+Iteration 25:  log likelihood = -18049.319  (not concave)
+Iteration 26:  log likelihood = -18048.257  (not concave)
+Iteration 27:  log likelihood = -18047.188  (not concave)
+Iteration 28:  log likelihood = -18046.098  (not concave)
+Iteration 29:  log likelihood = -18044.982  (not concave)
+Iteration 30:  log likelihood = -18043.844  (not concave)
+Iteration 31:  log likelihood = -18042.688  (not concave)
+Iteration 32:  log likelihood = -18041.514  (not concave)
+Iteration 33:  log likelihood =  -18040.32  (not concave)
+Iteration 34:  log likelihood = -18039.109  (not concave)
+Iteration 35:  log likelihood = -18037.883  (not concave)
+Iteration 36:  log likelihood = -18036.643  (not concave)
+Iteration 37:  log likelihood = -18035.392  (not concave)
+Iteration 38:  log likelihood = -18034.131  (not concave)
+Iteration 39:  log likelihood = -18032.864  (not concave)
+Iteration 40:  log likelihood = -18031.593  (not concave)
+Iteration 41:  log likelihood = -18030.321  (not concave)
+Iteration 42:  log likelihood = -18029.052  
+Iteration 43:  log likelihood = -18017.251  (backed up)
+Iteration 44:  log likelihood = -18007.366  
+Iteration 45:  log likelihood = -17999.131  (not concave)
+Iteration 46:  log likelihood = -17999.051  
+Iteration 47:  log likelihood = -17999.026  (not concave)
+Iteration 48:  log likelihood = -17999.026  (backed up)
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -17999.026
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1290649   .0215222     6.00   0.000     .0868821    .1712476
+edad_al_in~t |   .0534568   .0022266    24.01   0.000     .0490928    .0578208
+edad_ini_c~s |  -.0237937   .0047006    -5.06   0.000    -.0330066   -.0145807
+     sex_enc |  -.5073971   .0441571   -11.49   0.000    -.5939435   -.4208507
+     esc_rec |   .2472629   .0263953     9.37   0.000     .1955291    .2989967
+sus_prin_mod |   .2150197    .018184    11.82   0.000     .1793796    .2506598
+ fr_sus_prin |   .0358014   .0166107     2.16   0.031     .0032451    .0683577
+ comp_biosoc |   .2212673    .030181     7.33   0.000     .1621136    .2804211
+     ten_viv |  -.0241205   .0156387    -1.54   0.123    -.0547717    .0065308
+dg_cie_10_~c |   .0408234   .0186321     2.19   0.028     .0043053    .0773416
+sud_sever~10 |   -.104155   .0422962    -2.46   0.014    -.1870541    -.021256
+   macrozone |    .238053   .0243255     9.79   0.000     .1903759    .2857301
+ policonsumo |   .0826646    .048472     1.71   0.088    -.0123388     .177668
+   n_off_vio |   .3972403   .0364535    10.90   0.000     .3257927    .4686879
+   n_off_acq |    1.09007   .0335467    32.49   0.000     1.024319     1.15582
+   n_off_sud |   .3225524   .0357467     9.02   0.000     .2524902    .3926147
+        clas |   .1116835   .0286136     3.90   0.000     .0556019     .167765
+       _cons |   6.265121   9.645281     0.65   0.516    -12.63928    25.16952
+------------------------------------------------------------------------------
+    Warning: Baseline spline coefficients not shown - use ml display
+ ***********
+ family RP3
+ ***********
+note; a delayed entry model is being fitted
+Obtaining initial values
+convergence not achieved
+variables created: _rcs1_1 to _rcs1_3
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -18093.217  (not concave)
+Iteration 1:   log likelihood = -18074.764  (not concave)
+Iteration 2:   log likelihood = -18071.019  (not concave)
+Iteration 3:   log likelihood = -18066.189  (not concave)
+Iteration 4:   log likelihood = -18064.072  (not concave)
+Iteration 5:   log likelihood = -18062.431  
+Iteration 6:   log likelihood = -18043.165  
+Iteration 7:   log likelihood = -18018.928  
+Iteration 8:   log likelihood = -18008.173  
+Iteration 9:   log likelihood = -17999.491  
+Iteration 10:  log likelihood = -17996.238  
+Iteration 11:  log likelihood = -17996.231  
+Iteration 12:  log likelihood = -17996.231  
+Iteration 13:  log likelihood = -17996.231  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -17996.231
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1279471   .0215121     5.95   0.000     .0857842    .1701099
+edad_al_in~t |   .0474086   .0032778    14.46   0.000     .0409841     .053833
+edad_ini_c~s |  -.0240116   .0047165    -5.09   0.000    -.0332557   -.0147675
+     sex_enc |  -.5074138   .0441519   -11.49   0.000    -.5939499   -.4208777
+     esc_rec |   .2521315   .0264898     9.52   0.000     .2002124    .3040505
+sus_prin_mod |   .2144466   .0182008    11.78   0.000     .1787736    .2501196
+ fr_sus_prin |   .0363997   .0166068     2.19   0.028      .003851    .0689484
+ comp_biosoc |      .2202   .0301807     7.30   0.000     .1610469    .2793531
+     ten_viv |  -.0253692   .0156477    -1.62   0.105    -.0560381    .0052997
+dg_cie_10_~c |   .0407463   .0186269     2.19   0.029     .0042382    .0772543
+sud_sever~10 |  -.1027185   .0423008    -2.43   0.015    -.1856264   -.0198105
+   macrozone |   .2405033    .024344     9.88   0.000       .19279    .2882166
+ policonsumo |   .0759105   .0485151     1.56   0.118    -.0191774    .1709984
+   n_off_vio |   .4010014   .0364809    10.99   0.000        .3295    .4725027
+   n_off_acq |   1.094824   .0335825    32.60   0.000     1.029003    1.160644
+   n_off_sud |   .3231596   .0357415     9.04   0.000     .2531076    .3932116
+        clas |   .1113933   .0286163     3.89   0.000     .0553065    .1674802
+       _cons |   6.249951   8.029587     0.78   0.436    -9.487751    21.98765
+------------------------------------------------------------------------------
+    Warning: Baseline spline coefficients not shown - use ml display
+ ***********
+ family RP4
+ ***********
+note; a delayed entry model is being fitted
+Obtaining initial values
+convergence not achieved
+variables created: _rcs1_1 to _rcs1_4
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -18093.217  (not concave)
+Iteration 1:   log likelihood = -18076.278  (not concave)
+Iteration 2:   log likelihood = -18074.214  (not concave)
+Iteration 3:   log likelihood = -18062.676  (not concave)
+Iteration 4:   log likelihood = -18060.351  (not concave)
+Iteration 5:   log likelihood = -18058.462  
+Iteration 6:   log likelihood = -18044.573  
+Iteration 7:   log likelihood = -18022.873  
+Iteration 8:   log likelihood = -18010.583  
+Iteration 9:   log likelihood = -18002.109  
+Iteration 10:  log likelihood = -17997.602  
+Iteration 11:  log likelihood = -17997.088  
+Iteration 12:  log likelihood = -17996.828  (not concave)
+Iteration 13:  log likelihood = -17996.807  
+Iteration 14:  log likelihood = -17996.804  
+Iteration 15:  log likelihood = -17996.804  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -17996.804
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1279925   .0215136     5.95   0.000     .0858265    .1701584
+edad_al_in~t |   .0480156    .003845    12.49   0.000     .0404795    .0555517
+edad_ini_c~s |   -.024003   .0047155    -5.09   0.000    -.0332453   -.0147608
+     sex_enc |  -.5074024   .0441533   -11.49   0.000    -.5939412   -.4208636
+     esc_rec |   .2517681   .0264998     9.50   0.000     .1998294    .3037068
+sus_prin_mod |    .214652   .0182045    11.79   0.000     .1789719     .250332
+ fr_sus_prin |   .0364216   .0166101     2.19   0.028     .0038665    .0689767
+ comp_biosoc |    .220342   .0301825     7.30   0.000     .1611854    .2794987
+     ten_viv |  -.0252883   .0156495    -1.62   0.106    -.0559608    .0053842
+dg_cie_10_~c |   .0407697   .0186286     2.19   0.029     .0042583    .0772812
+sud_sever~10 |  -.1026924   .0423126    -2.43   0.015    -.1856236   -.0197612
+   macrozone |   .2402535   .0243466     9.87   0.000     .1925349     .287972
+ policonsumo |   .0766022   .0485341     1.58   0.114    -.0185228    .1717272
+   n_off_vio |   .4007118    .036484    10.98   0.000     .3292046     .472219
+   n_off_acq |   1.094275   .0335972    32.57   0.000     1.028425    1.160124
+   n_off_sud |   .3228381   .0357797     9.02   0.000     .2527111    .3929651
+        clas |   .1115347   .0286203     3.90   0.000     .0554398    .1676295
+       _cons |   6.443162   4.197215     1.54   0.125    -1.783228    14.66955
+------------------------------------------------------------------------------
+    Warning: Baseline spline coefficients not shown - use ml display
+ ***********
+ family RP5
+ ***********
+note; a delayed entry model is being fitted
+Obtaining initial values
+convergence not achieved
+variables created: _rcs1_1 to _rcs1_5
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -18093.217  (not concave)
+Iteration 1:   log likelihood = -18077.039  (not concave)
+Iteration 2:   log likelihood = -18067.955  (not concave)
+Iteration 3:   log likelihood = -18063.695  (not concave)
+Iteration 4:   log likelihood = -18059.685  (not concave)
+Iteration 5:   log likelihood = -18057.539  
+Iteration 6:   log likelihood = -18047.189  (backed up)
+Iteration 7:   log likelihood = -18019.946  
+Iteration 8:   log likelihood = -18008.101  
+Iteration 9:   log likelihood = -17997.392  
+Iteration 10:  log likelihood =  -17992.83  
+Iteration 11:  log likelihood = -17992.791  (not concave)
+Iteration 12:  log likelihood = -17992.791  
+Iteration 13:  log likelihood = -17992.791  (not concave)
+Iteration 14:  log likelihood = -17992.791  (not concave)
+Iteration 15:  log likelihood = -17992.791  (backed up)
+Iteration 16:  log likelihood = -17992.791  (backed up)
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -17992.791
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1286237   .0215277     5.97   0.000     .0864302    .1708172
+edad_al_in~t |   .0528737   .0042405    12.47   0.000     .0445626    .0611849
+edad_ini_c~s |  -.0236831   .0047148    -5.02   0.000    -.0329239   -.0144422
+     sex_enc |  -.5083481   .0441518   -11.51   0.000    -.5948841   -.4218121
+     esc_rec |   .2527083   .0265216     9.53   0.000     .2007268    .3046898
+sus_prin_mod |   .2139002   .0182168    11.74   0.000      .178196    .2496045
+ fr_sus_prin |   .0363229   .0166094     2.19   0.029     .0037691    .0688767
+ comp_biosoc |   .2204121   .0301825     7.30   0.000     .1612554    .2795687
+     ten_viv |  -.0255591   .0156537    -1.63   0.103    -.0562399    .0051216
+dg_cie_10_~c |   .0411882   .0186327     2.21   0.027     .0046688    .0777076
+sud_sever~10 |  -.1020376   .0423184    -2.41   0.016    -.1849803    -.019095
+   macrozone |   .2395305   .0243492     9.84   0.000      .191807     .287254
+ policonsumo |   .0789607   .0485603     1.63   0.104    -.0162157     .174137
+   n_off_vio |   .3993355   .0364897    10.94   0.000     .3278169     .470854
+   n_off_acq |   1.093164   .0336024    32.53   0.000     1.027304    1.159023
+   n_off_sud |   .3219891   .0357844     9.00   0.000      .251853    .3921252
+        clas |   .1113808   .0286178     3.89   0.000      .055291    .1674706
+       _cons |    6.10245   4.523348     1.35   0.177    -2.763149    14.96805
+------------------------------------------------------------------------------
+    Warning: Baseline spline coefficients not shown - use ml display
+ ***********
+ family RP6
+ ***********
+note; a delayed entry model is being fitted
+Obtaining initial values
+convergence not achieved
+variables created: _rcs1_1 to _rcs1_6
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -18093.217  (not concave)
+Iteration 1:   log likelihood = -18074.899  (not concave)
+Iteration 2:   log likelihood = -18069.284  (not concave)
+Iteration 3:   log likelihood = -18063.463  (not concave)
+Iteration 4:   log likelihood = -18058.046  (not concave)
+Iteration 5:   log likelihood =  -18055.28  (not concave)
+Iteration 6:   log likelihood = -18052.353  (not concave)
+Iteration 7:   log likelihood = -18050.925  
+Iteration 8:   log likelihood = -18044.004  
+Iteration 9:   log likelihood = -18007.995  
+Iteration 10:  log likelihood = -17996.611  
+Iteration 11:  log likelihood = -17991.829  
+Iteration 12:  log likelihood = -17991.789  
+Iteration 13:  log likelihood = -17991.788  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -17991.788
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1285185   .0215329     5.97   0.000     .0863148    .1707221
+edad_al_in~t |   .0553627   .0045154    12.26   0.000     .0465127    .0642127
+edad_ini_c~s |  -.0236042   .0047168    -5.00   0.000    -.0328489   -.0143594
+     sex_enc |  -.5081175   .0441522   -11.51   0.000    -.5946541   -.4215808
+     esc_rec |   .2534276   .0265269     9.55   0.000     .2014358    .3054194
+sus_prin_mod |   .2135617   .0182238    11.72   0.000     .1778438    .2492796
+ fr_sus_prin |   .0362897   .0166105     2.18   0.029     .0037337    .0688456
+ comp_biosoc |   .2207666   .0301887     7.31   0.000     .1615977    .2799354
+     ten_viv |  -.0257755    .015654    -1.65   0.100    -.0564568    .0049058
+dg_cie_10_~c |   .0411769   .0186341     2.21   0.027     .0046546    .0776991
+sud_sever~10 |   -.101641    .042322    -2.40   0.016    -.1845907   -.0186914
+   macrozone |   .2396078   .0243486     9.84   0.000     .1918853    .2873303
+ policonsumo |   .0796706   .0485705     1.64   0.101    -.0155258     .174867
+   n_off_vio |   .3983404   .0364948    10.91   0.000      .326812    .4698689
+   n_off_acq |   1.092082   .0336073    32.50   0.000     1.026213    1.157952
+   n_off_sud |   .3206033   .0357996     8.96   0.000     .2504374    .3907693
+        clas |   .1114692    .028616     3.90   0.000     .0553829    .1675554
+       _cons |   6.168985   4.446994     1.39   0.165    -2.546962    14.88493
+------------------------------------------------------------------------------
+    Warning: Baseline spline coefficients not shown - use ml display
+ ***********
+ family RP7
+ ***********
+note; a delayed entry model is being fitted
+Obtaining initial values
+convergence not achieved
+variables created: _rcs1_1 to _rcs1_7
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -18093.217  (not concave)
+Iteration 1:   log likelihood = -18076.195  (not concave)
+Iteration 2:   log likelihood =   -18071.3  (not concave)
+Iteration 3:   log likelihood = -18066.176  (not concave)
+Iteration 4:   log likelihood = -18060.769  (not concave)
+Iteration 5:   log likelihood = -18058.131  (not concave)
+Iteration 6:   log likelihood = -18052.556  (not concave)
+Iteration 7:   log likelihood = -18050.075  
+Iteration 8:   log likelihood = -18049.232  (backed up)
+Iteration 9:   log likelihood = -18013.666  
+Iteration 10:  log likelihood = -17991.907  
+Iteration 11:  log likelihood = -17991.249  
+Iteration 12:  log likelihood = -17991.008  (not concave)
+Iteration 13:  log likelihood = -17990.996  
+Iteration 14:  log likelihood = -17990.994  
+Iteration 15:  log likelihood = -17990.994  
+Iteration 16:  log likelihood = -17990.994  (backed up)
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -17990.994
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1284737   .0215359     5.97   0.000     .0862641    .1706833
+edad_al_in~t |   .0569852   .0047833    11.91   0.000       .04761    .0663603
+edad_ini_c~s |  -.0235701   .0047181    -5.00   0.000    -.0328173   -.0143228
+     sex_enc |  -.5081091    .044152   -11.51   0.000    -.5946455   -.4215728
+     esc_rec |   .2538482   .0265306     9.57   0.000     .2018493    .3058472
+sus_prin_mod |   .2133987    .018228    11.71   0.000     .1776725     .249125
+ fr_sus_prin |   .0362909   .0166106     2.18   0.029     .0037347     .068847
+ comp_biosoc |   .2208996   .0301912     7.32   0.000     .1617258    .2800733
+     ten_viv |  -.0259344    .015655    -1.66   0.098    -.0566177    .0047488
+dg_cie_10_~c |   .0412184   .0186357     2.21   0.027     .0046932    .0777436
+sud_sever~10 |  -.1013187   .0423246    -2.39   0.017    -.1842734   -.0183639
+   macrozone |   .2395533   .0243481     9.84   0.000     .1918319    .2872748
+ policonsumo |   .0802267   .0485789     1.65   0.099    -.0149862    .1754395
+   n_off_vio |   .3977946   .0364974    10.90   0.000      .326261    .4693282
+   n_off_acq |   1.091482   .0336135    32.47   0.000     1.025601    1.157363
+   n_off_sud |   .3199374   .0358055     8.94   0.000       .24976    .3901148
+        clas |   .1115892   .0286157     3.90   0.000     .0555035    .1676749
+       _cons |   6.283521   6.094711     1.03   0.303    -5.661893    18.22894
+------------------------------------------------------------------------------
+    Warning: Baseline spline coefficients not shown - use ml display
+ ***********
+ family RP8
+ ***********
+note; a delayed entry model is being fitted
+Obtaining initial values
+convergence not achieved
+variables created: _rcs1_1 to _rcs1_8
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -18093.217  (not concave)
+Iteration 1:   log likelihood = -18076.406  (not concave)
+Iteration 2:   log likelihood = -18070.515  (not concave)
+Iteration 3:   log likelihood = -18065.681  (not concave)
+Iteration 4:   log likelihood =  -18061.45  (not concave)
+Iteration 5:   log likelihood = -18058.236  (not concave)
+Iteration 6:   log likelihood = -18055.683  
+Iteration 7:   log likelihood = -18040.645  
+Iteration 8:   log likelihood = -18013.154  
+Iteration 9:   log likelihood = -17991.568  
+Iteration 10:  log likelihood = -17990.812  
+Iteration 11:  log likelihood =  -17990.72  
+Iteration 12:  log likelihood = -17990.636  (not concave)
+Iteration 13:  log likelihood = -17990.636  
+Iteration 14:  log likelihood = -17990.634  (not concave)
+Iteration 15:  log likelihood = -17990.634  (not concave)
+Iteration 16:  log likelihood = -17990.634  (not concave)
+Iteration 17:  log likelihood = -17990.634  (not concave)
+Iteration 18:  log likelihood = -17990.634  (not concave)
+Iteration 19:  log likelihood = -17990.634  (backed up)
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -17990.634
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1283795   .0215384     5.96   0.000      .086165     .170594
+edad_al_in~t |   .0583118   .0049487    11.78   0.000     .0486125    .0680111
+edad_ini_c~s |  -.0235512   .0047195    -4.99   0.000    -.0328014   -.0143011
+     sex_enc |  -.5080499   .0441519   -11.51   0.000    -.5945862   -.4215137
+     esc_rec |   .2541672   .0265314     9.58   0.000     .2021666    .3061677
+sus_prin_mod |   .2132491   .0182308    11.70   0.000     .1775173    .2489809
+ fr_sus_prin |   .0363119   .0166106     2.19   0.029     .0037558    .0688681
+ comp_biosoc |   .2209242   .0301944     7.32   0.000     .1617443    .2801041
+     ten_viv |  -.0260249   .0156553    -1.66   0.096    -.0567087    .0046589
+dg_cie_10_~c |   .0411802   .0186367     2.21   0.027      .004653    .0777074
+sud_sever~10 |  -.1012362   .0423259    -2.39   0.017    -.1841935   -.0182789
+   macrozone |   .2395251   .0243479     9.84   0.000     .1918042     .287246
+ policonsumo |   .0807025   .0485826     1.66   0.097    -.0145177    .1759227
+   n_off_vio |   .3974392   .0364983    10.89   0.000     .3259039    .4689745
+   n_off_acq |   1.090871   .0336163    32.45   0.000     1.024984    1.156758
+   n_off_sud |   .3194567    .035808     8.92   0.000     .2492744     .389639
+        clas |   .1116671   .0286153     3.90   0.000     .0555821    .1677521
+       _cons |   5.880705   16.97128     0.35   0.729    -27.38239    39.14381
+------------------------------------------------------------------------------
+    Warning: Baseline spline coefficients not shown - use ml display
+ ***********
+ family RP9
+ ***********
+note; a delayed entry model is being fitted
+Obtaining initial values
+convergence not achieved
+variables created: _rcs1_1 to _rcs1_9
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -18093.217  (not concave)
+Iteration 1:   log likelihood =   -18078.6  (not concave)
+Iteration 2:   log likelihood = -18069.921  (not concave)
+Iteration 3:   log likelihood = -18066.888  (not concave)
+Iteration 4:   log likelihood = -18064.357  (not concave)
+Iteration 5:   log likelihood = -18061.986  (not concave)
+Iteration 6:   log likelihood = -18059.772  (not concave)
+Iteration 7:   log likelihood = -18057.684  (not concave)
+Iteration 8:   log likelihood = -18055.788  (not concave)
+Iteration 9:   log likelihood = -18054.129  (not concave)
+Iteration 10:  log likelihood = -18052.668  
+Iteration 11:  log likelihood = -18034.687  
+Iteration 12:  log likelihood = -18003.819  
+Iteration 13:  log likelihood = -17989.975  
+Iteration 14:  log likelihood = -17989.326  
+Iteration 15:  log likelihood = -17989.294  
+Iteration 16:  log likelihood = -17989.291  (not concave)
+Iteration 17:  log likelihood = -17989.291  (backed up)
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -17989.291
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1283163   .0215419     5.96   0.000     .0860951    .1705376
+edad_al_in~t |   .0602551    .005116    11.78   0.000      .050228    .0702822
+edad_ini_c~s |  -.0235402   .0047216    -4.99   0.000    -.0327943    -.014286
+     sex_enc |  -.5082012   .0441509   -11.51   0.000    -.5947354    -.421667
+     esc_rec |   .2545963   .0265336     9.60   0.000     .2025914    .3066011
+sus_prin_mod |   .2130975   .0182345    11.69   0.000     .1773584    .2488365
+ fr_sus_prin |   .0363152   .0166105     2.19   0.029     .0037592    .0688711
+ comp_biosoc |   .2208761   .0301955     7.31   0.000      .161694    .2800582
+     ten_viv |  -.0261847   .0156559    -1.67   0.094    -.0568697    .0045004
+dg_cie_10_~c |   .0412485   .0186389     2.21   0.027     .0047169      .07778
+sud_sever~10 |  -.1009683   .0423275    -2.39   0.017    -.1839287   -.0180078
+   macrozone |   .2394166   .0243474     9.83   0.000     .1916966    .2871366
+ policonsumo |   .0813699   .0485863     1.67   0.094    -.0138576    .1765973
+   n_off_vio |   .3968294      .0365    10.87   0.000     .3252908    .4683681
+   n_off_acq |   1.090193   .0336187    32.43   0.000     1.024302    1.156085
+   n_off_sud |   .3190143   .0358092     8.91   0.000     .2488296     .389199
+        clas |   .1118211   .0286152     3.91   0.000     .0557364    .1679059
+       _cons |   5.923453   33.25308     0.18   0.859     -59.2514     71.0983
+------------------------------------------------------------------------------
+    Warning: Baseline spline coefficients not shown - use ml display
+ ***********
+ family RP10
+ ***********
+note; a delayed entry model is being fitted
+Obtaining initial values
+convergence not achieved
+variables created: _rcs1_1 to _rcs1_10
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -18093.217  (not concave)
+Iteration 1:   log likelihood = -18085.206  (not concave)
+Iteration 2:   log likelihood = -18073.306  (not concave)
+Iteration 3:   log likelihood =  -18067.76  (not concave)
+Iteration 4:   log likelihood =  -18055.86  (not concave)
+Iteration 5:   log likelihood = -18052.681  (not concave)
+Iteration 6:   log likelihood =  -18048.75  
+Iteration 7:   log likelihood = -18032.207  
+Iteration 8:   log likelihood = -18014.433  
+Iteration 9:   log likelihood = -17997.937  
+Iteration 10:  log likelihood = -17989.017  
+Iteration 11:  log likelihood = -17988.645  
+Iteration 12:  log likelihood = -17988.641  
+Iteration 13:  log likelihood = -17988.638  
+Iteration 14:  log likelihood = -17988.638  
+
+Survival model                                  Number of obs     =     59,755
+Log likelihood = -17988.638
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+motivodeeg~3 |   .1281672   .0215444     5.95   0.000      .085941    .1703934
+edad_al_in~t |     .06145   .0052609    11.68   0.000     .0511389    .0717611
+edad_ini_c~s |  -.0235322   .0047237    -4.98   0.000    -.0327904    -.014274
+     sex_enc |  -.5082243   .0441511   -11.51   0.000    -.5947589   -.4216898
+     esc_rec |   .2551127    .026535     9.61   0.000     .2031051    .3071203
+sus_prin_mod |   .2130447   .0182379    11.68   0.000     .1772991    .2487903
+ fr_sus_prin |   .0363424   .0166104     2.19   0.029     .0037866    .0688981
+ comp_biosoc |   .2209487   .0301965     7.32   0.000     .1617646    .2801327
+     ten_viv |  -.0261928   .0156557    -1.67   0.094    -.0568774    .0044917
+dg_cie_10_~c |   .0413157   .0186403     2.22   0.027     .0047813    .0778501
+sud_sever~10 |  -.1008316   .0423289    -2.38   0.017    -.1837948   -.0178684
+   macrozone |   .2395516   .0243479     9.84   0.000     .1918306    .2872726
+ policonsumo |   .0816194   .0485868     1.68   0.093    -.0136091    .1768478
+   n_off_vio |   .3965436   .0365005    10.86   0.000     .3250038    .4680833
+   n_off_acq |   1.089644   .0336208    32.41   0.000     1.023748    1.155539
+   n_off_sud |   .3184683   .0358111     8.89   0.000     .2482799    .3886567
+        clas |    .111952   .0286158     3.91   0.000      .055866    .1680379
+       _cons |   5.841534   4.661938     1.25   0.210    -3.295696    14.97876
+------------------------------------------------------------------------------
+    Warning: Baseline spline coefficients not shown - use ml display
+
+. 
+. *rcs(time, df(3) orthog)
+. estwrite _all using &quot;${pathdata2}parmodels_m2_nov_22_2.sters&quot;, replace
+(saving m2_1_cox1)
+(saving m2_1_cox2)
+(saving m2_1_cox3)
+(saving m2_1_cox4)
+(saving m2_1_cox5)
+(saving m2_1_cox6)
+(saving m2_1_cox7)
+(saving m2_1_gom)
+(saving m2_1_wei)
+(saving m2_1_logl)
+(saving m2_1_logn)
+(saving m2_1_ggam)
+(saving m2_1_rp1)
+(saving m2_1_rp2)
+(saving m2_1_rp3)
+(saving m2_1_rp4)
+(saving m2_1_rp5)
+(saving m2_1_rp6)
+(saving m2_1_rp7)
+(saving m2_1_rp8)
+(saving m2_1_rp9)
+(saving m2_1_rp10)
+(file parmodels_m2_nov_22_2.sters saved)
+
+</code></pre>
+<p>We obtained a summary of distributions by AICs and BICs.</p>
+<pre><code>. *estread &quot;${pathdata2}parmodels_aic_bic_22_2.sters&quot;
+. 
+. *file:///G:/Mi%20unidad/Alvacast/SISTRAT%202019%20(github)/_supp_mstates/stata/1806.01615.pdf
+. *rcs - restricted cubic splines on log hazard scale
+. *rp - Royston-Parmar model (restricted cubic spline on log cumulative hazard scale)
+. qui count if _d == 1
+
+.         // we count the amount of cases with the event in the strata
+.         //we call the estimates stored, and the results...
+. estimates stat m2_1_*, n(`r(N)')
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |          N   ll(null)  ll(model)      df        AIC        BIC
+-------------+---------------------------------------------------------------
+   m2_1_cox1 |      5,144          .  -18111.29      19   36260.58   36384.94
+   m2_1_cox2 |      5,144          .  -18083.02      20   36206.03   36336.95
+   m2_1_cox3 |      5,144          .  -18079.68      21   36201.35   36338.81
+   m2_1_cox4 |      5,144          .  -18079.35      22   36202.71   36346.71
+   m2_1_cox5 |      5,144          .  -18079.49      23   36204.97   36355.52
+   m2_1_cox6 |      5,144          .  -18078.04      24   36204.08   36361.18
+   m2_1_cox7 |      5,144          .  -18078.06      25   36206.12   36369.76
+    m2_1_gom |      5,144          .  -18004.17      19   36046.33    36170.7
+    m2_1_wei |      5,144          .  -18093.22      18   36222.43   36340.25
+   m2_1_logl |      5,144          .  -18131.23      19   36300.46   36424.83
+   m2_1_logn |      5,144          .  -18086.66      19   36211.32   36335.69
+   m2_1_ggam |      5,144          .  -18066.52      12   36157.04   36235.59
+    m2_1_rp1 |      5,144          .  -18093.22      18   36222.43   36340.26
+    m2_1_rp2 |      5,144          .  -17999.03      20   36038.05   36168.96
+    m2_1_rp3 |      5,144          .  -17996.23      21   36034.46   36171.92
+    m2_1_rp4 |      5,144          .   -17996.8      22   36037.61   36181.61
+    m2_1_rp5 |      5,144          .  -17992.79      23   36031.58   36182.13
+    m2_1_rp6 |      5,144          .  -17991.79      24   36031.58   36188.67
+    m2_1_rp7 |      5,144          .  -17990.99      25   36031.99   36195.63
+    m2_1_rp8 |      5,144          .  -17990.63      26   36033.27   36203.45
+    m2_1_rp9 |      5,144          .  -17989.29      27   36032.58   36209.31
+   m2_1_rp10 |      5,144          .  -17988.64      28   36033.28   36216.55
+-----------------------------------------------------------------------------
+
+.         //we store in a matrix de survival
+. matrix stats_1=r(S)
+
+. 
+. 
+. estimates clear
+
+. 
+. ** to order AICs
+. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1665263-sorting-matrix-including-rownames
+. mata :
+------------------------------------------------- mata (type end to exit) ------------------------------------------------------------------------------------------------------------------------------------------
+: 
+: void st_sort_matrix(
+&gt; //argumento de la matriz
+&gt;     string scalar matname, 
+&gt; //argumento de las columnas
+&gt;     real   rowvector columns
+&gt;     )
+&gt; {
+&gt;     string matrix   rownames
+&gt;     real  colvector sort_order
+&gt; // defino una base      
+&gt;         //Y = st_matrix(matname)
+&gt;         //[.,(1, 2, 3, 4, 6, 5)]
+&gt;  //ordeno las columnas  
+&gt;     rownames = st_matrixrowstripe(matname) //[.,(1, 2, 3, 4, 6, 5)]
+&gt;     sort_order = order(st_matrix(matname),  (columns))
+&gt;     st_replacematrix(matname, st_matrix(matname)[sort_order,.])
+&gt;     st_matrixrowstripe(matname, rownames[sort_order,.])
+&gt; }
+
+: 
+: end
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+. //mata: mata drop st_sort_matrix()
+. 
+. mata : st_sort_matrix(&quot;stats_1&quot;, 6)
+
+. esttab matrix(stats_1) using &quot;testreg_aic_bic_22_2.csv&quot;, replace
+(output written to testreg_aic_bic_22_2.csv)
+
+. esttab matrix(stats_1) using &quot;testreg_aic_bic_22_2.html&quot;, replace
+(output written to testreg_aic_bic_22_2.html)
+
+. 
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=7><hr></td></tr>
+<tr><td>            </td><td>     stats_1</td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>           N</td><td>         ll0</td><td>          ll</td><td>          df</td><td>         AIC</td><td>         BIC</td></tr>
+<tr><td colspan=7><hr></td></tr>
+<tr><td>m2_1_rp2    </td><td>        5144</td><td>           .</td><td>   -17999.03</td><td>          20</td><td>    36038.05</td><td>    36168.96</td></tr>
+<tr><td>m2_1_gom    </td><td>        5144</td><td>           .</td><td>   -18004.17</td><td>          19</td><td>    36046.33</td><td>     36170.7</td></tr>
+<tr><td>m2_1_rp3    </td><td>        5144</td><td>           .</td><td>   -17996.23</td><td>          21</td><td>    36034.46</td><td>    36171.92</td></tr>
+<tr><td>m2_1_rp4    </td><td>        5144</td><td>           .</td><td>    -17996.8</td><td>          22</td><td>    36037.61</td><td>    36181.61</td></tr>
+<tr><td>m2_1_rp5    </td><td>        5144</td><td>           .</td><td>   -17992.79</td><td>          23</td><td>    36031.58</td><td>    36182.13</td></tr>
+<tr><td>m2_1_rp6    </td><td>        5144</td><td>           .</td><td>   -17991.79</td><td>          24</td><td>    36031.58</td><td>    36188.67</td></tr>
+<tr><td>m2_1_rp7    </td><td>        5144</td><td>           .</td><td>   -17990.99</td><td>          25</td><td>    36031.99</td><td>    36195.63</td></tr>
+<tr><td>m2_1_rp8    </td><td>        5144</td><td>           .</td><td>   -17990.63</td><td>          26</td><td>    36033.27</td><td>    36203.45</td></tr>
+<tr><td>m2_1_rp9    </td><td>        5144</td><td>           .</td><td>   -17989.29</td><td>          27</td><td>    36032.58</td><td>    36209.31</td></tr>
+<tr><td>m2_1_rp10   </td><td>        5144</td><td>           .</td><td>   -17988.64</td><td>          28</td><td>    36033.28</td><td>    36216.55</td></tr>
+<tr><td>m2_1_ggam   </td><td>        5144</td><td>           .</td><td>   -18066.52</td><td>          12</td><td>    36157.04</td><td>    36235.59</td></tr>
+<tr><td>m2_1_logn   </td><td>        5144</td><td>           .</td><td>   -18086.66</td><td>          19</td><td>    36211.32</td><td>    36335.69</td></tr>
+<tr><td>m2_1_cox2   </td><td>        5144</td><td>           .</td><td>   -18083.02</td><td>          20</td><td>    36206.03</td><td>    36336.95</td></tr>
+<tr><td>m2_1_cox3   </td><td>        5144</td><td>           .</td><td>   -18079.68</td><td>          21</td><td>    36201.35</td><td>    36338.81</td></tr>
+<tr><td>m2_1_wei    </td><td>        5144</td><td>           .</td><td>   -18093.22</td><td>          18</td><td>    36222.43</td><td>    36340.25</td></tr>
+<tr><td>m2_1_rp1    </td><td>        5144</td><td>           .</td><td>   -18093.22</td><td>          18</td><td>    36222.43</td><td>    36340.26</td></tr>
+<tr><td>m2_1_cox4   </td><td>        5144</td><td>           .</td><td>   -18079.35</td><td>          22</td><td>    36202.71</td><td>    36346.71</td></tr>
+<tr><td>m2_1_cox5   </td><td>        5144</td><td>           .</td><td>   -18079.49</td><td>          23</td><td>    36204.97</td><td>    36355.52</td></tr>
+<tr><td>m2_1_cox6   </td><td>        5144</td><td>           .</td><td>   -18078.04</td><td>          24</td><td>    36204.08</td><td>    36361.18</td></tr>
+<tr><td>m2_1_cox7   </td><td>        5144</td><td>           .</td><td>   -18078.06</td><td>          25</td><td>    36206.12</td><td>    36369.76</td></tr>
+<tr><td>m2_1_cox1   </td><td>        5144</td><td>           .</td><td>   -18111.29</td><td>          19</td><td>    36260.58</td><td>    36384.94</td></tr>
+<tr><td>m2_1_logl   </td><td>        5144</td><td>           .</td><td>   -18131.23</td><td>          19</td><td>    36300.46</td><td>    36424.83</td></tr>
+<tr><td colspan=7><hr></td></tr>
 </table>
 <h3><a href="#iptw-royston-parmar" id="iptw-royston-parmar">IPTW Royston-Parmar</a></h3>
 <pre><code>. *reset time, only compatible with stteffects (same entry times)
@@ -590,10 +2921,10 @@ obs. time interval:  (0, diff]
 . cap rm bsreg12.dta bsreg22.dta
 
 . 
-. *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_fmt, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, policonsumo, n_off_v
-&gt; io, n_off_acq, n_off_sud, n_off_oth)
+. *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_fmt, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, po
+&gt; liconsumo, n_off_vio, n_off_acq, n_off_sud, n_off_oth)
 </code></pre>
-<p>First we calculated the difference between those patients who did and did not complete baseline treatment, given that the analysis is restricted to .</p>
+<p>First we calculated the difference between those patients who did and did not complete baseline treatment, given that this analysis is restricted to 2 values.</p>
 <pre><code>. *Micki Hill &amp; Paul C Lambert &amp; Michael J Crowther, 2021. &quot;Introducing stipw: inverse probability weighted parametric survival models,&quot; London Stata Conference 2021 15, Stata Users Group.
 . *https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&amp;wdOrigin=BROWSELINK
 . 
@@ -613,134 +2944,129 @@ obs. time interval:  (0, diff]
 . lab var caus_disch_mod_imp_rec &quot;Baseline treatment outcome&quot; 
 
 . 
-. global covs_3 &quot;i.caus_disch_mod_imp_rec edad_al_ing_fmt edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_ac
-&gt; q i.n_off_sud &quot;
+. global covs_3 &quot;i.caus_disch_mod_imp_rec edad_al_ing_fmt edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_
+&gt; off_vio i.n_off_acq i.n_off_sud i.clas&quot;
 
 . 
-. stpm2 $covs_3, scale(hazard) df(10) eform
+. stpm2 $covs_3, scale(hazard) df(5) eform
 
-Iteration 0:   log likelihood = -17234.692  
-Iteration 1:   log likelihood =  -17231.52  
-Iteration 2:   log likelihood = -17231.506  
-Iteration 3:   log likelihood = -17231.506  
+Iteration 0:   log likelihood = -17229.265  
+Iteration 1:   log likelihood = -17226.763  
+Iteration 2:   log likelihood = -17226.757  
+Iteration 3:   log likelihood = -17226.757  
 
-Log likelihood = -17231.506                     Number of obs     =     59,757
+Log likelihood = -17226.757                     Number of obs     =     59,755
 
 -------------------------------------------------------------------------------------------------------------
                                             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
 --------------------------------------------+----------------------------------------------------------------
 xb                                          |
                      caus_disch_mod_imp_rec |
-                  Tr Non-completion (Late)  |   1.572572   .0797645     8.93   0.000     1.423756    1.736943
-                 Tr Non-completion (Early)  |   1.775434   .1069948     9.53   0.000     1.577639    1.998027
+                  Tr Non-completion (Late)  |   1.576619    .079983     8.97   0.000     1.427396    1.741441
+                 Tr Non-completion (Early)  |   1.768575   .1065431     9.46   0.000     1.571611    1.990224
                                             |
-                            edad_al_ing_fmt |   .9651649   .0020822   -16.44   0.000     .9610924    .9692546
-                              edad_ini_cons |   .9759071    .004581    -5.20   0.000     .9669696    .9849272
+                            edad_al_ing_fmt |   .9650923   .0020819   -16.47   0.000     .9610205    .9691813
+                              edad_ini_cons |   .9757902   .0045866    -5.21   0.000     .9668419    .9848213
                                             |
                                     sex_enc |
-                                     Women  |    .598919   .0265337   -11.57   0.000     .5491077    .6532488
+                                     Women  |   .5982018   .0264982   -11.60   0.000     .5484569    .6524586
                                             |
                                     esc_rec |
-           2-Completed high school or less  |   1.343031    .077827     5.09   0.000     1.198836    1.504569
-        3-Completed primary school or less  |   1.567123   .0962413     7.32   0.000     1.389404    1.767575
+           2-Completed high school or less  |   1.346133   .0780269     5.13   0.000      1.20157    1.508089
+        3-Completed primary school or less  |   1.579205   .0970904     7.43   0.000     1.399929    1.781438
                                             |
                                sus_prin_mod |
-                     Cocaine hydrochloride  |   1.200347   .0795254     2.76   0.006     1.054176    1.366786
-                             Cocaine paste  |   2.034646   .1064767    13.57   0.000     1.836302    2.254415
-                                 Marijuana  |   1.334536   .1050041     3.67   0.000     1.143815    1.557057
-                                     Other  |   1.873559   .2761882     4.26   0.000     1.403423    2.501187
+                     Cocaine hydrochloride  |   1.187049   .0787086     2.59   0.010     1.042387    1.351788
+                             Cocaine paste  |   2.010296    .105358    13.32   0.000     1.814049    2.227772
+                                 Marijuana  |   1.331637   .1047544     3.64   0.000     1.141367    1.553625
+                                     Other  |   1.827527   .2718404     4.05   0.000     1.365368    2.446122
                                             |
                                 fr_sus_prin |
-                        2 to 3 days a week  |   1.008064   .0813797     0.10   0.921     .8605412    1.180876
-                        4 to 6 days a week  |    1.04181   .0879393     0.49   0.627     .8829553    1.229246
-                                     Daily  |   1.075747   .0856451     0.92   0.359     .9203269    1.257414
-                    Less than 1 day a week  |   1.038587   .1174291     0.33   0.738     .8321486    1.296239
+                        2 to 3 days a week  |   1.006976    .081297     0.09   0.931      .859604    1.179614
+                        4 to 6 days a week  |   1.043955    .088126     0.51   0.610     .8847637     1.23179
+                                     Daily  |   1.074065   .0855217     0.90   0.370     .9188705    1.255472
+                    Less than 1 day a week  |   1.035516   .1170937     0.31   0.758     .8296696    1.292435
                                             |
                                 comp_biosoc |
-                                2-Moderate  |   1.267618   .0999544     3.01   0.003     1.086099    1.479474
-                                  3-Severe  |   1.504675    .125498     4.90   0.000     1.277756    1.771893
+                                2-Moderate  |    1.26791   .0999873     3.01   0.003     1.086332    1.479837
+                                  3-Severe  |   1.499469   .1250684     4.86   0.000     1.273327    1.765773
                                             |
                                     ten_viv |
-                                    Others  |   1.048791   .1520432     0.33   0.742     .7893874    1.393438
-Owner/Transferred dwellings/Pays Dividends  |   .8257825    .102741    -1.54   0.124     .6470862    1.053827
-                                   Renting  |   .8916532   .1132284    -0.90   0.366     .6951915    1.143635
-         Stays temporarily with a relative  |   .8358716   .1031619    -1.45   0.146     .6562747    1.064617
+                                    Others  |   1.048023   .1519275     0.32   0.746     .7888156    1.392406
+Owner/Transferred dwellings/Pays Dividends  |   .8270945   .1029114    -1.53   0.127     .6481033    1.055519
+                                   Renting  |   .8879724   .1127755    -0.94   0.350     .6922994    1.138951
+         Stays temporarily with a relative  |    .831645   .1026533    -1.49   0.135     .6529362    1.059266
                                             |
                               dg_cie_10_rec |
-           Diagnosis unknown (under study)  |   1.103547   .0540016     2.01   0.044     1.002623     1.21463
-              With psychiatric comorbidity  |   1.084199   .0415734     2.11   0.035     1.005703    1.168821
+           Diagnosis unknown (under study)  |   1.104448   .0540064     2.03   0.042     1.003512    1.215537
+              With psychiatric comorbidity  |    1.09189   .0419313     2.29   0.022     1.012723    1.177245
                                             |
                          sud_severity_icd10 |
-                     Hazardous consumption  |   .9463024   .0406705    -1.28   0.199     .8698547    1.029469
+                     Hazardous consumption  |    .953856   .0410628    -1.10   0.272     .8766762    1.037831
                                             |
                                   macrozone |
-                                     North  |   1.443867    .057176     9.28   0.000     1.336042    1.560393
-                                     South  |    1.48294   .0908617     6.43   0.000     1.315132     1.67216
+                                     North  |   1.458958   .0587542     9.38   0.000     1.348229     1.57878
+                                     South  |   1.524004   .0946249     6.79   0.000     1.349383    1.721222
                                             |
-                              1.policonsumo |    1.07393   .0525904     1.46   0.145     .9756465    1.182114
-                                1.n_off_vio |   1.468043   .0536235    10.51   0.000     1.366616    1.576996
-                                1.n_off_acq |     2.7616   .0936307    29.96   0.000     2.584052    2.951348
-                                1.n_off_sud |   1.327573   .0476782     7.89   0.000     1.237339    1.424388
-                                      _rcs1 |   2.122583   .0233499    68.42   0.000     2.077308    2.168845
-                                      _rcs2 |   1.031932   .0082474     3.93   0.000     1.015893    1.048223
-                                      _rcs3 |    1.02549   .0069449     3.72   0.000     1.011969    1.039193
-                                      _rcs4 |   1.008816   .0050959     1.74   0.082     .9988779    1.018854
-                                      _rcs5 |   1.009579   .0036464     2.64   0.008     1.002457    1.016751
-                                      _rcs6 |   1.004404   .0029706     1.49   0.137     .9985984    1.010243
-                                      _rcs7 |   1.006301   .0026239     2.41   0.016     1.001171    1.011457
-                                      _rcs8 |   1.006962   .0024085     2.90   0.004     1.002253    1.011694
-                                      _rcs9 |   1.003933   .0023005     1.71   0.087     .9994344    1.008452
-                                     _rcs10 |   1.003583   .0020092     1.79   0.074     .9996528    1.007529
-                                      _cons |   .0393576    .008207   -15.51   0.000     .0261537    .0592278
+                              1.policonsumo |   1.069036   .0523289     1.36   0.173     .9712395     1.17668
+                                1.n_off_vio |   1.478507   .0540889    10.69   0.000     1.376206    1.588413
+                                1.n_off_acq |   2.770204   .0939357    30.05   0.000     2.592078     2.96057
+                                1.n_off_sud |   1.330667   .0478036     7.95   0.000     1.240196    1.427738
+                                            |
+                                       clas |
+                                     Rural  |   .9688217   .0831668    -0.37   0.712     .8187926    1.146341
+                                    Urbana  |   1.134315   .0688053     2.08   0.038     1.007167    1.277515
+                                            |
+                                      _rcs1 |   2.120693   .0233212    68.36   0.000     2.075474    2.166898
+                                      _rcs2 |   1.034371   .0083409     4.19   0.000     1.018152    1.050849
+                                      _rcs3 |   1.024236   .0067697     3.62   0.000     1.011053     1.03759
+                                      _rcs4 |   1.008085   .0048175     1.69   0.092     .9986869    1.017572
+                                      _rcs5 |   1.007686   .0035066     2.20   0.028     1.000836    1.014582
+                                      _cons |   .0356391   .0076684   -15.50   0.000     .0233763    .0543348
 -------------------------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribut
-&gt; ion(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
-11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_o
+&gt; ff_sud clas), distribution(rp) df(5) ipwtype(stabilised) vce(mestimation) eform
+11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
 Fitting logistic regression to obtain denominator for weights
 
-Iteration 0:   log likelihood = -35121.799  
-Iteration 1:   log likelihood = -33472.744  
-Iteration 2:   log likelihood = -33447.693  
-Iteration 3:   log likelihood = -33447.674  
-Iteration 4:   log likelihood = -33447.674  
+Iteration 0:   log likelihood = -35121.157  
+Iteration 1:   log likelihood = -33462.401  
+Iteration 2:   log likelihood = -33437.083  
+Iteration 3:   log likelihood = -33437.064  
+Iteration 4:   log likelihood = -33437.064  
 Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
 
-Iteration 0:   log likelihood = -35121.799  
-Iteration 1:   log likelihood = -35121.799  
+Iteration 0:   log likelihood = -35121.157  
+Iteration 1:   log likelihood = -35121.157  
 
 Fitting weighted survival model to obtain point estimates
 
-Iteration 0:   log pseudolikelihood = -18613.293  
-Iteration 1:   log pseudolikelihood = -18610.527  
-Iteration 2:   log pseudolikelihood = -18610.517  
-Iteration 3:   log pseudolikelihood = -18610.517  
+Iteration 0:   log pseudolikelihood = -18615.133  
+Iteration 1:   log pseudolikelihood = -18612.305  
+Iteration 2:   log pseudolikelihood = -18612.298  
+Iteration 3:   log pseudolikelihood = -18612.298  
 
 Displaying weighted survival model with M-estimation standard errors
 
-Log pseudolikelihood = -18610.517               Number of obs     =     59,757
+Log pseudolikelihood = -18612.298               Number of obs     =     59,755
 
 ---------------------------------------------------------------------------------------------
                             |            M-estimation
                             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
 ----------------------------+----------------------------------------------------------------
 xb                          |
-motivodeegreso_mod_imp_rec2 |   1.673637   .0839185    10.27   0.000     1.516984    1.846468
-                      _rcs1 |   2.074141   .0232527    65.08   0.000     2.029064     2.12022
-                      _rcs2 |   1.037841   .0086129     4.48   0.000     1.021096     1.05486
-                      _rcs3 |   1.026169   .0071989     3.68   0.000     1.012156    1.040376
-                      _rcs4 |   1.008235   .0051219     1.61   0.106     .9982461    1.018324
-                      _rcs5 |   1.011225   .0035771     3.16   0.002     1.004239    1.018261
-                      _rcs6 |   1.004526   .0029592     1.53   0.125     .9987432    1.010343
-                      _rcs7 |   1.007877    .002571     3.08   0.002      1.00285    1.012929
-                      _rcs8 |   1.007718   .0023623     3.28   0.001     1.003099    1.012359
-                      _rcs9 |   1.004932   .0022304     2.22   0.027     1.000571    1.009313
-                     _rcs10 |   1.003594   .0019528     1.84   0.065     .9997738    1.007429
-                      _cons |   .0353273   .0016802   -70.29   0.000      .032183    .0387789
+motivodeegreso_mod_imp_rec2 |   1.666447   .0836162    10.18   0.000     1.510363    1.838661
+                      _rcs1 |   2.074019    .023278    65.00   0.000     2.028893    2.120148
+                      _rcs2 |   1.040341   .0091273     4.51   0.000     1.022605    1.058385
+                      _rcs3 |   1.023756   .0072606     3.31   0.001     1.009623    1.038085
+                      _rcs4 |   1.009229   .0048017     1.93   0.053     .9998618    1.018684
+                      _rcs5 |   1.009284   .0034938     2.67   0.008     1.002459    1.016155
+                      _cons |   .0354452   .0016871   -70.17   0.000     .0322881     .038911
 ---------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
@@ -758,82 +3084,234 @@ Warning: prediction constant over observations; perhaps you meant to run nlcom.
 . cap list rmst03 rmst13  drmst in 1
 
 </code></pre>
-<p>We used another model with only 4 degrees of freedom according to the lowest BIC</p>
-<pre><code>. stpm2 $covs_3, scale(hazard) df(4) eform
+<p>We used a gompertz distribution, assuming that baseline treatment outcome showed proportional hazards</p>
+<pre><code>. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_o
+&gt; ff_sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
+These observations are excluded from the analysis, see variable _stipw_flag
 
-Iteration 0:   log likelihood = -17243.558  
-Iteration 1:   log likelihood = -17236.829  
-Iteration 2:   log likelihood = -17236.809  
-Iteration 3:   log likelihood = -17236.809  
+Fitting logistic regression to obtain denominator for weights
 
-Log likelihood = -17236.809                     Number of obs     =     59,757
+Iteration 0:   log likelihood = -35121.157  
+Iteration 1:   log likelihood = -33462.401  
+Iteration 2:   log likelihood = -33437.083  
+Iteration 3:   log likelihood = -33437.064  
+Iteration 4:   log likelihood = -33437.064  
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+
+Iteration 0:   log likelihood = -35121.157  
+Iteration 1:   log likelihood = -35121.157  
+
+Fitting weighted survival model to obtain point estimates
+
+         failure _d:  event == 1
+   analysis time _t:  diff
+             weight:  [pweight=_stipw_weight]
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood = -18948.425  
+Iteration 1:   log pseudolikelihood = -18727.674  
+Iteration 2:   log pseudolikelihood = -18719.325  
+Iteration 3:   log pseudolikelihood = -18719.316  
+Iteration 4:   log pseudolikelihood = -18719.316  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -18719.316  
+Iteration 1:   log pseudolikelihood = -18641.623  
+Iteration 2:   log pseudolikelihood = -18640.671  
+Iteration 3:   log pseudolikelihood = -18640.671  
+
+Displaying weighted survival model with M-estimation standard errors
+
+Gompertz PH regression                          Number of obs     =     59,755
+                                                Wald chi2(1)      =     103.30
+Log pseudolikelihood = -18640.671               Prob &gt; chi2       =     0.0000
+
+---------------------------------------------------------------------------------------------
+                            |            M-estimation
+                         _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------------+----------------------------------------------------------------
+motivodeegreso_mod_imp_rec2 |   1.665089   .0835332    10.16   0.000     1.509158     1.83713
+                      _cons |    .017241   .0008822   -79.35   0.000     .0155957    .0190597
+----------------------------+----------------------------------------------------------------
+                     /gamma |  -.1943026   .0100052   -19.42   0.000    -.2139124   -.1746929
+---------------------------------------------------------------------------------------------
+Note: _cons estimates baseline hazard.
+
+. 
+. predict rmst03_c in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
+option at() not allowed
+r(198);
+
+. predict rmst13_c in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
+option at() not allowed
+r(198);
+
+. predictnl drmst_c= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_c_se)
+option rmst not allowed
+predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) invalid
+r(198);
+
+. 
+. cap list rmst03_c rmst13_c  drmst_c in 1
+
+</code></pre>
+<p>We used another model with only 2 degrees of freedom according to the lowest BIC</p>
+<pre><code>. stpm2 $covs_3, scale(hazard) df(2) eform
+
+Iteration 0:   log likelihood = -17250.264  
+Iteration 1:   log likelihood = -17233.721  
+Iteration 2:   log likelihood = -17233.677  
+Iteration 3:   log likelihood = -17233.677  
+
+Log likelihood = -17233.677                     Number of obs     =     59,755
 
 -------------------------------------------------------------------------------------------------------------
                                             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
 --------------------------------------------+----------------------------------------------------------------
 xb                                          |
                      caus_disch_mod_imp_rec |
-                  Tr Non-completion (Late)  |   1.573168   .0797926     8.93   0.000     1.424299    1.737596
-                 Tr Non-completion (Early)  |   1.774745   .1069422     9.52   0.000     1.577046    1.997227
+                  Tr Non-completion (Late)  |   1.576276   .0799637     8.97   0.000      1.42709    1.741058
+                 Tr Non-completion (Early)  |   1.766628   .1064058     9.45   0.000     1.569916    1.987989
                                             |
-                            edad_al_ing_fmt |   .9651973   .0020822   -16.42   0.000     .9611248    .9692871
-                              edad_ini_cons |   .9758841   .0045807    -5.20   0.000     .9669473    .9849034
+                            edad_al_ing_fmt |   .9651968   .0020818   -16.42   0.000     .9611251    .9692857
+                              edad_ini_cons |   .9756634   .0045861    -5.24   0.000      .966716    .9846936
                                             |
                                     sex_enc |
-                                     Women  |   .5986639    .026522   -11.58   0.000     .5488747    .6529695
+                                     Women  |   .5982216   .0264996   -11.60   0.000     .5484742    .6524813
                                             |
                                     esc_rec |
-           2-Completed high school or less  |   1.342809   .0778132     5.09   0.000      1.19864    1.504318
-        3-Completed primary school or less  |   1.566877   .0962245     7.31   0.000     1.389189    1.767293
+           2-Completed high school or less  |   1.344813   .0779483     5.11   0.000     1.200395    1.506605
+        3-Completed primary school or less  |   1.577621   .0969881     7.42   0.000     1.398533     1.77964
                                             |
                                sus_prin_mod |
-                     Cocaine hydrochloride  |   1.199328   .0794552     2.74   0.006     1.053286     1.36562
-                             Cocaine paste  |   2.032382   .1063527    13.55   0.000     1.834268    2.251894
-                                 Marijuana  |   1.332874   .1048684     3.65   0.000     1.142399    1.555107
-                                     Other  |    1.87062    .275753     4.25   0.000     1.401225    2.497258
+                     Cocaine hydrochloride  |   1.186657   .0786738     2.58   0.010     1.042058    1.351322
+                             Cocaine paste  |   2.004864   .1050581    13.27   0.000     1.809175     2.22172
+                                 Marijuana  |   1.326526   .1043303     3.59   0.000     1.137023    1.547612
+                                     Other  |    1.81902   .2705539     4.02   0.000     1.359043     2.43468
                                             |
                                 fr_sus_prin |
-                        2 to 3 days a week  |    1.00755   .0813379     0.09   0.926     .8601032    1.180274
-                        4 to 6 days a week  |   1.041321    .087898     0.48   0.631       .88254    1.228668
-                                     Daily  |   1.075556   .0856299     0.91   0.360     .9201633     1.25719
-                    Less than 1 day a week  |   1.037873   .1173484     0.33   0.742     .8315766    1.295348
+                        2 to 3 days a week  |   1.005951   .0812134     0.07   0.941       .85873    1.178411
+                        4 to 6 days a week  |   1.042575   .0880104     0.49   0.621     .8835926    1.230163
+                                     Daily  |    1.07374   .0854983     0.89   0.372     .9185878    1.255097
+                    Less than 1 day a week  |   1.034547    .116985     0.30   0.764     .8288918    1.291228
                                             |
                                 comp_biosoc |
-                                2-Moderate  |   1.266999   .0999012     3.00   0.003     1.085576    1.478742
-                                  3-Severe  |   1.503074   .1253547     4.89   0.000     1.276412    1.769985
+                                2-Moderate  |   1.267615   .0999593     3.01   0.003     1.086087    1.479482
+                                  3-Severe  |   1.495879   .1247555     4.83   0.000     1.270301    1.761514
                                             |
                                     ten_viv |
-                                    Others  |    1.04737   .1518369     0.32   0.750     .7883181    1.391549
-Owner/Transferred dwellings/Pays Dividends  |   .8265434   .1028366    -1.53   0.126      .647681      1.0548
-                                   Renting  |   .8920484   .1132795    -0.90   0.368     .6954982    1.144144
-         Stays temporarily with a relative  |   .8361165   .1031938    -1.45   0.147     .6564644    1.064933
+                                    Others  |   1.045092   .1515034     0.30   0.761     .7866085    1.388514
+Owner/Transferred dwellings/Pays Dividends  |   .8278551   .1030093    -1.52   0.129     .6486943    1.056498
+                                   Renting  |   .8882962   .1128202    -0.93   0.351     .6925464    1.139375
+         Stays temporarily with a relative  |   .8321253   .1027167    -1.49   0.137      .653307    1.059888
                                             |
                               dg_cie_10_rec |
-           Diagnosis unknown (under study)  |   1.104106   .0540206     2.02   0.043     1.003145    1.215227
-              With psychiatric comorbidity  |   1.084601   .0415875     2.12   0.034     1.006079    1.169252
+           Diagnosis unknown (under study)  |   1.105647   .0540522     2.05   0.040     1.004624    1.216829
+              With psychiatric comorbidity  |     1.0927   .0419616     2.31   0.021     1.013476    1.178117
                                             |
                          sud_severity_icd10 |
-                     Hazardous consumption  |   .9462356   .0406664    -1.29   0.198     .8697955    1.029393
+                     Hazardous consumption  |   .9545259    .041091    -1.08   0.280     .8772931    1.038558
                                             |
                                   macrozone |
-                                     North  |   1.443356   .0571552     9.27   0.000      1.33557     1.55984
-                                     South  |   1.482676    .090845     6.43   0.000     1.314899    1.671861
+                                     North  |   1.458341   .0587285     9.37   0.000     1.347661    1.578112
+                                     South  |   1.525789   .0947585     6.80   0.000     1.350924    1.723288
                                             |
-                              1.policonsumo |   1.073353   .0525627     1.45   0.148     .9751219     1.18148
-                                1.n_off_vio |   1.469662    .053691    10.54   0.000     1.368109    1.578754
-                                1.n_off_acq |   2.766613   .0938101    30.01   0.000     2.588725    2.956724
-                                1.n_off_sud |   1.329262   .0477428     7.92   0.000     1.238905    1.426208
-                                      _rcs1 |   2.122175   .0233264    68.46   0.000     2.076944     2.16839
-                                      _rcs2 |   1.034718   .0083947     4.21   0.000     1.018395    1.051303
-                                      _rcs3 |   1.022593   .0066309     3.45   0.001     1.009679    1.035672
-                                      _rcs4 |   1.007134   .0046704     1.53   0.125     .9980218     1.01633
-                                      _cons |   .0393531    .008206   -15.51   0.000     .0261508    .0592208
+                              1.policonsumo |   1.064453   .0520789     1.28   0.202     .9671217     1.17158
+                                1.n_off_vio |    1.48404   .0542934    10.79   0.000     1.381353    1.594362
+                                1.n_off_acq |   2.784637   .0943913    30.21   0.000     2.605645    2.975924
+                                1.n_off_sud |   1.336246   .0479938     8.07   0.000     1.245414    1.433702
+                                            |
+                                       clas |
+                                     Rural  |   .9682925   .0831206    -0.38   0.707     .8183468    1.145713
+                                    Urbana  |   1.132123   .0686711     2.05   0.041     1.005222    1.275043
+                                            |
+                                      _rcs1 |   2.114857   .0230637    68.68   0.000     2.070133    2.160548
+                                      _rcs2 |   1.039502   .0087511     4.60   0.000      1.02249    1.056796
+                                      _cons |   .0357764   .0076978   -15.48   0.000     .0234666    .0545436
 -------------------------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribut
-&gt; ion(rp) df(4) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_o
+&gt; ff_sud clas), distribution(rp) df(2) ipwtype(stabilised) vce(mestimation) eform
+11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
+These observations are excluded from the analysis, see variable _stipw_flag
+
+Fitting logistic regression to obtain denominator for weights
+
+Iteration 0:   log likelihood = -35121.157  
+Iteration 1:   log likelihood = -33462.401  
+Iteration 2:   log likelihood = -33437.083  
+Iteration 3:   log likelihood = -33437.064  
+Iteration 4:   log likelihood = -33437.064  
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+
+Iteration 0:   log likelihood = -35121.157  
+Iteration 1:   log likelihood = -35121.157  
+
+Fitting weighted survival model to obtain point estimates
+
+Iteration 0:   log pseudolikelihood = -18636.776  
+Iteration 1:   log pseudolikelihood = -18620.258  
+Iteration 2:   log pseudolikelihood =  -18620.21  
+Iteration 3:   log pseudolikelihood =  -18620.21  
+
+Displaying weighted survival model with M-estimation standard errors
+
+Log pseudolikelihood =  -18620.21               Number of obs     =     59,755
+
+---------------------------------------------------------------------------------------------
+                            |            M-estimation
+                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------------+----------------------------------------------------------------
+xb                          |
+motivodeegreso_mod_imp_rec2 |   1.666146   .0835998    10.17   0.000     1.510092    1.838326
+                      _rcs1 |   2.067055   .0234229    64.08   0.000     2.021653    2.113477
+                      _rcs2 |   1.046234   .0100648     4.70   0.000     1.026692    1.066148
+                      _cons |     .03547   .0016878   -70.17   0.000     .0323116    .0389372
+---------------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+. 
+. predict rmst03_b in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
+
+. predict rmst13_b in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
+
+. predictnl drmst_b= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_b_se)
+Warning: prediction doesn't vary with respect to e(b).
+(70,862 missing values generated)
+Warning: prediction constant over observations; perhaps you meant to run nlcom.
+
+. 
+. cap list rmst03_b rmst13_b  drmst_b in 1
+
+</code></pre>
+<p><strong>Staggered entry</strong></p>
+<pre><code>. stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
+
+     failure event:  event == 1
+obs. time interval:  (0, age_offending_imp]
+ enter on or after:  time edad_al_egres_imp
+ exit on or before:  failure
+
+------------------------------------------------------------------------------
+     70,863  total observations
+          1  observation ends on or before enter()
+------------------------------------------------------------------------------
+     70,862  observations remaining, representing
+      5,144  failures in single-record/single-failure data
+ 302,812.78  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =  10.95068
+                                          last observed exit t =  90.65027
+
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_o
+&gt; ff_sud), distribution(rp) df(5) ipwtype(stabilised) vce(mestimation) eform
 11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -850,42 +3328,37 @@ Iteration 0:   log likelihood = -35121.799
 Iteration 1:   log likelihood = -35121.799  
 
 Fitting weighted survival model to obtain point estimates
+note: delayed entry models are being fitted
 
-Iteration 0:   log pseudolikelihood = -18626.407  
-Iteration 1:   log pseudolikelihood = -18617.917  
-Iteration 2:   log pseudolikelihood = -18617.881  
-Iteration 3:   log pseudolikelihood = -18617.881  
+Iteration 0:   log pseudolikelihood = -5539.8125  
+Iteration 1:   log pseudolikelihood = -5519.6388  
+Iteration 2:   log pseudolikelihood = -5511.7209  
+Iteration 3:   log pseudolikelihood = -5508.6223  
+Iteration 4:   log pseudolikelihood = -5508.4445  
+Iteration 5:   log pseudolikelihood = -5507.5776  
+Iteration 6:   log pseudolikelihood = -5507.5773  
+Iteration 7:   log pseudolikelihood = -5507.5773  
 
 Displaying weighted survival model with M-estimation standard errors
 
-Log pseudolikelihood = -18617.881               Number of obs     =     59,757
+Log pseudolikelihood = -5507.5773               Number of obs     =     59,757
 
 ---------------------------------------------------------------------------------------------
                             |            M-estimation
                             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
 ----------------------------+----------------------------------------------------------------
 xb                          |
-motivodeegreso_mod_imp_rec2 |   1.674026   .0839281    10.28   0.000     1.517354    1.846875
-                      _rcs1 |   2.073253   .0232568    65.00   0.000     2.028168     2.11934
-                      _rcs2 |   1.041102   .0093764     4.47   0.000     1.022886    1.059642
-                      _rcs3 |   1.022272    .007025     3.21   0.001     1.008596    1.036134
-                      _rcs4 |   1.008885   .0046952     1.90   0.057     .9997242    1.018129
-                      _cons |   .0353222   .0016798   -70.30   0.000     .0321786    .0387729
+motivodeegreso_mod_imp_rec2 |   1.612408   .0818578     9.41   0.000     1.459694      1.7811
+                      _rcs1 |   1.159283   .0654512     2.62   0.009     1.037844    1.294932
+                      _rcs2 |   1.052085   .0265586     2.01   0.044     1.001298    1.105449
+                      _rcs3 |   1.000913   .0036077     0.25   0.800     .9938671    1.008009
+                      _rcs4 |   1.002895   .0009801     2.96   0.003     1.000976    1.004818
+                      _rcs5 |   .9997804   .0010066    -0.22   0.827     .9978094    1.001755
+                      _cons |   .6790124   .2464213    -1.07   0.286      .333401    1.382892
 ---------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
-. 
-. predict rmst03_b in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
-
-. predict rmst13_b in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
-
-. predictnl drmst_b= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_b_se)
-Warning: prediction doesn't vary with respect to e(b).
-(70,862 missing values generated)
-Warning: prediction constant over observations; perhaps you meant to run nlcom.
-
-. 
-. cap list rmst03_b rmst13_b  drmst_b in 1
+. estimates store df5_stipw
 
 </code></pre>
 <pre><code>. stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
@@ -907,8 +3380,69 @@ obs. time interval:  (0, age_offending_imp]
                                           last observed exit t =  90.65027
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribut
-&gt; ion(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_o
+&gt; ff_sud), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
+These observations are excluded from the analysis, see variable _stipw_flag
+
+Fitting logistic regression to obtain denominator for weights
+
+Iteration 0:   log likelihood = -35121.799  
+Iteration 1:   log likelihood = -33472.744  
+Iteration 2:   log likelihood = -33447.693  
+Iteration 3:   log likelihood = -33447.674  
+Iteration 4:   log likelihood = -33447.674  
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+
+Iteration 0:   log likelihood = -35121.799  
+Iteration 1:   log likelihood = -35121.799  
+
+Fitting weighted survival model to obtain point estimates
+
+         failure _d:  event == 1
+   analysis time _t:  age_offending_imp
+  enter on or after:  time edad_al_egres_imp
+             weight:  [pweight=_stipw_weight]
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood = -6285.1535  
+Iteration 1:   log pseudolikelihood = -5651.6904  
+Iteration 2:   log pseudolikelihood = -5584.4668  
+Iteration 3:   log pseudolikelihood = -5584.3015  
+Iteration 4:   log pseudolikelihood = -5584.3015  
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood = -5584.3015  
+Iteration 1:   log pseudolikelihood = -5516.4947  
+Iteration 2:   log pseudolikelihood = -5515.7722  
+Iteration 3:   log pseudolikelihood = -5515.7721  
+
+Displaying weighted survival model with M-estimation standard errors
+
+Gompertz PH regression                          Number of obs     =     59,757
+                                                Wald chi2(1)      =      88.69
+Log pseudolikelihood = -5515.7721               Prob &gt; chi2       =     0.0000
+
+---------------------------------------------------------------------------------------------
+                            |            M-estimation
+                         _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------------+----------------------------------------------------------------
+motivodeegreso_mod_imp_rec2 |   1.612983   .0818848     9.42   0.000     1.460218    1.781731
+                      _cons |   .1198438   .0100108   -25.40   0.000      .101745     .141162
+----------------------------+----------------------------------------------------------------
+                     /gamma |   -.066518    .001949   -34.13   0.000     -.070338    -.062698
+---------------------------------------------------------------------------------------------
+Note: _cons estimates baseline hazard.
+
+. estimates store gomp_stipw
+
+</code></pre>
+<p>Given that the model with 2 degrees of freedom did not converge, we calculated the estimates with the second model with best AIC (3 degrees of freedom).</p>
+<pre><code>. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_o
+&gt; ff_sud), distribution(rp) df(3) ipwtype(stabilised) vce(mestimation) eform
 11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -927,66 +3461,67 @@ Iteration 1:   log likelihood = -35121.799
 Fitting weighted survival model to obtain point estimates
 note: delayed entry models are being fitted
 
-Iteration 0:   log pseudolikelihood = -5529.4632  
-Iteration 1:   log pseudolikelihood = -5517.6745  
-Iteration 2:   log pseudolikelihood = -5509.1319  
-Iteration 3:   log pseudolikelihood =  -5507.724  
-Iteration 4:   log pseudolikelihood = -5507.2976  
-Iteration 5:   log pseudolikelihood = -5507.2834  
-Iteration 6:   log pseudolikelihood = -5507.2746  
-Iteration 7:   log pseudolikelihood = -5507.2733  
-Iteration 8:   log pseudolikelihood = -5507.2733  
+Iteration 0:   log pseudolikelihood = -5608.1432  (not concave)
+Iteration 1:   log pseudolikelihood = -5536.3316  
+Iteration 2:   log pseudolikelihood = -5526.8819  
+Iteration 3:   log pseudolikelihood = -5516.0092  
+Iteration 4:   log pseudolikelihood = -5515.0293  
+Iteration 5:   log pseudolikelihood = -5512.9681  
+Iteration 6:   log pseudolikelihood = -5512.5257  
+Iteration 7:   log pseudolikelihood = -5511.9437  
+Iteration 8:   log pseudolikelihood = -5511.8695  
+Iteration 9:   log pseudolikelihood = -5511.8625  
+Iteration 10:  log pseudolikelihood = -5511.8588  
+Iteration 11:  log pseudolikelihood = -5511.8584  
+Iteration 12:  log pseudolikelihood = -5511.8584  
 
 Displaying weighted survival model with M-estimation standard errors
 
-Log pseudolikelihood = -5507.2733               Number of obs     =     59,757
+Log pseudolikelihood = -5511.8584               Number of obs     =     59,757
 
 ---------------------------------------------------------------------------------------------
                             |            M-estimation
                             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
 ----------------------------+----------------------------------------------------------------
 xb                          |
-motivodeegreso_mod_imp_rec2 |   1.612425   .0818458     9.41   0.000     1.459732    1.781091
-                      _rcs1 |   1.174931    .085579     2.21   0.027     1.018622    1.355226
-                      _rcs2 |   1.058443   .0362624     1.66   0.097      .989704    1.131957
-                      _rcs3 |   .9996646   .0055893    -0.06   0.952     .9887695     1.01068
-                      _rcs4 |   1.001878   .0015904     1.18   0.237     .9987654       1.005
-                      _rcs5 |   1.001882    .000936     2.01   0.044     1.000049    1.003718
-                      _rcs6 |   1.000996   .0008027     1.24   0.214     .9994242    1.002571
-                      _rcs7 |   1.000069   .0008805     0.08   0.938     .9983442    1.001796
-                      _rcs8 |   .9997849   .0007801    -0.28   0.783     .9982571    1.001315
-                      _rcs9 |   1.000156   .0005957     0.26   0.794      .998989    1.001324
-                     _rcs10 |   1.000224   .0005106     0.44   0.661     .9992236    1.001225
-                      _cons |   .6260855   .2670583    -1.10   0.272     .2713635    1.444494
+motivodeegreso_mod_imp_rec2 |   1.613518   .0819522     9.42   0.000      1.46063    1.782408
+                      _rcs1 |   1.088401   .0361764     2.55   0.011     1.019757    1.161666
+                      _rcs2 |   1.026314   .0122091     2.18   0.029     1.002661    1.050524
+                      _rcs3 |   1.002605   .0007413     3.52   0.000     1.001153    1.004059
+                      _cons |   1.154277    .442285     0.37   0.708     .5446962    2.446051
 ---------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
-</code></pre>
-<pre><code>. 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribut
-&gt; ion(rp) df(4) ipwtype(stabilised) vce(mestimation) eform
-11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
-These observations are excluded from the analysis, see variable _stipw_flag
-
-Fitting logistic regression to obtain denominator for weights
-
-Iteration 0:   log likelihood = -35121.799  
-Iteration 1:   log likelihood = -33472.744  
-Iteration 2:   log likelihood = -33447.693  
-Iteration 3:   log likelihood = -33447.674  
-Iteration 4:   log likelihood = -33447.674  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
-
-Iteration 0:   log likelihood = -35121.799  
-Iteration 1:   log likelihood = -35121.799  
-
-Fitting weighted survival model to obtain point estimates
-note: delayed entry models are being fitted
-
-initial values not feasible
-r(1400);
+. estimates store df3_stipw
 
 </code></pre>
-<p>Saved at= 07:47:32 26 Nov 2022</p>
+<pre><code>. qui count if _d == 1
+
+.         // we count the amount of cases with the event in the strata
+.         //we call the estimates stored, and the results...
+. estimates stat df5_stipw gomp_stipw df3_stipw, n(`r(N)')
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |          N   ll(null)  ll(model)      df        AIC        BIC
+-------------+---------------------------------------------------------------
+   df5_stipw |      5,144          .  -5507.577       7   11029.15   11074.97
+  gomp_stipw |      5,144  -5584.302  -5515.772       3   11037.54   11057.18
+   df3_stipw |      5,144          .  -5511.858       5   11033.72   11066.44
+-----------------------------------------------------------------------------
+
+.         //we store in a matrix de survival
+. matrix stats_stipw=r(S)
+
+. 
+. estwrite df5_stipw gomp_stipw df3_stipw using &quot;${pathdata2}parmodels_m2_stipw_22.sters&quot;, replace
+(saving df5_stipw)
+(saving gomp_stipw)
+(saving df3_stipw)
+(file parmodels_m2_stipw_22.sters saved)
+
+</code></pre>
+<p>Saved at= 20:11:47 19 Dec 2022</p>
 <pre><code>
 </code></pre>

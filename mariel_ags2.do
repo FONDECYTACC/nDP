@@ -95,7 +95,56 @@ replace motivodeegreso_mod_imp_rec3 = 3 if strpos(motivodeegreso_mod_imp_rec,"La
 <</dd_do>>
 ~~~~
 
-Luego configuramos la base de datos en formato de supervivencia.
+Then we set the data base in surirval format and bring the urban-rural classification of municipallities from this [link]("https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.masvidarural.gob.cl%2Fwp-content%2Fuploads%2F2021%2F04%2FClasificacion-comunas-PNDR.xlsx&wdOrigin=BROWSELINK").
+
+~~~~
+<<dd_do>>
+cap qui noi frame create temp
+frame temp: import excel "Clasificacion-comunas-PNDR.xlsx", firstrow clear
+*frame temp: browse
+frame change default
+
+*select code of municipality
+gen str20 comuna = ustrregexs(1) if ustrregexm(comuna_residencia_cod,"([\d,]+)")
+
+*recode comuna if 
+*http://www.sinim.cl/archivos/centro_descargas/modificacion_instructivo_pres_codigos.pdf
+*file:///C:/Users/CISSFO~1/AppData/Local/Temp/MicrosoftEdgeDownloads/4ef08de9-6832-4db6-8124-f69a7b256270/codigoComunas-20180801%20(1).pdf
+
+replace comuna= "16101" if strpos(strlower(comuna),"8401")>0
+replace comuna= "16102" if strpos(strlower(comuna),"8402")>0
+replace comuna= "16103" if strpos(strlower(comuna),"8406")>0
+replace comuna= "16104" if strpos(strlower(comuna),"8407")>0
+replace comuna= "16105" if strpos(strlower(comuna),"8410")>0
+replace comuna= "16106" if strpos(strlower(comuna),"8411")>0
+replace comuna= "16107" if strpos(strlower(comuna),"8413")>0
+replace comuna= "16108" if strpos(strlower(comuna),"8418")>0
+replace comuna= "16109" if strpos(strlower(comuna),"8421")>0
+replace comuna= "16201" if strpos(strlower(comuna),"8414")>0
+replace comuna= "16202" if strpos(strlower(comuna),"8403")>0
+replace comuna= "16203" if strpos(strlower(comuna),"8404")>0
+replace comuna= "16204" if strpos(strlower(comuna),"8408")>0
+replace comuna= "16205" if strpos(strlower(comuna),"8412")>0
+replace comuna= "16206" if strpos(strlower(comuna),"8415")>0
+replace comuna= "16207" if strpos(strlower(comuna),"8420")>0
+replace comuna= "16301" if strpos(strlower(comuna),"8416")>0
+replace comuna= "16302" if strpos(strlower(comuna),"8405")>0
+replace comuna= "16303" if strpos(strlower(comuna),"8409")>0
+replace comuna= "16304" if strpos(strlower(comuna),"8417")>0
+replace comuna= "16305" if strpos(strlower(comuna),"8419")>0
+
+destring comuna, replace
+
+*frame temp: gen str20 comuna = ustrregexs(1) if ustrregexm(cod_com,"([\d,]+)")
+
+frlink m:1 comuna, frame(temp cod_com) //*Clasificación
+frget Clasificación, from(temp)
+
+encode Clasificación, generate(clas)
+*70,863
+<</dd_do>>
+~~~~
+
 
 ~~~~
 <<dd_do>>
@@ -121,8 +170,6 @@ We calculate the incidence rate.
 stsum, by (motivodeegreso_mod_imp_rec)
 <</dd_do>>
 ~~~~
-
-
  
 We open the files
 
@@ -274,6 +321,7 @@ We generated a graph with every type of treatment and the Nelson-Aalen estimate.
 
 ~~~~
 <<dd_do>>
+cap rm "tto2.svg"
 sts graph, na by (motivodeegreso_mod_imp_rec) ci ///
 title("Comission of an offense (end with imprisonment)") /// 
 subtitle("Nelson-Aalen Cum Hazards w/ Confidence Intervals 95%") ///
@@ -310,8 +358,8 @@ global boots 1e3 //5e1 2e3
 global times 0 90 365 1096 1826
 range timevar0 90 1826 90
 
-global covs "edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud "
-global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud "
+global covs "edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas"
+global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas"
 
 
 stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
@@ -327,6 +375,140 @@ esttab matrix(mat_scho_test) using "mat_scho_test2.html", replace
 ~~~~
 
 <<dd_include: "${pathdata2}mat_scho_test2.html" >>
+
+
+We generated a list of parametric survival models with different distributions (Exponential, Weibull, Gompertz, Log-logistic, Log-normal & Generalized gamma). Aditionally, we defined a series of Royston-Parmar models with a function of restricted cubic splines, in which the knots (#df -1) are defined in each percentile of the distribution. We saved the estimates in the file called `parmodels_m2_nov_22_2'.
+
+
+~~~~
+<<dd_do>>
+
+		// Cox w/tvc
+	forvalues j=1/7 {
+		di in yellow "{bf: ***********}"
+		di in yellow "{bf: family Cox tvc `j'}"
+		di in yellow "{bf: ***********}"
+		set seed 2125
+		qui cap noi stmerlin $covs_2 , dist(exponential) tvc(motivodeegreso_mod_imp_rec3) dftvc(`j')
+		estimates store m2_1_cox`j'	
+	}
+
+	// Gompertz
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Gomp}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(gompertz)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(gompertz, fail(_status)))
+	estimates store m2_1_gom
+
+	// Weibull
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Weibull}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(weibull)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(gompertz, fail(_status)))
+	estimates store m2_1_wei
+	
+	// Log logistic
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Logl}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(loglogistic)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(loglogistic, fail(_status)))
+	estimates store m2_1_logl
+
+	// Log normal
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Logn}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(lognormal)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(lognormal, fail(_status)))
+	estimates store m2_1_logn
+	
+	// Generalised gamma
+	di in yellow "{bf: ***********}"
+	di in yellow "{bf: family Ggam}"
+	di in yellow "{bf: ***********}"
+	set seed 2125
+	qui cap noi stmerlin $covs_2 , dist(ggamma)
+	//qui cap noi merlin (_time $covs if _trans == 1, family(ggamma, fail(_status)))
+	estimates store m2_1_ggam
+
+	// Royston Parmar models
+	forvalues j=1/10 {
+		di in yellow "{bf: ***********}"
+		di in yellow "{bf: family RP`j'}"
+		di in yellow "{bf: ***********}"
+		set seed 2125
+		qui cap noi stmerlin $covs_2, dist(rp) df(`j')
+		//qui cap noi merlin (_time $covs if _trans == 1, family(rp, df(`j') fail(_status)))
+		estimates store m2_1_rp`j'
+		*estimates save "${pathdata2}parmodels.ster", append	
+	}	
+
+*rcs(time, df(3) orthog)
+estwrite _all using "${pathdata2}parmodels_m2_nov_22_2.sters", replace
+<</dd_do>>
+~~~~
+
+We obtained a summary of distributions by AICs and BICs.
+
+~~~~
+<<dd_do>>
+*estread "${pathdata2}parmodels_aic_bic_22_2.sters"
+
+*file:///G:/Mi%20unidad/Alvacast/SISTRAT%202019%20(github)/_supp_mstates/stata/1806.01615.pdf
+*rcs - restricted cubic splines on log hazard scale
+*rp - Royston-Parmar model (restricted cubic spline on log cumulative hazard scale)
+qui count if _d == 1
+	// we count the amount of cases with the event in the strata
+	//we call the estimates stored, and the results...
+estimates stat m2_1_*, n(`r(N)')
+	//we store in a matrix de survival
+matrix stats_1=r(S)
+
+
+estimates clear
+
+** to order AICs
+*https://www.statalist.org/forums/forum/general-stata-discussion/general/1665263-sorting-matrix-including-rownames
+mata :
+
+void st_sort_matrix(
+//argumento de la matriz
+    string scalar matname, 
+//argumento de las columnas
+    real   rowvector columns
+    )
+{
+    string matrix   rownames
+    real  colvector sort_order
+// defino una base	
+	//Y = st_matrix(matname)
+	//[.,(1, 2, 3, 4, 6, 5)]
+ //ordeno las columnas  
+    rownames = st_matrixrowstripe(matname) //[.,(1, 2, 3, 4, 6, 5)]
+    sort_order = order(st_matrix(matname),  (columns))
+    st_replacematrix(matname, st_matrix(matname)[sort_order,.])
+    st_matrixrowstripe(matname, rownames[sort_order,.])
+}
+
+end
+//mata: mata drop st_sort_matrix()
+
+mata : st_sort_matrix("stats_1", 6)
+esttab matrix(stats_1) using "testreg_aic_bic_22_2.csv", replace
+esttab matrix(stats_1) using "testreg_aic_bic_22_2.html", replace
+
+<</dd_do>>
+~~~~
+
+<<dd_include: "${pathdata2}testreg_aic_bic_22_2.html" >>
+
 
 
 ### IPTW Royston-Parmar
@@ -345,7 +527,7 @@ cap rm bsreg12.dta bsreg22.dta
 ~~~~
 
 
-First we calculated the difference between those patients who did and did not complete baseline treatment, given that the analysis is restricted to .
+First we calculated the difference between those patients who did and did not complete baseline treatment, given that this analysis is restricted to 2 values.
 
 ~~~~
 <<dd_do>>
@@ -360,11 +542,11 @@ replace motivodeegreso_mod_imp_rec2 = 1 if strpos(motivodeegreso_mod_imp_rec,"La
 recode motivodeegreso_mod_imp_rec3 (1=0 "Tr Completion") (3=1 "Tr Non-completion (Late)") (2=2 "Tr Non-completion (Early)"), gen(caus_disch_mod_imp_rec) 
 lab var caus_disch_mod_imp_rec "Baseline treatment outcome" 
 
-global covs_3 "i.caus_disch_mod_imp_rec edad_al_ing_fmt edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud "
+global covs_3 "i.caus_disch_mod_imp_rec edad_al_ing_fmt edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud i.clas"
 
-stpm2 $covs_3, scale(hazard) df(10) eform
+stpm2 $covs_3, scale(hazard) df(5) eform
 
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(5) ipwtype(stabilised) vce(mestimation) eform
 
 predict rmst03 in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
 predict rmst13 in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
@@ -374,13 +556,28 @@ cap list rmst03 rmst13  drmst in 1
 <</dd_do>>
 ~~~~
 
-We used another model with only 4 degrees of freedom according to the lowest BIC 
+We used a gompertz distribution, assuming that baseline treatment outcome showed proportional hazards
+
+~~~~
+<<dd_do>>
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+
+predict rmst03_c in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
+predict rmst13_c in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
+predictnl drmst_c= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_c_se)
+
+cap list rmst03_c rmst13_c  drmst_c in 1
+<</dd_do>>
+~~~~
+
+We used another model with only 2 degrees of freedom according to the lowest BIC 
    
 ~~~~
 <<dd_do>>
-stpm2 $covs_3, scale(hazard) df(4) eform
+stpm2 $covs_3, scale(hazard) df(2) eform
 
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(4) ipwtype(stabilised) vce(mestimation) eform
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(2) ipwtype(stabilised) vce(mestimation) eform
 
 predict rmst03_b in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
 predict rmst13_b in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
@@ -390,23 +587,49 @@ cap list rmst03_b rmst13_b  drmst_b in 1
 <</dd_do>>
 ~~~~
 
+**Staggered entry**
 
 ~~~~
 <<dd_do>>
 stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
 
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(5) ipwtype(stabilised) vce(mestimation) eform
+estimates store df5_stipw
 <</dd_do>>
 ~~~~
 
 
 ~~~~
 <<dd_do>>
+stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
 
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(4) ipwtype(stabilised) vce(mestimation) eform
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+estimates store gomp_stipw
 <</dd_do>>
 ~~~~
 
+Given that the model with 2 degrees of freedom did not converge, we calculated the estimates with the second model with best AIC (3 degrees of freedom).
+
+~~~~
+<<dd_do>>
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(3) ipwtype(stabilised) vce(mestimation) eform
+estimates store df3_stipw
+<</dd_do>>
+~~~~
+
+~~~~
+<<dd_do>>
+qui count if _d == 1
+	// we count the amount of cases with the event in the strata
+	//we call the estimates stored, and the results...
+estimates stat df5_stipw gomp_stipw df3_stipw, n(`r(N)')
+	//we store in a matrix de survival
+matrix stats_stipw=r(S)
+
+estwrite df5_stipw gomp_stipw df3_stipw using "${pathdata2}parmodels_m2_stipw_22.sters", replace
+<</dd_do>>
+~~~~
    
 <<dd_display: "Saved at= `c(current_time)' `c(current_date)'">>
 
