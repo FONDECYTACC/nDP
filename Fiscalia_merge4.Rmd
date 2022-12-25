@@ -1428,7 +1428,6 @@ In total, these cases represent the `r scales::percent(nrow(errors_age_after_joi
 
   
 ```{r com2, echo=T, fig.align='center', message=T, error=T, eval=T}
-
 #_#_#_#_#_#_#_#_#_
 invisible("2.Explore RUCs")
 
@@ -1481,6 +1480,7 @@ knitr::kable("markdown", caption="Summary descriptives, distinct IDs by Case ID 
 
 ::: controlly
 ```{r com3, echo=T, fig.align='center', message=T, error=T, eval=T}
+#If the value of VIF is less than 1: no correlation - If the value of VIF is between 1-5, there is moderate correlation - If the value of VIF is above 5: severe correlation 
 
 #_#_#_#_#_#_#_#_#_
 invisible("3.Cox, collinearity")
@@ -1514,8 +1514,15 @@ cbind.data.frame(Time0_cond_sent=cvif,
                  Stag_ent_cond_sent=cvif3,
                  Stag_ent_prison=cvif4) %>% 
   knitr::kable("markdown", caption= "Variance Inflation Factors in Cox Regressions")
+    # dplyr::mutate_if(is.numeric,~round(.,2)) %>% 
+    # DT::datatable()
 ```
 :::
+
+
+The Total number of previous offenses showed a severe correlation (VIF >6.5), and Housing situation (tenure status of households) (VIF > 11). Must consider that the biopsychosocial compromise and Substance use frequency (primary substance) had a moderate correlation (~5 VIF).
+
+<br>
 
 
 ```{r com4, echo=T, fig.align='center', message=T, error=T, eval=T}
@@ -1542,6 +1549,14 @@ Base_fiscalia_v12_pris %>%
 
 #23d88c2b8c6da2d8abf3f88b7ce8a4c0
 #In case of the patient above, when he was matched with the requirements of prison (wich is more stringent), it allowed that 2 treatments were elligible to match: one in 2011-01-06 to 2011-02-28 and another in 2011-12-05 to 2012-03-05. The problem is that we wanted to match with baseline treatments, hence prison skips the first treatment that ended in a referral and ended matching with the second. At 2022-11-25 I ended correcting it.
+```
+
+```{r com5, echo=T, fig.align='center', message=T, error=T, eval=F}
+# stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+# estimates store df10_stipw
+
+f4 <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + sex+ escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + policonsumo + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T) #origen_ingreso_mod + numero_de_hijos_mod +  = no estaban en Stata
+# falta clas
 ```
 
 <br>

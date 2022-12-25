@@ -1,0 +1,618 @@
+---
+title: "Chilean prosecutor's office Data merge (Step 5)"
+date: "`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`"
+output:
+  distill::distill_article:
+    code_folding: true
+    fig_height: 6
+    fig_width: 8
+    theme: flatly
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+    output_dir: "docs"
+  toc_float:
+    collapsed: false
+    smooth_scroll: true
+---
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+ $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+  
+```
+
+```{css hideOutput-lib-src, echo = FALSE}
+<script src="hideOutput.js"></script> 
+```
+
+```{js hideOutput, echo = FALSE}
+$(document).ready(function() {    
+	$chunks = $('.fold');    
+	$chunks.each(function () {      // add button to source code chunks     
+	if ( $(this).hasClass('s') ) {       
+		$('pre.r', this).prepend("<div class=\"showopt\">Show Source</div><br style=\"line-height:22px;\"/>");
+       		$('pre.r', this).children('code').attr('class', 'folded');     
+       		}      // add button to output chunks     
+		if ( $(this).hasClass('o') ) {       
+			$('pre:not(.r)', this).has('code').prepend("<div class=\"showopt\">Show Output</div><br style=\"line-height:22px;\"/>");       
+			$('pre:not(.r)', this).children('code:not(r)').addClass('folded');        // add button to plots       
+			$(this).find('img').wrap('<pre class=\"plot\"></pre>');       
+			$('pre.plot', this).prepend("<div class=\"showopt\">Show Plot</div><br style=\"line-height:22px;\"/>");       
+			$('pre.plot', this).children('img').addClass('folded');      
+			}   
+});    // hide all chunks when document is loaded   
+	$('.folded').css('display', 'none')    // function to toggle the visibility   
+	$('.showopt').click(function() {     
+			var label = $(this).html();     
+			if (label.indexOf("Show") >= 0) {       
+				$(this).html(label.replace("Show", "Hide"));     
+			} else {
+			  $(this).html(label.replace("Hide", "Show"));     
+			}     
+	$(this).siblings('code, img').slideToggle('fast', 'swing');   
+	}); 
+}); 
+
+```
+
+```{=html}
+<style type="text/css">
+.showopt {   
+  background-color: #004c93;   color: #FFFFFF;    width: 100px;   height: 20px;   text-align: center;   vertical-align: middle !important;   float: right;   font-family: sans-serif;   border-radius: 8px; 
+  }
+
+.showopt:hover {     
+        background-color: #dfe4f2;
+        color: #004c93; 
+        }  
+pre.plot {   
+        background-color: white !important; 
+        } 
+.tablelines table, .tablelines td, .tablelines th {
+        border: 1px solid black;
+        }
+
+.centrado {
+    text-align: center;
+}
+
+.table.center {
+    margin-left:auto; 
+    margin-right:auto;
+  }
+
+/* https://vivekjaiskumar.medium.com/css-is-and-not-selector-17c942ec83f :is()*/
+
+/* Applies to outputs that are not code other than R*/
+
+pre {
+  overflow-x: auto !important;
+}
+pre code {
+  word-wrap: normal !important;
+  white-space: pre !important;
+}
+/*
+pre:not(.sourceCode) { 
+  white-space: nowrap !important;
+}
+*/
+.sourceCode { /* Important gives precedence  */
+  font-size: 10px !important;
+  line-height: 50% !important;
+}
+
+body{ /* Normal  */
+      text-align: justify;
+  }
+
+.superbigimage{
+    overflow-y:scroll;
+    height:350px;
+    white-space: nowrap;
+    overflow-x: auto; 
+    width:100%;
+}
+.superbigimage img{
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.message { color:#446C6E; font-family: monospace;font-size: 10px; line-height: 110%; font-weight: bold;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
+div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
+
+.pandoc-table { /* Should add !important; but it seems no necessary  */
+  margin-left:auto; /* To center */
+  margin-right:auto;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-size: 11px;
+  overflow-y: auto;
+  max-height:450px !important;
+  white-space: nowrap;
+  overflow-x: auto; 
+  width:450px;
+}
+
+.pandoc-table th {/* header */
+text-align: center !important;
+font-size: 10px;
+padding: 0px;
+}
+
+.pandoc-table td {
+text-align: left !important;
+font-size: 9px;
+padding: 0px;
+}
+
+.pandoc-table caption {
+    text-align: left !important;
+    font-size: 11px !important;
+}
+
+.controlly{
+    overflow-y:scroll;
+    height:350px;
+    overflow-x: scroll; 
+}
+
+</style>
+```
+```{=html}
+<!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
+<script>
+function myFunction1() {
+    var x = document.getElementById("myDIV");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<script>
+function myFunction2() {
+    var x = document.getElementById("myDIV2");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+```
+
+```{r prev-setup, include = FALSE, cache=T, error=T}
+rm(list=ls());gc()
+
+#If you render multiple documents from the same script or R session, you should detach("Statamarkdown") in between documents.
+try(detach("Statamarkdown"))
+
+if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
+path<-getwd()#we define it again later in setup chunk
+if (grepl("CISS Fondecyt",path)==T){
+    try(setwd("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)"));load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.Rdata")
+  } else if (grepl("andre",path)==T){
+    try(setwd('C:/Users/andre/Desktop/SUD_CL/'));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.Rdata")
+  } else if (grepl("E:",path)==T){
+    try(setwd("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/SUD_CL/"));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.Rdata")
+  } else {
+    try(setwd(paste0(path)));load(paste0(gsub("SUD_CL","",gsub("2022","2019",path)),"/13.Rdata"))
+  }
+```
+
+```{r setup, include = FALSE, cache=T, error=T, echo=T}
+#Libraries used in the routine. Dont change the order
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
+  if(class(try(dplyr::ungroup(x)))[1]=="tbl_df"){
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)    
+        }
+  } else {
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)       
+  }
+ }
+}  
+pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando paquetes
+
+if(!require(pacman)){install.packages("pacman")}
+if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
+
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf,  adjustedCurves, ggpmisc, rms, install=T)
+
+#Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
+
+
+if(!require(survcomp)){try(devtools::install_github("bhklab/survcomp",upgrade ="never"))}
+
+try(webshot::install_phantomjs())
+
+if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade ="never"))}
+
+if (!requireNamespace("BiocManager", quietly = TRUE)){install.packages("BiocManager")}
+
+if(!require(fmrs)){BiocManager::install("fmrs")}
+#http://www.bioconductor.org/packages/release/bioc/manuals/fmrs/man/fmrs.pdf
+
+#if(!require(Statamarkdown)){try(devtools::install_github("Hemken/Statamarkdown",upgrade ="never"))}
+# #Error in if (options$noisey == TRUE) message(paste("\n", options$engine,  : 
+#   argumento tiene longitud cero
+# Calls: <Anonymous> ... sew.list -> lapply -> FUN -> sew.character -> <Anonymous>
+
+#easystats::install_suggested()
+
+options(scipen=2) #display numbers rather scientific number
+
+#remotes::install_github("chjackson/flexsurv-dev", upgrade = "never")
+#devtools::install_github("hputter/mstate", upgrade = "never")
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+fitstats.flexsurvreg = function(x){
+  ll = x$loglik
+  aic = x$AIC
+  k = length(x$coefficients)
+  n = sum(x$data$m["(weights)"])
+  aicc = aic + ((2 * k) * (k + 1) / (n - k - 1))
+  bic = - 2 * ll + (k * log(n))
+  data.frame(
+   Df = k,
+    "n2ll" = -2 * ll,
+    AIC = aic,
+    AICc = aicc,
+    BIC = bic
+  )
+}
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+
+if(.Platform$OS.type == "windows") withAutoprint({
+  memory.size()
+  memory.size(TRUE)
+  memory.limit()
+})
+memory.limit(size=56000)
+
+path<-dirname(rstudioapi::getSourceEditorContext()$path)
+
+options(knitr.kable.NA = '')
+
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      # record the current time before each chunk
+      now <<- Sys.time()
+    } else {
+      # calculate the time difference after a chunk
+      res <- ifelse(difftime(Sys.time(), now)>(60^2),difftime(Sys.time(), now)/(60^2),difftime(Sys.time(), now)/(60^1))
+      # return a character string to show the time
+      x<-ifelse(difftime(Sys.time(), now)>(60^2),paste("Time for this code chunk to run:", round(res,1), "hours"),paste("Time for this code chunk to run:", round(res,1), "minutes"))
+      paste('<div class="message">', gsub('##', '\n', x),'</div>', sep = '\n')
+    }
+  }
+}))
+knitr::opts_chunk$set(time_it = TRUE)
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+#to format rows in bold
+format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethrough")){
+
+  # select the correct markup
+  # one * for italics, two ** for bold
+  map <- setNames(c("*", "**", "~~"), c("italics", "bold", "strikethrough"))
+  markup <- map[value]  
+
+  for (r in rows){
+    for(c in cols){
+
+      # Make sure values are not factors
+      df[[c]] <- as.character( df[[c]])
+
+      # Update formatting
+      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, gsub(" ", "", df[r, c]), markup))
+    }
+  }
+
+  return(df)
+}
+#To produce line breaks in messages and warnings
+knitr::knit_hooks$set(
+   error = function(x, options) {
+     paste('\n\n<div class="alert alert-danger">',
+           gsub('##', '\n', gsub('^##\ Error', '**Error**', x)),
+           '</div>', sep = '\n')
+   },
+   warning = function(x, options) {
+     paste('\n\n<div class="alert alert-warning">',
+           gsub('##', '\n', gsub('^##\ Warning:', '**Warning**', x)),
+           '</div>', sep = '\n')
+   },
+   message = function(x, options) {
+     paste('<div class="message">',
+           gsub('##', '\n', x),
+           '</div>', sep = '\n')
+   }
+)
+```
+
+
+::: blue
+
+<!--- https://docs.google.com/document/d/1d0lwgylQ89JyLZuQ6b6Tn8-u_idgDjfq_hTumTYQ9Aw/edit --->
+
+- Estimate different survival distributions
+
+- Finite mixture models
+
+- 
+
+:::
+
+
+<br>
+
+# Bring other databases
+
+```{r bring_db1, echo=T, fig.align='center', message=T, error=T, eval=T}
+#http://observatorio.ministeriodesarrollosocial.gob.cl/pobreza-comunal-2020
+
+Comunas_PNDR <- readxl::read_excel("Clasificacion-comunas-PNDR.xlsx")%>% 
+  dplyr::mutate(cod= dplyr::case_when(as.character(cod_com)=="16101"~"8401",
+                                      as.character(cod_com)=="16102"~"8402",
+                                      as.character(cod_com)=="16103"~"8406",
+                                      as.character(cod_com)=="16104"~"8407",
+                                      as.character(cod_com)=="16105"~"8410",
+                                      as.character(cod_com)=="16106"~"8411",
+                                      as.character(cod_com)=="16107"~"8413",
+                                      as.character(cod_com)=="16108"~"8418",
+                                      as.character(cod_com)=="16109"~"8421",
+                                      as.character(cod_com)=="16201"~"8414",
+                                      as.character(cod_com)=="16202"~"8403",
+                                      as.character(cod_com)=="16203"~"8404",
+                                      as.character(cod_com)=="16204"~"8408",
+                                      as.character(cod_com)=="16205"~"8412",
+                                      as.character(cod_com)=="16206"~"8415",
+                                      as.character(cod_com)=="16207"~"8420",
+                                      as.character(cod_com)=="16301"~"8416",
+                                      as.character(cod_com)=="16302"~"8405",
+                                      as.character(cod_com)=="16303"~"8409",
+                                      as.character(cod_com)=="16304"~"8417",
+                                      as.character(cod_com)=="16305"~"8419",
+                                      T~ as.character(cod_com)
+                                      ))
+
+pobr_mult_2020<-readxl::read_excel("Estimaciones_de_Tasa_de_Pobreza_por_Ingresos_por_Comunas_2020_revisada2022_09.xlsx", skip=1) %>% dplyr::mutate(anio=2020) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2017<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2017.xlsx", skip=1) %>% dplyr::mutate(anio=2017) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2015<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2015.xlsx", skip=1) %>% dplyr::mutate(anio=2015) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2013<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_2013.xlsx", skip=1)%>% dplyr::mutate(anio=2013) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2011<-readxl::read_excel("Estimacion_tasa_de_pobreza_comunal_2011_(nueva _metodologia).xlsx", skip=1)%>% dplyr::mutate(anio=2011) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+
+# replace comuna= "16103" if strpos(strlower(comuna),"8406")>0
+# replace comuna= "16104" if strpos(strlower(comuna),"8407")>0
+# replace comuna= "16105" if strpos(strlower(comuna),"8410")>0
+# replace comuna= "16106" if strpos(strlower(comuna),"8411")>0
+# replace comuna= "16107" if strpos(strlower(comuna),"8413")>0
+# replace comuna= "16108" if strpos(strlower(comuna),"8418")>0
+# replace comuna= "16109" if strpos(strlower(comuna),"8421")>0
+# replace comuna= "16201" if strpos(strlower(comuna),"8414")>0
+# replace comuna= "16202" if strpos(strlower(comuna),"8403")>0
+# replace comuna= "16203" if strpos(strlower(comuna),"8404")>0
+# replace comuna= "16204" if strpos(strlower(comuna),"8408")>0
+# replace comuna= "16205" if strpos(strlower(comuna),"8412")>0
+# replace comuna= "16206" if strpos(strlower(comuna),"8415")>0
+# replace comuna= "16207" if strpos(strlower(comuna),"8420")>0
+# replace comuna= "16301" if strpos(strlower(comuna),"8416")>0
+# replace comuna= "16302" if strpos(strlower(comuna),"8405")>0
+# replace comuna= "16303" if strpos(strlower(comuna),"8409")>0
+# replace comuna= "16304" if strpos(strlower(comuna),"8417")>0
+# replace comuna= "16305" if strpos(strlower(comuna),"8419")>0
+pobr_mult_2011_2020<-
+rbind.data.frame(pobr_mult_2011,pobr_mult_2013, pobr_mult_2015, pobr_mult_2017, pobr_mult_2020) %>% 
+  dplyr::mutate(cod= dplyr::case_when(Código=="16101"~"8401",
+                                      Código=="16102"~"8402",
+                                      Código=="16103"~"8406",
+                                      Código=="16104"~"8407",
+                                      Código=="16105"~"8410",
+                                      Código=="16106"~"8411",
+                                      Código=="16107"~"8413",
+                                      Código=="16108"~"8418",
+                                      Código=="16109"~"8421",
+                                      Código=="16201"~"8414",
+                                      Código=="16202"~"8403",
+                                      Código=="16203"~"8404",
+                                      Código=="16204"~"8408",
+                                      Código=="16205"~"8412",
+                                      Código=="16206"~"8415",
+                                      Código=="16207"~"8420",
+                                      Código=="16301"~"8416",
+                                      Código=="16302"~"8405",
+                                      Código=="16303"~"8409",
+                                      Código=="16304"~"8417",
+                                      Código=="16305"~"8419",
+                                      T~ Código
+                                      ))
+
+```
+
+
+<br>
+
+# Finite mixture models
+
+```{r fmm1, echo=T, fig.align='center', message=T, error=T, eval=F}
+# set.seed(1980)
+# K = 2
+# D = 10
+# n = 500
+# sig = c(1, 1)
+# piM = c(0.4, 0.6)
+# r1 = 0.5
+# coeff1 = c( 2, 2, -1, -2, 1, 2, 0, 0, 0, 0, 0)
+# coeff2 = c(-1, -1, 1, 2, 0, 0, 0, 0, -1, 2, -2)
+# Um = 40
+# dat <- fmrs.gendata(nObs = n, nComp = K, nCov = D, coeff = c(coeff1, coeff2),
+#                     dispersion = sig, mixProp = piM, rho = r1, umax = Um, disFamily = 'lnorm')
+
+fmm <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + sex+ escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + policonsumo + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
+
+Base_fiscalia_v13$delta<- ifelse(!is.na(Base_fiscalia_v13$dateofbirth_imp),1,0)
+Base_fiscalia_v13$y<- Base_fiscalia_v13$age_offending_imp-Base_fiscalia_v13$edad_al_egr
+x<-
+c("motivodeegreso_mod_imp_rec", "edad_al_ing_fmt", "edad_ini_cons", "sex", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "compromiso_biopsicosocial", "origen_ingreso_mod", "numero_de_hijos_mod", "tenencia_de_la_vivienda_mod", "dg_cie_10_rec", "dg_trs_cons_sus_or", "macrozona", "policonsumo", "n_off_vio", "n_off_acq", "n_off_sud")
+
+res.mle<- list()
+for (K in 2:6){
+  res.mle[[K]] <- fmrs.mle(y = Base_fiscalia_v13$y, 
+                      x = Base_fiscalia_v13[,..x], 
+                      delta = Base_fiscalia_v13$delta, 
+                      nComp = K,
+                      disFamily = 'lnorm', 
+                      initCoeff = rnorm(K*D+K), 
+                      initDispersion = rep(1, K),
+  initmixProp = rep(1/K, K))
+}
+#origen_ingreso_mod + numero_de_hijos_mod +  = no estaban en Stata
+# falta clas
+```
+
+
+```{r fmm2, echo=T, fig.align='center', message=T, error=T, eval=F}
+expRMM_EM(x, d=NULL, lambda = NULL, rate = NULL, k = 2,complete = "tdz", epsilon = 1e-08, maxit = 1000, verb = FALSE)
+
+```
+
+<br>
+
+# Session Info
+
+```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE}
+message(Sys.getenv("R_LIBS_USER"))
+Sys.Date()
+message(paste0("Editor context: ", path))
+
+if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.RData")
+  } else if (grepl("andre",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("C:/Users/andre/Desktop/SUD_CL/14.RData")
+  } else if (grepl("E:",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.RData")
+  } else {
+    save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"14.RData"))
+  }
+
+sesion_info <- devtools::session_info()
+dplyr::select(
+  tibble::as_tibble(sesion_info$packages),
+  c(package, loadedversion, source)
+) %>% 
+  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Variable' = 2, 'Percentage'= 3),
+              caption = htmltools::tags$caption(
+        style = 'caption-side: top; text-align: left;',
+        '', htmltools::em('Packages')),
+      options=list(
+initComplete = htmlwidgets::JS(
+        "function(settings, json) {",
+        "$(this.api().tables().body()).css({
+            'font-family': 'Helvetica Neue',
+            'font-size': '50%', 
+            'code-inline-font-size': '15%', 
+            'white-space': 'nowrap',
+            'line-height': '0.75em',
+            'min-height': '0.5em'
+            });",#;
+        "}")))
+```
+
+# Export
+
+```{r export, warning=FALSE, echo=T, error=T, eval=T}
+subset(Base_fiscalia_v13, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d")) %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1) %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_oct_2022_match_SENDA.dta"))
+
+subset(Base_fiscalia_v13_pris, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d")) %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1) %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_oct_2022_match_SENDA_pris.dta"))
+```
+
+
+::: controlly
+```{r label_to_stata, echo=T, paged.print=TRUE}
+#put name of the file
+file<- "fiscalia_mariel_oct_2022_match_SENDA.dta"
+
+export_lab_stata_merge<-
+  tibble::rownames_to_column(data.frame(Hmisc::label(dplyr::select(Base_fiscalia_v13,  all_of(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d"))))))%>% data.frame() %>%
+  dplyr::rename("code" = !!names(.[1]), "label" = !!names(.[2]))%>% data.frame()%>%
+  dplyr::mutate(first= "cap noi label variable")%>%
+  dplyr::mutate(final= paste0(first, " ",code,' "',label,'"'))%>%
+  dplyr::select(-code,-label,-first)%>%
+  dplyr::rename("*clear all"="final") %>%
+  rbind(paste0('cap noi save "', gsub('/', '\\', path, fixed=T),'\\',file,'", replace'))%>%
+  rbind(paste0('cap noi save "', gsub('/', '\\', path, fixed=T),'\\',file,'", replace'))
+
+rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear'),export_lab_stata_merge) %>% knitr::kable("markdown")
+
+write.table(rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear'),export_lab_stata_merge), file = paste0(path,"/_label_var_to_stata.do"), sep = "",row.names = FALSE, quote = FALSE, fileEncoding="UTF-8")
+```
+:::
+
+<br>
+
+<div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:350px; overflow-x: scroll; width:100%">
+
+```{stata 2, collectcode=F, include=T, error=T, cleanlog=F}
+*should be in the same folder of the .Rmd to work
+cap noi do _label_var_to_stata.do
+```
+
+</div>

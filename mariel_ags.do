@@ -330,8 +330,8 @@ global boots 1e3 //5e1 2e3
 global times 0 90 365 1096 1826
 range timevar0 90 1826 90
 
-global covs "edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas"
-global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas"
+global covs "edad_al_ing_fmt edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas"
+global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas"
 
 
 stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
@@ -537,9 +537,15 @@ lab var caus_disch_mod_imp_rec "Baseline treatment outcome"
 
 global covs_3 "i.caus_disch_mod_imp_rec edad_al_ing_fmt edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud i.clas"
 
+global covs_3b "i.caus_disch_mod_imp_rec edad_al_ing_fmt edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.origen_ingreso_mod numero_de_hijos_mod i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud i.clas"
+
 stpm2 $covs_3 , scale(hazard) df(10) eform
 
+stpm2 $covs_3b , scale(hazard) df(10) eform
+
 stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
 
 predict rmst03 in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
 predict rmst13 in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
@@ -556,6 +562,8 @@ We used a gompertz distribution, assuming that baseline treatment outcome showed
 
 stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
 
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+
 predict rmst03_c in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
 predict rmst13_c in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
 predictnl drmst_c= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_c_se)
@@ -569,9 +577,13 @@ We used another model with only 6 degrees of freedom according to the lowest BIC
 ~~~~
 <<dd_do>>
 
-stpm2 $covs_3, scale(hazard) df(6) eform
+stpm2 $covs_3 , scale(hazard) df(6) eform
+
+stpm2 $covs_3b , scale(hazard) df(6) eform
 
 stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(6) ipwtype(stabilised) vce(mestimation) eform
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(6) ipwtype(stabilised) vce(mestimation) eform
 
 predict rmst03_b in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
 predict rmst13_b in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
@@ -589,13 +601,20 @@ stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
 
 stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
 estimates store df10_stipw
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+estimates store df10_stipw2
 <</dd_do>>
 ~~~~
 
 ~~~~
 <<dd_do>>
+
 stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
 estimates store gomp_stipw
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+estimates store gomp_stipw2
 <</dd_do>>
 ~~~~
 
@@ -605,6 +624,9 @@ estimates store gomp_stipw
 
 stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(6) ipwtype(stabilised) vce(mestimation) eform
 estimates store df6_stipw
+
+stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(6) ipwtype(stabilised) vce(mestimation) eform
+estimates store df6_stipw2
 <</dd_do>>
 ~~~~
 
@@ -617,7 +639,7 @@ estimates stat df6_stipw gomp_stipw df10_stipw, n(`r(N)')
 	//we store in a matrix de survival
 matrix stats_stipw=r(S)
 
-estwrite df6_stipw gomp_stipw df10_stipw using "${pathdata2}parmodels_m2_stipw_22.sters", replace
+estwrite df6_stipw gomp_stipw df10_stipw df6_stipw2 gomp_stipw2 df10_stipw2 using "${pathdata2}parmodels_m2_stipw_22.sters", replace
 <</dd_do>>
 ~~~~
    
