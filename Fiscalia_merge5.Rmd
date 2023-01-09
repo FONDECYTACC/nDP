@@ -209,13 +209,13 @@ try(detach("Statamarkdown"))
 if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
 path<-getwd()#we define it again later in setup chunk
 if (grepl("CISS Fondecyt",path)==T){
-    try(setwd("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)"));load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.Rdata")
+    try(setwd("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)"));load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.Rdata")
   } else if (grepl("andre",path)==T){
-    try(setwd('C:/Users/andre/Desktop/SUD_CL/'));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.Rdata")
+    try(setwd('C:/Users/andre/Desktop/SUD_CL/'));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.Rdata")
   } else if (grepl("E:",path)==T){
-    try(setwd("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/SUD_CL/"));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/13.Rdata")
+    try(setwd("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/SUD_CL/"));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.Rdata")
   } else {
-    try(setwd(paste0(path)));load(paste0(gsub("SUD_CL","",gsub("2022","2019",path)),"/13.Rdata"))
+    try(setwd(paste0(path)));load(paste0(gsub("SUD_CL","",gsub("2022","2019",path)),"/14.Rdata"))
   }
 ```
 
@@ -257,11 +257,12 @@ pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando pa
 if(!require(pacman)){install.packages("pacman")}
 if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
 
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf,  adjustedCurves, ggpmisc, rms, install=T)
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf,  adjustedCurves, ggpmisc, rms, SpatialEpiApp, spatsurv, install=T)
 
 #Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
 
 
+if(!require(SpatialEpiApp)){try(install_github("Paula-Moraga/SpatialEpiApp",upgrade ="never"))}
 if(!require(survcomp)){try(devtools::install_github("bhklab/survcomp",upgrade ="never"))}
 
 try(webshot::install_phantomjs())
@@ -428,11 +429,21 @@ Comunas_PNDR <- readxl::read_excel("Clasificacion-comunas-PNDR.xlsx")%>%
                                       T~ as.character(cod_com)
                                       ))
 
+#http://observatorio.ministeriodesarrollosocial.gob.cl/pobreza-comunal-2011
 pobr_mult_2020<-readxl::read_excel("Estimaciones_de_Tasa_de_Pobreza_por_Ingresos_por_Comunas_2020_revisada2022_09.xlsx", skip=1) %>% dplyr::mutate(anio=2020) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2019<-readxl::read_excel("Estimaciones_de_Tasa_de_Pobreza_por_Ingresos_por_Comunas_2020_revisada2022_09.xlsx", skip=1) %>% dplyr::mutate(anio=2019) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2018<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2017.xlsx", skip=1) %>% dplyr::mutate(anio=2018) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
 pobr_mult_2017<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2017.xlsx", skip=1) %>% dplyr::mutate(anio=2017) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2016<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2015.xlsx", skip=1) %>% dplyr::mutate(anio=2016) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
 pobr_mult_2015<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2015.xlsx", skip=1) %>% dplyr::mutate(anio=2015) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2014<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_2013.xlsx", skip=1)%>% dplyr::mutate(anio=2014) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
 pobr_mult_2013<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_2013.xlsx", skip=1)%>% dplyr::mutate(anio=2013) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2012<-readxl::read_excel("Estimacion_tasa_de_pobreza_comunal_2011_(nueva _metodologia).xlsx", skip=1)%>% dplyr::mutate(anio=2012) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
 pobr_mult_2011<-readxl::read_excel("Estimacion_tasa_de_pobreza_comunal_2011_(nueva _metodologia).xlsx", skip=1)%>% dplyr::mutate(anio=2011) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2010<-readxl::read_excel("Estimacion_tasa_de_pobreza_comunal_2011_(nueva _metodologia).xlsx", skip=1)%>% dplyr::mutate(anio=2010) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2009<-readxl::read_excel("PobrezaporComunas_SAE_20092011.xlsx", skip=3)%>% dplyr::mutate(anio=2009) %>% dplyr::select(anio, everything()) %>% dplyr::select(1:5) %>%  dplyr::rename_at(vars( contains("Incidencia pobreza") ), ~"porc_pobr") %>% dplyr::rename("Código"=2, "Nombre comuna"=3) %>%  dplyr::mutate(Región=rep("")) %>%  dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2008<-readxl::read_excel("PobrezaporComunas_SAE_20092011.xlsx", skip=3)%>% dplyr::mutate(anio=2008) %>% dplyr::select(anio, everything()) %>% dplyr::select(1:5) %>%  dplyr::rename_at(vars( contains("Incidencia pobreza") ), ~"porc_pobr") %>% dplyr::rename("Código"=2, "Nombre comuna"=3) %>%  dplyr::mutate(Región=rep("")) %>%  dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2007<-readxl::read_excel("PobrezaporComunas_SAE_20092011.xlsx", skip=3)%>% dplyr::mutate(anio=2007) %>% dplyr::select(anio, everything()) %>% dplyr::select(1:5) %>%  dplyr::rename_at(vars( contains("Incidencia pobreza") ), ~"porc_pobr") %>% dplyr::rename("Código"=2, "Nombre comuna"=3) %>%  dplyr::mutate(Región=rep("")) %>%  dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
 
 # replace comuna= "16103" if strpos(strlower(comuna),"8406")>0
 # replace comuna= "16104" if strpos(strlower(comuna),"8407")>0
@@ -453,8 +464,8 @@ pobr_mult_2011<-readxl::read_excel("Estimacion_tasa_de_pobreza_comunal_2011_(nue
 # replace comuna= "16303" if strpos(strlower(comuna),"8409")>0
 # replace comuna= "16304" if strpos(strlower(comuna),"8417")>0
 # replace comuna= "16305" if strpos(strlower(comuna),"8419")>0
-pobr_mult_2011_2020<-
-rbind.data.frame(pobr_mult_2011,pobr_mult_2013, pobr_mult_2015, pobr_mult_2017, pobr_mult_2020) %>% 
+pobr_mult_2007_2020<-
+rbind.data.frame(pobr_mult_2007, pobr_mult_2008, pobr_mult_2009, pobr_mult_2010, pobr_mult_2011, pobr_mult_2012, pobr_mult_2013, pobr_mult_2014, pobr_mult_2015, pobr_mult_2016, pobr_mult_2017, pobr_mult_2018, pobr_mult_2019, pobr_mult_2020) %>% 
   dplyr::mutate(cod= dplyr::case_when(Código=="16101"~"8401",
                                       Código=="16102"~"8402",
                                       Código=="16103"~"8406",
@@ -479,6 +490,21 @@ rbind.data.frame(pobr_mult_2011,pobr_mult_2013, pobr_mult_2015, pobr_mult_2017, 
                                       T~ Código
                                       ))
 
+Base_fiscalia_v14<-
+Base_fiscalia_v13 %>% 
+  dplyr::mutate(comuna_residencia_cod_rec= as.character(readr::parse_number(comuna_residencia_cod)), anio_ing_tr= lubridate::epiyear(fech_ing)) %>% #glimpse()
+  dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec"="cod", "anio_ing_tr"="anio")) %>% 
+  dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec"="cod"))
+#TO CHECK IF SOME MUNICIPALLITIES DID NOT JOIN
+  #dplyr::filter(is.na(porc_pobr)) %>% dplyr::select(comuna_residencia_cod, anio_ing_tr)
+
+Base_fiscalia_v14_pris<-
+Base_fiscalia_v13_pris %>% 
+  dplyr::mutate(comuna_residencia_cod_rec= as.character(readr::parse_number(comuna_residencia_cod)), anio_ing_tr= lubridate::epiyear(fech_ing)) %>% #glimpse()
+  dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec"="cod", "anio_ing_tr"="anio")) %>% 
+  dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec"="cod"))
+#TO CHECK IF SOME MUNICIPALLITIES DID NOT JOIN
+  #dplyr::filter(is.na(porc_pobr)) %>% dplyr::select(comuna_residencia_cod, anio_ing_tr)  
 ```
 
 
@@ -530,6 +556,30 @@ expRMM_EM(x, d=NULL, lambda = NULL, rate = NULL, k = 2,complete = "tdz", epsilon
 
 <br>
 
+# Multilevel
+
+```{r mlvl1, echo=T, fig.align='center', message=T, error=T, eval=F}
+library(merlin)
+
+
+Base_fiscalia_v14$delta<- ifelse(!is.na(Base_fiscalia_v14$dateofbirth_imp),1,0)
+Base_fiscalia_v14$y<- Base_fiscalia_v14$age_offending_imp-Base_fiscalia_v14$edad_al_egr
+Base_fiscalia_v14$x <- as.numeric(factor(Base_fiscalia_v14$motivodeegreso_mod_imp_rec))
+
+fit <- merlin(
+  model = list(
+    Surv(y, delta) ~ x + rcs(y, df = 3, log = TRUE, event = TRUE)  #M1[comuna_residencia_cod_rec] * 1
+  ),
+  #levels = "comuna_residencia_cod_rec",
+  family = "rp",
+  timevar = "y",
+  data = Base_fiscalia_v14,
+   control = list(ip = 35)
+)
+```
+
+<br>
+
 # Session Info
 
 ```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE}
@@ -573,25 +623,73 @@ initComplete = htmlwidgets::JS(
 # Export
 
 ```{r export, warning=FALSE, echo=T, error=T, eval=T}
-subset(Base_fiscalia_v13, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d")) %>% 
-  dplyr::arrange(hash_key, fech_ing_num_1) %>% 
-  data.table::data.table() %>% 
-  rio::export(file = paste0("fiscalia_mariel_oct_2022_match_SENDA.dta"))
+cont_vars_desc[1]<-ifelse(cont_vars_desc[1]=="edad_al_ing_fmt","edad_al_ing_1",cont_vars_desc[1])
 
-subset(Base_fiscalia_v13_pris, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d")) %>% 
-  dplyr::arrange(hash_key, fech_ing_num_1) %>% 
+library(missRanger)
+
+subset(Base_fiscalia_v14, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod")) %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1)  %>% 
+  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
   data.table::data.table() %>% 
-  rio::export(file = paste0("fiscalia_mariel_oct_2022_match_SENDA_pris.dta"))
+  rio::export(file = paste0("fiscalia_mariel_jan_2023_match_SENDA.dta"))
+
+subset(Base_fiscalia_v14_pris, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación","tipo_de_vivienda_mod")) %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1) %>%   
+  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_jan_2023_match_SENDA_pris.dta"))
+
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+# IMPUTATION
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+
+set.seed(2125)
+Base_fiscalia_v14_miss <-
+subset(Base_fiscalia_v14, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod")) %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1) %>% 
+   missRanger::missRanger(
+                formula = . ~ . - hash_key,
+                num.trees = 200, 
+                returnOOB=T,
+                maxiter=50,
+                verbose = 2, 
+                seed = 2125)
+
+  Base_fiscalia_v14_miss %>% 
+  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_jan_2023_match_SENDA_miss.dta"))
+
+set.seed(2125)
+  Base_fiscalia_v14_pris_miss <-
+subset(Base_fiscalia_v14_pris, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación","tipo_de_vivienda_mod")) %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1) %>% 
+     missRanger::missRanger(
+                formula = . ~ . - hash_key,
+                num.trees = 200, 
+                returnOOB=T,
+                maxiter=50,
+                verbose = 2, 
+                seed = 2125)
+  
+  Base_fiscalia_v14_pris_miss %>%   
+  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_jan_2023_match_SENDA_miss_pris.dta"))
 ```
 
 
 ::: controlly
 ```{r label_to_stata, echo=T, paged.print=TRUE}
 #put name of the file
-file<- "fiscalia_mariel_oct_2022_match_SENDA.dta"
+file<- "fiscalia_mariel_jan_2023_match_SENDA.dta"
 
 export_lab_stata_merge<-
-  tibble::rownames_to_column(data.frame(Hmisc::label(dplyr::select(Base_fiscalia_v13,  all_of(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d"))))))%>% data.frame() %>%
+  tibble::rownames_to_column(data.frame(Hmisc::label(dplyr::select(Base_fiscalia_v13,  all_of(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación"))))))%>% data.frame() %>%
   dplyr::rename("code" = !!names(.[1]), "label" = !!names(.[2]))%>% data.frame()%>%
   dplyr::mutate(first= "cap noi label variable")%>%
   dplyr::mutate(final= paste0(first, " ",code,' "',label,'"'))%>%
@@ -602,7 +700,7 @@ export_lab_stata_merge<-
 
 rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear'),export_lab_stata_merge) %>% knitr::kable("markdown")
 
-write.table(rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear'),export_lab_stata_merge), file = paste0(path,"/_label_var_to_stata.do"), sep = "",row.names = FALSE, quote = FALSE, fileEncoding="UTF-8")
+write.table(rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear'),export_lab_stata_merge), file = paste0(path,"/_label_var_to_stata_jan2023.do"), sep = "",row.names = FALSE, quote = FALSE, fileEncoding="UTF-8")
 ```
 :::
 
@@ -612,7 +710,7 @@ write.table(rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',fi
 
 ```{stata 2, collectcode=F, include=T, error=T, cleanlog=F}
 *should be in the same folder of the .Rmd to work
-cap noi do _label_var_to_stata.do
+cap noi do _label_var_to_stata_jan2023
 ```
 
 </div>

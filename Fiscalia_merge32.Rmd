@@ -896,7 +896,7 @@ Base_fiscalia_v7 %>%
   dplyr::filter(dplyr::case_when((rut_ruc %in% as.character(unlist(dplyr::distinct(dplyr::mutate(ungroup(subset(agrupacion_base,max>1)), rut_ruc=paste0(rut_enc_saf,"_",ruc)),rut_ruc)))) & rn_rut_ruc>1~F,T~T)) %>% 
   dplyr::select(-rn_rut_ruc, -rut_ruc) %>% 
   #Region of the crime, change according
-    dplyr::mutate(obs=dplyr::case_when(region_delito=="No Definido"~glue::glue("{obs};3.3.3a.Not defined value in Region of Crime commission"), is.na(region_delito)~glue::glue("{obs};3.3.3b.Missing value in Region of Crime commission"),T~as.character(region_delito))) %>% 
+    dplyr::mutate(obs=dplyr::case_when(region_delito=="No Definido"~glue::glue("{obs};3.3.3a.Not defined value in Region of Crime commission"), is.na(region_delito)~glue::glue("{obs};3.3.3b.Missing value in Region of Crime commission"),T~as.character(obs))) %>% 
         dplyr::mutate(region_delito_rec= dplyr::case_when(region_delito=="No Definido"~as.character(gls_region), is.na(region_delito)~as.character(gls_region),T~as.character(region_delito))) %>% 
   dplyr::mutate(region_delito_rec= dplyr::case_when(grepl("RM",region_delito_rec)~"Región Metropolitana de Santiago",T~as.character(region_delito_rec)))
 

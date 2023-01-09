@@ -262,7 +262,7 @@ pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stri
 #Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
 
 
-if(!require(survcomp)){try(devtools::install_github("bhklab/survcomp",upgrade ="never"))}
+if(!require(survcomp)){BiocManager::install("survcomp")}
 
 try(webshot::install_phantomjs())
 
@@ -410,7 +410,7 @@ Agrupacion_de_delitos_Fiscalia_Final_26_10_2022_ %>%
 ```
 :::
 
-This new categoriztion was named as `familia_delito_rec_prof`.
+This new categorization was named as `familia_delito_rec_prof`.
 
 ```{r grouped-offenses2, echo=T, fig.align='center', message=T, error=T, eval=T}
 Base_fiscalia_v8<-
@@ -799,10 +799,10 @@ invisible("QUEDA POR LIMPIAR LA BASE DE FISCALIA")
 invisible("Qué hacer con Death, Referral to another treatment, Ongoing treatment")
 
 Base_fiscalia_v12 %>% 
-  dplyr::select(hash_key, fech_nac, fech_nac_rec, motivodeegreso_mod_imp_rec, age_offending_imp, edad_al_ing_1, edad_comision, fec_comision_simple, caseid, crime_code_group_rec_prof, end_type_2, gls_proctermino, s_sentence_1, s_restorative_3, s_kindprison_1) %>% 
+  dplyr::select(hash_key, fech_nac, fech_nac_rec, motivodeegreso_mod_imp_rec, age_offending_imp, edad_al_ing_1, edad_al_egres_1, edad_comision, fec_comision_simple, caseid, crime_code_group_rec_prof, end_type_2, gls_proctermino, s_sentence_1, s_restorative_3, s_kindprison_1) %>% 
 dplyr::filter(hash_key=="1951c4d080cda8b68759d638a840d82f") %>% 
   knitr::kable("markdown", caption="Example of database")
-
+#b24908c527faa1b7bd5a267d5dcabd45
 #23d88c2b8c6da2d8abf3f88b7ce8a4c0 anomalus case
 ```
 
@@ -862,7 +862,7 @@ Base_fiscalia_v12_pris<-
   dplyr::filter(Base_fiscalia_v11_pris, !grepl("Referral|Death|Censored|Ongoing",motivodeegreso_mod_imp))
   
 Base_fiscalia_v12_pris %>% 
-  dplyr::select(hash_key, fech_nac, fech_nac_rec, motivodeegreso_mod_imp_rec, age_offending_imp, edad_al_ing_1, edad_comision, fec_comision_simple, caseid, crime_code_group_rec_prof, end_type_2, gls_proctermino, s_sentence_1, s_restorative_3, s_kindprison_1,prision_fact) %>% 
+  dplyr::select(hash_key, fech_nac, fech_nac_rec, motivodeegreso_mod_imp_rec, age_offending_imp, edad_al_ing_1, edad_al_egres_1, edad_comision, fec_comision_simple, caseid, crime_code_group_rec_prof, end_type_2, gls_proctermino, s_sentence_1, s_restorative_3, s_kindprison_1,prision_fact) %>% 
 dplyr::filter(hash_key=="1951c4d080cda8b68759d638a840d82f") %>% 
   knitr::kable("markdown", caption="Example of database")
 ```
@@ -870,7 +870,7 @@ dplyr::filter(hash_key=="1951c4d080cda8b68759d638a840d82f") %>%
 
 ```{r join2, echo=T, fig.align='center', message=T, error=T, eval=T}
 Base_fiscalia_v12 %>% 
-  dplyr::select(hash_key, fech_nac, fech_nac_rec, motivodeegreso_mod_imp_rec, age_offending_imp, edad_al_ing_1, caseid, crime_code_group_rec_prof, end_type_2, gls_proctermino, s_sentence_1, s_restorative_3, s_kindprison_1) %>% 
+  dplyr::select(hash_key, fech_nac, fech_nac_rec, motivodeegreso_mod_imp_rec, age_offending_imp, edad_al_ing_1, edad_al_egres_1, caseid, crime_code_group_rec_prof, end_type_2, gls_proctermino, s_sentence_1, s_restorative_3, s_kindprison_1) %>% 
     dplyr::group_by(hash_key) %>% 
     count() %>% 
     dplyr::filter(n>1) %>% 
@@ -1068,11 +1068,11 @@ Base_fiscalia_v12b%>%
 ```{r desc, echo=T, fig.align='center', message=T, error=T, eval=T}
 # Treatment status (Early dropout/Late dropout/Treatment completion) 
 
-cont_vars_desc<- c("edad_al_ing_fmt", "edad_ini_cons", "dias_treat_imp_sin_na_1")
+cont_vars_desc<- c("edad_al_ing_1", "edad_ini_cons", "dias_treat_imp_sin_na_1")
 cat_vars_desc<- c("sex", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "compromiso_biopsicosocial", "tenencia_de_la_vivienda_mod", "dg_cie_10_rec", "dg_trs_cons_sus_or", "macrozona", "policonsumo", "tr_modality", "tipo_centro", "condicion_ocupacional_cor", "origen_ingreso_mod", "numero_de_hijos_mod")
 cat_vars_desc_off <- c("n_prev_off", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth")
 
-attr(Base_fiscalia_v13$edad_al_ing_fmt,"label") <- "Age (admission to treatment)"
+attr(Base_fiscalia_v13$edad_al_ing_1,"label") <- "Age (admission to treatment)"
 attr(Base_fiscalia_v13$sex,"label") <- "Sex"
 attr(Base_fiscalia_v13$escolaridad_rec,"label") <- "Educational Attainment"
 attr(Base_fiscalia_v13$sus_principal_mod,"label") <- "Primary Substance (admission to treatment)"
@@ -1129,11 +1129,11 @@ as.data.frame.TableOne(tbone_desc_merge4, smd=T, nonnormal= T)%>%
 ```{r descb, echo=T, fig.align='center', message=T, error=T, eval=T}
 # Treatment status (Early dropout/Late dropout/Treatment completion) 
 
-cont_vars_desc<- c("edad_al_ing_fmt", "edad_ini_cons", "dias_treat_imp_sin_na_1")
+cont_vars_desc<- c("edad_al_ing_1", "edad_ini_cons", "dias_treat_imp_sin_na_1")
 cat_vars_desc<- c("sex", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "compromiso_biopsicosocial", "tenencia_de_la_vivienda_mod", "dg_cie_10_rec", "dg_trs_cons_sus_or", "macrozona", "policonsumo", "tr_modality", "tipo_centro", "condicion_ocupacional_cor", "origen_ingreso_mod", "numero_de_hijos_mod")
 cat_vars_desc_off <- c("n_prev_off", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth")
 
-attr(Base_fiscalia_v13_pris$edad_al_ing_fmt,"label") <- "Age (admission to treatment)"
+attr(Base_fiscalia_v13_pris$edad_al_ing_1,"label") <- "Age (admission to treatment)"
 attr(Base_fiscalia_v13_pris$sex,"label") <- "Sex"
 attr(Base_fiscalia_v13_pris$escolaridad_rec,"label") <- "Educational Attainment"
 attr(Base_fiscalia_v13_pris$sus_principal_mod,"label") <- "Primary Substance (admission to treatment)"
@@ -1337,7 +1337,7 @@ fortify(mot_egreso_fit2_pris, fun = "cumhaz") %>%
 #https://search.r-project.org/CRAN/refmans/adjustedCurves/html/surv_iptw_cox.html
 #https://cran.r-project.org/web/packages/RISCA/RISCA.pdf
 
-coxfit <- coxph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud + n_off_oth, ties="efron", data= Base_fiscalia_v13)
+coxfit <- coxph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_1 + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud + n_off_oth, ties="efron", data= Base_fiscalia_v13)
 
 ggcoxdiagnostics(coxfit, type = "schoenfeld")
 
@@ -1354,7 +1354,7 @@ ggsave("_figs/prueba.png", dpi=640, height=15, width= 15)
 #https://search.r-project.org/CRAN/refmans/adjustedCurves/html/surv_iptw_cox.html
 #https://cran.r-project.org/web/packages/RISCA/RISCA.pdf
 
-coxfit2 <- coxph(Surv(edad_al_egres_imp,  age_offending_imp, !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud + n_off_oth, ties="efron", data= Base_fiscalia_v13)#[1:500,]
+coxfit2 <- coxph(Surv(edad_al_egres_imp,  age_offending_imp, !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_1 + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud + n_off_oth, ties="efron", data= Base_fiscalia_v13)#[1:500,]
 
 ggcoxdiagnostics(coxfit2, type = "schoenfeld")
 
@@ -1373,7 +1373,7 @@ warning(paste0("Number of users with age of offending lower than age at discharg
 #https://search.r-project.org/CRAN/refmans/adjustedCurves/html/surv_iptw_cox.html
 #https://cran.r-project.org/web/packages/RISCA/RISCA.pdf
 
-coxfit_pris <- coxph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud + n_off_oth, ties="efron", data= Base_fiscalia_v13_pris)#[1:250,]
+coxfit_pris <- coxph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_1 + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud + n_off_oth, ties="efron", data= Base_fiscalia_v13_pris)#[1:250,]
 
 ggcoxdiagnostics(coxfit_pris, type = "schoenfeld")
 
@@ -1390,7 +1390,7 @@ ggsave("_figs/prueba_pris.png", dpi=640, height=15, width= 15)
 #https://search.r-project.org/CRAN/refmans/adjustedCurves/html/surv_iptw_cox.html
 #https://cran.r-project.org/web/packages/RISCA/RISCA.pdf
 
-coxfit_pris2 <- coxph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud + n_off_oth, ties="efron", data= Base_fiscalia_v13_pris)#[1:250,]
+coxfit_pris2 <- coxph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_1 + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud + n_off_oth, ties="efron", data= Base_fiscalia_v13_pris)#[1:250,]
 
 ggcoxdiagnostics(coxfit_pris2, type = "schoenfeld")
 
@@ -1484,27 +1484,27 @@ knitr::kable("markdown", caption="Summary descriptives, distinct IDs by Case ID 
 
 #_#_#_#_#_#_#_#_#_
 invisible("3.Cox, collinearity")
-#global covs_3 "i.caus_disch_mod_imp_rec edad_al_ing_fmt edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud "
+#global covs_3 "i.caus_disch_mod_imp_rec edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud "
 
 library(rms) 
 
-f1 <- cph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
+f1 <- cph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_1 + edad_ini_cons + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
 warning("X matrix deemed to be singular; variable n_off_oth")
 
 cvif <- rms::vif(f1)
 
-f2 <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
+f2 <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_1 + edad_ini_cons + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
 warning("X matrix deemed to be singular; variable n_off_oth")
 
 cvif2 <- rms::vif(f2)
 
 
-f3 <- cph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
+f3 <- cph(Surv(age_offending_imp- edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_1 + edad_ini_cons + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
 warning("X matrix deemed to be singular; variable n_off_oth")
 
 cvif3 <- rms::vif(f3)
 
-f4 <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
+f4 <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_1 + edad_ini_cons + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
 warning("X matrix deemed to be singular; variable n_off_oth")
 
 cvif4 <- rms::vif(f4)
@@ -1552,10 +1552,10 @@ Base_fiscalia_v12_pris %>%
 ```
 
 ```{r com5, echo=T, fig.align='center', message=T, error=T, eval=F}
-# stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_fmt edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+# stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
 # estimates store df10_stipw
 
-f4 <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + sex+ escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + policonsumo + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T) #origen_ingreso_mod + numero_de_hijos_mod +  = no estaban en Stata
+f4 <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_1 + edad_ini_cons + sex+ escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + policonsumo + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T) #origen_ingreso_mod + numero_de_hijos_mod +  = no estaban en Stata
 # falta clas
 ```
 
@@ -1818,7 +1818,7 @@ list_codebook <- list(
 
 hash_key = "Hash (ID)",
   
-edad_al_ing_fmt =  "Age (admission to treatment)",
+edad_al_ing_1 =  "Age (admission to treatment)",
 edad_ini_cons =  "Age of Onset of Substance Use", # I added it
 dias_treat_imp_sin_na_1 =  "Days in treatment",
 sex =  "Sex",
@@ -1840,7 +1840,7 @@ origen_ingreso_mod = "Motive of Admission to Treatment",
 numero_de_hijos_mod = "Number of Children ",
 
 motivodeegreso_mod_imp_rec = "Baseline treatment status",
-edad_al_ing_fmt = "Age at admission (mod)",
+edad_al_ing_1 = "Age at admission (mod)",
 fech_egres_imp = "Date of discharge",
 
 n_prev_off =  "Pre-treatment Criminality (Dich.)",

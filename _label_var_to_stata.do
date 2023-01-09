@@ -1,7 +1,7 @@
 *clear all
-cap noi use "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\fiscalia_mariel_oct_2022_match_SENDA.dta", clear
+cap noi use "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\fiscalia_mariel_oct_2022_match_SENDA.dta", clear
 cap noi label variable hash_key "Hash (ID)"
-cap noi label variable edad_al_ing_fmt "Age (admission to treatment)"
+cap noi label variable edad_al_ing_1 "Age (admission to treatment)"
 cap noi label variable edad_ini_cons "Age of Onset of Substance Use"
 cap noi label variable dias_treat_imp_sin_na_1 "Days in treatment"
 cap noi label variable sex "Sex"
@@ -33,5 +33,5 @@ cap noi label variable fech_egres_imp "Date of discharge"
 cap noi label variable cut_com_del "Binned comission date"
 cap noi label variable cut_fec_nac "Binned birth date"
 cap noi label variable offender_d ""
-cap noi save "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\fiscalia_mariel_oct_2022_match_SENDA.dta", replace
-cap noi save "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\fiscalia_mariel_oct_2022_match_SENDA.dta", replace
+cap noi save "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\fiscalia_mariel_oct_2022_match_SENDA.dta", replace
+cap noi save "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\fiscalia_mariel_oct_2022_match_SENDA.dta", replace

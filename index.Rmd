@@ -48,3 +48,7 @@ output:
 - [Descriptive glimpse and initial analysis (Imprisonment only)](analisis_mariel_nov_2022_stata_pris.html)
 
 - [Poster (idea)](pres_dic_22.html)
+
+- [Material for SER 2023 (step 0: aalen-johansen, selection of IPWeights & schoenfeld residuals)](an_ser_2023_step_0.html)
+
+- [Material for SER 2023 (step 1: parametric partitioned survival models & multistate models)](an_ser_2023_step_1.html)

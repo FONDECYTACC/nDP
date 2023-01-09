@@ -1,0 +1,18 @@
+StataFileTM:00001:01100:GREC:                          :
+00007:00007:00001:
+*! classname: twowaygraph_g
+*! family: twoway
+*! date:  7 Jan 2023
+*! time: 17:25:02
+*! graph_scheme: sj
+*! naturallywhite: 1
+*! end
+
+// File created by Graph Editor Recorder.
+// Edit only if you know what you are doing.
+
+.plotregion1.plot4.style.editstyle marker(symbol(triangle_hollow)) editcopy
+// plot4 edits
+
+
+// <end>

@@ -1,0 +1,19 @@
+StataFileTM:00001:01100:GREC:                          :
+00007:00007:00001:
+*! classname: twowaygraph_g
+*! family: twoway
+*! date:  8 Jan 2023
+*! time: 18:46:06
+*! graph_scheme: s2color
+*! naturallywhite: 1
+*! end
+
+// File created by Graph Editor Recorder.
+// Edit only if you know what you are doing.
+
+.yaxis1.major.num_rule_ticks = 26
+.yaxis1.edit_tick 16 17 `"cacaaaaa"', tickset(major)
+// yaxis1 edits
+
+
+// <end>
