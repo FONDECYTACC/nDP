@@ -416,6 +416,7 @@ frame example_b: stdescribe, weight
 
 **##############################**
 ### GET WEIGHTED BALANCE TABLES AND PROPORTIONAL HAZARDS FROM THE SELECTED WEIGHTS
+**##############################**
 
 ~~~~
 <<dd_do>>
@@ -484,21 +485,71 @@ cap drop _t0
 cap drop _start
 
 cap gen _start= 0
-stset diff1 [pw=HAW], enter(_start) failure(comp==1) //*scale(12) 
+stset diff1 [pw=HAW], enter(_start) failure(comp==1) id(id) //*scale(12) 
 
 stsum, by (poly)
+scalar ir_total= round(r(ir),.01) 
+global ir_total= ir_total
 <</dd_do>>
 ~~~~	
+
+
+We explored the inicidence rate ratios (IRR) of polysubstance use.
+
+~~~~
+<<dd_do>>
+stptime, title(person-years) per(1000) by(poly)
+
+stmh poly
+scalar poly_rr= round( r(rratio), .01)
+scalar poly_rr_lb= round(r(lb),.01) 
+scalar poly_rr_ub= round(r(ub),.01) 
+local ir1= poly_rr
+local ir2= poly_rr_lb
+local ir3= poly_rr_ub
+global poly_irr " `title': IRR `ir1' (95%IC `ir2' - `ir3') "
+<</dd_do>>
+~~~~
+
+- The weighted IRR of treatment completion was <<dd_display: "$poly_irr">> per 1,000 person-years
+
+~~~~
+<<dd_do>>
+
+*set trace on
+local stname `" "2_1" "' 
+local titl `" "Poly vs No-Poly" "' 
+foreach s of local stname {
+	gettoken title titl: titl
+cap noi qui ir _d poly _t
+scalar ir_`s' =round(r(irr),.01)
+*di ir_`s'
+scalar ir_`s'_lb =round(r(lb_irr),.01) 
+*di ir_`s'_lb
+scalar ir_`s'_ub =round(r(ub_irr),.01)
+*di ir_`s'_ub
+local ir1= ir_`s'
+local ir2= ir_`s'_lb
+local ir3= ir_`s'_ub
+*di  in gr _col(13) " `title': IRR `ir1' (IC 95% `ir2' - `ir3') "
+global irr_`s' " `title': IRR (non weighted) `ir1' (IC 95% `ir2' - `ir3') "
+global ir_`s' "`ir1' (IC 95% `ir2' - `ir3')"
+}	
+<</dd_do>>
+~~~~
+
+- <<dd_display: "$irr_2_1">>, so patients with Polysubstance use had a lower incidence rate than patients with no polysubstance use
+
 
 Get schoenfeld residuals
 
 ~~~~
 <<dd_do>>
-stcox  poly , robust nolog schoenfeld(sch*) scaledsch(sca*)
-estat phtest, log detail
-scalar chi2_scho_test = r(chi2)
+qui stcox  poly , robust nolog schoenfeld(sch*) scaledsch(sca*)
+qui estat phtest, log detail
+qui scalar chi2_scho_test = r(chi2)
 
-mat mat_scho_test = r(phtest)
+qui mat mat_scho_test = r(phtest)
 
 esttab matrix(mat_scho_test) using "mat_scho_test_ser23.csv", replace
 esttab matrix(mat_scho_test) using "mat_scho_test_ser23.html", replace
@@ -507,6 +558,7 @@ esttab matrix(mat_scho_test) using "mat_scho_test_ser23.html", replace
 ~~~~
 
 <<dd_include: "${pathdata2}mat_scho_test_ser23.html" >>
+
 
 ~~~~
 <<dd_do>>
@@ -528,9 +580,9 @@ mat smd_before = r(usmeandiff)
 
 // Change legends
 gr_edit .legend.plotregion1.label[1].text = {}
-gr_edit .legend.plotregion1.label[1].text.Arrpush Before Adj.
+gr_edit .legend.plotregion1.label[1].text.Arrpush Before Adjustment
 gr_edit .legend.plotregion1.label[2].text = {}
-gr_edit .legend.plotregion1.label[2].text.Arrpush After Adj.
+gr_edit .legend.plotregion1.label[2].text.Arrpush After Adjustment
 
 //change image background 
 gr_edit style.editstyle boxstyle(shadestyle(color(gs16))) editcopy
@@ -541,6 +593,13 @@ gr_edit .plotregion1.plot1.style.editstyle marker(fillcolor(gs7%60)) editcopy
 gr_edit .plotregion1.plot1.style.editstyle marker(linestyle(color(gs7%60))) editcopy
 gr_edit .plotregion1.plot2.style.editstyle marker(fillcolor(gs3%60)) editcopy
 gr_edit .plotregion1.plot2.style.editstyle marker(linestyle(color(gs3%60))) editcopy
+
+// modify label
+gr_edit .legend.style.editstyle boxstyle(linestyle(color(none))) editcopy //.legend.Edit , style(rows(2)) style(cols(0)) keepstyles 
+// modify label
+gr_edit .xaxis1.title.text = {}
+gr_edit .xaxis1.title.text.Arrpush Standardardized differences
+
 
 /*
 gr_edit .yaxis1.major.num_rule_ticks = 26
@@ -662,6 +721,56 @@ forvalues i = 1/3 {
 	gr_edit .plotregion1.textbox`i'.style.editstyle margin(bottom) editcopy
 }
 
+forvalues i = 5/7 {
+gr_edit .plotregion1.plot`i'.style.editstyle area(linestyle(color(black))) editcopy
+gr_edit .plotregion1.plot`i'.style.editstyle marker(fillcolor(black)) editcopy
+gr_edit .plotregion1.plot`i'.style.editstyle marker(linestyle(color(black))) editcopy
+}
+
+gr_edit .plotregion1.textbox1.text = {}
+gr_edit .plotregion1.textbox1.text.Arrpush `"Admission to"'
+gr_edit .plotregion1.textbox1.text.Arrpush `"baseline treatment"'
+gr_edit .plotregion1.textbox2.text = {}
+gr_edit .plotregion1.textbox2.text.Arrpush `"Treatment"'
+gr_edit .plotregion1.textbox2.text.Arrpush `"Completion"'
+gr_edit .plotregion1.textbox3.text = {}
+gr_edit .plotregion1.textbox3.text.Arrpush `"Contact with"'
+gr_edit .plotregion1.textbox3.text.Arrpush `"the justice system"'
+gr_edit .plotregion1.textbox3.text.Arrpush `"after baseline tr."'
+//move down third label
+gr_edit .plotregion1.textbox3.DragBy -.0030521185101971 0
+gr_edit .plotregion1.textbox3.DragBy -.0030521185101971 0
+gr_edit .plotregion1.textbox3.DragBy -.0030521185101971 0
+
+//labels of transitions
+gr_edit .plotregion1.textbox15.text = {}
+gr_edit .plotregion1.textbox15.text.Arrpush `"{it:h(3)}{sub:23}"'
+gr_edit .plotregion1.textbox13.text = {}
+gr_edit .plotregion1.textbox13.text.Arrpush `"{it:h(1)}{sub:12}"'
+gr_edit .plotregion1.textbox14.text = {}
+gr_edit .plotregion1.textbox14.text.Arrpush `"{it:h(2)}{sub:13}"'
+
+//warning: if the matrix or events change, change these numbers
+gr_edit .plotregion1.textbox4.text = {}
+gr_edit .plotregion1.textbox4.text.Arrpush 59,763
+gr_edit .plotregion1.textbox7.text = {}
+gr_edit .plotregion1.textbox7.text.Arrpush 28,957
+gr_edit .plotregion1.textbox5.text = {}
+gr_edit .plotregion1.textbox5.text.Arrpush 16,475
+gr_edit .plotregion1.textbox8.text = {}
+gr_edit .plotregion1.textbox8.text.Arrpush 13,539
+gr_edit .plotregion1.textbox6.text = {}
+gr_edit .plotregion1.textbox6.text.Arrpush 0
+gr_edit .plotregion1.textbox9.text = {}
+gr_edit .plotregion1.textbox9.text.Arrpush 17,267
+
+
+graph export "transmat_ser23.png", as(png) replace width(2000) height(1000)
+graph export "transmat_ser23.eps", as(eps) replace
+graph export "transmat_ser23.pdf", as(pdf) replace //*width(2000) height(2000) orientation(landscape)
+*graph export "_Appendix2_Graph_Mean_SE_g32.svg", as(svg) replace height(20000) fontface (Helvetica)
+graph save "transmat_ser23", asis replace
+
 *mat li freq_trans
 *file:///G:/Mi%20unidad/Alvacast/SISTRAT%202019%20(github)/_supp_mstates/stata/crowther2017%20(1).pdf										
 gen _time = _stop - _start
@@ -711,7 +820,7 @@ stset _stop [pw=HAW], enter(_start) failure(_status==1) scale(365.25)
 =============================================================================
 
 Generated an Aalen-Johanssen estimator to obtain the transition probabilities of the data from the time 0 (from admission).
-For this, we separated the transition probabilities according to the setting at baseline.
+For this, we separated the transition probabilities according to polysubstance use at baseline.
 
 ~~~~
 <<dd_do>>

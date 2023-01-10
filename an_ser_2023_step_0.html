@@ -95,13 +95,13 @@ C:\Users\CISS Fondecyt\ado\plus\p\pbalchk.ado
 
 </code></pre>
 <h1><a href="#exercise" id="exercise">Exercise</a></h1>
-<p>Date created: 17:28:44  9 Jan 2023.</p>
+<p>Date created: 00:14:27 10 Jan 2023.</p>
 <p>Get the folder</p>
 <pre><code>
 C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
 
 
-Fecha:  9 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
+Fecha: 10 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
 
 </code></pre>
 <head>
@@ -114,7 +114,7 @@ Fecha:  9 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
 </script>
 </head>
 <p>Path data= ;</p>
-<p>Tiempo:  9 Jan 2023, considerando un SO Windows</p>
+<p>Tiempo: 10 Jan 2023, considerando un SO Windows</p>
 <p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA_pris.dta</p>
 <p>=============================================================================</p>
 <h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
@@ -1085,6 +1085,7 @@ failures               31385.522    .2767659           0          0          1
 </code></pre>
 <p><strong>##############################</strong></p>
 <h3><a href="#get-weighted-balance-tables-and-proportional-hazards-from-the-selected-weights" id="get-weighted-balance-tables-and-proportional-hazards-from-the-selected-weights">GET WEIGHTED BALANCE TABLES AND PROPORTIONAL HAZARDS FROM THE SELECTED WEIGHTS</a></h3>
+<p><strong>##############################</strong></p>
 <pre><code>. quietly tab sus_prin_mod, generate(sus_prin_mod_cat) 
 
 . quietly tab fr_sus_prin, gen(fr_sus_prin_cat)
@@ -1252,10 +1253,11 @@ Note: _cons estimates baseline odds.
 . 
 . cap gen _start= 0
 
-. stset diff1 [pw=HAW], enter(_start) failure(comp==1) //*scale(12) 
+. stset diff1 [pw=HAW], enter(_start) failure(comp==1) id(id) //*scale(12) 
 
+                id:  id
      failure event:  comp == 1
-obs. time interval:  (0, diff1]
+obs. time interval:  (diff1[_n-1], diff1]
  enter on or after:  time _start
  exit on or before:  failure
             weight:  [pweight=HAW]
@@ -1265,7 +1267,8 @@ obs. time interval:  (0, diff1]
           0  exclusions
 ------------------------------------------------------------------------------
      59,763  observations remaining, representing
-     16,475  failures in single-record/single-failure data
+     59,763  subjects
+     16,475  failures in single-failure-per-subject data
  223,317.35  total analysis time at risk and under observation
                                                 at risk from t =         0
                                      earliest observed entry t =         0
@@ -1277,6 +1280,7 @@ obs. time interval:  (0, diff1]
          failure _d:  comp == 1
    analysis time _t:  diff1
   enter on or after:  time _start
+                 id:  id
              weight:  [pweight=HAW]
 
          |               Incidence     Number of   |------ Survival time -----|
@@ -1287,58 +1291,108 @@ Polysubs |  234,271.937   .0674141      59753.28   1.761644         .         .
 ---------+---------------------------------------------------------------------
    Total |  413,959.253   .0759329        113401   1.534247         .         .
 
+. scalar ir_total= round(r(ir),.01) 
+
+. global ir_total= ir_total
+
 </code></pre>
-<p>Get schoenfeld residuals</p>
-<pre><code>. stcox  poly , robust nolog schoenfeld(sch*) scaledsch(sca*)
+<p>We explored the inicidence rate ratios (IRR) of polysubstance use.</p>
+<pre><code>. stptime, title(person-years) per(1000) by(poly)
 
          failure _d:  comp == 1
    analysis time _t:  diff1
   enter on or after:  time _start
+                 id:  id
              weight:  [pweight=HAW]
-(sum of wgt is 113,400.960795996)
 
-Cox regression -- Breslow method for ties
+      poly | person-years   Failures        Rate   [95% Conf. Interval]
+-----------+-----------------------------------------------------------
+ No poly~e |    179687.32    15639.9   87.039487   83.53578    90.69968
+ Polysub~e |    234271.94    15793.2   67.414129   65.88591    68.98316
+-----------+-----------------------------------------------------------
+     Total |    413959.25    31433.1    75.93291   74.21936    77.69024
 
-No. of subjects      =      113,401             Number of obs    =      59,763
-No. of failures      =       31,433
-Time at risk         =  413959.2528
-                                                Wald chi2(1)     =       41.88
-Log pseudolikelihood =   -178716.62             Prob &gt; chi2      =      0.0000
-
-------------------------------------------------------------------------------
-             |               Robust
-          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
--------------+----------------------------------------------------------------
-        poly |   .8734855   .0182567    -6.47   0.000      .838426    .9100111
-------------------------------------------------------------------------------
-
-. estat phtest, log detail
-
-      Test of proportional-hazards assumption
-
-      Time:  Log(t)
-      ----------------------------------------------------------------
-                  |       rho            chi2       df       Prob&gt;chi2
-      ------------+---------------------------------------------------
-      poly        |     -0.02028        11.03        1         0.0009
-      ------------+---------------------------------------------------
-      global test |                     11.03        1         0.0009
-      ----------------------------------------------------------------
-
-note: robust variance-covariance matrix used.
-
-. scalar chi2_scho_test = r(chi2)
+Note: The jackknife was used to calculate confidence intervals.
 
 . 
-. mat mat_scho_test = r(phtest)
+. stmh poly
+
+         failure _d:  comp == 1
+   analysis time _t:  diff1
+  enter on or after:  time _start
+                 id:  id
+             weight:  [pweight=HAW]
+
+Mantel-Haenszel estimate of the rate ratio
+  comparing poly==1 vs. poly==0
+
+------------------------------------------------------------------------
+    Rate ratio         chi2         P&gt;chi2          [95% Conf. Interval]
+------------------------------------------------------------------------
+         0.775       515.80         0.0000              0.758      0.792
+------------------------------------------------------------------------
+Warning: pweights used; confidence intervals and p-values may be wrong.
+
+. scalar poly_rr= round( r(rratio), .01)
+
+. scalar poly_rr_lb= round(r(lb),.01) 
+
+. scalar poly_rr_ub= round(r(ub),.01) 
+
+. local ir1= poly_rr
+
+. local ir2= poly_rr_lb
+
+. local ir3= poly_rr_ub
+
+. global poly_irr &quot; `title': IRR `ir1' (95%IC `ir2' - `ir3') &quot;
+
+</code></pre>
+<ul>
+<li>The weighted IRR of treatment completion was  : IRR .77 (95%IC .76 - .79)  per 1,000 person-years</li>
+</ul>
+<pre><code>. 
+. *set trace on
+. local stname `&quot; &quot;2_1&quot; &quot;' 
+
+. local titl `&quot; &quot;Poly vs No-Poly&quot; &quot;' 
+
+. foreach s of local stname {
+  2.         gettoken title titl: titl
+  3. cap noi qui ir _d poly _t
+  4. scalar ir_`s' =round(r(irr),.01)
+  5. *di ir_`s'
+. scalar ir_`s'_lb =round(r(lb_irr),.01) 
+  6. *di ir_`s'_lb
+. scalar ir_`s'_ub =round(r(ub_irr),.01)
+  7. *di ir_`s'_ub
+. local ir1= ir_`s'
+  8. local ir2= ir_`s'_lb
+  9. local ir3= ir_`s'_ub
+ 10. *di  in gr _col(13) &quot; `title': IRR `ir1' (IC 95% `ir2' - `ir3') &quot;
+. global irr_`s' &quot; `title': IRR (non weighted) `ir1' (IC 95% `ir2' - `ir3') &quot;
+ 11. global ir_`s' &quot;`ir1' (IC 95% `ir2' - `ir3')&quot;
+ 12. }       
+
+</code></pre>
+<ul>
+<li>Poly vs No-Poly: IRR (non weighted) .5 (IC 95% .49 - .52) , so patients with Polysubstance use had a lower incidence rate than patients with no polysubstance use</li>
+</ul>
+<p>Get schoenfeld residuals</p>
+<pre><code>. qui stcox  poly , robust nolog schoenfeld(sch*) scaledsch(sca*)
+
+. qui estat phtest, log detail
+
+. qui scalar chi2_scho_test = r(chi2)
+
+. 
+. qui mat mat_scho_test = r(phtest)
 
 . 
 . esttab matrix(mat_scho_test) using &quot;mat_scho_test_ser23.csv&quot;, replace
-(note: file mat_scho_test_ser23.csv not found)
 (output written to mat_scho_test_ser23.csv)
 
 . esttab matrix(mat_scho_test) using &quot;mat_scho_test_ser23.html&quot;, replace
-(note: file mat_scho_test_ser23.html not found)
 (output written to mat_scho_test_ser23.html)
 
 . 
@@ -1413,11 +1467,11 @@ Mahalonobis Distance between mean vectors:
 . // Change legends
 . gr_edit .legend.plotregion1.label[1].text = {}
 
-. gr_edit .legend.plotregion1.label[1].text.Arrpush Before Adj.
+. gr_edit .legend.plotregion1.label[1].text.Arrpush Before Adjustment
 
 . gr_edit .legend.plotregion1.label[2].text = {}
 
-. gr_edit .legend.plotregion1.label[2].text.Arrpush After Adj.
+. gr_edit .legend.plotregion1.label[2].text.Arrpush After Adjustment
 
 . 
 . //change image background 
@@ -1435,6 +1489,16 @@ Mahalonobis Distance between mean vectors:
 
 . gr_edit .plotregion1.plot2.style.editstyle marker(linestyle(color(gs3%60))) editcopy
 
+. 
+. // modify label
+. gr_edit .legend.style.editstyle boxstyle(linestyle(color(none))) editcopy //.legend.Edit , style(rows(2)) style(cols(0)) keepstyles 
+
+. // modify label
+. gr_edit .xaxis1.title.text = {}
+
+. gr_edit .xaxis1.title.text.Arrpush Standardardized differences
+
+. 
 . 
 . /*
 &gt; gr_edit .yaxis1.major.num_rule_ticks = 26
@@ -1544,6 +1608,46 @@ file pbal2_mod.gph saved
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(file transmat_ser23.png written in PNG format)
+
+(file transmat_ser23.eps written in EPS format)
+
+(file transmat_ser23.pdf written in PDF format)
+
+file transmat_ser23.gph saved
+
+
+
+
+
+
      failure event:  _status == 1
 obs. time interval:  (0, _stop]
  enter on or after:  time _start
@@ -1583,7 +1687,7 @@ obs. time interval:  (0, _stop]
 <p>=============================================================================</p>
 <h2><a href="#aalen-johanssen-non-parametric-transition-probabilities" id="aalen-johanssen-non-parametric-transition-probabilities">Aalen-Johanssen, Non-parametric transition probabilities</a></h2>
 <p>=============================================================================</p>
-<p>Generated an Aalen-Johanssen estimator to obtain the transition probabilities of the data from the time 0 (from admission). For this, we separated the transition probabilities according to the setting at baseline.</p>
+<p>Generated an Aalen-Johanssen estimator to obtain the transition probabilities of the data from the time 0 (from admission). For this, we separated the transition probabilities according to polysubstance use at baseline.</p>
 <pre><code>. *http://fmwww.bc.edu/repec/bocode/m/msaj.ado
 . msaj, transmatrix(mat_obs_states) by(poly) ci
 
@@ -1816,7 +1920,7 @@ obs. time interval:  (0, _stop]
 <tr><td>5_yrs       </td><td>         2.8</td><td>         2.8</td><td>         4.1</td><td>         3.8</td></tr>
 <tr><td colspan=5><hr></td></tr>
 </table>
-<p>Saved at= 17:52:43  9 Jan 2023</p>
+<p>Saved at= 00:38:20 10 Jan 2023</p>
 <pre><code>
 
 
