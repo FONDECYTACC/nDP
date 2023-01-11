@@ -1,0 +1,102 @@
+StataFileTM:00001:01100:GREC:                          :
+00007:00007:00001:
+*! classname: twowaygraph_g
+*! family: twoway
+*! date: 10 Jan 2023
+*! time: 23:55:16
+*! graph_scheme: s2color
+*! naturallywhite: 1
+*! end
+
+// File created by Graph Editor Recorder.
+// Edit only if you know what you are doing.
+
+.note.text = {}
+.note.text.Arrpush Note: Red lines depict standardized differences of -0.15 and +0.15
+// note edits
+
+.note.DragBy -.2314887155038407 -63.1964193325486
+// note reposition
+
+.title.style.editstyle size(medlarge) editcopy
+.title.text = {}
+.title.text.Arrpush Figure 1. Graphical Representation of SMDs
+.title.style.editstyle color(black) editcopy
+// title edits
+
+.title.style.editstyle box_alignment(nwest) editcopy
+// title compass position
+
+.title.style.editstyle horizontal(left) editcopy
+// title justification
+
+.title.xoffset = -5
+// title edits
+
+.title.xoffset = -55
+// title edits
+
+.title.xoffset = -10
+// title edits
+
+.title.xoffset = -55
+// title edits
+
+// title edits
+
+.title.DragBy .4629774310076951 0
+// title reposition
+
+.title.DragBy .4629774310076483 0
+// title reposition
+
+.title.DragBy 0 -.4629774310076483
+// title reposition
+
+.title.DragBy 0 -.4629774310076873
+// title reposition
+
+.title.DragBy 0 -.4629774310076951
+// title reposition
+
+.title.DragBy 0 -.4629774310076873
+// title reposition
+
+.title.DragBy 0 -.462977431007656
+// title reposition
+
+.title.DragBy 0 -.4629774310076873
+// title reposition
+
+.title.DragBy 0 -.4629774310076951
+// title reposition
+
+.title.DragBy 0 -.4629774310076873
+// title reposition
+
+.title.DragBy 0 -.4629774310076483
+// title reposition
+
+.title.DragBy 0 -.4629774310076951
+// title reposition
+
+.title.DragBy 0 -.4629774310076873
+// title reposition
+
+.title.DragBy 0 -.4629774310076951
+// title reposition
+
+.title.DragBy 0 -.4629774310076951
+// title reposition
+
+.title.DragBy 0 -.4629774310076483
+// title reposition
+
+.title.DragBy 0 -.4629774310076873
+// title reposition
+
+.title.DragBy 0 -.4629774310076951
+// title reposition
+
+
+// <end>

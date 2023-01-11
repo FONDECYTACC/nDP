@@ -79,7 +79,7 @@ We open the files
 
 ~~~~
 <<dd_do>>
-use "ser_2023_1.dta", clear
+use "ser_2023_0.dta", clear
 <</dd_do>>
 ~~~~
 
@@ -506,5 +506,95 @@ dyndoc "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\SER 2023
 copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_1.html" "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\an_ser_2023_step_1.html", replace
 
 _outputs
+
+graph combine "transmat_ser23.gph" "pbal2_mod.gph", ///
+colfirst iscale(*.6) imargin(tiny) graphregion(color(gs16))  /// // ycommon xcommon // l1(Differences in transition probabilities, size(medium)) b1(Time since admission (in years), size(medium)) ///
+name(comb_ser23, replace)
+
+
+
+// File created by Graph Editor Recorder.
+// Edit only if you know what you are doing.
+gr_edit .plotregion1.graph1.title.style.editstyle color(black) editcopy
+gr_edit .plotregion1.graph1.title.text = {}
+gr_edit .plotregion1.graph1.title.text.Arrpush A
+// title edits
+gr_edit .plotregion1.graph1.title.text = {}
+gr_edit .plotregion1.graph1.title.text.Arrpush `"A) Multistate scheme"'
+// title edits
+gr_edit .plotregion1.graph2.title.xoffset = 0
+gr_edit .plotregion1.graph2.title.yoffset = 0
+// title edits
+gr_edit .plotregion1.graph2.title.text = {}
+gr_edit .plotregion1.graph2.title.text.Arrpush B
+// title edits
+gr_edit .plotregion1.graph2.title.text = {}
+gr_edit .plotregion1.graph2.title.text.Arrpush `"B) Graphical representation of SMDs"'
+// title edits
+gr_edit .plotregion1.graph2.note.xoffset = 0
+// note edits
+gr_edit .plotregion1.graph1.plotregion1.style.editstyle inner_boxstyle(linestyle(align(outside))) editcopy
+// plotregion1 edits
+gr_edit .plotregion1.graph1.plotregion1.style.editstyle inner_boxstyle(linestyle(align(inside))) editcopy
+// plotregion1 edits
+// plotregion1 edits
+gr_edit .plotregion1.graph1.plotregion1.style.editstyle margin(zero) editcopy
+// plotregion1 margin
+// plotregion1 margin
+gr_edit .plotregion1.graph2.dragable = 1
+// graph2 edits
+gr_edit .plotregion1.graph2.style.editstyle margin(zero) editcopy
+gr_edit .plotregion1.graph2.style.editstyle declared_xsize(6) editcopy
+// graph2 edits
+gr_edit .plotregion1.graph2.style.editstyle declared_xsize(7) editcopy
+// graph2 size
+gr_edit .plotregion1.graph1.dragable = 1
+// graph1 edits
+gr_edit .plotregion1.graph1.style.editstyle declared_xsize(6) editcopy
+// graph1 size
+gr_edit .plotregion1.graph1.style.editstyle declared_xsize(9) editcopy
+// graph1 size
+gr_edit .plotregion1.graph2.yaxis1.style.editstyle majorstyle(tickstyle(textstyle(size(small)))) editcopy
+// yaxis1 size
+gr_edit .plotregion1.graph2.title.style.editstyle margin(small) editcopy
+// title margin
+gr_edit .plotregion1.graph2.style.editstyle declared_xsize(9) editcopy
+// graph2 size
+gr_edit .plotregion1.graph2.xoffset = -20
+// graph2 edits
+gr_edit .plotregion1.graph2.xoffset = 20
+// graph2 edits
+gr_edit .plotregion1.graph2.DragBy 0 -17.59314237829193
+// graph2 reposition
+gr_edit .plotregion1.graph2.xoffset = -5
+// graph2 edits
+gr_edit .plotregion1.graph2.style.editstyle declared_xsize(11) editcopy
+// graph2 size
+gr_edit .plotregion1.graph1.style.editstyle declared_xsize(11) editcopy
+// graph1 size
+gr_edit .plotregion1.graph2.style.editstyle boxstyle(linestyle(width(none))) editcopy
+// graph2 width
+gr_edit .plotregion1.graph2.yaxis1.style.editstyle majorstyle(tickstyle(textstyle(size(medsmall)))) editcopy
+// yaxis1 size
+gr_edit .plotregion1.graph2.title.style.editstyle size(large) editcopy
+// title size
+gr_edit .plotregion1.graph2.note.style.editstyle size(medsmall) editcopy
+// note size
+gr_edit .plotregion1.graph2.note.DragBy 0 -4.861263025580612
+// note reposition
+gr_edit .plotregion1.graph2.note.xoffset = -20
+// note edits
+gr_edit .plotregion1.graph2.xaxis1.title.DragBy -.4629774310076796 0
+// title reposition
+gr_edit .plotregion1.graph2.xaxis1.title.style.editstyle size(medium) editcopy
+// title size
+gr_edit .plotregion1.graph2.legend.plotregion1.label[1].style.editstyle size(medium) editcopy
+// label[1] size
+gr_edit .plotregion1.graph2.legend.plotregion1.label[2].style.editstyle size(medium) editcopy
+// label[2] size
+
+graph save "grapph_comb_ser23", replace
+graph export "grapph_comb_ser23.jpg", as(jpg) replace width(2000) height(1333)
+graph export "grapph_comb_ser23.png", as(png) replace width(1800) height(1000)
 */
 <</dd_do>>

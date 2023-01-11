@@ -551,7 +551,6 @@ qui scalar chi2_scho_test = r(chi2)
 
 qui mat mat_scho_test = r(phtest)
 
-esttab matrix(mat_scho_test) using "mat_scho_test_ser23.csv", replace
 esttab matrix(mat_scho_test) using "mat_scho_test_ser23.html", replace
 
 <</dd_do>>
@@ -586,7 +585,7 @@ gr_edit .legend.plotregion1.label[2].text.Arrpush After Adjustment
 
 //change image background 
 gr_edit style.editstyle boxstyle(shadestyle(color(gs16))) editcopy
-gr_edit .yaxis1.style.editstyle majorstyle(tickstyle(textstyle(size(small)))) editcopy
+gr_edit .yaxis1.style.editstyle majorstyle(tickstyle(textstyle(size(vsmall)))) editcopy
 
 //mod points in grayscale
 gr_edit .plotregion1.plot1.style.editstyle marker(fillcolor(gs7%60)) editcopy
@@ -599,6 +598,20 @@ gr_edit .legend.style.editstyle boxstyle(linestyle(color(none))) editcopy //.leg
 // modify label
 gr_edit .xaxis1.title.text = {}
 gr_edit .xaxis1.title.text.Arrpush Standardardized differences
+// note 
+gr_edit .note.text = {}
+gr_edit .note.text.Arrpush Note: Red lines depict standardized differences of -0.15 and +0.15
+gr_edit .note.DragBy -.2314887155038407 -45
+
+//title
+gr_edit .title.style.editstyle size(medlarge) editcopy
+gr_edit .title.text = {}
+gr_edit .title.text.Arrpush Figure 1. Graphical Representation of SMDs
+gr_edit .title.style.editstyle color(black) editcopy
+gr_edit .title.style.editstyle box_alignment(nwest) editcopy
+gr_edit .title.style.editstyle horizontal(left) editcopy
+gr_edit .title.xoffset = -45
+gr_edit .title.DragBy 2 0
 
 
 /*
@@ -662,13 +675,15 @@ gr_edit .yaxis1.major.num_rule_ticks = 3
 gr_edit .yaxis1.edit_tick 1 9 `"Psychiatric comorbidity (ICD-10)- Presence"', tickset(major)
 */
 
-
-graph export "pbal2_mod.png", as(png) replace width(2000) height(1000)
+graph export "pbal2_mod.jpg", as(jpg) replace width(2000) height(1333)
+graph export "pbal2_mod.png", as(png) replace width(1800) height(1000)
 graph export "pbal2_mod.eps", as(eps) replace
 graph export "pbal2_mod.pdf", as(pdf) replace //*width(2000) height(2000) orientation(landscape)
 *graph export "_Appendix2_Graph_Mean_SE_g32.svg", as(svg) replace height(20000) fontface (Helvetica)
-graph save "pbal2_mod", asis replace
+graph save "pbal2_mod", replace
 graph save "Graph" "pbal2_mod.gph", replace
+//graph use "pbal2_mod"
+
 *You cannot give both f and p as options, only one.
 *, strata(varname) wt(varname) f p mahal metric(matrix) diag sqrt xiprefix(string) graph xline(numlist) xlabel(numlist) nostandardize nocatstandardize sigrep ]
 <</dd_do>>
@@ -707,7 +722,7 @@ mat mat_obs_states = r(transmatrix)
 mat freq_trans = r(freqmatrix)   										
 mat next_states = r(Nnextstates) 										
 
-msboxes, transmatrix(mat_obs_states) id(id)                  ///
+msboxes, transmatrix(tmat) id(id)                  ///
           xvalues(0.2 0.7 0.2)                   ///
           yvalues(0.7 0.7 0.2)                   ///
           statenames(Admission TC Contact)      ///
@@ -769,7 +784,8 @@ graph export "transmat_ser23.png", as(png) replace width(2000) height(1000)
 graph export "transmat_ser23.eps", as(eps) replace
 graph export "transmat_ser23.pdf", as(pdf) replace //*width(2000) height(2000) orientation(landscape)
 *graph export "_Appendix2_Graph_Mean_SE_g32.svg", as(svg) replace height(20000) fontface (Helvetica)
-graph save "transmat_ser23", asis replace
+graph save "transmat_ser23", replace
+graph save "transmat_ser23_2", replace
 
 *mat li freq_trans
 *file:///G:/Mi%20unidad/Alvacast/SISTRAT%202019%20(github)/_supp_mstates/stata/crowther2017%20(1).pdf										
@@ -791,7 +807,7 @@ stset _stop [pw=HAW], enter(_start) failure(_status==1) //*scale(12)
 cap gen _time = _t	
 
 *replace event=1 if !missing(sex)
-range timevar0 0.3 5 90 //added before october 23 
+range timevar0 0.3 5 90
 <</dd_do>>										
 ~~~~
 

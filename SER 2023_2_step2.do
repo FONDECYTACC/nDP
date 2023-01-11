@@ -129,7 +129,7 @@ The transition probabilities are presented here:
 
 ~~~~
 <<dd_do>>
-foreach var of varlist fprob_from2a_3_2m fprob_from2a_3_lci_2m fprob_from2a_3_uci_2m fprob_from2b_3_2m fprob_from2b_3_lci_2m fprob_from2b_3_uci_2m {
+foreach var of varlist fprob_from1a_3_2m fprob_from1a_3_lci_2m fprob_from1a_3_uci_2m fprob_from1b_3_2m fprob_from1b_3_lci_2m fprob_from1b_3_uci_2m fprob_from2a_3_2m fprob_from2a_3_lci_2m fprob_from2a_3_uci_2m fprob_from2b_3_2m fprob_from2b_3_lci_2m fprob_from2b_3_uci_2m {
 				scalar variable = "`var'"
 					qui summarize `var' if inrange(timevar0, .32, .34)
 					scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
@@ -153,7 +153,7 @@ esttab matrix(est_bs32) using "${pathdata2}pr_3rd_trans_ser23.html", replace
 
 The transition probabilities are presented here:
 
-<<dd_include: "${pathdata2}pr_3rd_trans_ser23.html" >>
+<<dd_include: "${pathdata2}pr_2nd_3rd_trans_ser23.html" >>
 
 
 
@@ -167,13 +167,13 @@ The transition probabilities are presented here:
 <<dd_do>>
 foreach var of varlist flos_from1a_1_2m flos_from1a_1_lci_2m flos_from1a_1_uci_2m flos_from1b_1_2m flos_from1b_1_lci_2m flos_from1b_1_uci_2m {
 	scalar variable = "`var'"
-					qui summarize `var' if inrange(timevar01, .32, .34)
+					qui summarize `var' if inrange(timevar0, .32, .34)
 					scalar e3m_`var' = round(round(r(mean),.001),.1)
-					qui summarize `var' if inrange(timevar01, .999, 1.02)
+					qui summarize `var' if inrange(timevar0, .999, 1.02)
 					scalar e1y_`var' = round(round(r(mean),.001),.1)
-					qui summarize `var' if inrange(timevar01, 2.99, 3.02)
+					qui summarize `var' if inrange(timevar0, 2.99, 3.02)
 					scalar e2m_`var' = round(round(r(mean),.001),.1)
-					qui summarize `var' if inrange(timevar01,  4.999, 5.02)
+					qui summarize `var' if inrange(timevar0,  4.999, 5.02)
 					scalar e5y_`var' = round(round(r(mean),.001),.1)
 	 cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e2m_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames ests_`var' = `var'
@@ -183,13 +183,13 @@ foreach var of varlist flos_from1a_1_2m flos_from1a_1_lci_2m flos_from1a_1_uci_2
 matrix est_cs12 = (ests_flos_from1a_1_2m, ests_flos_from1a_1_lci_2m, ests_flos_from1a_1_uci_2m, ests_flos_from1b_1_2m, ests_flos_from1b_1_lci_2m, ests_flos_from1b_1_uci_2m)
 matrix colnames est_cs12 = Out Out_lci Out_uci Res Res_lci Res_uci
 
-esttab matrix(est_cs12) using "${pathdata2}los_1st_actual_st_2m_1st_pat_22_2corr3.html", replace 
+esttab matrix(est_cs12) using "${pathdata2}los_1st_trans_ser23.html", replace 
 <</dd_do>>
 ~~~~
 
 The lengths of stay are presented here:
 
-<<dd_include: "${pathdata2}los_1st_actual_st_2m_1st_pat_22_2corr3.html" >>
+<<dd_include: "${pathdata2}los_1st_trans_ser23.html" >>
 
 #### Length_of_stay_First patient_Second transition
 
@@ -197,13 +197,13 @@ The lengths of stay are presented here:
 <<dd_do>>
 foreach var of varlist flos_from2a_2_2m flos_from2a_2_lci_2m flos_from2a_2_uci_2m flos_from2b_2_2m flos_from2b_2_lci_2m flos_from2b_2_uci_2m {
 	scalar variable = "`var'"
-					qui summarize `var' if inrange(timevar01, .32, .34)
+					qui summarize `var' if inrange(timevar0, .32, .34)
 					scalar e3m_`var' = round(round(r(mean),.001),.1)
-					qui summarize `var' if inrange(timevar01, .999, 1.02)
+					qui summarize `var' if inrange(timevar0, .999, 1.02)
 					scalar e1y_`var' = round(round(r(mean),.001),.1)
-					qui summarize `var' if inrange(timevar01, 2.99, 3.02)
+					qui summarize `var' if inrange(timevar0, 2.99, 3.02)
 					scalar e2m_`var' = round(round(r(mean),.001),.1)
-					qui summarize `var' if inrange(timevar01,  4.999, 5.02)
+					qui summarize `var' if inrange(timevar0,  4.999, 5.02)
 					scalar e5y_`var' = round(round(r(mean),.001),.1)
 	 cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e2m_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames ests_`var' = `var'
@@ -213,14 +213,41 @@ foreach var of varlist flos_from2a_2_2m flos_from2a_2_lci_2m flos_from2a_2_uci_2
 matrix est_cs22 = (ests_flos_from2a_2_2m, ests_flos_from2a_2_lci_2m, ests_flos_from2a_2_uci_2m, ests_flos_from2b_2_2m, ests_flos_from2b_2_lci_2m, ests_flos_from2b_2_uci_2m)
 matrix colnames est_cs22 = Out Out_lci Out_uci Res Res_lci Res_uci
 
-esttab matrix(est_cs22) using "${pathdata2}los_2nd_actual_st_2m_1st_pat_22_2corr3.html", replace 
+esttab matrix(est_cs22) using "${pathdata2}los_2nd_trans_ser23.html", replace 
 <</dd_do>>
 ~~~~
 
 The lengths of stay are presented here:
 
-<<dd_include: "${pathdata2}los_2nd_actual_st_2m_1st_pat_22_2corr3.html" >>
+<<dd_include: "${pathdata2}los_2nd_trans_ser23.html" >>
 
+~~~~
+<<dd_do>>
+foreach var of varlist flos_from3a_3_2m flos_from3a_3_lci_2m flos_from3a_3_uci_2m flos_from3b_3_2m flos_from3b_3_lci_2m flos_from3b_3_uci_2m {
+	scalar variable = "`var'"
+					qui summarize `var' if inrange(timevar0, .32, .34)
+					scalar e3m_`var' = round(round(r(mean),.001),.1)
+					qui summarize `var' if inrange(timevar0, .999, 1.02)
+					scalar e1y_`var' = round(round(r(mean),.001),.1)
+					qui summarize `var' if inrange(timevar0, 2.99, 3.02)
+					scalar e2m_`var' = round(round(r(mean),.001),.1)
+					qui summarize `var' if inrange(timevar0,  4.999, 5.02)
+					scalar e5y_`var' = round(round(r(mean),.001),.1)
+	 cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e2m_`var'))'\ `=scalar(scalar(e5y_`var'))')
+	 matrix colnames ests_`var' = `var'
+	 matrix rownames ests_`var' = 3_mths 1_yr 3_yrs 5_yrs
+		}
+
+matrix est_cs22 = (ests_flos_from3a_3_2m, ests_flos_from3a_3_lci_2m, ests_flos_from3a_3_uci_2m, ests_flos_from3b_3_2m, ests_flos_from3b_3_lci_2m, ests_flos_from3b_3_uci_2m)
+matrix colnames est_cs22 = Out Out_lci Out_uci Res Res_lci Res_uci
+
+esttab matrix(est_cs32) using "${pathdata2}los_3rd_trans_ser23.html", replace 
+<</dd_do>>
+~~~~
+
+The lengths of stay are presented here:
+
+<<dd_include: "${pathdata2}los_3rd_trans_ser23.html" >>
 
 
 ### Difference_Probabilities
@@ -636,3 +663,26 @@ using trans_prob_los_22_nov.xlsx, sheet("diff_los_corr3_3y", modify) cell(B26) /
 ~~~~
    
 <<dd_display: "Ended (not saved) at= `c(current_time)' `c(current_date)'">>
+
+
+   
+<<dd_do: nocommand>>
+/*
+FORMA DE EXPORTAR LOS DATOS Y EL MARKDOWN
+
+cap rm "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/an_ser_2023_step_2.html"
+dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\SER 2023_2_step2.do", saving("E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_2.html") replace nostop 
+copy "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_2.html" "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\an_ser_2023_step_2.html", replace
+
+cap rm "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/an_ser_2023_step_2.html"
+dyndoc "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\SER 2023_2_step2.do", saving("C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_2.html") replace nostop 
+copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_2.html" "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\an_ser_2023_step_2.html", replace
+
+_outputs
+
+graph combine "transmat_ser23.gph" "pbal2_mod.gph", ///
+colfirst iscale(*.6) imargin(tiny) graphregion(color(gs16))  /// // ycommon xcommon // l1(Differences in transition probabilities, size(medium)) b1(Time since admission (in years), size(medium)) ///
+name(comb_ser23, replace)
+
+*/
+<</dd_do>>

@@ -49,6 +49,8 @@ output:
 
 - [Poster (idea)](pres_dic_22.html)
 
+**Poly-substance use, treatment completion, and contact with the justice system: a multistate analysis of treatments for substance use disorders between 2010-2019, Chile**
+
 - [Material for SER 2023 (step 0: aalen-johansen, selection of IPWeights & schoenfeld residuals)](an_ser_2023_step_0.html)
 
 - [Material for SER 2023 (step 1: parametric partitioned survival models & multistate models)](an_ser_2023_step_1.html)
