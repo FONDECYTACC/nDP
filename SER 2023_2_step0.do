@@ -573,7 +573,7 @@ pbalchk poly sus_prin_mod_cat1 sus_prin_mod_cat2 sus_prin_mod_cat3 sus_prin_mod_
 							clas2 clas3 /// 
 							porc_pobr ///
 							macrozone_cat2 macrozone_cat3, wt(HAW) p mahal sqrt diag graph xline(.15 -.15)
-graph save "Graph" "pbal2.gph", replace
+graph save "Graph" "`c(pwd)'\_figs\pbal2.gph", replace
 
 mat smd_before = r(usmeandiff)
 
@@ -675,13 +675,13 @@ gr_edit .yaxis1.major.num_rule_ticks = 3
 gr_edit .yaxis1.edit_tick 1 9 `"Psychiatric comorbidity (ICD-10)- Presence"', tickset(major)
 */
 
-graph export "pbal2_mod.jpg", as(jpg) replace width(2000) height(1333)
-graph export "pbal2_mod.png", as(png) replace width(1800) height(1000)
-graph export "pbal2_mod.eps", as(eps) replace
-graph export "pbal2_mod.pdf", as(pdf) replace //*width(2000) height(2000) orientation(landscape)
+graph export "`c(pwd)'\_figs\pbal2_mod.jpg", as(jpg) replace width(2000) height(1333)
+graph export "`c(pwd)'\_figs\pbal2_mod.png", as(png) replace width(1800) height(1000)
+graph export "`c(pwd)'\_figs\pbal2_mod.eps", as(eps) replace
+graph export "`c(pwd)'\_figs\pbal2_mod.pdf", as(pdf) replace //*width(2000) height(2000) orientation(landscape)
 *graph export "_Appendix2_Graph_Mean_SE_g32.svg", as(svg) replace height(20000) fontface (Helvetica)
-graph save "pbal2_mod", replace
-graph save "Graph" "pbal2_mod.gph", replace
+graph save "`c(pwd)'\_figs\pbal2_mod", replace
+graph save "Graph" "`c(pwd)'\_figs\pbal2_mod.gph", replace
 //graph use "pbal2_mod"
 
 *You cannot give both f and p as options, only one.
@@ -689,7 +689,7 @@ graph save "Graph" "pbal2_mod.gph", replace
 <</dd_do>>
 ~~~~
 
-<<dd_graph: saving(pbal2_mod.svg) width(800) replace>>
+<<dd_graph: saving("./_figs/pbal2_mod.svg") width(800) replace>>
 
 Cocaine paste base and cocaine hydrochloride were the only variables that were not well adjusted if resticted the sample to the 5% and 95%.
 
@@ -780,12 +780,12 @@ gr_edit .plotregion1.textbox9.text = {}
 gr_edit .plotregion1.textbox9.text.Arrpush 17,267
 
 
-graph export "transmat_ser23.png", as(png) replace width(2000) height(1000)
-graph export "transmat_ser23.eps", as(eps) replace
-graph export "transmat_ser23.pdf", as(pdf) replace //*width(2000) height(2000) orientation(landscape)
+graph export "`c(pwd)'\_figs\transmat_ser23.png", as(png) replace width(2000) height(1000)
+graph export "`c(pwd)'\_figs\transmat_ser23.eps", as(eps) replace
+graph export "`c(pwd)'\_figs\transmat_ser23.pdf", as(pdf) replace //*width(2000) height(2000) orientation(landscape)
 *graph export "_Appendix2_Graph_Mean_SE_g32.svg", as(svg) replace height(20000) fontface (Helvetica)
-graph save "transmat_ser23", replace
-graph save "transmat_ser23_2", replace
+graph save "`c(pwd)'\_figs\transmat_ser23", replace
+graph save "`c(pwd)'\_figs\transmat_ser23_2", replace
 
 *mat li freq_trans
 *file:///G:/Mi%20unidad/Alvacast/SISTRAT%202019%20(github)/_supp_mstates/stata/crowther2017%20(1).pdf										
@@ -875,10 +875,10 @@ twoway (rarea ajprob1_lci ajprob1_uci _t if poly==0 & _t <5, sort connect(stairs
 	legend(pos(1) ring(0) col(1) symysize(zero) keygap(1) symxsize(large) order( 3 4) lab(3 "No polysubstance") lab(4 "Polysubstance") size(small)) ///
 	note("{it:Note. Means and 95% CI's}",size(vsmall)) ///
 	title("Probabilites in Admission with confidence intervals", size(small)) name(msaj_1, replace) ///
-	saving(msaj_1.gph, replace)
+	saving("`c(pwd)'\_figs\msaj_1.gph", replace) //msaj_1.gph
 <</dd_do>>
 
-<<dd_graph: saving(msaj_1.svg) width(800) replace>>
+<<dd_graph: saving("./_figs/msaj_1.svg") width(800) replace>>
 
 <<dd_do:quietly>>
 twoway (rarea ajprob2_lci ajprob2_uci _t if poly==0 & _t <5, sort connect(stairstep stairstep) lcolor(gs8) color(gs8)) ///
@@ -892,10 +892,10 @@ twoway (rarea ajprob2_lci ajprob2_uci _t if poly==0 & _t <5, sort connect(stairs
 	legend(pos(1) ring(0) col(1) symysize(zero) keygap(1) symxsize(large) order( 3 4) lab(3 "No polysubstance") lab(4 "Polysubstance") size(small)) ///
 	note("{it:Note. Means and 95% CI's}",size(vsmall)) ///
 	title("Probabilites in Tr. Completion with confidence intervals", size(small)) name(msaj_2, replace) ///
-	saving(msaj_2.gph, replace)
+	saving("`c(pwd)'\_figs\msaj_2.gph", replace)
 <</dd_do>>
 
-<<dd_graph: saving(msaj_2.svg) width(800) replace>>
+<<dd_graph: saving("./_figs/msaj_2.svg") width(800) replace>>
 
 <<dd_do:quietly>>
 twoway (rarea ajprob3_lci ajprob3_uci _t if poly==0 & _t <5, sort connect(stairstep stairstep) lcolor(gs8) color(gs8)) ///
@@ -909,10 +909,10 @@ twoway (rarea ajprob3_lci ajprob3_uci _t if poly==0 & _t <5, sort connect(stairs
 	legend(pos(1) ring(0) col(1) symysize(zero) keygap(1) symxsize(large) order( 3 4) lab(3 "No polysubstance") lab(4 "Polysubstance") size(small)) ///
 	note("{it:Note. Means and 95% CI's}",size(vsmall)) ///
 	title(" Probability in Contact with the justice system with confidence intervals", size(small)) name(msaj_3, replace) ///
-	saving(msaj_3.gph, replace) 
+	saving("`c(pwd)'\_figs\msaj_3.gph", replace) 
 <</dd_do>>
 
-<<dd_graph: saving(msaj_3.svg) width(800) replace>>
+<<dd_graph: saving("./_figs/msaj_3.svg") width(800) replace>>
 
 
 ~~~~
@@ -993,10 +993,10 @@ frame example1: twoway (rbar bar trp_ajprob_3_5_12 _t2 if poly==0 & dup2==1 & _t
 	legend(pos(2) ring(0) col(1) symysize(zero) keygap(1) symxsize(large) order(3 4) lab(3 "No Polysubs") lab(4 "Polysubs") size(small) lcolor(gs4 gs7)) ///
 	note("{it:Note. Means and 95% CI's}",size(vsmall)) ///
 	title("Transition Probabilities from Admission to Treatment completion with CIs", size(small)) name(msaj_12_23, replace) ///
-	saving(msaj_12_23.gph, replace)
+	saving("`c(pwd)'\_figs\msaj_12_23.gph", replace)
 <</dd_do>>
 
-<<dd_graph: saving(msaj_12_23.svg) width(800) replace>>
+<<dd_graph: saving("./_figs/msaj_12_23.svg") width(800) replace>>
 
 
 <<dd_do:nocommand>>
@@ -1018,10 +1018,10 @@ frame example2: twoway (rbar bar trp_ajprob_3_5_13 _t2 if poly==0 & dup2==1 & _t
 	legend(pos(2) ring(0) col(1) symysize(zero) keygap(1) symxsize(large) order(3 4) lab(3 "No Polysubs") lab(4 "Polysubs") size(small) lcolor(gs4 gs7)) ///
 	note("{it:Note. Means and 95% CI's}",size(vsmall)) ///
 	title("Transition Probabilities from Admission to Contact with the justice system with CIs", size(small)) name(msaj_13_23, replace) ///
-	saving(msaj_13_23.gph, replace)
+	saving("`c(pwd)'\_figs\msaj_13_23.gph", replace)
 <</dd_do>>
 
-<<dd_graph: saving(msaj_13_23.svg) width(800) replace>>
+<<dd_graph: saving("./_figs/msaj_13_23.svg") width(800) replace>>
 
 <<dd_do:nocommand>>
 cap qui noi frame drop example3
@@ -1043,11 +1043,11 @@ frame example3: twoway (rbar bar trp_ajprob_3_5_23 _t2 if poly==0 & dup2==1 & _t
 	legend(pos(2) ring(0) col(1) symysize(zero) keygap(1) symxsize(large) order(3 4) lab(3 "No Polysubs") lab(4 "Polysubs") size(small) lcolor(gs4 gs7)) ///
 	note("{it:Note. Means and 95% CI's}",size(vsmall)) ///
 	title("Transition Probabilities from Treatment completion to Contact with the justice system with CIs", size(small)) name(msaj_23_23, replace) ///
-	saving(msaj_23_23.gph, replace)
+	saving("`c(pwd)'\_figs\msaj_23_23.gph", replace)
 
 <</dd_do>>
 
-<<dd_graph: saving(msaj_23_23.svg) width(800) replace>>
+<<dd_graph: saving("./_figs/msaj_23_23.svg") width(800) replace>>
 
 
 

@@ -507,10 +507,11 @@ copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_202
 
 _outputs
 
-graph combine "transmat_ser23.gph" "pbal2_mod.gph", ///
+*di 
+
+graph combine "`c(pwd)'\_figs\transmat_ser23.gph" "`c(pwd)'\_figs\pbal2_mod.gph", ///
 colfirst iscale(*.6) imargin(tiny) graphregion(color(gs16))  /// // ycommon xcommon // l1(Differences in transition probabilities, size(medium)) b1(Time since admission (in years), size(medium)) ///
 name(comb_ser23, replace)
-
 
 
 // File created by Graph Editor Recorder.

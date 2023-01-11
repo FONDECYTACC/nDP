@@ -628,9 +628,9 @@ glht_rx <- multcomp::glht(model, linfct=multcomp::mcp(motivodeegreso_mod_imp_rec
 smry_rx <- summary(glht_rx)
 glht_rx2 <- multcomp::glht(model2, linfct=multcomp::mcp(motivodeegreso_mod_imp_rec="Tukey"))
 smry_rx2 <- summary(glht_rx2)
-
-xx <- survobrien(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~factor(motivodeegreso_mod_imp_rec), data=Base_fiscalia_v13) 
-xx <- survobrien(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~factor(motivodeegreso_mod_imp_rec), data=Base_fiscalia_v13) 
+# 
+# xx <- survobrien(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~factor(motivodeegreso_mod_imp_rec), data=Base_fiscalia_v13) 
+# xx <- survobrien(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~factor(motivodeegreso_mod_imp_rec), data=Base_fiscalia_v13) 
 
 no_at_risk$risk.factor<- c("Tr. comp.", "Tr. non-comp(Early)", "Tr. non-comp(Late)")
 plot_cond_sent<-
@@ -696,6 +696,14 @@ p3 <- grid.arrange(arrangeGrob(plot_cond_sent + theme(legend.position="none"),
              mylegend, nrow=2,heights=c(10, 1))
 
 ggsave(plot= p3,filename= "./_figs/test.png",dpi=740)#, width= 4.4, height= 3.12
+p4 <- grid.arrange(arrangeGrob(plot_cond_sent + theme(legend.position="none"),
+                         plot_pris + theme(legend.position="none"),
+                         nrow=1),
+                   top = textGrob("Figure 1: Nelson-Aalen Cumulative Hazards of Offense from baseline treatment outcome (Staggered entry)", gp=gpar(fontsize=15,font=8)),
+             mylegend, nrow=2,heights=c(10, 1))
+
+ggsave(plot= p4,filename= "./_figs/SER2023_test.jpg", dpi=740, height = 16*0.7, width =20*0.7)
+
 ```
 
 ```{r exp-surv3-plot, eval=T, echo=F, error=T, fig.align='center', fig.cap="Cumulative Hazards of Offense from baseline treatment outcome (Staggered entry)", fig.retina=2}

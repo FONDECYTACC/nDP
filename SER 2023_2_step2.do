@@ -221,34 +221,6 @@ The lengths of stay are presented here:
 
 <<dd_include: "${pathdata2}los_2nd_trans_ser23.html" >>
 
-~~~~
-<<dd_do>>
-foreach var of varlist flos_from3a_3_2m flos_from3a_3_lci_2m flos_from3a_3_uci_2m flos_from3b_3_2m flos_from3b_3_lci_2m flos_from3b_3_uci_2m {
-	scalar variable = "`var'"
-					qui summarize `var' if inrange(timevar0, .32, .34)
-					scalar e3m_`var' = round(round(r(mean),.001),.1)
-					qui summarize `var' if inrange(timevar0, .999, 1.02)
-					scalar e1y_`var' = round(round(r(mean),.001),.1)
-					qui summarize `var' if inrange(timevar0, 2.99, 3.02)
-					scalar e2m_`var' = round(round(r(mean),.001),.1)
-					qui summarize `var' if inrange(timevar0,  4.999, 5.02)
-					scalar e5y_`var' = round(round(r(mean),.001),.1)
-	 cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e2m_`var'))'\ `=scalar(scalar(e5y_`var'))')
-	 matrix colnames ests_`var' = `var'
-	 matrix rownames ests_`var' = 3_mths 1_yr 3_yrs 5_yrs
-		}
-
-matrix est_cs22 = (ests_flos_from3a_3_2m, ests_flos_from3a_3_lci_2m, ests_flos_from3a_3_uci_2m, ests_flos_from3b_3_2m, ests_flos_from3b_3_lci_2m, ests_flos_from3b_3_uci_2m)
-matrix colnames est_cs22 = Out Out_lci Out_uci Res Res_lci Res_uci
-
-esttab matrix(est_cs32) using "${pathdata2}los_3rd_trans_ser23.html", replace 
-<</dd_do>>
-~~~~
-
-The lengths of stay are presented here:
-
-<<dd_include: "${pathdata2}los_3rd_trans_ser23.html" >>
-
 
 ### Difference_Probabilities
 

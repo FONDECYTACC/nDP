@@ -95,13 +95,13 @@ C:\Users\CISS Fondecyt\ado\plus\p\pbalchk.ado
 
 </code></pre>
 <h1><a href="#exercise" id="exercise">Exercise</a></h1>
-<p>Date created: 00:14:27 10 Jan 2023.</p>
+<p>Date created: 18:21:54 11 Jan 2023.</p>
 <p>Get the folder</p>
 <pre><code>
 C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
 
 
-Fecha: 10 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
+Fecha: 11 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
 
 </code></pre>
 <head>
@@ -114,7 +114,7 @@ Fecha: 10 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
 </script>
 </head>
 <p>Path data= ;</p>
-<p>Tiempo: 10 Jan 2023, considerando un SO Windows</p>
+<p>Tiempo: 11 Jan 2023, considerando un SO Windows</p>
 <p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA_pris.dta</p>
 <p>=============================================================================</p>
 <h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
@@ -1389,9 +1389,6 @@ Warning: pweights used; confidence intervals and p-values may be wrong.
 . qui mat mat_scho_test = r(phtest)
 
 . 
-. esttab matrix(mat_scho_test) using &quot;mat_scho_test_ser23.csv&quot;, replace
-(output written to mat_scho_test_ser23.csv)
-
 . esttab matrix(mat_scho_test) using &quot;mat_scho_test_ser23.html&quot;, replace
 (output written to mat_scho_test_ser23.html)
 
@@ -1457,8 +1454,8 @@ Mahalonobis Distance between mean vectors:
 (square root):                     0.246
 
 
-. graph save &quot;Graph&quot; &quot;pbal2.gph&quot;, replace
-(file pbal2.gph saved)
+. graph save &quot;Graph&quot; &quot;`c(pwd)'\_figs\pbal2.gph&quot;, replace
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2.gph saved)
 
 . 
 . mat smd_before = r(usmeandiff)
@@ -1477,7 +1474,7 @@ Mahalonobis Distance between mean vectors:
 . //change image background 
 . gr_edit style.editstyle boxstyle(shadestyle(color(gs16))) editcopy
 
-. gr_edit .yaxis1.style.editstyle majorstyle(tickstyle(textstyle(size(small)))) editcopy
+. gr_edit .yaxis1.style.editstyle majorstyle(tickstyle(textstyle(size(vsmall)))) editcopy
 
 . 
 . //mod points in grayscale
@@ -1497,6 +1494,31 @@ Mahalonobis Distance between mean vectors:
 . gr_edit .xaxis1.title.text = {}
 
 . gr_edit .xaxis1.title.text.Arrpush Standardardized differences
+
+. // note 
+. gr_edit .note.text = {}
+
+. gr_edit .note.text.Arrpush Note: Red lines depict standardized differences of -0.15 and +0.15
+
+. gr_edit .note.DragBy -.2314887155038407 -45
+
+. 
+. //title
+. gr_edit .title.style.editstyle size(medlarge) editcopy
+
+. gr_edit .title.text = {}
+
+. gr_edit .title.text.Arrpush Figure 1. Graphical Representation of SMDs
+
+. gr_edit .title.style.editstyle color(black) editcopy
+
+. gr_edit .title.style.editstyle box_alignment(nwest) editcopy
+
+. gr_edit .title.style.editstyle horizontal(left) editcopy
+
+. gr_edit .title.xoffset = -45
+
+. gr_edit .title.DragBy 2 0
 
 . 
 . 
@@ -1561,27 +1583,31 @@ Mahalonobis Distance between mean vectors:
 &gt; gr_edit .yaxis1.edit_tick 1 9 `&quot;Psychiatric comorbidity (ICD-10)- Presence&quot;', tickset(major)
 &gt; */
 . 
-. 
-. graph export &quot;pbal2_mod.png&quot;, as(png) replace width(2000) height(1000)
-(file pbal2_mod.png written in PNG format)
+. graph export &quot;`c(pwd)'\_figs\pbal2_mod.jpg&quot;, as(jpg) replace width(2000) height(1333)
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.jpg written in JPEG format)
 
-. graph export &quot;pbal2_mod.eps&quot;, as(eps) replace
-(file pbal2_mod.eps written in EPS format)
+. graph export &quot;`c(pwd)'\_figs\pbal2_mod.png&quot;, as(png) replace width(1800) height(1000)
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.png written in PNG format)
 
-. graph export &quot;pbal2_mod.pdf&quot;, as(pdf) replace //*width(2000) height(2000) orientation(landscape)
-(file pbal2_mod.pdf written in PDF format)
+. graph export &quot;`c(pwd)'\_figs\pbal2_mod.eps&quot;, as(eps) replace
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.eps written in EPS format)
+
+. graph export &quot;`c(pwd)'\_figs\pbal2_mod.pdf&quot;, as(pdf) replace //*width(2000) height(2000) orientation(landscape)
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.pdf written in PDF format)
 
 . *graph export &quot;_Appendix2_Graph_Mean_SE_g32.svg&quot;, as(svg) replace height(20000) fontface (Helvetica)
-. graph save &quot;pbal2_mod&quot;, asis replace
-file pbal2_mod.gph saved
+. graph save &quot;`c(pwd)'\_figs\pbal2_mod&quot;, replace
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.gph saved)
 
-. graph save &quot;Graph&quot; &quot;pbal2_mod.gph&quot;, replace
-(file pbal2_mod.gph saved)
+. graph save &quot;Graph&quot; &quot;`c(pwd)'\_figs\pbal2_mod.gph&quot;, replace
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.gph saved)
 
+. //graph use &quot;pbal2_mod&quot;
+. 
 . *You cannot give both f and p as options, only one.
 . *, strata(varname) wt(varname) f p mahal metric(matrix) diag sqrt xiprefix(string) graph xline(numlist) xlabel(numlist) nostandardize nocatstandardize sigrep ]
 </code></pre>
-<p><img src="pbal2_mod.svg" width="800" ></p>
+<p><img src="_figs/pbal2_mod.svg" width="800" ></p>
 <p>Cocaine paste base and cocaine hydrochloride were the only variables that were not well adjusted if resticted the sample to the 5% and 95%.</p>
 <p>=======================================</p>
 <h2><a href="#multistate-ipw" id="multistate-ipw">Multistate &amp; IPW</a></h2>
@@ -1635,13 +1661,15 @@ file pbal2_mod.gph saved
 
 
 
-(file transmat_ser23.png written in PNG format)
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.png written in PNG format)
 
-(file transmat_ser23.eps written in EPS format)
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.eps written in EPS format)
 
-(file transmat_ser23.pdf written in PDF format)
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.pdf written in PDF format)
 
-file transmat_ser23.gph saved
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.gph saved)
+
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23_2.gph saved)
 
 
 
@@ -1695,9 +1723,9 @@ obs. time interval:  (0, _stop]
 
 </code></pre>
 <p>To generate figures, we select the valid transitions</p>
-<p><img src="msaj_1.svg" width="800" ></p>
-<p><img src="msaj_2.svg" width="800" ></p>
-<p><img src="msaj_3.svg" width="800" ></p>
+<p><img src="_figs/msaj_1.svg" width="800" ></p>
+<p><img src="_figs/msaj_2.svg" width="800" ></p>
+<p><img src="_figs/msaj_3.svg" width="800" ></p>
 <pre><code>variable trp_ajprob* not found
 
 
@@ -1713,14 +1741,14 @@ obs. time interval:  (0, _stop]
 <p>(ranges: 1892 changes made)</p>
 <p>(ranges: 133591 changes made)</p>
 <p>frame example1 not found</p>
-<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file msaj_12_23.gph saved)</p>
-<p><img src="msaj_12_23.svg" width="800" ></p>
+<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)_figs\msaj_12_23.gph saved)</p>
+<p><img src="_figs/msaj_12_23.svg" width="800" ></p>
 <p>frame example2 not found</p>
-<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file msaj_13_23.gph saved)</p>
-<p><img src="msaj_13_23.svg" width="800" ></p>
+<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)_figs\msaj_13_23.gph saved)</p>
+<p><img src="_figs/msaj_13_23.svg" width="800" ></p>
 <p>frame example3 not found</p>
-<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file msaj_23_23.gph saved)</p>
-<p><img src="msaj_23_23.svg" width="800" ></p>
+<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)_figs\msaj_23_23.gph saved)</p>
+<p><img src="_figs/msaj_23_23.svg" width="800" ></p>
 <h2><a href="#aalen-johanssen-probability-tables" id="aalen-johanssen-probability-tables">Aalen-Johanssen, Probability Tables</a></h2>
 <p><strong>Transition Probabilities from Admission to Treatment completion</strong></p>
 <pre><code>. foreach var of varlist trp_ajprob_3_5_12 trp_ajprob_3_5_12_lci trp_ajprob_3_5_12_uci {
@@ -1920,7 +1948,7 @@ obs. time interval:  (0, _stop]
 <tr><td>5_yrs       </td><td>         2.8</td><td>         2.8</td><td>         4.1</td><td>         3.8</td></tr>
 <tr><td colspan=5><hr></td></tr>
 </table>
-<p>Saved at= 00:38:20 10 Jan 2023</p>
+<p>Saved at= 18:44:30 11 Jan 2023</p>
 <pre><code>
 
 
