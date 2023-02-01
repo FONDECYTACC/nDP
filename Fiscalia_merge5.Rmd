@@ -257,7 +257,7 @@ pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando pa
 if(!require(pacman)){install.packages("pacman")}
 if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
 
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf,  adjustedCurves, ggpmisc, rms, SpatialEpiApp, spatsurv, install=T)
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf,  adjustedCurves, ggpmisc, rms, SpatialEpiApp, spatsurv, SuperLearner, install=T)
 
 #Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
 
@@ -526,12 +526,12 @@ Base_fiscalia_v13_pris %>%
 # dat <- fmrs.gendata(nObs = n, nComp = K, nCov = D, coeff = c(coeff1, coeff2),
 #                     dispersion = sig, mixProp = piM, rho = r1, umax = Um, disFamily = 'lnorm')
 
-fmm <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_fmt + edad_ini_cons + sex+ escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + policonsumo + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
+fmm <- cph(Surv(edad_al_egres_imp,age_offending_imp,  !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec + edad_al_ing_1 + edad_ini_cons + sex+ escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + compromiso_biopsicosocial + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + policonsumo + n_off_vio + n_off_acq + n_off_sud, data= Base_fiscalia_v13, x=T, y=T)
 
 Base_fiscalia_v13$delta<- ifelse(!is.na(Base_fiscalia_v13$dateofbirth_imp),1,0)
 Base_fiscalia_v13$y<- Base_fiscalia_v13$age_offending_imp-Base_fiscalia_v13$edad_al_egr
 x<-
-c("motivodeegreso_mod_imp_rec", "edad_al_ing_fmt", "edad_ini_cons", "sex", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "compromiso_biopsicosocial", "origen_ingreso_mod", "numero_de_hijos_mod", "tenencia_de_la_vivienda_mod", "dg_cie_10_rec", "dg_trs_cons_sus_or", "macrozona", "policonsumo", "n_off_vio", "n_off_acq", "n_off_sud")
+c("motivodeegreso_mod_imp_rec", "edad_al_ing_1", "edad_ini_cons", "sex", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "compromiso_biopsicosocial", "origen_ingreso_mod", "numero_de_hijos_mod", "tenencia_de_la_vivienda_mod", "dg_cie_10_rec", "dg_trs_cons_sus_or", "macrozona", "policonsumo", "n_off_vio", "n_off_acq", "n_off_sud")
 
 res.mle<- list()
 for (K in 2:6){
@@ -620,9 +620,70 @@ initComplete = htmlwidgets::JS(
         "}")))
 ```
 
+# Missing data
+
+```{r miss, warning=FALSE, echo=T, error=T, eval=T}
+set.seed(2125)
+Base_fiscalia_v14_miss <-
+subset(Base_fiscalia_v14, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod")) %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1) %>% 
+   missRanger::missRanger(
+                formula = . ~ . - hash_key,
+                num.trees = 200, 
+                returnOOB=T,
+                maxiter=50,
+                verbose = 2, 
+                seed = 2125)
+
+set.seed(2125)
+  Base_fiscalia_v14_pris_miss <-
+subset(Base_fiscalia_v14_pris, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación","tipo_de_vivienda_mod")) %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1) %>% 
+     missRanger::missRanger(
+                formula = . ~ . - hash_key,
+                num.trees = 200, 
+                returnOOB=T,
+                maxiter=50,
+                verbose = 2, 
+                seed = 2125)
+
+```
+
+
+# IPW
+
+```{r miss, warning=FALSE, echo=T, error=T, eval=T}
+#https://www.datacamp.com/tutorial/ensemble-r-machine-learning
+
+set.seed(2125)
+system.time({
+model <- SuperLearner(Y = y, X = x, family = binomial(), SL.library=list("SL.ranger",
+                                          "SL.ksvm",
+                                          "SL.ipredbagg",
+                                          "SL.bayesglm"))
+})
+set.seed(2125)
+# Get V-fold cross-validated risk estimate
+system.time({
+cv.model <- CV.SuperLearner(y,
+                        x,
+                        V=5,
+                        SL.library=list("SL.ranger",
+                                        "SL.ksvm",
+                                        "SL.ipredbagg",
+                                        "SL.bayesglm"))
+})
+predictions <- predict.SuperLearner(model, newdata=xtest)
+conv.preds <- ifelse(predictions$pred>=0.5,1,0)
+
+# Create the confusion matrix
+cm <- caret::confusionMatrix(conv.preds, ytest)
+```
+
 # Export
 
 ```{r export, warning=FALSE, echo=T, error=T, eval=T}
+#2023-01-01 we had a problem with edad_al_ing_fmt. This variable predict better (it had lower amount of missing data and was in wide format)
 cont_vars_desc[1]<-ifelse(cont_vars_desc[1]=="edad_al_ing_fmt","edad_al_ing_1",cont_vars_desc[1])
 
 library(missRanger)
@@ -646,37 +707,13 @@ subset(Base_fiscalia_v14_pris, select=c("hash_key", cont_vars_desc, cat_vars_des
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 
-
-set.seed(2125)
-Base_fiscalia_v14_miss <-
-subset(Base_fiscalia_v14, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod")) %>% 
-  dplyr::arrange(hash_key, fech_ing_num_1) %>% 
-   missRanger::missRanger(
-                formula = . ~ . - hash_key,
-                num.trees = 200, 
-                returnOOB=T,
-                maxiter=50,
-                verbose = 2, 
-                seed = 2125)
-
-  Base_fiscalia_v14_miss %>% 
+Base_fiscalia_v14_miss %>% 
   dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
   data.table::data.table() %>% 
   rio::export(file = paste0("fiscalia_mariel_jan_2023_match_SENDA_miss.dta"))
 
-set.seed(2125)
-  Base_fiscalia_v14_pris_miss <-
-subset(Base_fiscalia_v14_pris, select=c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación","tipo_de_vivienda_mod")) %>% 
-  dplyr::arrange(hash_key, fech_ing_num_1) %>% 
-     missRanger::missRanger(
-                formula = . ~ . - hash_key,
-                num.trees = 200, 
-                returnOOB=T,
-                maxiter=50,
-                verbose = 2, 
-                seed = 2125)
   
-  Base_fiscalia_v14_pris_miss %>%   
+Base_fiscalia_v14_pris_miss %>%   
   dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
   data.table::data.table() %>% 
   rio::export(file = paste0("fiscalia_mariel_jan_2023_match_SENDA_miss_pris.dta"))

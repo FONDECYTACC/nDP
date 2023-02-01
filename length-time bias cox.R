@@ -39,8 +39,6 @@ options(error=recover)
 
 ftest1 <- coxphlb.ftest(fit = fit.ee1, data = dat1, spec.p = 2, seed.n = 1234)
 
-res_bay_var_hdi_cont_cat <- readxl::read_excel("H:/Mi unidad/Angelica/secreto/TABLES/res_bay_var_hdi_cont_cat.xlsx")
-
 #https://ruor.uottawa.ca/bitstream/10393/35748/3/Bentoumi_Rachid_2017_th%C3%A8se.pdf
 
 #he partial likelihood approach proposed for left-truncated data can be applied to estimate the covariate effects for length-biased data under the Cox model 

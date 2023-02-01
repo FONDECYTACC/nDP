@@ -310,11 +310,11 @@ legend(cols(4)) ///
 graphregion(color(white) lwidth(large)) bgcolor(white) ///
 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
 legend(order(1 "95CI Tr Completion" 2 "Tr Completion" 3 "95CI Early Tr Disch" 4 "Early Tr Disch " 5 "95CI Late Tr Disch" 6 "Late Tr Disch" )size(*.5)region(lstyle(none)) region(c(none)) nobox)
-graph save "tto.gph", replace
+graph save "`c(pwd)'\_figs\tto.gph", replace
 <</dd_do>>
 ~~~~
 
-<<dd_graph: saving(tto.svg) width(800) replace>>
+<<dd_graph: saving("./_figs/tto.svg") width(800) replace>>
 
 
 
@@ -337,8 +337,8 @@ global covs "edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus
 global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas"
 
 
-stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
-estat phtest, log detail
+qui stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
+qui estat phtest, log detail
 scalar chi2_scho_test = r(chi2)
  
 mat mat_scho_test = r(phtest)

@@ -1,0 +1,1096 @@
+---
+title: "Individual offenses eported in TOP databases and Prossecutors Office's Records"
+date: "`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`"
+output:
+  distill::distill_article:
+    code_folding: true
+    fig_height: 6
+    fig_width: 8
+    theme: flatly
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+    output_dir: "docs"
+  toc_float:
+    collapsed: false
+    smooth_scroll: true
+---
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+ $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+  
+```
+
+```{css hideOutput-lib-src, echo = FALSE}
+<script src="hideOutput.js"></script> 
+```
+
+```{js hideOutput, echo = FALSE}
+$(document).ready(function() {    
+	$chunks = $('.fold');    
+	$chunks.each(function () {      // add button to source code chunks     
+	if ( $(this).hasClass('s') ) {       
+		$('pre.r', this).prepend("<div class=\"showopt\">Show Source</div><br style=\"line-height:22px;\"/>");
+       		$('pre.r', this).children('code').attr('class', 'folded');     
+       		}      // add button to output chunks     
+		if ( $(this).hasClass('o') ) {       
+			$('pre:not(.r)', this).has('code').prepend("<div class=\"showopt\">Show Output</div><br style=\"line-height:22px;\"/>");       
+			$('pre:not(.r)', this).children('code:not(r)').addClass('folded');        // add button to plots       
+			$(this).find('img').wrap('<pre class=\"plot\"></pre>');       
+			$('pre.plot', this).prepend("<div class=\"showopt\">Show Plot</div><br style=\"line-height:22px;\"/>");       
+			$('pre.plot', this).children('img').addClass('folded');      
+			}   
+});    // hide all chunks when document is loaded   
+	$('.folded').css('display', 'none')    // function to toggle the visibility   
+	$('.showopt').click(function() {     
+			var label = $(this).html();     
+			if (label.indexOf("Show") >= 0) {       
+				$(this).html(label.replace("Show", "Hide"));     
+			} else {
+			  $(this).html(label.replace("Hide", "Show"));     
+			}     
+	$(this).siblings('code, img').slideToggle('fast', 'swing');   
+	}); 
+}); 
+
+```
+
+```{=html}
+<style type="text/css">
+.showopt {   
+  background-color: #004c93;   color: #FFFFFF;    width: 100px;   height: 20px;   text-align: center;   vertical-align: middle !important;   float: right;   font-family: sans-serif;   border-radius: 8px; 
+  }
+
+.showopt:hover {     
+        background-color: #dfe4f2;
+        color: #004c93; 
+        }  
+pre.plot {   
+        background-color: white !important; 
+        } 
+.tablelines table, .tablelines td, .tablelines th {
+        border: 1px solid black;
+        }
+
+.centrado {
+    text-align: center;
+}
+
+.table.center {
+    margin-left:auto; 
+    margin-right:auto;
+  }
+
+/* https://vivekjaiskumar.medium.com/css-is-and-not-selector-17c942ec83f :is()*/
+
+/* Applies to outputs that are not code other than R*/
+
+pre {
+  overflow-x: auto !important;
+}
+pre code {
+  word-wrap: normal !important;
+  white-space: pre !important;
+}
+/*
+pre:not(.sourceCode) { 
+  white-space: nowrap !important;
+}
+*/
+.sourceCode { /* Important gives precedence  */
+  font-size: 10px !important;
+  line-height: 50% !important;
+}
+
+body{ /* Normal  */
+      text-align: justify;
+  }
+
+.superbigimage{
+    overflow-y:scroll;
+    height:350px;
+    white-space: nowrap;
+    overflow-x: auto; 
+    width:100%;
+}
+.superbigimage img{
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.message { color:#446C6E; font-family: monospace;font-size: 10px; line-height: 110%; font-weight: bold;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
+div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
+
+.pandoc-table { /* Should add !important; but it seems no necessary  */
+  margin-left:auto; /* To center */
+  margin-right:auto;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-size: 11px;
+  overflow-y: auto;
+  max-height:450px !important;
+  white-space: nowrap;
+  overflow-x: auto; 
+  width:450px;
+}
+
+.pandoc-table th {/* header */
+text-align: center !important;
+font-size: 10px;
+padding: 0px;
+}
+
+.pandoc-table td {
+text-align: left !important;
+font-size: 9px;
+padding: 0px;
+}
+
+.pandoc-table caption {
+    text-align: left !important;
+    font-size: 11px !important;
+}
+
+.controlly{
+    overflow-y:scroll;
+    height:350px;
+    overflow-x: scroll; 
+}
+
+</style>
+```
+```{=html}
+<!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
+<script>
+function myFunction1() {
+    var x = document.getElementById("myDIV");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<script>
+function myFunction2() {
+    var x = document.getElementById("myDIV2");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+```
+
+```{r prev-setup, include = FALSE, cache=T, error=T}
+rm(list=ls());gc()
+if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
+path<-getwd()#we define it again later in setup chunk
+if (grepl("CISS Fondecyt",path)==T){
+  try(setwd("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)"));load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.Rdata")
+} else if (grepl("andre",path)==T){
+  try(setwd('C:/Users/andre/Desktop/SUD_CL/'));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.Rdata")
+} else if (grepl("E:",path)==T){
+  try(setwd("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/SUD_CL/"));load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.Rdata")
+} else {
+  try(setwd(paste0(path)));load(paste0(gsub("SUD_CL","",gsub("2022","2019",path)),"/14.Rdata"))
+}
+library(tidyverse)
+
+
+#If you render multiple documents from the same script or R session, you should detach("Statamarkdown") in between documents.
+try(detach("Statamarkdown"))
+
+if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
+path<-getwd()#we define it again later in setup chunk
+
+```
+
+```{r setup, include = FALSE, cache=T, error=T, echo=T}
+#Libraries used in the routine. Dont change the order
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
+  if(class(try(dplyr::ungroup(x)))[1]=="tbl_df"){
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)    
+        }
+  } else {
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)       
+  }
+ }
+}  
+
+pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando paquetes
+
+if(!require(pacman)){install.packages("pacman")}
+if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
+
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, 
+               stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, 
+               rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, 
+               RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, 
+               tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, 
+               stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, 
+               DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, 
+               rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, psych,
+               daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, 
+               distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, 
+               sqldf,  adjustedCurves, ggpmisc, rms, irrCAC, install=T)
+
+#Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
+
+
+if(!require(survcomp)){try(devtools::install_github("bhklab/survcomp",upgrade ="never"))}
+
+try(webshot::install_phantomjs())
+
+if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade ="never"))}
+
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+if(.Platform$OS.type == "windows") withAutoprint({
+  memory.size()
+  memory.size(TRUE)
+  memory.limit()
+})
+memory.limit(size=56000)
+
+path<-dirname(rstudioapi::getSourceEditorContext()$path)
+
+options(knitr.kable.NA = '')
+
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      # record the current time before each chunk
+      now <<- Sys.time()
+    } else {
+      # calculate the time difference after a chunk
+      res <- ifelse(difftime(Sys.time(), now)>(60^2),difftime(Sys.time(), now)/(60^2),difftime(Sys.time(), now)/(60^1))
+      # return a character string to show the time
+      x<-ifelse(difftime(Sys.time(), now)>(60^2),paste("Time for this code chunk to run:", round(res,1), "hours"),paste("Time for this code chunk to run:", round(res,1), "minutes"))
+      paste('<div class="message">', gsub('##', '\n', x),'</div>', sep = '\n')
+    }
+  }
+}))
+knitr::opts_chunk$set(time_it = TRUE)
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+#to format rows in bold
+format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethrough")){
+
+  # select the correct markup
+  # one * for italics, two ** for bold
+  map <- setNames(c("*", "**", "~~"), c("italics", "bold", "strikethrough"))
+  markup <- map[value]  
+
+  for (r in rows){
+    for(c in cols){
+
+      # Make sure values are not factors
+      df[[c]] <- as.character( df[[c]])
+
+      # Update formatting
+      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, gsub(" ", "", df[r, c]), markup))
+    }
+  }
+
+  return(df)
+}
+#To produce line breaks in messages and warnings
+knitr::knit_hooks$set(
+   error = function(x, options) {
+     paste('\n\n<div class="alert alert-danger">',
+           gsub('##', '\n', gsub('^##\ Error', '**Error**', x)),
+           '</div>', sep = '\n')
+   },
+   warning = function(x, options) {
+     paste('\n\n<div class="alert alert-warning">',
+           gsub('##', '\n', gsub('^##\ Warning:', '**Warning**', x)),
+           '</div>', sep = '\n')
+   },
+   message = function(x, options) {
+     paste('<div class="message">',
+           gsub('##', '\n', x),
+           '</div>', sep = '\n')
+   }
+)
+```
+
+
+::: blue
+
+- Generate flowcharts of joins
+
+- Kappa y MLs for classification
+
+:::
+
+<!--- 
+# - https://www.statology.org/cohens-kappa-in-r/
+# - 
+--->
+
+<br>
+
+# Bring other databases
+
+```{r bring_db1, echo=T, fig.align='center', message=T, error=T, eval=T}
+
+### 1.- Ver qué es Base_fiscalia_v9, por qué tiene 49,970 IDs y 174,961 filas
+### 2.- CONS_C1_df_dup_SEP_2020
+### 3.- 
+
+Base_fiscalia_v10b_dic_2022<-
+  sqldf("SELECT *
+  FROM CONS_C1_df_dup_SEP_2020_22_d AS x  
+  LEFT JOIN (SELECT *
+             FROM Base_fiscalia_v9
+             ) AS y
+  ON x.hash_key == y.id AND 
+  x.edad_al_egres_imp > y.age_offending_imp AND x.dup = 1") #2022-11-25  added dup // #changed the direction to past events, where age at discharge is greater than the age of commission
+
+
+Base_fiscalia_v11b_dic_2022<-
+  Base_fiscalia_v10b_dic_2022 %>% 
+  #discrepancies in names of variables
+  janitor::clean_names() %>%   #janitor::tabyl(!is.na(dob_imp_num))
+  #previously recoded, 
+  dplyr::select(-dateofbirth_imp, -country, -victim, -id_victim, -crime_code_c , -reg_c, -end_type_2c, -cod_comunadelito, -cod_lugarocurrencia, -sex_imp, -region_delito, -filter, -id)%>%
+  plyr::rename(c("dateofbirth_imp_2"="dateofbirth_imp")) %>% 
+  dplyr::ungroup() %>% 
+  #selected the first row with distinct information regarding patient ID, case ID, crime code.
+  dplyr::group_by(hash_key, dateofbirth_imp, caseid, crime_code_group_rec_prof) %>%
+  dplyr::slice(1) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::group_by(hash_key,dateofbirth_imp) %>% 
+  summarise(n_off_acq= ifelse(sum(crime_code_group_rec_prof=="Acquisitive", na.rm=T)>0, 1,0), n_off_vio= ifelse(sum(crime_code_group_rec_prof=="Violent", na.rm=T)>0, 1,0), n_off_sud= ifelse(sum(crime_code_group_rec_prof== "Substance-related", na.rm=T)>0, 1,0), n_off_oth=  ifelse(sum(crime_code_group_rec_prof== "Other", na.rm=T)>0, 1,0)) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::mutate(n_prev_off= rowSums(select(., starts_with("n_")))) 
+```
+
+```{r bring_db2, echo=T, fig.align='center', message=T, error=T, eval=T}
+#Registrar hurtos, robos, violencia intrafamiliar y otras acciones cometidas en las últimas 4 semanas
+#Violencia Intrafamiliar (Maltrato físico o psicológico)
+CONS_TOP_2022<-
+  # 107307
+  CONS_TOP%>% 
+  dplyr::left_join(subset(dplyr::mutate(dplyr::group_by(Base_fiscalia_v11b_dic_2022, hash_key), hash_rn=row_number())%>% ungroup(), hash_rn==1), by= c("HASH_KEY" = "hash_key"))%>% 
+  dplyr::mutate(fech_ap_top_num= as.numeric(as.Date(str_sub(as.character(lubridate::parse_date_time(Fecha.Aplicación.TOP, c("%Y-%m-%d"),exact=T)),1,10))))%>% #No parse failures
+  dplyr::select(HASH_KEY, fech_ap_top_num, Fecha.Aplicación.TOP, dateofbirth_imp, Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro) %>% 
+  dplyr::filter(!is.na(HASH_KEY)) %>% 
+  dplyr::mutate_at(vars("Hurto", "Robo", "Venta.Drogas", "Riña", "Otro"), ~ifelse(.=="S",1,0)) %>% 
+  dplyr::mutate(Total.VIF= ifelse(Total.VIF>0,1,0))%>% 
+  dplyr::mutate(tot_off_top = base::rowSums(dplyr::select(.,c(Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro)), na.rm = T)) %>% 
+  dplyr::mutate(dateofbirth_imp_num= as.numeric(dateofbirth_imp),
+                fech_ap_top= lubridate::parse_date_time(Fecha.Aplicación.TOP, c("%Y-%m-%d"),exact=T),
+                edad_a_ap_top_num= lubridate::time_length(lubridate::interval(dateofbirth_imp, fech_ap_top),unit="years"),
+                edad_b_ap_top_num= (fech_ap_top_num-dateofbirth_imp_num)/365.25,
+                edad_a_ap_top_num_lim= edad_a_ap_top_num-(1/12),
+                edad_b_ap_top_num_lim= edad_b_ap_top_num-(1/12)) %>% 
+  dplyr::select(-dateofbirth_imp, -dateofbirth_imp_num) %>% 
+  dplyr::filter(!is.na(edad_a_ap_top_num)) %>% 
+  dplyr::group_by(HASH_KEY, edad_a_ap_top_num) %>% 
+  dplyr::slice(1) %>% 
+  dplyr::ungroup()
+
+```
+
+```{r bring_db3, echo=T, fig.align='center', message=T, error=T, eval=T}
+#reduzco la base a casos en los que no tenga la misma condena por el mismo delito
+
+Base_fiscalia_v9_dic_2022<-
+Base_fiscalia_v9 %>% 
+  dplyr::group_by(id, caseid, end_type, fec_comision_simple, crime_code_c) %>% 
+  dplyr::slice(1) %>% 
+  dplyr::ungroup()
+
+
+#busco en la base de datos de fiscalía, algún delito que haya cometido en el transcurso 
+#del último mes anterior a la aplicación del TOP
+Base_fiscalia_v13c_dic_2022<-
+  sqldf("SELECT *
+  FROM CONS_TOP_2022 AS x  
+  LEFT JOIN (SELECT *
+             FROM Base_fiscalia_v9_dic_2022
+             ) AS y
+  ON x.HASH_KEY == y.id AND 
+  x.edad_a_ap_top_num > y.age_offending_imp AND 
+  x.edad_a_ap_top_num_lim < y.age_offending_imp") #2022-11-25  added dup // #changed the direction to past events, where age at discharge is greater than the age of commission
+
+
+#Luego, contar por cada combinación de HASH y fecha de aplicación, el número de delitos segun familai de delito
+#crime_code_group
+Base_fiscalia_v13c_dic_2022_2<-
+  Base_fiscalia_v13c_dic_2022 %>% 
+  dplyr::select(tidyr::any_of(c("HASH_KEY", "fech_ap_top_num", "Fecha.Aplicación.TOP", "Hurto", "Robo", "Venta.Drogas", "Riña",
+                "Total.VIF", "Otro", "tot_off_top", "fech_ap_top", "edad_a_ap_top_num", "edad_b_ap_top_num",
+                "edad_a_ap_top_num_lim", "edad_b_ap_top_num_lim", "caseid", "end_type", "fec_comision_simple",
+                "crime_code_c", "crime_code_group_rec", "crime_code_group_rec_prof", "age_offending_imp")))
+#HASH_KEY
+#fech_ap_top_num
+#Fecha.Aplicación.TOP
+#Hurto
+#Robo
+#Venta.Drogas
+#Riña
+#Total.VIF
+#Otro
+#tot_off_top
+#fech_ap_top
+#edad_a_ap_top_num
+#edad_b_ap_top_num
+#edad_a_ap_top_num_lim
+#edad_b_ap_top_num_lim
+#caseid
+#end_type
+#fec_comision_simple
+#crime_code_c
+#crime_code_group_rec_prof
+#crime_code_group_rec
+#age_offending_imp
+
+Base_fiscalia_v13c_dic_2022_3<-
+Base_fiscalia_v13c_dic_2022_2 %>% 
+  dplyr::ungroup() %>% 
+  dplyr::mutate(vio=dplyr::if_else(crime_code_group_rec_prof=="Violent",1,0,0),
+                acq=dplyr::if_else(crime_code_group_rec_prof=="Acquisitive",1,0,0),
+                sud=dplyr::if_else(crime_code_group_rec_prof=="Substance-related",1,0,0),
+                oth=dplyr::if_else(crime_code_group_rec_prof=="Other",1,0,0)) %>% 
+  dplyr::mutate(tot= rowSums(select(., c("vio","acq","sud","oth")))) %>% 
+  dplyr::group_by(HASH_KEY, fech_ap_top_num) %>% 
+  dplyr::mutate(vio=sum(vio,na.rm=T), acq=sum(acq,na.rm=T), sud=sum(sud,na.rm=T), 
+                oth=sum(oth,na.rm=T), tot=sum(tot,na.rm=T), n=n()) %>%
+  dplyr::slice(1) %>% 
+  dplyr::ungroup() 
+#Los que tienen todo pelado en caseid es porque no tienen fecha de comisión en los últimos 30 días
+
+
+```
+
+<br>
+
+## Comparison
+
+We compared the records of TOP with the records of PO
+
+```{r chisq-tot, echo=T, fig.align='center', message=T, error=T, eval=T}
+
+dodge <- position_dodge(.3) # how much jitter on the x-axis?
+
+# Base_fiscalia_v13c_dic_2022_3 %>% 
+#   ggplot(aes(tot, tot_off_top))+
+#   geom_point(position = position_jitter(w = 0.8, h = 0.8))
+
+cat("Total records of offenses vs. TOP reported offenses")
+paste0(median(Base_fiscalia_v13c_dic_2022_3$tot,na.rm=T), ' (',quantile(Base_fiscalia_v13c_dic_2022_3$tot,.25,na.rm=T),', ',quantile(Base_fiscalia_v13c_dic_2022_3$tot,.75, na.rm=T),')')
+
+paste0(median(Base_fiscalia_v13c_dic_2022_3$tot_off_top,na.rm=T), ' (',quantile(Base_fiscalia_v13c_dic_2022_3$tot_off_top,.25,na.rm=T),', ',quantile(Base_fiscalia_v13c_dic_2022_3$tot_off_top,.75, na.rm=T),')')
+
+cat("Spearman correlation: Total records of offenses vs. TOP reported offenses")
+cor.test(Base_fiscalia_v13c_dic_2022_3$tot_off_top, Base_fiscalia_v13c_dic_2022_3$tot, method="spearman", exact=F)
+
+pol_p<-
+polychor(Base_fiscalia_v13c_dic_2022_3$tot_off_top, Base_fiscalia_v13c_dic_2022_3$tot, std.err=T, ML=T)
+
+cat("Polychoric correlation: Total records of offenses vs. TOP reported offenses")
+capture.output(print(pol_p))[c(2,3)]
+
+cat("Overdispersion")
+var(Base_fiscalia_v13c_dic_2022_3$tot_off_top)/mean(Base_fiscalia_v13c_dic_2022_3$tot_off_top)
+#The variance is not much greater than the mean, which suggests that we will have over-dispersion in the model.
+# obtained with a poisson regression
+
+cat("Recode")
+Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$tot_off_top>=5,4,Base_fiscalia_v13c_dic_2022_3$tot_off_top)
+
+cat("Confusion Matrix")
+caret::confusionMatrix(factor(Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec), factor(Base_fiscalia_v13c_dic_2022_3$tot))
+
+cat("Kappa with ordinal weights")
+irrCAC::kappa2.table(table(ordered(Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec), ordered(Base_fiscalia_v13c_dic_2022_3$tot)),weights = irrCAC::ordinal.weights(0:4))
+#To choose between linear and quadratic weights, ask yourself if the difference between being off by 1 vs. 2 categories is the same as the difference between being off by 2 vs. 3 categories. With linear weights, the penalty is always the same (e.g., 0.33 credit is subtracted for each additional category). However, this is not the case for quadratic weights, where penalties begin mild then grow harsher.
+#CONS: Depends on the marginal distribution (prevalence) of the categories
+
+cat("Plot")
+ggstatsplot::ggscatterstats(tot_off_top, tot, data=Base_fiscalia_v13c_dic_2022_3, 
+                            type="nonparametric", point.width.jitter=.9, point.height.jitter=.9,
+                            xlab="Number of TOP offenses", ylab="Number of PO offenses", 
+                            title="Relationship between PO and TOP")
+```
+
+```{r chisq-tot-2, echo=T, fig.align='center', message=T, error=T, eval=T}
+cat("Recode")
+Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$tot_off_top>=1,1,0)
+Base_fiscalia_v13c_dic_2022_3$tot_bin<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$tot>=1,1,0)
+
+
+confusion_table = table(Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin, Base_fiscalia_v13c_dic_2022_3$tot_bin)
+confusion_table[1,1] = 'TN'
+confusion_table[1,2] = 'FN'
+confusion_table[2,1] = 'FP'
+confusion_table[2,2] = 'TP'
+
+get_accuracy <- function(df, predicted, actual){
+  confusion_table = table(df[[predicted]],df[[actual]])
+  TP = confusion_table[2,2]
+  TN = confusion_table[1,1]
+  FN = confusion_table[1,2]
+  FP = confusion_table[2,1]
+  accuracy = round((TP + TN) / sum(TP,FP,TN,FN), 2)
+  return(accuracy)
+}
+get_classification_error_rate <- function(df, predicted, actual){
+  confusion_table = table(df[[predicted]],df[[actual]])
+  TP = confusion_table[2,2]
+  TN = confusion_table[1,1]
+  FN = confusion_table[1,2]
+  FP = confusion_table[2,1]
+  classification_error_rate = round((FP + FN) / sum(TP,FP,TN,FN),2)
+  return(classification_error_rate)
+}
+get_precision <- function(df, predicted, actual){
+  confusion_table = table(df[[predicted]],df[[actual]])
+  TP = confusion_table[2,2]
+  TN = confusion_table[1,1]
+  FN = confusion_table[1,2]
+  FP = confusion_table[2,1]
+  precision = round(TP / (TP + FP), 2)
+  return(precision)
+}
+get_sensitivity <- function(df, predicted, actual){
+  confusion_table = table(df[[predicted]],df[[actual]])
+  TP = confusion_table[2,2]
+  TN = confusion_table[1,1]
+  FN = confusion_table[1,2]
+  FP = confusion_table[2,1]
+  sensitivity = round(TP / (TP + FN), 2)
+  return(sensitivity)
+}
+get_specificity <- function(df, predicted, actual){
+  confusion_table = table(df[[predicted]],df[[actual]])
+  TP = confusion_table[2,2]
+  TN = confusion_table[1,1]
+  FN = confusion_table[1,2]
+  FP = confusion_table[2,1]
+  specificity = round(TN / (TN + FP), 2)
+  return(specificity)
+}
+get_f1_score <- function(df, predicted, actual){
+  confusion_table = table(df[[predicted]],df[[actual]])
+  TP = confusion_table[2,2]
+  TN = confusion_table[1,1]
+  FN = confusion_table[1,2]
+  FP = confusion_table[2,1]
+  
+  precision = round(TP / (TP + FP), 2)
+  sensitivity = round(TP / (TP + FN), 2)
+  f1_score = round((2 * precision * sensitivity) / (precision + sensitivity), 2)
+  return(f1_score)
+}
+
+score = data.frame(accuracy=get_accuracy(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
+      classification_error_rate=get_classification_error_rate(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
+      precision=get_precision(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
+      sensitivity=get_sensitivity(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
+      specificity=get_specificity(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
+      f1_score=get_f1_score(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'))
+
+#We can also combine precision and recall into an F1 score. This is the harmonic mean of precision and recall.
+knitr::kable(score, caption= "Table 1. Properties")# %>% kableExtra::kable_classic()
+```
+
+```{r chisq_sud, echo=T, fig.align='center', message=T, error=T, eval=T, fig.show='hide'}
+cor.test(Base_fiscalia_v13c_dic_2022_3$Venta.Drogas, Base_fiscalia_v13c_dic_2022_3$sud, method="spearman", exact=F)
+
+pol_p2<-
+  polychor(Base_fiscalia_v13c_dic_2022_3$Venta.Drogas, Base_fiscalia_v13c_dic_2022_3$sud, std.err=T, ML=T)
+
+pchisq(pol_p2$chisq,pol_p2$df, lower.tail=F)
+
+Base_fiscalia_v13c_dic_2022_3$adquisitivo<- ifelse(Base_fiscalia_v13c_dic_2022_3$Robo==0, Base_fiscalia_v13c_dic_2022_3$Hurto,0)
+
+Base_fiscalia_v13c_dic_2022_3$acq_rec<-ifelse(Base_fiscalia_v13c_dic_2022_3$acq>0,1,0)
+
+Base_fiscalia_v13c_dic_2022_3$tot_rec<-ifelse(Base_fiscalia_v13c_dic_2022_3$tot>0,1,0)
+
+
+round(prop.table(table(Base_fiscalia_v13c_dic_2022_3$acq, Base_fiscalia_v13c_dic_2022_3$adquisitivo)),2)  
+round(prop.table(table(Base_fiscalia_v13c_dic_2022_3$acq_rec, Base_fiscalia_v13c_dic_2022_3$adquisitivo)),2)  
+
+chisq.test(table(Base_fiscalia_v13c_dic_2022_3$acq_rec, Base_fiscalia_v13c_dic_2022_3$adquisitivo))
+
+ggstatsplot::ggpiestats(acq, adquisitivo, data=Base_fiscalia_v13c_dic_2022_3, 
+     type="nonparametric", point.width.jitter=.9, point.height.jitter=.9,
+     #palette = "default_jama",
+     xlab="Presencia delitos adquisitivos TOP", ylab="Recuento delitos Adquisitivos Fiscalía", 
+     title="Relación entre datos fiscalía y TOP, con registros de delitos \ncometidos últimos 30 días desde la aplicación del TOP")
+```
+
+<br>
+
+## ROC
+
+```{r roc, echo=T, fig.align='center', message=T, error=T, eval=T}
+
+library(ROCit)
+## Warning: package 'ROCit' was built under R version 3.5.2
+ROCit_obj <- rocit(score=Base_fiscalia_v13c_dic_2022_3$adquisitivo,class=Base_fiscalia_v13c_dic_2022_3$acq_rec)
+plot(ROCit_obj)
+
+Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec<-ifelse(Base_fiscalia_v13c_dic_2022_3$tot_off_top>0,1,0)
+
+ROCit_obj <- rocit(score=Base_fiscalia_v13c_dic_2022_3$tot_off_top,class=Base_fiscalia_v13c_dic_2022_3$tot_rec)
+plot(ROCit_obj)
+
+#Del YOuden, el óptimo es...
+ciROC(ROCit_obj,nboot = 500)
+#FPR: 1-especificidad
+#TPR: Sensibilidad
+
+ROCit_obj2 <- rocit(score=Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec,class=Base_fiscalia_v13c_dic_2022_3$tot_rec)
+plot(ROCit_obj2)
+
+#Del YOuden, el óptimo es...
+ciROC(ROCit_obj2,nboot = 500)
+#FPR: 1-especificidad
+#TPR: Sensibilidad
+
+```
+
+<br>
+
+# Flowchart
+
+```{r flwchrt-export-svg-1,echo=T, paged.print=TRUE, eval=T, error=T}
+
+a_tab1_lab_aft_d<- paste0('Original C1 Dataset \n(n = ', formatC(nrow(CONS_C1), format='f', big.mark=',', digits=0), ';\npatients: ',formatC(CONS_C1%>% dplyr::distinct(HASH_KEY)%>% nrow(), format='f', big.mark=',', digits=0),')')
+
+a_tab2_lab_aft_d<- paste0('&#8226;Remove duplicated entries\\\\\\l&#8226;Overlapping treatments of patients\\\\\\l&#8226;Intermediate treatment events (continuous referrals)    \\\\\\l')
+
+a_tab3_lab_aft_d<- paste0('      C1 Dataset          \n(n = ', formatC(nrow(CONS_C1_df_dup_SEP_2020), format='f', big.mark=',', digits=0), ';\npatients: ',formatC(CONS_C1_df_dup_SEP_2020%>% dplyr::distinct(hash_key)%>% nrow(), format='f', big.mark=',', digits=0),')')
+
+
+a_tab4_lab_aft_d<- paste0('Original Prosecutors Office\n(n = ',format(nrow(Base_fiscalia_v2),big.mark=","), ';\nCauses= ',Base_fiscalia_v2%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','), ';\nRel.=',Base_fiscalia_v2%>%dplyr::distinct(idrelacion)%>%nrow()%>%format(big.mark=','), ';\nRUC_Vic_Imp=',Base_fiscalia_v2%>%dplyr::mutate(rel=paste0(ruc,"_",idsujeto_victima,"_",idsujeto_imputado,"_","iddelito"))%>%dplyr::distinct(rel)%>%nrow()%>%format(big.mark=','), ';\nindividuals= ',Base_fiscalia_v2%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')')
+
+#crimes committed after study follow-up
+a_tab5_lab_aft_d1<-
+    paste0("(p= ",format(nrow(unique(subset(Base_fiscalia_v2,fec_comision_simple>as.Date("2019-11-13"),"rut_enc_saf"))),big.mark=","),"; RUCs= ", format(nrow(unique(subset(Base_fiscalia_v2,fec_comision_simple>as.Date("2019-11-13"),"ruc"))), big.mark=","),";n= ", format(nrow(subset(Base_fiscalia_v2,fec_comision_simple>as.Date("2019-11-13"),"rut_enc_saf")), big.mark=","),")")
+#erase entries with missing values in fec_comision_simple y termino_relacion_simple
+leftovers_Base_fiscalia_v3<-
+Base_fiscalia_v3 %>% 
+  dplyr::left_join(after_imp_Base_fiscalia_v3_db[,c("rut_enc_saf","imp_birth_date","flowch_age")], by="rut_enc_saf") %>% 
+  dplyr::rename("obs"="flowch_age") %>% 
+  dplyr::mutate(imp_birth_date=dplyr::case_when(!is.na(imp_birth_date)~imp_birth_date,T~fec_nacimiento_simple))%>% dplyr::mutate(edad_comision_imp=as.numeric(fec_comision_simple-imp_birth_date)/365.25) %>% dplyr::mutate(edad_ter_rel_imp=as.numeric(termino_relacion_simple-imp_birth_date)/365.25) %>%
+  #arrange the rut from the first date of comission of a crime, but we are not detecting if he/she is the victim or not
+  dplyr::arrange(rut_enc_saf, edad_comision_imp) %>% #566884
+  dplyr::filter(dplyr::case_when(!is.na(edad_comision_imp)~T,T~F)) %>% #566644
+  dplyr::filter(imp_birth_date=="1900-01-01"|is.na(imp_birth_date))
+
+a_tab5_lab_aft_d12<-
+    paste0("(p= ",format(nrow(dplyr::distinct(leftovers_Base_fiscalia_v3,rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(leftovers_Base_fiscalia_v3,ruc)), big.mark=","),";n= ",
+           format(nrow(leftovers_Base_fiscalia_v3), big.mark=","),")")
+
+#minor to 14 years old
+a_tab5_lab_aft_d13<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v4,edad_comision_imp<14),rut_enc_saf)),big.mark=","),"; RUCs= ", format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v4,edad_comision_imp<14),ruc)), big.mark=","),";n= ", format(nrow(dplyr::filter(Base_fiscalia_v4,edad_comision_imp<14)), big.mark=","),")")
+
+#Remove duplicated entries
+a_tab5_lab_aft_d2<-
+  paste0("(p= ",format(length(unique(eliminated_duplicates$rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(length(unique(eliminated_duplicates$ruc)), big.mark=","),";n= ",
+           format(nrow(eliminated_duplicates), big.mark=","),")")
+#before 2010
+a_tab5_lab_aft_d3<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,fec_comision_simple<"2010-01-01"),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,fec_comision_simple<"2010-01-01"),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v7,fec_comision_simple<"2010-01-01")), big.mark=","),")")
+#remove administrative annulment
+a_tab5_lab_aft_d4<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA"),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA"),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="ANULACI¿N ADMINISTRATIVA")), big.mark=","),")")
+#remove grouped to another case
+a_tab5_lab_aft_d5<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO"),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO"),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v7,agrupa_terminos=="AGRUPACI¿N A OTRO CASO")), big.mark=","),")")
+
+a_tab5_lab_aft_d<- paste0('&#8226;Filter crimes committed after study follow-up period',a_tab5_lab_aft_d1,'\\\\\\l&#8226;Remove duplicated entries',a_tab5_lab_aft_d2,'\\\\\\l&#8226;Correct dates (birth, comission of crime, end of judicial proceedings), missing nationality and sex\\\\\\l&#8226;Erase entries with missing values in  comission of crime, end of judicial proceedings',a_tab5_lab_aft_d12,'\\\\\\l&#8226;Erase entries with values in comission of crime when minor to 14 years old after imputation',a_tab5_lab_aft_d13,'\\\\\\l&#8226;Filter crimes committed before study follow-up',a_tab5_lab_aft_d3,'\\\\\\l&#8226;Filter records with cause of end of the proceedings= administrative annulment',a_tab5_lab_aft_d4,'\\\\\\l&#8226;Filter records with cause of end of the proceedings= grouped to another case',a_tab5_lab_aft_d5,'\\\\\\l')
+
+a_tab6_lab_aft_d<- paste0("O.P. Dataset \n(n= ", formatC(nrow(Base_fiscalia_v8),big.mark = ","),";\nindividuals= ",Base_fiscalia_v8%>% dplyr::distinct(rut_enc_saf)%>% nrow()%>% formatC(big.mark = ","),")")
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+#DISCARD not coded as an offender
+a_tab7_lab_aft_d1<-
+    paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v8,!grepl("SI",encontrado_como_imputado)),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v8,!grepl("SI",encontrado_como_imputado)),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v8,!grepl("SI",encontrado_como_imputado))), big.mark=","),")")
+
+#FILTER IF THE PATIENT RECIEVES FOR THE RELATIONSHIP AMONG THOSE THAT WERE OFFENDERS
+# end of proceeding  === SIMILAR TO Base_fiscalia_v9
+a_tab7_lab_aft_d2<-
+      paste0("(p= ",format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v8, grepl("SI",encontrado_como_imputado)) %>%
+dplyr::mutate(filter=dplyr::case_when(grepl("REPARATORIO|CONDICIONAL",toupper(agrupa_terminos)) & is.na(gls_mottermino)~1, grepl("REPARATORIO|SENTENCIA DEFINITIVA CONDENATORIA|240|MONIT", toupper(agrupa_terminos), ignore.case=F)~2, T~0))%>% dplyr::filter(filter==0),rut_enc_saf)),big.mark=","),"; RUCs= ",
+           format(nrow(dplyr::distinct(dplyr::filter(Base_fiscalia_v8, grepl("SI",encontrado_como_imputado)) %>%
+dplyr::mutate(filter=dplyr::case_when(grepl("REPARATORIO|CONDICIONAL",toupper(agrupa_terminos)) & is.na(gls_mottermino)~1, grepl("REPARATORIO|SENTENCIA DEFINITIVA CONDENATORIA|240|MONIT", toupper(agrupa_terminos), ignore.case=F)~2, T~0))%>% dplyr::filter(filter==0),ruc)), big.mark=","),";n= ",
+           format(nrow(dplyr::filter(Base_fiscalia_v8, grepl("SI",encontrado_como_imputado)) %>%
+dplyr::mutate(filter=dplyr::case_when(grepl("REPARATORIO|CONDICIONAL",toupper(agrupa_terminos)) & is.na(gls_mottermino)~1, grepl("REPARATORIO|SENTENCIA DEFINITIVA CONDENATORIA|240|MONIT", toupper(agrupa_terminos), ignore.case=F)~2, T~0))%>% dplyr::filter(filter==0)), big.mark=","),")")
+
+CONS_TOP_2022_anti<-
+  # 107307
+  CONS_TOP%>% 
+  dplyr::left_join(subset(dplyr::mutate(dplyr::group_by(Base_fiscalia_v11b_dic_2022, hash_key), hash_rn=row_number())%>% ungroup(), hash_rn==1), by= c("HASH_KEY" = "hash_key"))%>% 
+  dplyr::mutate(fech_ap_top_num= as.numeric(as.Date(str_sub(as.character(lubridate::parse_date_time(Fecha.Aplicación.TOP, c("%Y-%m-%d"),exact=T)),1,10))))%>% #No parse failures
+  dplyr::select(HASH_KEY, fech_ap_top_num, Fecha.Aplicación.TOP, dateofbirth_imp, Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro) %>% 
+  dplyr::filter(!is.na(HASH_KEY)) %>% 
+  dplyr::mutate_at(vars("Hurto", "Robo", "Venta.Drogas", "Riña", "Otro"), ~ifelse(.=="S",1,0)) %>% 
+  dplyr::mutate(Total.VIF= ifelse(Total.VIF>0,1,0))%>% 
+  dplyr::mutate(tot_off_top = base::rowSums(dplyr::select(.,c(Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro)), na.rm = T)) %>% 
+  dplyr::mutate(dateofbirth_imp_num= as.numeric(dateofbirth_imp),
+                fech_ap_top= lubridate::parse_date_time(Fecha.Aplicación.TOP, c("%Y-%m-%d"),exact=T),
+                edad_a_ap_top_num= lubridate::time_length(lubridate::interval(dateofbirth_imp, fech_ap_top),unit="years"),
+                edad_b_ap_top_num= (fech_ap_top_num-dateofbirth_imp_num)/365.25,
+                edad_a_ap_top_num_lim= edad_a_ap_top_num-(1/12),
+                edad_b_ap_top_num_lim= edad_b_ap_top_num-(1/12)) %>% 
+  dplyr::select(-dateofbirth_imp, -dateofbirth_imp_num) %>% 
+  dplyr::filter(!is.na(edad_a_ap_top_num)) %>% 
+  dplyr::group_by(HASH_KEY, edad_a_ap_top_num) %>% 
+  dplyr::slice(-1) %>% 
+  dplyr::ungroup()
+
+a_tab7_lab_aft_d25<-
+        paste0("(p= ",format(length(unique(CONS_TOP_2022_anti$HASH_KEY)),big.mark=","),"; n= ",
+           format(length(CONS_TOP_2022_anti$HASH_KEY), big.mark=","),")")
+
+
+a_tab7_lab_aft_d3<-
+        paste0("(p= ",format(nrow(dplyr::distinct(dplyr::anti_join(CONS_C1_df_dup_SEP_2020, CONS_C1_df_dup_SEP_2020_22_d, by=c("hash_key","dup")),hash_key)),big.mark=","),"; n= ",
+           format(nrow(dplyr::anti_join(CONS_C1_df_dup_SEP_2020, CONS_C1_df_dup_SEP_2020_22_d, by=c("hash_key","dup"))), big.mark=","),")")
+
+a_tab8_lab_aft_d <- paste0('Offenses previous\nto the first admission\n',"(p= ",format(length(unique(Base_fiscalia_v10b_dic_2022[,"hash_key"])),big.mark=","),"; RUCs= ",
+           format(length(unique(Base_fiscalia_v10b_dic_2022[,"caseid"])), big.mark=","),";\nn= ",
+           format(length(Base_fiscalia_v10b_dic_2022[,"caseid"]), big.mark=","),")")
+
+a_tab9_lab_aft<- paste0('&#8226;Discard observations coded as victims rather than ofenders ',tab7_lab_aft_d1,'\\\\\\l&#8226;Discard observations depending on the values of the end of the proceedings among offenders ',tab7_lab_aft_d2,'\\\\\\l&#8226;Discard TOP applications with duplicated dates and user ',a_tab7_lab_aft_d25,'\\\\\\l&#8226;Get the first treatment of each user ',a_tab7_lab_aft_d3,'\\\\\\l')
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#//  ON x.hash_key == y.id AND   x.edad_al_egres_imp > y.age_offending_imp AND x.dup = 1"
+
+library(DiagrammeR) 
+plot_merge_flowchart_excercise<-
+  grViz("digraph flowchart {
+        fontname='Comic Sans MS'
+        # node definitions with substituted label text
+        node [shape = rectangle,fontsize = 9]        
+        tab1 [label = '@@1']
+        blank [label = '', width = 0.0001, height = 0.0001]
+        tab2 [label = '@@2',fontsize = 7]
+        tab3 [label = '@@3']
+        
+        tab4 [label = '@@4',fontsize = 8]
+        blank2 [label = '', width = 0.0001, height = 0.0001]
+        tab5 [label = '@@5',fontsize = 7]
+        tab6 [label= '@@6']
+        
+        blank3 [label = '', width = 0.0001, height = 0.0001]
+        blank4 [label = '', width = 0.0001, height = 0.0001]      
+        blank5 [label = '', width = 0.0001, height = 0.0001] 
+        
+        blank6 [label = '', width = 0.0001, height = 0.0001]
+        tab7 [label = '@@7',fontsize = 7]
+        tab8 [label= '@@8']
+        
+        # edge definitions with the node IDs
+        rankdir='TB'; rank= same; tab1 -> blank [arrowhead = none,label='        Data wrangling and normalization process',fontsize = 8];
+        rankdir='TB'; rank= same; tab1; tab3;   
+        blank -> tab2;
+                    subgraph {
+                rank = same; tab2; blank;
+                    }
+        rankdir='TB'; rank= same; blank -> tab3;      
+              
+        tab4 -> blank2 [arrowhead = none,label='        Data wrangling and normalization process',fontsize = 8];
+        blank2 -> tab5
+        blank2 -> tab6
+        blank4 -> blank6 [arrowhead= none, label='  &#10198;']
+        blank6 -> tab7 
+                    subgraph {
+          rank = same; blank6; tab7;
+                    }
+        # bring_db1_a                    
+        blank6 -> tab8 [label= '        Merge records where discharge age is greater than age of offenses', fontsize = 8] 
+                    subgraph {
+          rank = same; tab5; blank2;
+                    }
+                    subgraph {
+        rank= same; tab3 -> blank3 -> blank4 -> blank5 -> tab6 [arrowhead= none]
+                    }
+        }
+                    subgraph {
+          rank = same; tab3; tab6;
+                    }
+                    subgraph {
+          rank = same; tab1; tab4;
+                    }         
+                    subgraph {
+          rank = same; tab2; tab5;
+                    } 
+                    subgraph {
+          rank = same; tab1; tab3;
+          rankdir=TB
+          rank=same
+                    }
+                    subgraph {
+          rank = same; tab4; tab6;
+          rankdir=TB
+          rank=same
+                    }                     
+  
+        [1]:  a_tab1_lab_aft_d
+        [2]:  a_tab2_lab_aft_d
+        [3]:  a_tab3_lab_aft_d
+        [4]:  a_tab4_lab_aft_d
+        [5]:  a_tab5_lab_aft_d
+        [6]:  a_tab6_lab_aft_d
+        [7]:  a_tab9_lab_aft
+        [8]:  a_tab8_lab_aft_d
+        ", width = 1200,
+          height = 900)
+
+plot_merge_flowchart_excercise
+```
+
+```{r flwchrt-export-svg-2,echo=T, paged.print=TRUE, eval=T, error=T}
+library(DiagrammeR) 
+
+
+        tab8 -> blank65 [label= '        Selected the first row with distinct information regarding patient ID, case ID, crime code', fontsize = 8]
+        
+        tab8 -> blank7 [arrowhead= none]
+        blank7 [label = '', width = 0.0001, height = 0.0001]
+        tab9 [label= '@@9',fontsize = 7]
+        tab10 [label= '@10']        
+        blank7 -> tab9 
+        blank7 -> tab10
+                    subgraph {
+          rank = same; blank7; tab9;
+                    }
+
+        # blank [label = '', width = 0.0001, height = 0.0001]
+        # 
+        # tab3 [label = '@@3']
+        # 
+        # tab4 [label = '@@4',fontsize = 8]
+        # blank2 [label = '', width = 0.0001, height = 0.0001]
+        # tab5 [label = '@@5',fontsize = 7]
+        # tab6 [label= '@@6']
+        # 
+        # blank3 [label = '', width = 0.0001, height = 0.0001]
+        # blank4 [label = '', width = 0.0001, height = 0.0001]      
+        # blank5 [label = '', width = 0.0001, height = 0.0001] 
+        # 
+        # blank6 [label = '', width = 0.0001, height = 0.0001]
+        # tab7 [label = '@@7',fontsize = 7]
+        # tab8 [label= '@@8']
+#tab1 -> blank [label= '        Selected the first row with distinct information regarding patient ID, case ID, crime code', fontsize = 8]
+
+a_tab10_lab_aft_d<- paste0("TOP Dataset \n(n= ", formatC(nrow(CONS_TOP),big.mark = ","),";\nindividuals= ",CONS_TOP%>% dplyr::distinct(HASH_KEY)%>% nrow()%>% formatC(big.mark = ","),")")
+
+#bring_db3
+a_tab11_lab_aft_d1<- 
+    paste0( '(p= ',format(nrow(dplyr::distinct(dplyr::group_by(Base_fiscalia_v9, id, caseid, end_type, fec_comision_simple, crime_code_c) %>% dplyr::slice(-1) %>% dplyr::ungroup(),id)), big.mark=","), '; RUCs= ', format(nrow(dplyr::distinct(dplyr::group_by(Base_fiscalia_v9, id, caseid, end_type, fec_comision_simple, crime_code_c) %>% dplyr::slice(-1) %>% dplyr::ungroup(),caseid)), big.mark=","), '; n= ', format(nrow(dplyr::group_by(Base_fiscalia_v9, id, caseid, end_type, fec_comision_simple, crime_code_c) %>% dplyr::slice(-1) %>% dplyr::ungroup()), big.mark=",") , ')'
+    )
+
+a_tab11_lab_aft_d<- paste0('&#8226;Count events such as shoplifting, theft, domestic violence, drug selling, fights, or related behavior in the last four weeks','\\\\\\l',
+                           '&#8226;Get PO data with more than one record with the same case ID, sentence, date of offense and type of crime ', a_tab11_lab_aft_d1,'\\\\\\l')
+
+a_tab12_lab_aft_d<- 
+    paste0('Merged database\n(p= ',format(nrow(dplyr::distinct(Base_fiscalia_v13c_dic_2022_3,HASH_KEY)), big.mark=","), '; n= ', format(nrow(Base_fiscalia_v13c_dic_2022_3), big.mark=",") , ')'
+    )
+
+
+plot_merge_flowchart_excercise2<-
+  grViz("digraph flowchart {
+        fontname='Comic Sans MS'
+        # edge definitions with the node IDs
+        # node definitions with substituted label text
+        node [shape = rectangle, fontsize = 9]        
+        tab1 [label = '@@1', fontsize = 7]
+        tab2 [label = '@@2', fontsize = 7]
+        blank [label = '', width = 0.0001, height = 0.0001]
+        blanka [label = '', width = 0.0001, height = 0.0001]
+        blankb [label = '', width = 0.0001, height = 0.0001]
+        
+        # bring_db2       
+          subgraph {
+            rank = same; tab1 -> blanka -> blank -> blankb -> tab2 [arrowhead= none]
+          }
+        tab3 [label = '@@3',fontsize = 6]
+        blank2 [label = '', width = 0.0001, height = 0.0001]
+        blank -> blank2 [arrowhead= none, label='  &#10198;']
+        subgraph {
+            rank = same; blank2 -> tab3
+          }
+        tab4 [label = '@@4',fontsize = 9]
+        blank2 -> tab4 [label='        Select records of offenses committed before the application of TOP but\n        at least the last month previous to the application of TOP \\\\\\l',fontsize = 7];
+  }
+
+        [1]:  a_tab8_lab_aft_d
+        [2]:  a_tab10_lab_aft_d
+        [3]:  a_tab11_lab_aft_d
+        [4]:  a_tab12_lab_aft_d
+        [5]:  ''
+        [6]:  ''
+        [7]:  ''
+        [8]:  ''
+        ", width = 1200,
+          height = 900)
+
+plot_merge_flowchart_excercise2
+
+```
+
+<br>
+
+# Session Info
+
+```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE}
+message(Sys.getenv("R_LIBS_USER"))
+Sys.Date()
+message(paste0("Editor context: ", path))
+
+if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.RData")
+  } else if (grepl("andre",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("C:/Users/andre/Desktop/SUD_CL/14.RData")
+  } else if (grepl("E:",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.RData")
+  } else {
+    save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"14.RData"))
+  }
+
+sesion_info <- devtools::session_info()
+dplyr::select(
+  tibble::as_tibble(sesion_info$packages),
+  c(package, loadedversion, source)
+) %>% 
+  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Variable' = 2, 'Percentage'= 3),
+              caption = htmltools::tags$caption(
+        style = 'caption-side: top; text-align: left;',
+        '', htmltools::em('Packages')),
+      options=list(
+initComplete = htmlwidgets::JS(
+        "function(settings, json) {",
+        "$(this.api().tables().body()).css({
+            'font-family': 'Helvetica Neue',
+            'font-size': '50%', 
+            'code-inline-font-size': '15%', 
+            'white-space': 'nowrap',
+            'line-height': '0.75em',
+            'min-height': '0.5em'
+            });",#;
+        "}")))
+```
+
+# Export
+
+```{r export, warning=FALSE, echo=T, error=T, eval=T}
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+# IMPUTATION
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+# 
+# Base_fiscalia_v14_miss %>% 
+#   dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
+#   data.table::data.table() %>% 
+#   rio::export(file = paste0("fiscalia_mariel_jan_2023_match_SENDA_miss.dta"))
+```
+
+
+::: controlly
+```{r label_to_stata, echo=T, paged.print=TRUE}
+#put name of the file
+file<- "fiscalia_mariel_jan_2023_match_SENDA.dta"
+
+export_lab_stata_merge<-
+  tibble::rownames_to_column(data.frame(Hmisc::label(dplyr::select(Base_fiscalia_v13,  all_of(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación"))))))%>% data.frame() %>%
+  dplyr::rename("code" = !!names(.[1]), "label" = !!names(.[2]))%>% data.frame()%>%
+  dplyr::mutate(first= "cap noi label variable")%>%
+  dplyr::mutate(final= paste0(first, " ",code,' "',label,'"'))%>%
+  dplyr::select(-code,-label,-first)%>%
+  dplyr::rename("*clear all"="final") %>%
+  rbind(paste0('cap noi save "', gsub('/', '\\', path, fixed=T),'\\',file,'", replace'))%>%
+  rbind(paste0('cap noi save "', gsub('/', '\\', path, fixed=T),'\\',file,'", replace'))
+
+rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear'),export_lab_stata_merge) %>% knitr::kable("markdown")
+
+write.table(rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear'),export_lab_stata_merge), file = paste0(path,"/_label_var_to_stata_jan2023.do"), sep = "",row.names = FALSE, quote = FALSE, fileEncoding="UTF-8")
+```
+:::
+
+<br>
+
+<div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:350px; overflow-x: scroll; width:100%">
+
+```{stata 2, collectcode=F, include=T, error=T, cleanlog=F}
+*should be in the same folder of the .Rmd to work
+cap noi do _label_var_to_stata_jan2023
+```
+
+</div>

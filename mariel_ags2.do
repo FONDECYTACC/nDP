@@ -334,11 +334,11 @@ legend(cols(4)) ///
 graphregion(color(white) lwidth(large)) bgcolor(white) ///
 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
 legend(order(1 "95CI Tr Completion" 2 "Tr Completion" 3 "95CI Early Tr Disch" 4 "Early Tr Disch " 5 "95CI Late Tr Disch" 6 "Late Tr Disch" )size(*.5)region(lstyle(none)) region(c(none)) nobox)
-graph save "tto2.gph", replace
+graph save "`c(pwd)'\_figs\tto2.gph", replace
 <</dd_do>>
 ~~~~
 
-<<dd_graph: saving(tto2.svg) width(800) replace>>
+<<dd_graph: saving("./_figs/tto2.svg") width(800) replace>>
 
 
 

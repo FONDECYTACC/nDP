@@ -602,6 +602,7 @@ CONS_C1_df_dup_SEP_2020 %>%
 paste0("tipo_de_plan_2_",1:10),paste0("motivodeegreso_mod_imp_",1:10),
 paste0("dias_treat_imp_sin_na_",1:10), "dg_trs_cons_sus_or", "dg_total_cie_10", "dg_cie_10_rec", "dg_total_dsm_iv", "dg_dsm_iv_rec", "cnt_diagnostico_trs_fisico", "diagnostico_trs_fisico", "dg_fis_anemia", "dg_fis_card", "dg_fis_in_study", "dg_fis_enf_som", "dg_fis_ets", "dg_fis_hep_alc", "dg_fis_hep_b", "dg_fis_hep_cro", "dg_fis_inf", "dg_fis_otr_cond_fis_ries_vit", "dg_fis_otr_cond_fis", "dg_fis_pat_buc", "dg_fis_pat_ges_intrau", "dg_fis_trau_sec", "otros_pr_sm_abu_sex", "otros_pr_sm_exp_com_sex", "otros_pr_sm_otros", "otros_pr_sm_vif")) %>% 
   purrr::when(dplyr::filter(.,abs(edad_al_ing_fmt-edad_al_ing)>0.02) %>% nrow()>0 ~ stop("Age at admission was calculated differently"), ~.) %>%
+  #2023-02-01 attention
     dplyr::mutate(edad_al_ing=edad_al_ing_fmt) %>% 
     dplyr::mutate(comorbidity_icd_10=dplyr::case_when(dg_total_cie_10>=2~ "Two or more", dg_total_cie_10==1~ "One", as.character(dg_cie_10_rec)=="Diagnosis unknown (under study)"~"Diagnosis unknown (under study)", as.character(dg_cie_10_rec)=="Without psychiatric comorbidity"~"Without psychiatric comorbidity")) %>%
   dplyr::mutate(comorbidity_icd_10=as.factor(comorbidity_icd_10)) %>% 

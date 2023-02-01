@@ -53,12 +53,22 @@ CONS_C1_df_dup_SEP_2020_22<-
   dplyr::ungroup() %>% 
   dplyr::mutate(tipo_centro_pub_discard=tipo_centro_pub, nombre_centro_discard= nombre_centro, fech_ing_num_discard=fech_ing_num, fech_egres_num_discard= fech_egres_num, fech_ing_discard= fech_ing, fech_egres_imp_discard=fech_egres_imp)%>% 
   #WIDE
+  #2023-02-01: numero_de_hijos_mod
+  dplyr::mutate(numero_de_hijos_mod_discard=numero_de_hijos_mod, 
+                comuna_residencia_cod_rec_discard= as.character(readr::parse_number(as.character(comuna_residencia_cod))),
+                anio_ing_tr_discard= lubridate::epiyear(as.Date(fech_ing))) %>% 
   tidyr::pivot_wider(
     names_from =  rn_hash_discard, 
     names_sep="_",
-    values_from = c(fech_ing_num_discard, fech_egres_num_discard, edad_al_ing, edad_al_egres, fech_ing_discard, fech_egres_imp_discard, tipo_centro_pub_discard, nombre_centro_discard))%>%
+    values_from = c(fech_ing_num_discard, fech_egres_num_discard, edad_al_ing, edad_al_egres, fech_ing_discard, fech_egres_imp_discard,
+                    tipo_centro_pub_discard, nombre_centro_discard, numero_de_hijos_mod_discard, comuna_residencia_cod_rec_discard, anio_ing_tr_discard))%>%
   #FILL COLUMNS BY PATIENT
   dplyr::group_by(hash_key)%>%
+  #2023-02-01, added numero_de_hijos_mod_rec and comuna_residencia_cod_rec anio_ing_tr
+  dplyr::mutate_at(vars(numero_de_hijos_mod_discard_1:numero_de_hijos_mod_discard_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
+  dplyr::mutate_at(vars(comuna_residencia_cod_rec_discard_1:comuna_residencia_cod_rec_discard_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
+  dplyr::mutate_at(vars(anio_ing_tr_discard_1:anio_ing_tr_discard_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
+  dplyr::mutate_at(vars(numero_de_hijos_mod_discard_1:numero_de_hijos_mod_discard_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
   dplyr::mutate_at(vars(fech_ing_num_discard_1:fech_egres_num_discard_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
   dplyr::mutate_at(vars(edad_al_ing_1:edad_al_ing_10),~suppressWarnings(max(as.character(.),na.rm=T)))%>%
   #2022-11-01, added the age at discharge and the dates
@@ -71,10 +81,14 @@ CONS_C1_df_dup_SEP_2020_22<-
 
 name_vec <- setNames(c(paste0("fech_ing_num_discard_",1:10), paste0("fech_egres_num_discard_",1:10), 
                        paste0("fech_ing_discard_",1:10), paste0("fech_egres_imp_discard_",1:10), 
-                       paste0("tipo_centro_pub_discard_",1:10), paste0("nombre_centro_discard_",1:10)),
+                       paste0("tipo_centro_pub_discard_",1:10), paste0("nombre_centro_discard_",1:10), 
+                       paste0("numero_de_hijos_mod_discard_",1:10),paste0("comuna_residencia_cod_rec_discard_",1:10),
+                       paste0("anio_ing_tr_discard_",1:10)),
                      #names:                     
                      c(paste0("fech_ing_num_",1:10), paste0("fech_egres_num_",1:10), paste0("fech_ing_",1:10), 
-                       paste0("fech_egres_imp_",1:10),paste0("tipo_centro_pub_",1:10), paste0("nombre_centro_",1:10)))
+                       paste0("fech_egres_imp_",1:10),paste0("tipo_centro_pub_",1:10), paste0("nombre_centro_",1:10), 
+                       paste0("numero_de_hijos_mod_",1:10), paste0("comuna_residencia_cod_rec_",1:10),
+                       paste0("anio_ing_tr_",1:10)))
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_# #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_# #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -164,6 +178,143 @@ for (i in 1:10) {
    # janitor::tabyl(tipo_centro_pub_10)
   rio::export(file = paste0("_ig_borquez/fiscalia_ig_bo_dic_2022_SENDA.dta"))
 
+  
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#2023-02-01  
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+# Fiscalia merge step 5 
+#  ```{r bring_db1, echo=T, fig.align='center', message=T, error=T, eval=T}
+  #http://observatorio.ministeriodesarrollosocial.gob.cl/pobreza-comunal-2020
+  
+  Comunas_PNDR <- readxl::read_excel("Clasificacion-comunas-PNDR.xlsx")%>% 
+    dplyr::mutate(cod= dplyr::case_when(as.character(cod_com)=="16101"~"8401",
+                                        as.character(cod_com)=="16102"~"8402",
+                                        as.character(cod_com)=="16103"~"8406",
+                                        as.character(cod_com)=="16104"~"8407",
+                                        as.character(cod_com)=="16105"~"8410",
+                                        as.character(cod_com)=="16106"~"8411",
+                                        as.character(cod_com)=="16107"~"8413",
+                                        as.character(cod_com)=="16108"~"8418",
+                                        as.character(cod_com)=="16109"~"8421",
+                                        as.character(cod_com)=="16201"~"8414",
+                                        as.character(cod_com)=="16202"~"8403",
+                                        as.character(cod_com)=="16203"~"8404",
+                                        as.character(cod_com)=="16204"~"8408",
+                                        as.character(cod_com)=="16205"~"8412",
+                                        as.character(cod_com)=="16206"~"8415",
+                                        as.character(cod_com)=="16207"~"8420",
+                                        as.character(cod_com)=="16301"~"8416",
+                                        as.character(cod_com)=="16302"~"8405",
+                                        as.character(cod_com)=="16303"~"8409",
+                                        as.character(cod_com)=="16304"~"8417",
+                                        as.character(cod_com)=="16305"~"8419",
+                                        T~ as.character(cod_com)
+    ))
+  
+  #http://observatorio.ministeriodesarrollosocial.gob.cl/pobreza-comunal-2011
+  pobr_mult_2020<-readxl::read_excel("Estimaciones_de_Tasa_de_Pobreza_por_Ingresos_por_Comunas_2020_revisada2022_09.xlsx", skip=1) %>% dplyr::mutate(anio=2020) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2019<-readxl::read_excel("Estimaciones_de_Tasa_de_Pobreza_por_Ingresos_por_Comunas_2020_revisada2022_09.xlsx", skip=1) %>% dplyr::mutate(anio=2019) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2018<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2017.xlsx", skip=1) %>% dplyr::mutate(anio=2018) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2017<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2017.xlsx", skip=1) %>% dplyr::mutate(anio=2017) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2016<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2015.xlsx", skip=1) %>% dplyr::mutate(anio=2016) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2015<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2015.xlsx", skip=1) %>% dplyr::mutate(anio=2015) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2014<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_2013.xlsx", skip=1)%>% dplyr::mutate(anio=2014) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2013<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_2013.xlsx", skip=1)%>% dplyr::mutate(anio=2013) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2012<-readxl::read_excel("Estimacion_tasa_de_pobreza_comunal_2011_(nueva _metodologia).xlsx", skip=1)%>% dplyr::mutate(anio=2012) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2011<-readxl::read_excel("Estimacion_tasa_de_pobreza_comunal_2011_(nueva _metodologia).xlsx", skip=1)%>% dplyr::mutate(anio=2011) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2010<-readxl::read_excel("Estimacion_tasa_de_pobreza_comunal_2011_(nueva _metodologia).xlsx", skip=1)%>% dplyr::mutate(anio=2010) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2009<-readxl::read_excel("PobrezaporComunas_SAE_20092011.xlsx", skip=3)%>% dplyr::mutate(anio=2009) %>% dplyr::select(anio, everything()) %>% dplyr::select(1:5) %>%  dplyr::rename_at(vars( contains("Incidencia pobreza") ), ~"porc_pobr") %>% dplyr::rename("Código"=2, "Nombre comuna"=3) %>%  dplyr::mutate(Región=rep("")) %>%  dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2008<-readxl::read_excel("PobrezaporComunas_SAE_20092011.xlsx", skip=3)%>% dplyr::mutate(anio=2008) %>% dplyr::select(anio, everything()) %>% dplyr::select(1:5) %>%  dplyr::rename_at(vars( contains("Incidencia pobreza") ), ~"porc_pobr") %>% dplyr::rename("Código"=2, "Nombre comuna"=3) %>%  dplyr::mutate(Región=rep("")) %>%  dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  pobr_mult_2007<-readxl::read_excel("PobrezaporComunas_SAE_20092011.xlsx", skip=3)%>% dplyr::mutate(anio=2007) %>% dplyr::select(anio, everything()) %>% dplyr::select(1:5) %>%  dplyr::rename_at(vars( contains("Incidencia pobreza") ), ~"porc_pobr") %>% dplyr::rename("Código"=2, "Nombre comuna"=3) %>%  dplyr::mutate(Región=rep("")) %>%  dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+  
+  # replace comuna= "16103" if strpos(strlower(comuna),"8406")>0
+  # replace comuna= "16104" if strpos(strlower(comuna),"8407")>0
+  # replace comuna= "16105" if strpos(strlower(comuna),"8410")>0
+  # replace comuna= "16106" if strpos(strlower(comuna),"8411")>0
+  # replace comuna= "16107" if strpos(strlower(comuna),"8413")>0
+  # replace comuna= "16108" if strpos(strlower(comuna),"8418")>0
+  # replace comuna= "16109" if strpos(strlower(comuna),"8421")>0
+  # replace comuna= "16201" if strpos(strlower(comuna),"8414")>0
+  # replace comuna= "16202" if strpos(strlower(comuna),"8403")>0
+  # replace comuna= "16203" if strpos(strlower(comuna),"8404")>0
+  # replace comuna= "16204" if strpos(strlower(comuna),"8408")>0
+  # replace comuna= "16205" if strpos(strlower(comuna),"8412")>0
+  # replace comuna= "16206" if strpos(strlower(comuna),"8415")>0
+  # replace comuna= "16207" if strpos(strlower(comuna),"8420")>0
+  # replace comuna= "16301" if strpos(strlower(comuna),"8416")>0
+  # replace comuna= "16302" if strpos(strlower(comuna),"8405")>0
+  # replace comuna= "16303" if strpos(strlower(comuna),"8409")>0
+  # replace comuna= "16304" if strpos(strlower(comuna),"8417")>0
+  # replace comuna= "16305" if strpos(strlower(comuna),"8419")>0
+  pobr_mult_2007_2020<-
+    rbind.data.frame(pobr_mult_2007, pobr_mult_2008, pobr_mult_2009, pobr_mult_2010, pobr_mult_2011, pobr_mult_2012, pobr_mult_2013, pobr_mult_2014, pobr_mult_2015, pobr_mult_2016, pobr_mult_2017, pobr_mult_2018, pobr_mult_2019, pobr_mult_2020) %>% 
+    dplyr::mutate(cod= dplyr::case_when(Código=="16101"~"8401",
+                                        Código=="16102"~"8402",
+                                        Código=="16103"~"8406",
+                                        Código=="16104"~"8407",
+                                        Código=="16105"~"8410",
+                                        Código=="16106"~"8411",
+                                        Código=="16107"~"8413",
+                                        Código=="16108"~"8418",
+                                        Código=="16109"~"8421",
+                                        Código=="16201"~"8414",
+                                        Código=="16202"~"8403",
+                                        Código=="16203"~"8404",
+                                        Código=="16204"~"8408",
+                                        Código=="16205"~"8412",
+                                        Código=="16206"~"8415",
+                                        Código=="16207"~"8420",
+                                        Código=="16301"~"8416",
+                                        Código=="16302"~"8405",
+                                        Código=="16303"~"8409",
+                                        Código=="16304"~"8417",
+                                        Código=="16305"~"8419",
+                                        T~ Código
+    ))
+  
+CONS_C1_df_dup_SEP_2020_22_e<-
+    CONS_C1_df_dup_SEP_2020_22_d %>% 
+    dplyr::mutate(comuna_residencia_cod_rec= as.character(readr::parse_number(as.character(comuna_residencia_cod))), 
+                  anio_ing_tr= lubridate::epiyear(as.Date(fech_ing_1))) %>% #glimpse()
+    dplyr::mutate(across(paste0("anio_ing_tr_",1:10),~as.numeric(.)))%>%
+    dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec"="cod", "anio_ing_tr"="anio")) %>%
+    dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec_1"="cod", "anio_ing_tr_1"="anio")) %>% 
+    dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec_2"="cod", "anio_ing_tr_2"="anio")) %>% 
+    dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec_3"="cod", "anio_ing_tr_3"="anio")) %>% 
+    dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec_4"="cod", "anio_ing_tr_4"="anio")) %>% 
+    dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec_5"="cod", "anio_ing_tr_5"="anio")) %>% 
+    dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec_6"="cod", "anio_ing_tr_6"="anio")) %>% 
+    dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec_7"="cod", "anio_ing_tr_7"="anio")) %>% 
+    dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec_8"="cod", "anio_ing_tr_8"="anio")) %>% 
+    dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec_9"="cod", "anio_ing_tr_9"="anio")) %>%
+    dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec_10"="cod", "anio_ing_tr_10"="anio")) %>% 
+    dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec"="cod"))%>%
+    dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec_1"="cod"))%>%
+    dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec_2"="cod"))%>%
+    dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec_3"="cod"))%>%
+    dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec_4"="cod"))%>%
+    dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec_5"="cod"))%>%
+    dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec_6"="cod"))%>%
+    dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec_7"="cod"))%>%
+    dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec_8"="cod"))%>%
+    dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec_9"="cod"))%>%
+    dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec_10"="cod"))
+  #TO CHECK IF SOME MUNICIPALLITIES DID NOT JOIN
+  #dplyr::filter(is.na(porc_pobr)) %>% dplyr::select(comuna_residencia_cod, anio_ing_tr)
+  
+
+  
+  CONS_C1_df_dup_SEP_2020_22_e %>% 
+    dplyr::rename_at(vars(starts_with("Clasificación")), ~paste0("clas_", seq_along(.)-1))%>%
+    dplyr::rename_at(vars(starts_with("porc_pobr")), ~paste0("porc_pobr_", seq_along(.)-1))%>%
+    plyr::rename(c("porc_pobr_0"="porc_pobr", "clas_0"="clas"))%>%
+    subset(., subset= dup==1) %>% 
+    data.frame() %>% 
+    # janitor::tabyl(tipo_centro_pub_10)
+    rio::export(file = paste0("_ig_borquez/fiscalia_ig_bo_feb_2023_SENDA.dta"))
+  
+  
 #table(is.na(subset(CONS_C1_df_dup_SEP_2020_22_d, subset= dup==1)$sex))
 #table(is.na(subset(CONS_C1_df_dup_SEP_2020_22_d, subset= dup==1)$fech_nac_rec))  
 Base_fiscalia_v8 %>% 
