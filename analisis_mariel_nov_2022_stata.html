@@ -19,7 +19,7 @@
 <pre><code>. clear all
 
 . cap noi which tabout
-C:\Users\CISS Fondecyt\ado\plus\t\tabout.ado
+c:\ado\plus\t\tabout.ado
 *! 2.0.8 Ian Watson 15mar2019
 *! tabout version 3 (beta) available at: http://tabout.net.au
 
@@ -28,7 +28,7 @@ C:\Users\CISS Fondecyt\ado\plus\t\tabout.ado
 .         }
 
 . cap noi which pathutil
-C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+c:\ado\plus\p\pathutil.ado
 *! version 2.2.0 19nov2020 daniel klein
 
 . if _rc==111 {
@@ -36,7 +36,7 @@ C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
 .         }
 
 . cap noi which pathutil
-C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+c:\ado\plus\p\pathutil.ado
 *! version 2.2.0 19nov2020 daniel klein
 
 . if _rc==111 {
@@ -44,7 +44,7 @@ C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
 .         }
 
 . cap noi which project
-C:\Users\CISS Fondecyt\ado\plus\p\project.ado
+c:\ado\plus\p\project.ado
 *! version 1.3.1  22dec2013  picard@netbox.com
 
 . if _rc==111 {   
@@ -52,7 +52,7 @@ C:\Users\CISS Fondecyt\ado\plus\p\project.ado
 .         }
 
 . cap noi which stipw
-C:\Users\CISS Fondecyt\ado\plus\s\stipw.ado
+c:\ado\plus\s\stipw.ado
 *! Version 1.0.0 17Jan2022
 
 . if _rc==111 {   
@@ -60,7 +60,7 @@ C:\Users\CISS Fondecyt\ado\plus\s\stipw.ado
 .         }
 
 . cap noi which stpm2
-C:\Users\CISS Fondecyt\ado\plus\s\stpm2.ado
+c:\ado\plus\s\stpm2.ado
 *! version 1.7.5 May2021
 
 . if _rc==111 {   
@@ -68,7 +68,7 @@ C:\Users\CISS Fondecyt\ado\plus\s\stpm2.ado
 .         }       
 
 . cap noi which rcsgen
-C:\Users\CISS Fondecyt\ado\plus\r\rcsgen.ado
+c:\ado\plus\r\rcsgen.ado
 *! version 1.5.9 13FEB2022
 
 . if _rc==111 {   
@@ -76,7 +76,7 @@ C:\Users\CISS Fondecyt\ado\plus\r\rcsgen.ado
 .         }       
 
 . cap noi which matselrc
-C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
+c:\ado\plus\m\matselrc.ado
 *! NJC 1.1.0 20 Apr 2000  (STB-56: dm79)
 
 . if _rc==111 {           
@@ -85,13 +85,13 @@ C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
 
 </code></pre>
 <h1><a href="#exercise" id="exercise">Exercise</a></h1>
-<p>Date created: 01:45:42  6 Jan 2023.</p>
+<p>Date created: 18:39:27 16 Feb 2023.</p>
 <p>Get the folder</p>
 <pre><code>
-C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
+E:\Mi unidad\Alvacast\SISTRAT 2022 (github)
 
 
-Fecha:  6 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
+Fecha: 16 Feb 2023, considerando un SO Windows para el usuario: andre
 
 </code></pre>
 <head>
@@ -104,8 +104,8 @@ Fecha:  6 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
 </script>
 </head>
 <p>Path data= ;</p>
-<p>Tiempo:  6 Jan 2023, considerando un SO Windows</p>
-<p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA.dta</p>
+<p>Tiempo: 16 Feb 2023, considerando un SO Windows</p>
+<p>The file is located and named as: E:\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA.dta</p>
 <p>=============================================================================</p>
 <h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
 <p>=============================================================================</p>
@@ -143,8 +143,9 @@ Fecha:  6 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
 . 
 . *encode policonsumo, generate(policon) *already numeric
 . 
-. *motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_10_
-&gt; rec i.dg_trs_cons_sus_or i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth
+. *motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq
+&gt; _cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_10_rec i.dg_trs_cons_sus_or i.macrozona i.n
+&gt; _off_vio i.n_off_acq i.n_off_sud i.n_off_oth
 </code></pre>
 <p>Then we set the data base in surirval format and bring the urban-rural classification of municipallities from this <a href="&quot;https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.masvidarural.gob.cl%2Fwp-content%2Fuploads%2F2021%2F04%2FClasificacion-comunas-PNDR.xlsx&amp;wdOrigin=BROWSELINK&quot;">link</a>.</p>
 <pre><code>. cap qui noi frame create temp
@@ -163,7 +164,8 @@ Fecha:  6 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
 . 
 . *recode comuna if 
 . *http://www.sinim.cl/archivos/centro_descargas/modificacion_instructivo_pres_codigos.pdf
-. *file:///C:/Users/CISSFO~1/AppData/Local/Temp/MicrosoftEdgeDownloads/4ef08de9-6832-4db6-8124-f69a7b256270/codigoComunas-20180801%20(1).pdf
+. *file:///C:/Users/CISSFO~1/AppData/Local/Temp/MicrosoftEdgeDownloads/4ef08de9-6832-4db6-8124-f69a7b256270/codigoComunas-20180
+&gt; 801%20(1).pdf
 . 
 . replace comuna= &quot;16101&quot; if strpos(strlower(comuna),&quot;8401&quot;)&gt;0
 (434 real changes made)
@@ -453,7 +455,8 @@ Treatmen |  118,806.623   .1037484         35781   16.49829  17.60986  20.97467
 &gt; legend(cols(4)) ///
 &gt; graphregion(color(white) lwidth(large)) bgcolor(white) ///
 &gt; plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001&quot;) ///
-&gt; legend(order(1 &quot;95CI Tr Completion&quot; 2 &quot;Tr Completion&quot; 3 &quot;95CI Early Tr Disch&quot; 4 &quot;Early Tr Disch &quot; 5 &quot;95CI Late Tr Disch&quot; 6 &quot;Late Tr Disch&quot; )size(*.5)region(lstyle(none)) region(c(none)) nobox)
+&gt; legend(order(1 &quot;95CI Tr Completion&quot; 2 &quot;Tr Completion&quot; 3 &quot;95CI Early Tr Disch&quot; 4 &quot;Early Tr Disch &quot; 5 &quot;95CI Late Tr Disch&quot; 6 &quot;L
+&gt; ate Tr Disch&quot; )size(*.5)region(lstyle(none)) region(c(none)) nobox)
 
          failure _d:  event == 1
    analysis time _t:  age_offending_imp
@@ -463,17 +466,19 @@ Treatmen |  118,806.623   .1037484         35781   16.49829  17.60986  20.97467
 (note:  named style large not found in class linewidth, default attributes used)
 (note:  linewidth not found in scheme, default attributes used)
 
-. graph save &quot;tto.gph&quot;, replace
-(file tto.gph saved)
+. graph save &quot;`c(pwd)'\_figs\tto.gph&quot;, replace
+(note: file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\tto.gph not found)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\tto.gph saved)
 
 </code></pre>
-<p><img src="tto.svg" width="800" ></p>
+<p><img src="_figs/tto.svg" width="800" ></p>
 <p>=============================================================================</p>
 <h2><a href="#survival-analyses" id="survival-analyses">Survival Analyses</a></h2>
 <p>=============================================================================</p>
 <p>We tested the schoefeld residuals.</p>
-<pre><code>. *c(&quot;edad_al_ing_1&quot;, &quot;edad_ini_cons&quot;, &quot;dias_treat_imp_sin_na_1&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;, &quot;compromiso_biopsicosocial&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs
-&gt; _cons_sus_or&quot;, &quot;macrozona&quot;, &quot;policonsumo&quot;, &quot;n_prev_off&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;, &quot;n_off_sud&quot;, &quot;n_off_oth&quot;)
+<pre><code>. *c(&quot;edad_al_ing_1&quot;, &quot;edad_ini_cons&quot;, &quot;dias_treat_imp_sin_na_1&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;,
+&gt;  &quot;compromiso_biopsicosocial&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;macrozona&quot;, &quot;policonsumo
+&gt; &quot;, &quot;n_prev_off&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;, &quot;n_off_sud&quot;, &quot;n_off_oth&quot;)
 . 
 . global sim 1e5 //5e1 1e5 
 
@@ -485,85 +490,19 @@ Treatmen |  118,806.623   .1037484         35781   16.49829  17.60986  20.97467
 (70,773 missing values generated)
 
 . 
-. global covs &quot;edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone polico
-&gt; nsumo n_off_vio n_off_acq n_off_sud clas&quot;
+. global covs &quot;edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv ori
+&gt; gen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas
+&gt; &quot;
 
-. global covs_2 &quot;motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macroz
-&gt; one policonsumo n_off_vio n_off_acq n_off_sud clas&quot;
+. global covs_2 &quot;motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc t
+&gt; en_viv origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_of
+&gt; f_sud clas&quot;
 
 . 
 . 
-. stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
+. qui stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
 
-         failure _d:  event == 1
-   analysis time _t:  age_offending_imp
-  enter on or after:  time edad_al_egres_imp
-
-Cox regression -- Efron method for ties
-
-No. of subjects      =       59,220             Number of obs    =      59,220
-No. of failures      =       17,434
-Time at risk         =  178984.6064
-                                                Wald chi2(19)    =     5480.14
-Log pseudolikelihood =   -143904.25             Prob &gt; chi2      =      0.0000
-
----------------------------------------------------------------------------------------------
-                            |               Robust
-                         _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-----------------------------+----------------------------------------------------------------
-motivodeegreso_mod_imp_rec3 |   1.150295   .0113371    14.21   0.000     1.128288    1.172731
-              edad_al_ing_1 |   1.217714   .0065698    36.51   0.000     1.204905    1.230659
-              edad_ini_cons |   .9915065   .0019129    -4.42   0.000     .9877643    .9952628
-                    sex_enc |   .7384493   .0151479   -14.78   0.000     .7093488    .7687436
-                    esc_rec |    1.11342   .0138938     8.61   0.000     1.086519    1.140987
-               sus_prin_mod |   1.149666   .0094213    17.02   0.000     1.131348     1.16828
-                fr_sus_prin |   1.026974   .0077843     3.51   0.000     1.011829    1.042344
-                comp_biosoc |    1.21309   .0174617    13.42   0.000     1.179344    1.247802
-                    ten_viv |   .9794216   .0076606    -2.66   0.008     .9645216    .9945518
-         origen_ingreso_mod |   .9868824    .004388    -2.97   0.003     .9783195    .9955203
-        numero_de_hijos_mod |   1.059839   .0068969     8.93   0.000     1.046407    1.073443
-              dg_cie_10_rec |   1.027475    .009143     3.05   0.002      1.00971    1.045552
-         sud_severity_icd10 |   .9375879   .0180489    -3.35   0.001     .9028717    .9736389
-                  macrozone |   1.225897   .0147482    16.93   0.000     1.197329    1.255146
-                policonsumo |   1.134785   .0247745     5.79   0.000     1.087253    1.184396
-                  n_off_vio |   1.305587   .0253838    13.71   0.000     1.256771    1.356298
-                  n_off_acq |   1.810017   .0330089    32.54   0.000     1.746463    1.875883
-                  n_off_sud |   1.194248   .0228359     9.28   0.000     1.150319    1.239855
-                       clas |    1.02231   .0133557     1.69   0.091     .9964659    1.048825
----------------------------------------------------------------------------------------------
-
-. estat phtest, log detail
-
-      Test of proportional-hazards assumption
-
-      Time:  Log(t)
-      ----------------------------------------------------------------
-                  |       rho            chi2       df       Prob&gt;chi2
-      ------------+---------------------------------------------------
-      motivodeeg~3|      0.00721         0.86        1         0.3529
-      edad_al_in~1|     -0.03458        25.76        1         0.0000
-      edad_ini_c~s|      0.00392         0.28        1         0.5936
-      sex_enc     |      0.00654         0.77        1         0.3804
-      esc_rec     |     -0.02325         9.55        1         0.0020
-      sus_prin_mod|     -0.00299         0.14        1         0.7081
-      fr_sus_prin |     -0.00284         0.14        1         0.7110
-      comp_biosoc |     -0.01177         2.52        1         0.1126
-      ten_viv     |      0.01443         3.93        1         0.0475
-      origen_ing~d|      0.02374         9.89        1         0.0017
-      numero_de_~d|     -0.01598         4.43        1         0.0354
-      dg_cie_10_~c|      0.00979         1.67        1         0.1956
-      sud_sever~10|      0.01959         6.67        1         0.0098
-      macrozone   |      0.00159         0.04        1         0.8348
-      policonsumo |      0.02740        13.59        1         0.0002
-      n_off_vio   |      0.03776        27.35        1         0.0000
-      n_off_acq   |      0.02327        10.59        1         0.0011
-      n_off_sud   |      0.01650         5.25        1         0.0220
-      clas        |     -0.01658         4.97        1         0.0258
-      ------------+---------------------------------------------------
-      global test |                    135.09       19         0.0000
-      ----------------------------------------------------------------
-
-note: robust variance-covariance matrix used.
+. qui estat phtest, log detail
 
 . scalar chi2_scho_test = r(chi2)
 
@@ -609,7 +548,8 @@ note: robust variance-covariance matrix used.
 &gt; stphplot, by(n_off_vio) adjust($covs_health) ///
 &gt;  xtitle(&quot;Log Time (days)&quot;, size(small)) ///
 &gt;         ylabel(-4(2)8, labsize(vsmall)) ///     
-&gt;         legend(pos(7) ring(0) col(1) symysize(zero) keygap(1) symxsize(large) order( 1 2) lab(1 &quot;Outpatient&quot;) lab(2 &quot;Residential&quot;) size(small)) ///
+&gt;         legend(pos(7) ring(0) col(1) symysize(zero) keygap(1) symxsize(large) order( 1 2) lab(1 &quot;Outpatient&quot;) lab(2 &quot;Resident
+&gt; ial&quot;) size(small)) ///
 &gt;         ytitle(&quot;Schoenfeld residuals&quot;, size(small)) scheme(sj) graphregion(color(white)) ///
 &gt;         note(&quot;{it:Note. Means and 95% CI's; Bandwidth=.8; Natural log of analysis time used.}&quot;,size(vsmall)) ///
 &gt;         title(&quot;Plot of −ln{−ln(survival)} vs. ln(analysis time)&quot; &quot;by Treatment Modality at Baseline&quot;, size(medium)) ///
@@ -620,12 +560,16 @@ note: robust variance-covariance matrix used.
 . 
 </code></pre>
 <p>We generated a list of parametric survival models with different distributions (Exponential, Weibull, Gompertz, Log-logistic, Log-normal &amp; Generalized gamma). Aditionally, we defined a series of Royston-Parmar models with a function of restricted cubic splines, in which the knots (#df -1) are defined in each percentile of the distribution. We saved the estimates in the file called `parmodels_m2_nov_22&rsquo;.</p>
-<pre><code>. *Hannah Bower, Michael J. Crowther, Mark J. Rutherford, Therese M.-L. Andersson, Mark Clements, Xing-Rong Liu, Paul W. Dickman &amp; Paul C. Lambert (2021) Capturing simple and complex time-dependent effects using 
-&gt; flexible parametric survival models: A simulation study, Communications in Statistics - Simulation and Computation, 50:11, 3777-3793, DOI: 10.1080/03610918.2019.1634201
+<pre><code>. *Hannah Bower, Michael J. Crowther, Mark J. Rutherford, Therese M.-L. Andersson, Mark Clements, Xing-Rong Liu, Paul W. Dickma
+&gt; n &amp; Paul C. Lambert (2021) Capturing simple and complex time-dependent effects using flexible parametric survival models: A s
+&gt; imulation study, Communications in Statistics - Simulation and Computation, 50:11, 3777-3793, DOI: 10.1080/03610918.2019.1634
+&gt; 201
 . *can be used in case of nonproportional hazards
-. *Our usualstarting point is to use 5 degrees of freedom for the baseline and 3 degrees of freedomfor any time-dependent effects
-. *The results presented indicate that restricted cubic splines accurately capture time-dependent effects if appropriate degrees of freedom are selected; these results are con-sistent with the findings of Rutherf
-&gt; ord et al. (Rutherford, Crowther, and Lambert2015)for proportional-hazards models
+. *Our usualstarting point is to use 5 degrees of freedom for the baseline and 3 degrees of freedomfor any time-dependent effec
+&gt; ts
+. *The results presented indicate that restricted cubic splines accurately capture time-dependent effects if appropriate degree
+&gt; s of freedom are selected; these results are con-sistent with the findings of Rutherford et al. (Rutherford, Crowther, and La
+&gt; mbert2015)for proportional-hazards models
 .                 // Cox w/tvc
 .         forvalues j=1/7 {
   2.                 di in yellow &quot;{bf: ***********}&quot;
@@ -3951,9 +3895,10 @@ Akaike's information criterion and Bayesian information criterion
 
 . 
 . ** to order AICs
-. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1665263-sorting-matrix-including-rownames
+. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1665263-sorting-matr
+&gt; ix-including-rownames
 . mata :
-------------------------------------------------- mata (type end to exit) ------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------- mata (type end to exit) ---------------------
 : 
 : void st_sort_matrix(
 &gt; //argumento de la matriz
@@ -3976,7 +3921,7 @@ Akaike's information criterion and Bayesian information criterion
 
 : 
 : end
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
 
 . //mata: mata drop st_sort_matrix()
 . 
@@ -4044,12 +3989,15 @@ obs. time interval:  (0, diff]
 . cap rm bsreg1.dta bsreg2.dta
 
 . 
-. *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_1, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, poli
-&gt; consumo, n_off_vio, n_off_acq, n_off_sud, n_off_oth)
+. *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_1, edad_ini_cons, dias_treat_imp_s
+&gt; in_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severit
+&gt; y_icd10, macrozone, policonsumo, n_off_vio, n_off_acq, n_off_sud, n_off_oth)
 </code></pre>
 <p>First we calculated the difference between those patients who did and did not complete baseline treatment, given that the analysis is restricted to 2 values.</p>
-<pre><code>. *Micki Hill &amp; Paul C Lambert &amp; Michael J Crowther, 2021. &quot;Introducing stipw: inverse probability weighted parametric survival models,&quot; London Stata Conference 2021 15, Stata Users Group.
-. *https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&amp;wdOrigin=BROWSELINK
+<pre><code>. *Micki Hill &amp; Paul C Lambert &amp; Michael J Crowther, 2021. &quot;Introducing stipw: inverse probabil
+&gt; ity weighted parametric survival models,&quot; London Stata Conference 2021 15, Stata Users Group.
+. *https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug20
+&gt; 21%2Fusug21_hill.pptx&amp;wdOrigin=BROWSELINK
 . 
 . *Treatment variable should be a binary variable with values 0 and 1.
 . gen     motivodeegreso_mod_imp_rec2 = 0
@@ -4061,19 +4009,26 @@ obs. time interval:  (0, diff]
 (35,781 real changes made)
 
 . 
-. recode motivodeegreso_mod_imp_rec3 (1=0 &quot;Tr Completion&quot;) (3=1 &quot;Tr Non-completion (Late)&quot;) (2=2 &quot;Tr Non-completion (Early)&quot;), gen(caus_disch_mod_imp_rec) 
+. recode motivodeegreso_mod_imp_rec3 (1=0 &quot;Tr Completion&quot;) (3=1 &quot;Tr Non-completion (Late)&quot;) (2=
+&gt; 2 &quot;Tr Non-completion (Early)&quot;), gen(caus_disch_mod_imp_rec) 
 (55066 differences between motivodeegreso_mod_imp_rec3 and caus_disch_mod_imp_rec)
 
 . lab var caus_disch_mod_imp_rec &quot;Baseline treatment outcome&quot; 
 
 . 
-. global covs_3 &quot;i.caus_disch_mod_imp_rec edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_of
-&gt; f_vio i.n_off_acq i.n_off_sud i.clas&quot;
+. global covs_3 &quot;i.caus_disch_mod_imp_rec edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus
+&gt; _prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macroz
+&gt; one i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud i.clas&quot;
 
 . 
-. global covs_3b &quot;i.caus_disch_mod_imp_rec edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.origen_ingreso_mod numero_de_hijos_mod i.dg_cie_10_rec i.sud_severity_icd10 
-&gt; i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud i.clas&quot;
+. global covs_3b &quot;i.caus_disch_mod_imp_rec edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.su
+&gt; s_prin_mod i.fr_sus_prin i.comp_biosoc i.origen_ingreso_mod numero_de_hijos_mod i.dg_cie_10_r
+&gt; ec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud i.clas&quot;
 
+. 
+. *______________________________________________
+. *______________________________________________
+. * ADJUSTED ROYSTON PARMAR - NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
 . 
 . stpm2 $covs_3 , scale(hazard) df(10) eform
 
@@ -4083,78 +4038,78 @@ Iteration 2:   log likelihood = -54900.605
 
 Log likelihood = -54900.605                     Number of obs     =     59,755
 
--------------------------------------------------------------------------------------------------------------
-                                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
---------------------------------------------+----------------------------------------------------------------
-xb                                          |
-                     caus_disch_mod_imp_rec |
-                  Tr Non-completion (Late)  |   1.494949    .031923    18.83   0.000     1.433673    1.558845
-                 Tr Non-completion (Early)  |   1.525656   .0416374    15.48   0.000     1.446193    1.609486
-                                            |
-                              edad_al_ing_1 |   .9700205    .000926   -31.89   0.000     .9682074     .971837
-                              edad_ini_cons |   .9913011   .0018747    -4.62   0.000     .9876336    .9949823
-                                            |
-                                    sex_enc |
-                                     Women  |   .7622222   .0148482   -13.94   0.000     .7336689    .7918868
-                                            |
-                                    esc_rec |
-           2-Completed high school or less  |   1.142087   .0271726     5.58   0.000     1.090052    1.196605
-        3-Completed primary school or less  |   1.206151   .0315316     7.17   0.000     1.145907    1.269563
-                                            |
-                               sus_prin_mod |
-                     Cocaine hydrochloride  |   1.057138   .0287189     2.05   0.041     1.002323    1.114952
-                             Cocaine paste  |   1.560431   .0346175    20.06   0.000     1.494036    1.629777
-                                 Marijuana  |   1.153466   .0400781     4.11   0.000     1.077529    1.234754
-                                     Other  |   1.231923   .0864084     2.97   0.003     1.073691    1.413474
-                                            |
-                                fr_sus_prin |
-                        2 to 3 days a week  |   1.091211   .0390702     2.44   0.015      1.01726    1.170538
-                        4 to 6 days a week  |   1.105099   .0419621     2.63   0.008     1.025841    1.190481
-                                     Daily  |   1.133358   .0405086     3.50   0.000      1.05668    1.215601
-                    Less than 1 day a week  |   1.110128    .054731     2.12   0.034     1.007877    1.222753
-                                            |
-                                comp_biosoc |
-                                2-Moderate  |   1.128725   .0359002     3.81   0.000      1.06051    1.201328
-                                  3-Severe  |   1.341869   .0463825     8.51   0.000     1.253972    1.435927
-                                            |
-                                    ten_viv |
-                                    Others  |    1.01887   .0775933     0.25   0.806     .8775956    1.182887
-Owner/Transferred dwellings/Pays Dividends  |   .8610578   .0562491    -2.29   0.022     .7575776    .9786728
-                                   Renting  |    .895257   .0594824    -1.67   0.096     .7859455    1.019772
-         Stays temporarily with a relative  |   .8517026   .0553589    -2.47   0.014      .749828    .9674183
-                                            |
-                              dg_cie_10_rec |
-           Diagnosis unknown (under study)  |   1.070816   .0256028     2.86   0.004     1.021793    1.122191
-              With psychiatric comorbidity  |   1.045335   .0185729     2.50   0.013     1.009559    1.082378
-                                            |
-                         sud_severity_icd10 |
-                     Hazardous consumption  |   .9711785   .0189172    -1.50   0.133     .9348003    1.008972
-                                            |
-                                  macrozone |
-                                     North  |   1.314205   .0267705    13.41   0.000     1.262769    1.367735
-                                     South  |   1.439171   .0409016    12.81   0.000     1.361197    1.521611
-                                            |
-                              1.policonsumo |     1.1198   .0244414     5.18   0.000     1.072906    1.168744
-                                1.n_off_vio |   1.322245   .0246035    15.01   0.000     1.274892    1.371357
-                                1.n_off_acq |   1.747823   .0305752    31.92   0.000     1.688912    1.808789
-                                1.n_off_sud |   1.188656    .021782     9.43   0.000     1.146721    1.232123
-                                            |
-                                       clas |
-                                     Rural  |   1.043824   .0396038     1.13   0.258     .9690182    1.124405
-                                    Urbana  |   1.023872    .027856     0.87   0.386     .9707054    1.079951
-                                            |
-                                      _rcs1 |   2.555244   .0168111   142.60   0.000     2.522506    2.588406
-                                      _rcs2 |   1.075417   .0065328    11.97   0.000     1.062689    1.088297
-                                      _rcs3 |    1.03671   .0046774     7.99   0.000     1.027582    1.045918
-                                      _rcs4 |   1.015191   .0029406     5.21   0.000     1.009444    1.020971
-                                      _rcs5 |   1.010607    .001969     5.42   0.000     1.006756    1.014474
-                                      _rcs6 |   1.007135   .0015152     4.73   0.000     1.004169    1.010109
-                                      _rcs7 |   1.005521   .0013161     4.21   0.000     1.002945    1.008104
-                                      _rcs8 |   1.004839   .0011874     4.09   0.000     1.002515    1.007169
-                                      _rcs9 |   1.003342   .0011288     2.97   0.003     1.001133    1.005557
-                                     _rcs10 |   1.002512   .0009811     2.56   0.010     1.000591    1.004436
-                                      _cons |   .2251128   .0221782   -15.14   0.000     .1855835    .2730618
--------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+                             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-----------------------------+----------------------------------------------------------------
+xb                           |
+      caus_disch_mod_imp_rec |
+   Tr Non-completion (Late)  |   1.494949    .031923    18.83   0.000     1.433673    1.558845
+  Tr Non-completion (Early)  |   1.525656   .0416374    15.48   0.000     1.446193    1.609486
+                             |
+               edad_al_ing_1 |   .9700205    .000926   -31.89   0.000     .9682074     .971837
+               edad_ini_cons |   .9913011   .0018747    -4.62   0.000     .9876336    .9949823
+                             |
+                     sex_enc |
+                      Women  |   .7622222   .0148482   -13.94   0.000     .7336689    .7918868
+                             |
+                     esc_rec |
+2-Completed high school o..  |   1.142087   .0271726     5.58   0.000     1.090052    1.196605
+3-Completed primary schoo..  |   1.206151   .0315316     7.17   0.000     1.145907    1.269563
+                             |
+                sus_prin_mod |
+      Cocaine hydrochloride  |   1.057138   .0287189     2.05   0.041     1.002323    1.114952
+              Cocaine paste  |   1.560431   .0346175    20.06   0.000     1.494036    1.629777
+                  Marijuana  |   1.153466   .0400781     4.11   0.000     1.077529    1.234754
+                      Other  |   1.231923   .0864084     2.97   0.003     1.073691    1.413474
+                             |
+                 fr_sus_prin |
+         2 to 3 days a week  |   1.091211   .0390702     2.44   0.015      1.01726    1.170538
+         4 to 6 days a week  |   1.105099   .0419621     2.63   0.008     1.025841    1.190481
+                      Daily  |   1.133358   .0405086     3.50   0.000      1.05668    1.215601
+     Less than 1 day a week  |   1.110128    .054731     2.12   0.034     1.007877    1.222753
+                             |
+                 comp_biosoc |
+                 2-Moderate  |   1.128725   .0359002     3.81   0.000      1.06051    1.201328
+                   3-Severe  |   1.341869   .0463825     8.51   0.000     1.253972    1.435927
+                             |
+                     ten_viv |
+                     Others  |    1.01887   .0775933     0.25   0.806     .8775956    1.182887
+Owner/Transferred dwellin..  |   .8610578   .0562491    -2.29   0.022     .7575776    .9786728
+                    Renting  |    .895257   .0594824    -1.67   0.096     .7859455    1.019772
+Stays temporarily with a ..  |   .8517026   .0553589    -2.47   0.014      .749828    .9674183
+                             |
+               dg_cie_10_rec |
+Diagnosis unknown (under..)  |   1.070816   .0256028     2.86   0.004     1.021793    1.122191
+With psychiatric comorbid..  |   1.045335   .0185729     2.50   0.013     1.009559    1.082378
+                             |
+          sud_severity_icd10 |
+      Hazardous consumption  |   .9711785   .0189172    -1.50   0.133     .9348003    1.008972
+                             |
+                   macrozone |
+                      North  |   1.314205   .0267705    13.41   0.000     1.262769    1.367735
+                      South  |   1.439171   .0409016    12.81   0.000     1.361197    1.521611
+                             |
+               1.policonsumo |     1.1198   .0244414     5.18   0.000     1.072906    1.168744
+                 1.n_off_vio |   1.322245   .0246035    15.01   0.000     1.274892    1.371357
+                 1.n_off_acq |   1.747823   .0305752    31.92   0.000     1.688912    1.808789
+                 1.n_off_sud |   1.188656    .021782     9.43   0.000     1.146721    1.232123
+                             |
+                        clas |
+                      Rural  |   1.043824   .0396038     1.13   0.258     .9690182    1.124405
+                     Urbana  |   1.023872    .027856     0.87   0.386     .9707054    1.079951
+                             |
+                       _rcs1 |   2.555244   .0168111   142.60   0.000     2.522506    2.588406
+                       _rcs2 |   1.075417   .0065328    11.97   0.000     1.062689    1.088297
+                       _rcs3 |    1.03671   .0046774     7.99   0.000     1.027582    1.045918
+                       _rcs4 |   1.015191   .0029406     5.21   0.000     1.009444    1.020971
+                       _rcs5 |   1.010607    .001969     5.42   0.000     1.006756    1.014474
+                       _rcs6 |   1.007135   .0015152     4.73   0.000     1.004169    1.010109
+                       _rcs7 |   1.005521   .0013161     4.21   0.000     1.002945    1.008104
+                       _rcs8 |   1.004839   .0011874     4.09   0.000     1.002515    1.007169
+                       _rcs9 |   1.003342   .0011288     2.97   0.003     1.001133    1.005557
+                      _rcs10 |   1.002512   .0009811     2.56   0.010     1.000591    1.004436
+                       _cons |   .2251128   .0221782   -15.14   0.000     .1855835    .2730618
+----------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
 . 
@@ -4166,85 +4121,92 @@ Iteration 2:   log likelihood = -58351.127
 
 Log likelihood = -58351.127                     Number of obs     =     62,500
 
------------------------------------------------------------------------------------------------------
-                                    |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-------------------------------------+----------------------------------------------------------------
-xb                                  |
-             caus_disch_mod_imp_rec |
-          Tr Non-completion (Late)  |    1.49207   .0310626    19.22   0.000     1.432414    1.554211
-         Tr Non-completion (Early)  |   1.543017   .0406373    16.47   0.000      1.46539    1.624756
-                                    |
-                      edad_al_ing_1 |    .967424    .000975   -32.86   0.000     .9655148    .9693369
-                      edad_ini_cons |   .9906644    .001809    -5.14   0.000     .9871252    .9942163
-                                    |
-                            sex_enc |
-                             Women  |   .7234581   .0142783   -16.40   0.000     .6960076    .7519913
-                                    |
-                            esc_rec |
-   2-Completed high school or less  |   1.129197   .0262295     5.23   0.000     1.078941    1.181794
-3-Completed primary school or less  |   1.170373    .029932     6.15   0.000     1.113154    1.230534
-                                    |
-                       sus_prin_mod |
-             Cocaine hydrochloride  |    1.05051   .0278824     1.86   0.063     .9972587    1.106605
-                     Cocaine paste  |   1.545983   .0334069    20.16   0.000     1.481874    1.612866
-                         Marijuana  |   1.135316   .0384636     3.75   0.000     1.062377    1.213262
-                             Other  |   1.229555   .0833102     3.05   0.002     1.076647    1.404178
-                                    |
-                        fr_sus_prin |
-                2 to 3 days a week  |   1.087831   .0384052     2.38   0.017     1.015103    1.165769
-                4 to 6 days a week  |   1.114967   .0417623     2.91   0.004     1.036046    1.199899
-                             Daily  |   1.152445   .0405862     4.03   0.000     1.075581    1.234802
-            Less than 1 day a week  |   1.110372   .0534013     2.18   0.029     1.010489    1.220129
-                                    |
-                        comp_biosoc |
-                        2-Moderate  |   1.126487   .0354037     3.79   0.000     1.059191    1.198058
-                          3-Severe  |   1.349291   .0459323     8.80   0.000     1.262203    1.442388
-                                    |
-                 origen_ingreso_mod |
-                 Assisted Referral  |   1.073586   .0267551     2.85   0.004     1.022407    1.127326
-                             Other  |   1.097436   .0340562     3.00   0.003     1.032677    1.166257
-                    Justice Sector  |   1.065516   .0287519     2.35   0.019     1.010627    1.123385
-                     Health Sector  |   .9715772   .0176659    -1.59   0.113     .9375623    1.006826
-                                    |
-                numero_de_hijos_mod |   1.052273   .0064381     8.33   0.000      1.03973    1.064967
-                                    |
-                      dg_cie_10_rec |
-   Diagnosis unknown (under study)  |   1.065218   .0245268     2.74   0.006     1.018215    1.114391
-      With psychiatric comorbidity  |   1.048901   .0180992     2.77   0.006      1.01402    1.084981
-                                    |
-                 sud_severity_icd10 |
-             Hazardous consumption  |   .9744063   .0184857    -1.37   0.172     .9388403     1.01132
-                                    |
-                          macrozone |
-                             North  |   1.323304    .026291    14.10   0.000     1.272765     1.37585
-                             South  |   1.434639   .0399345    12.97   0.000     1.358465    1.515083
-                                    |
-                      1.policonsumo |   1.113604   .0233516     5.13   0.000     1.068764    1.160326
-                        1.n_off_vio |   1.294079    .023461    14.22   0.000     1.248904    1.340888
-                        1.n_off_acq |   1.752407   .0294914    33.33   0.000     1.695548    1.811173
-                        1.n_off_sud |   1.170484   .0207484     8.88   0.000     1.130516    1.211865
-                                    |
-                               clas |
-                             Rural  |   1.027858   .0383553     0.74   0.462     .9553666    1.105851
-                            Urbana  |   1.026253   .0273268     0.97   0.330     .9740668    1.081234
-                                    |
-                              _rcs1 |   2.563261   .0163755   147.34   0.000     2.531365    2.595558
-                              _rcs2 |   1.074514   .0063343    12.19   0.000      1.06217    1.087001
-                              _rcs3 |   1.037835   .0045122     8.54   0.000     1.029029    1.046717
-                              _rcs4 |   1.015276   .0028438     5.41   0.000     1.009718    1.020865
-                              _rcs5 |   1.009604   .0019031     5.07   0.000     1.005881    1.013341
-                              _rcs6 |   1.006482   .0014636     4.44   0.000     1.003617    1.009355
-                              _rcs7 |   1.005489   .0012703     4.33   0.000     1.003002    1.007981
-                              _rcs8 |   1.004587   .0011473     4.01   0.000     1.002341    1.006838
-                              _rcs9 |   1.003303   .0010928     3.03   0.002     1.001164    1.005447
-                             _rcs10 |   1.002468   .0009493     2.60   0.009     1.000609     1.00433
-                              _cons |   .2061561   .0150603   -21.62   0.000     .1786544    .2378915
------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+                             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-----------------------------+----------------------------------------------------------------
+xb                           |
+      caus_disch_mod_imp_rec |
+   Tr Non-completion (Late)  |    1.49207   .0310626    19.22   0.000     1.432414    1.554211
+  Tr Non-completion (Early)  |   1.543017   .0406373    16.47   0.000      1.46539    1.624756
+                             |
+               edad_al_ing_1 |    .967424    .000975   -32.86   0.000     .9655148    .9693369
+               edad_ini_cons |   .9906644    .001809    -5.14   0.000     .9871252    .9942163
+                             |
+                     sex_enc |
+                      Women  |   .7234581   .0142783   -16.40   0.000     .6960076    .7519913
+                             |
+                     esc_rec |
+2-Completed high school o..  |   1.129197   .0262295     5.23   0.000     1.078941    1.181794
+3-Completed primary schoo..  |   1.170373    .029932     6.15   0.000     1.113154    1.230534
+                             |
+                sus_prin_mod |
+      Cocaine hydrochloride  |    1.05051   .0278824     1.86   0.063     .9972587    1.106605
+              Cocaine paste  |   1.545983   .0334069    20.16   0.000     1.481874    1.612866
+                  Marijuana  |   1.135316   .0384636     3.75   0.000     1.062377    1.213262
+                      Other  |   1.229555   .0833102     3.05   0.002     1.076647    1.404178
+                             |
+                 fr_sus_prin |
+         2 to 3 days a week  |   1.087831   .0384052     2.38   0.017     1.015103    1.165769
+         4 to 6 days a week  |   1.114967   .0417623     2.91   0.004     1.036046    1.199899
+                      Daily  |   1.152445   .0405862     4.03   0.000     1.075581    1.234802
+     Less than 1 day a week  |   1.110372   .0534013     2.18   0.029     1.010489    1.220129
+                             |
+                 comp_biosoc |
+                 2-Moderate  |   1.126487   .0354037     3.79   0.000     1.059191    1.198058
+                   3-Severe  |   1.349291   .0459323     8.80   0.000     1.262203    1.442388
+                             |
+          origen_ingreso_mod |
+          Assisted Referral  |   1.073586   .0267551     2.85   0.004     1.022407    1.127326
+                      Other  |   1.097436   .0340562     3.00   0.003     1.032677    1.166257
+             Justice Sector  |   1.065516   .0287519     2.35   0.019     1.010627    1.123385
+              Health Sector  |   .9715772   .0176659    -1.59   0.113     .9375623    1.006826
+                             |
+         numero_de_hijos_mod |   1.052273   .0064381     8.33   0.000      1.03973    1.064967
+                             |
+               dg_cie_10_rec |
+Diagnosis unknown (under..)  |   1.065218   .0245268     2.74   0.006     1.018215    1.114391
+With psychiatric comorbid..  |   1.048901   .0180992     2.77   0.006      1.01402    1.084981
+                             |
+          sud_severity_icd10 |
+      Hazardous consumption  |   .9744063   .0184857    -1.37   0.172     .9388403     1.01132
+                             |
+                   macrozone |
+                      North  |   1.323304    .026291    14.10   0.000     1.272765     1.37585
+                      South  |   1.434639   .0399345    12.97   0.000     1.358465    1.515083
+                             |
+               1.policonsumo |   1.113604   .0233516     5.13   0.000     1.068764    1.160326
+                 1.n_off_vio |   1.294079    .023461    14.22   0.000     1.248904    1.340888
+                 1.n_off_acq |   1.752407   .0294914    33.33   0.000     1.695548    1.811173
+                 1.n_off_sud |   1.170484   .0207484     8.88   0.000     1.130516    1.211865
+                             |
+                        clas |
+                      Rural  |   1.027858   .0383553     0.74   0.462     .9553666    1.105851
+                     Urbana  |   1.026253   .0273268     0.97   0.330     .9740668    1.081234
+                             |
+                       _rcs1 |   2.563261   .0163755   147.34   0.000     2.531365    2.595558
+                       _rcs2 |   1.074514   .0063343    12.19   0.000      1.06217    1.087001
+                       _rcs3 |   1.037835   .0045122     8.54   0.000     1.029029    1.046717
+                       _rcs4 |   1.015276   .0028438     5.41   0.000     1.009718    1.020865
+                       _rcs5 |   1.009604   .0019031     5.07   0.000     1.005881    1.013341
+                       _rcs6 |   1.006482   .0014636     4.44   0.000     1.003617    1.009355
+                       _rcs7 |   1.005489   .0012703     4.33   0.000     1.003002    1.007981
+                       _rcs8 |   1.004587   .0011473     4.01   0.000     1.002341    1.006838
+                       _rcs9 |   1.003303   .0010928     3.03   0.002     1.001164    1.005447
+                      _rcs10 |   1.002468   .0009493     2.60   0.009     1.000609     1.00433
+                       _cons |   .2061561   .0150603   -21.62   0.000     .1786544    .2378915
+----------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off
-&gt; _sud clas), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+. *______________________________________________
+. *______________________________________________
+. * INVERSE PROBABILITY WEIGHTED ADJUSTED ROYSTON PARMAR - NO STAGGERED ENTRY, BINARY TREATMENT
+&gt;  (1-DROPOUT VS. 0-COMPLETION)
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n
+&gt; _off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) genw(rpdf10_m_nostag_ten_viv) ipw
+&gt; type(stabilised) vce(mestimation) eform
 11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -4255,7 +4217,8 @@ Iteration 1:   log likelihood = -33474.525
 Iteration 2:   log likelihood = -33449.458  
 Iteration 3:   log likelihood =  -33449.44  
 Iteration 4:   log likelihood =  -33449.44  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -35121.157  
 Iteration 1:   log likelihood = -35121.157  
@@ -4291,8 +4254,10 @@ motivodeegreso_mod_imp_rec2 |   1.486292   .0298174    19.75   0.000     1.42898
 Note: Estimates are transformed only in the first equation.
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone polico
-&gt; nsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severit
+&gt; y_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) ge
+&gt; nw(rpdf10_m_nostag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
 8363 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -4303,7 +4268,8 @@ Iteration 1:   log likelihood = -34725.723
 Iteration 2:   log likelihood =  -34696.15  
 Iteration 3:   log likelihood = -34696.127  
 Iteration 4:   log likelihood = -34696.127  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -36548.788  
 Iteration 1:   log likelihood = -36548.788  
@@ -4343,7 +4309,8 @@ Note: Estimates are transformed only in the first equation.
 
 . predict rmst13 in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
 
-. predictnl drmst= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_se)
+. predictnl drmst= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(mot
+&gt; ivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_se)
 Warning: prediction doesn't vary with respect to e(b).
 (70,862 missing values generated)
 Warning: prediction constant over observations; perhaps you meant to run nlcom.
@@ -4353,9 +4320,15 @@ Warning: prediction constant over observations; perhaps you meant to run nlcom.
 
 </code></pre>
 <p>We used a gompertz distribution, assuming that baseline treatment outcome showed proportional hazards</p>
-<pre><code>. 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off
-&gt; _sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+<pre><code>. *______________________________________________
+. *______________________________________________
+. * INVERSE PROBABILITY WEIGHTED ADJUSTED GOMPERTZ - NO STAGGERED ENTRY, BINARY TREATMENT (1-DR
+&gt; OPOUT VS. 0-COMPLETION)
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n
+&gt; _off_vio n_off_acq n_off_sud clas), distribution(gompertz) genw(gomp_m_nostag_ten_viv) ipwtyp
+&gt; e(stabilised) vce(mestimation)
 11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -4366,7 +4339,8 @@ Iteration 1:   log likelihood = -33474.525
 Iteration 2:   log likelihood = -33449.458  
 Iteration 3:   log likelihood =  -33449.44  
 Iteration 4:   log likelihood =  -33449.44  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -35121.157  
 Iteration 1:   log likelihood = -35121.157  
@@ -4375,7 +4349,7 @@ Fitting weighted survival model to obtain point estimates
 
          failure _d:  event == 1
    analysis time _t:  diff
-             weight:  [pweight=_stipw_weight]
+             weight:  [pweight=gomp_m_nostag_ten_viv]
 
 Fitting constant-only model:
 
@@ -4410,8 +4384,10 @@ motivodeegreso_mod_imp_rec2 |   1.486505   .0298844    19.72   0.000     1.42907
 Note: _cons estimates baseline hazard.
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone polico
-&gt; nsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severit
+&gt; y_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) gen
+&gt; w(gomp_m_nostag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation)
 8363 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -4422,7 +4398,8 @@ Iteration 1:   log likelihood = -34725.723
 Iteration 2:   log likelihood =  -34696.15  
 Iteration 3:   log likelihood = -34696.127  
 Iteration 4:   log likelihood = -34696.127  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -36548.788  
 Iteration 1:   log likelihood = -36548.788  
@@ -4431,7 +4408,7 @@ Fitting weighted survival model to obtain point estimates
 
          failure _d:  event == 1
    analysis time _t:  diff
-             weight:  [pweight=_stipw_weight]
+             weight:  [pweight=gomp_m_nostag_or_ing_num_hij]
 
 Fitting constant-only model:
 
@@ -4474,7 +4451,8 @@ r(198);
 option at() not allowed
 r(198);
 
-. predictnl drmst_c= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_c_se)
+. predictnl drmst_c= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(m
+&gt; otivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_c_se)
 option rmst not allowed
 predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) invalid
 r(198);
@@ -4485,6 +4463,11 @@ r(198);
 </code></pre>
 <p>We used another model with only 6 degrees of freedom according to the lowest BIC</p>
 <pre><code>. 
+. *______________________________________________
+. *______________________________________________
+. * ADJUSTED ROYSTON PARMAR - DF6,  NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPL
+&gt; ETION)
+. 
 . stpm2 $covs_3 , scale(hazard) df(6) eform
 
 Iteration 0:   log likelihood = -54905.324  
@@ -4493,74 +4476,74 @@ Iteration 2:   log likelihood =  -54903.92
 
 Log likelihood =  -54903.92                     Number of obs     =     59,755
 
--------------------------------------------------------------------------------------------------------------
-                                            |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
---------------------------------------------+----------------------------------------------------------------
-xb                                          |
-                     caus_disch_mod_imp_rec |
-                  Tr Non-completion (Late)  |   1.495153   .0319269    18.84   0.000     1.433868    1.559056
-                 Tr Non-completion (Early)  |   1.525687   .0416376    15.48   0.000     1.446223    1.609517
-                                            |
-                              edad_al_ing_1 |   .9700225    .000926   -31.88   0.000     .9682094    .9718391
-                              edad_ini_cons |   .9912942   .0018747    -4.62   0.000     .9876267    .9949753
-                                            |
-                                    sex_enc |
-                                     Women  |     .76205   .0148447   -13.95   0.000     .7335033    .7917076
-                                            |
-                                    esc_rec |
-           2-Completed high school or less  |   1.142123   .0271734     5.59   0.000     1.090086    1.196643
-        3-Completed primary school or less  |    1.20616   .0315317     7.17   0.000     1.145915    1.269571
-                                            |
-                               sus_prin_mod |
-                     Cocaine hydrochloride  |   1.056844   .0287102     2.04   0.042     1.002045     1.11464
-                             Cocaine paste  |   1.559907   .0346042    20.04   0.000     1.493537    1.629226
-                                 Marijuana  |   1.153005   .0400609     4.10   0.000     1.077101    1.234258
-                                     Other  |   1.231228    .086359     2.97   0.003     1.073086    1.412674
-                                            |
-                                fr_sus_prin |
-                        2 to 3 days a week  |   1.091056   .0390644     2.43   0.015     1.017115    1.170371
-                        4 to 6 days a week  |    1.10503   .0419594     2.63   0.009     1.025776    1.190406
-                                     Daily  |    1.13344   .0405113     3.50   0.000     1.056757    1.215688
-                    Less than 1 day a week  |   1.110074   .0547285     2.12   0.034     1.007827    1.222693
-                                            |
-                                comp_biosoc |
-                                2-Moderate  |    1.12866   .0358978     3.81   0.000      1.06045    1.201258
-                                  3-Severe  |     1.3416   .0463727     8.50   0.000     1.253721    1.435638
-                                            |
-                                    ten_viv |
-                                    Others  |   1.018468   .0775626     0.24   0.810     .8772494     1.18242
-Owner/Transferred dwellings/Pays Dividends  |   .8611232   .0562533    -2.29   0.022     .7576351     .978747
-                                   Renting  |   .8952171   .0594797    -1.67   0.096     .7859106    1.019726
-         Stays temporarily with a relative  |   .8515812    .055351    -2.47   0.013     .7497211    .9672804
-                                            |
-                              dg_cie_10_rec |
-           Diagnosis unknown (under study)  |   1.070731   .0256005     2.86   0.004     1.021712    1.122101
-              With psychiatric comorbidity  |    1.04532   .0185727     2.49   0.013     1.009544    1.082362
-                                            |
-                         sud_severity_icd10 |
-                     Hazardous consumption  |   .9711936   .0189173    -1.50   0.133     .9348151    1.008988
-                                            |
-                                  macrozone |
-                                     North  |   1.314184   .0267699    13.41   0.000     1.262749    1.367713
-                                     South  |   1.439204   .0409016    12.81   0.000      1.36123    1.521645
-                                            |
-                              1.policonsumo |   1.119562   .0244362     5.17   0.000     1.072678    1.168496
-                                1.n_off_vio |   1.322582   .0246105    15.03   0.000     1.275216    1.371709
-                                1.n_off_acq |   1.748289   .0305845    31.93   0.000     1.689361    1.809273
-                                1.n_off_sud |   1.188935   .0217876     9.44   0.000      1.14699    1.232414
-                                            |
-                                       clas |
-                                     Rural  |   1.043732   .0396002     1.13   0.259     .9689324    1.124305
-                                    Urbana  |   1.023872   .0278558     0.87   0.386     .9707054     1.07995
-                                            |
-                                      _rcs1 |   2.555417   .0168163   142.57   0.000     2.522669     2.58859
-                                      _rcs2 |   1.077987   .0064688    12.51   0.000     1.065383     1.09074
-                                      _rcs3 |   1.034651   .0043514     8.10   0.000     1.026157    1.043214
-                                      _rcs4 |   1.013478   .0026786     5.07   0.000     1.008241    1.018741
-                                      _rcs5 |   1.008231   .0018517     4.46   0.000     1.004608    1.011866
-                                      _rcs6 |   1.004597   .0014291     3.22   0.001       1.0018    1.007402
-                                      _cons |   .2252147   .0221882   -15.13   0.000     .1856676    .2731853
--------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+                             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-----------------------------+----------------------------------------------------------------
+xb                           |
+      caus_disch_mod_imp_rec |
+   Tr Non-completion (Late)  |   1.495153   .0319269    18.84   0.000     1.433868    1.559056
+  Tr Non-completion (Early)  |   1.525687   .0416376    15.48   0.000     1.446223    1.609517
+                             |
+               edad_al_ing_1 |   .9700225    .000926   -31.88   0.000     .9682094    .9718391
+               edad_ini_cons |   .9912942   .0018747    -4.62   0.000     .9876267    .9949753
+                             |
+                     sex_enc |
+                      Women  |     .76205   .0148447   -13.95   0.000     .7335033    .7917076
+                             |
+                     esc_rec |
+2-Completed high school o..  |   1.142123   .0271734     5.59   0.000     1.090086    1.196643
+3-Completed primary schoo..  |    1.20616   .0315317     7.17   0.000     1.145915    1.269571
+                             |
+                sus_prin_mod |
+      Cocaine hydrochloride  |   1.056844   .0287102     2.04   0.042     1.002045     1.11464
+              Cocaine paste  |   1.559907   .0346042    20.04   0.000     1.493537    1.629226
+                  Marijuana  |   1.153005   .0400609     4.10   0.000     1.077101    1.234258
+                      Other  |   1.231228    .086359     2.97   0.003     1.073086    1.412674
+                             |
+                 fr_sus_prin |
+         2 to 3 days a week  |   1.091056   .0390644     2.43   0.015     1.017115    1.170371
+         4 to 6 days a week  |    1.10503   .0419594     2.63   0.009     1.025776    1.190406
+                      Daily  |    1.13344   .0405113     3.50   0.000     1.056757    1.215688
+     Less than 1 day a week  |   1.110074   .0547285     2.12   0.034     1.007827    1.222693
+                             |
+                 comp_biosoc |
+                 2-Moderate  |    1.12866   .0358978     3.81   0.000      1.06045    1.201258
+                   3-Severe  |     1.3416   .0463727     8.50   0.000     1.253721    1.435638
+                             |
+                     ten_viv |
+                     Others  |   1.018468   .0775626     0.24   0.810     .8772494     1.18242
+Owner/Transferred dwellin..  |   .8611232   .0562533    -2.29   0.022     .7576351     .978747
+                    Renting  |   .8952171   .0594797    -1.67   0.096     .7859106    1.019726
+Stays temporarily with a ..  |   .8515812    .055351    -2.47   0.013     .7497211    .9672804
+                             |
+               dg_cie_10_rec |
+Diagnosis unknown (under..)  |   1.070731   .0256005     2.86   0.004     1.021712    1.122101
+With psychiatric comorbid..  |    1.04532   .0185727     2.49   0.013     1.009544    1.082362
+                             |
+          sud_severity_icd10 |
+      Hazardous consumption  |   .9711936   .0189173    -1.50   0.133     .9348151    1.008988
+                             |
+                   macrozone |
+                      North  |   1.314184   .0267699    13.41   0.000     1.262749    1.367713
+                      South  |   1.439204   .0409016    12.81   0.000      1.36123    1.521645
+                             |
+               1.policonsumo |   1.119562   .0244362     5.17   0.000     1.072678    1.168496
+                 1.n_off_vio |   1.322582   .0246105    15.03   0.000     1.275216    1.371709
+                 1.n_off_acq |   1.748289   .0305845    31.93   0.000     1.689361    1.809273
+                 1.n_off_sud |   1.188935   .0217876     9.44   0.000      1.14699    1.232414
+                             |
+                        clas |
+                      Rural  |   1.043732   .0396002     1.13   0.259     .9689324    1.124305
+                     Urbana  |   1.023872   .0278558     0.87   0.386     .9707054     1.07995
+                             |
+                       _rcs1 |   2.555417   .0168163   142.57   0.000     2.522669     2.58859
+                       _rcs2 |   1.077987   .0064688    12.51   0.000     1.065383     1.09074
+                       _rcs3 |   1.034651   .0043514     8.10   0.000     1.026157    1.043214
+                       _rcs4 |   1.013478   .0026786     5.07   0.000     1.008241    1.018741
+                       _rcs5 |   1.008231   .0018517     4.46   0.000     1.004608    1.011866
+                       _rcs6 |   1.004597   .0014291     3.22   0.001       1.0018    1.007402
+                       _cons |   .2252147   .0221882   -15.13   0.000     .1856676    .2731853
+----------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
 . 
@@ -4572,81 +4555,88 @@ Iteration 2:   log likelihood = -58354.255
 
 Log likelihood = -58354.255                     Number of obs     =     62,500
 
------------------------------------------------------------------------------------------------------
-                                    |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-------------------------------------+----------------------------------------------------------------
-xb                                  |
-             caus_disch_mod_imp_rec |
-          Tr Non-completion (Late)  |   1.492252    .031066    19.23   0.000      1.43259      1.5544
-         Tr Non-completion (Early)  |   1.543058   .0406374    16.47   0.000     1.465431    1.624797
-                                    |
-                      edad_al_ing_1 |   .9674285    .000975   -32.86   0.000     .9655193    .9693414
-                      edad_ini_cons |   .9906588    .001809    -5.14   0.000     .9871195    .9942107
-                                    |
-                            sex_enc |
-                             Women  |   .7233092   .0142752   -16.41   0.000     .6958647    .7518362
-                                    |
-                            esc_rec |
-   2-Completed high school or less  |   1.129211   .0262298     5.23   0.000     1.078954    1.181809
-3-Completed primary school or less  |    1.17039   .0299324     6.15   0.000     1.113169    1.230552
-                                    |
-                       sus_prin_mod |
-             Cocaine hydrochloride  |   1.050239   .0278745     1.85   0.065     .9970024    1.106318
-                     Cocaine paste  |    1.54551    .033395    20.15   0.000     1.481423    1.612369
-                         Marijuana  |   1.134827   .0384458     3.73   0.000     1.061921    1.212737
-                             Other  |   1.228991   .0832717     3.04   0.002     1.076155    1.403534
-                                    |
-                        fr_sus_prin |
-                2 to 3 days a week  |   1.087697   .0384004     2.38   0.017     1.014979    1.165626
-                4 to 6 days a week  |   1.114909   .0417601     2.90   0.004     1.035993    1.199837
-                             Daily  |   1.152539   .0405893     4.03   0.000     1.075669    1.234903
-            Less than 1 day a week  |   1.110249   .0533954     2.17   0.030     1.010377    1.219993
-                                    |
-                        comp_biosoc |
-                        2-Moderate  |   1.126358   .0353993     3.79   0.000      1.05907     1.19792
-                          3-Severe  |   1.348953   .0459201     8.79   0.000     1.261888    1.442025
-                                    |
-                 origen_ingreso_mod |
-                 Assisted Referral  |    1.07346   .0267519     2.84   0.004     1.022287    1.127194
-                             Other  |   1.097395   .0340549     2.99   0.003     1.032638    1.166213
-                    Justice Sector  |   1.065616   .0287546     2.36   0.019     1.010723    1.123491
-                     Health Sector  |   .9714717   .0176641    -1.59   0.111     .9374604    1.006717
-                                    |
-                numero_de_hijos_mod |    1.05226   .0064379     8.33   0.000     1.039718    1.064954
-                                    |
-                      dg_cie_10_rec |
-   Diagnosis unknown (under study)  |   1.065144   .0245246     2.74   0.006     1.018145    1.114313
-      With psychiatric comorbidity  |   1.048895   .0180991     2.77   0.006     1.014014    1.084975
-                                    |
-                 sud_severity_icd10 |
-             Hazardous consumption  |    .974408   .0184856    -1.37   0.172     .9388421    1.011321
-                                    |
-                          macrozone |
-                             North  |   1.323271   .0262902    14.10   0.000     1.272734    1.375816
-                             South  |   1.434717   .0399359    12.97   0.000     1.358541    1.515164
-                                    |
-                      1.policonsumo |     1.1134   .0233473     5.12   0.000     1.068568    1.160114
-                        1.n_off_vio |   1.294353   .0234669    14.23   0.000     1.249166    1.341174
-                        1.n_off_acq |   1.752917   .0295009    33.35   0.000      1.69604    1.811702
-                        1.n_off_sud |   1.170754   .0207536     8.89   0.000     1.130776    1.212145
-                                    |
-                               clas |
-                             Rural  |   1.027752   .0383513     0.73   0.463     .9552676    1.105736
-                            Urbana  |   1.026245   .0273265     0.97   0.331     .9740598    1.081226
-                                    |
-                              _rcs1 |   2.563398   .0163796   147.32   0.000     2.531494    2.595703
-                              _rcs2 |   1.076923   .0062662    12.74   0.000     1.064711    1.089275
-                              _rcs3 |   1.036121   .0042049     8.74   0.000     1.027912    1.044395
-                              _rcs4 |   1.012328   .0025889     4.79   0.000     1.007267    1.017415
-                              _rcs5 |    1.00772   .0017851     4.34   0.000     1.004228    1.011225
-                              _rcs6 |   1.004481   .0013795     3.26   0.001     1.001781    1.007189
-                              _cons |   .2062306   .0150657   -21.61   0.000     .1787189    .2379775
------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+                             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-----------------------------+----------------------------------------------------------------
+xb                           |
+      caus_disch_mod_imp_rec |
+   Tr Non-completion (Late)  |   1.492252    .031066    19.23   0.000      1.43259      1.5544
+  Tr Non-completion (Early)  |   1.543058   .0406374    16.47   0.000     1.465431    1.624797
+                             |
+               edad_al_ing_1 |   .9674285    .000975   -32.86   0.000     .9655193    .9693414
+               edad_ini_cons |   .9906588    .001809    -5.14   0.000     .9871195    .9942107
+                             |
+                     sex_enc |
+                      Women  |   .7233092   .0142752   -16.41   0.000     .6958647    .7518362
+                             |
+                     esc_rec |
+2-Completed high school o..  |   1.129211   .0262298     5.23   0.000     1.078954    1.181809
+3-Completed primary schoo..  |    1.17039   .0299324     6.15   0.000     1.113169    1.230552
+                             |
+                sus_prin_mod |
+      Cocaine hydrochloride  |   1.050239   .0278745     1.85   0.065     .9970024    1.106318
+              Cocaine paste  |    1.54551    .033395    20.15   0.000     1.481423    1.612369
+                  Marijuana  |   1.134827   .0384458     3.73   0.000     1.061921    1.212737
+                      Other  |   1.228991   .0832717     3.04   0.002     1.076155    1.403534
+                             |
+                 fr_sus_prin |
+         2 to 3 days a week  |   1.087697   .0384004     2.38   0.017     1.014979    1.165626
+         4 to 6 days a week  |   1.114909   .0417601     2.90   0.004     1.035993    1.199837
+                      Daily  |   1.152539   .0405893     4.03   0.000     1.075669    1.234903
+     Less than 1 day a week  |   1.110249   .0533954     2.17   0.030     1.010377    1.219993
+                             |
+                 comp_biosoc |
+                 2-Moderate  |   1.126358   .0353993     3.79   0.000      1.05907     1.19792
+                   3-Severe  |   1.348953   .0459201     8.79   0.000     1.261888    1.442025
+                             |
+          origen_ingreso_mod |
+          Assisted Referral  |    1.07346   .0267519     2.84   0.004     1.022287    1.127194
+                      Other  |   1.097395   .0340549     2.99   0.003     1.032638    1.166213
+             Justice Sector  |   1.065616   .0287546     2.36   0.019     1.010723    1.123491
+              Health Sector  |   .9714717   .0176641    -1.59   0.111     .9374604    1.006717
+                             |
+         numero_de_hijos_mod |    1.05226   .0064379     8.33   0.000     1.039718    1.064954
+                             |
+               dg_cie_10_rec |
+Diagnosis unknown (under..)  |   1.065144   .0245246     2.74   0.006     1.018145    1.114313
+With psychiatric comorbid..  |   1.048895   .0180991     2.77   0.006     1.014014    1.084975
+                             |
+          sud_severity_icd10 |
+      Hazardous consumption  |    .974408   .0184856    -1.37   0.172     .9388421    1.011321
+                             |
+                   macrozone |
+                      North  |   1.323271   .0262902    14.10   0.000     1.272734    1.375816
+                      South  |   1.434717   .0399359    12.97   0.000     1.358541    1.515164
+                             |
+               1.policonsumo |     1.1134   .0233473     5.12   0.000     1.068568    1.160114
+                 1.n_off_vio |   1.294353   .0234669    14.23   0.000     1.249166    1.341174
+                 1.n_off_acq |   1.752917   .0295009    33.35   0.000      1.69604    1.811702
+                 1.n_off_sud |   1.170754   .0207536     8.89   0.000     1.130776    1.212145
+                             |
+                        clas |
+                      Rural  |   1.027752   .0383513     0.73   0.463     .9552676    1.105736
+                     Urbana  |   1.026245   .0273265     0.97   0.331     .9740598    1.081226
+                             |
+                       _rcs1 |   2.563398   .0163796   147.32   0.000     2.531494    2.595703
+                       _rcs2 |   1.076923   .0062662    12.74   0.000     1.064711    1.089275
+                       _rcs3 |   1.036121   .0042049     8.74   0.000     1.027912    1.044395
+                       _rcs4 |   1.012328   .0025889     4.79   0.000     1.007267    1.017415
+                       _rcs5 |    1.00772   .0017851     4.34   0.000     1.004228    1.011225
+                       _rcs6 |   1.004481   .0013795     3.26   0.001     1.001781    1.007189
+                       _cons |   .2062306   .0150657   -21.61   0.000     .1787189    .2379775
+----------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off
-&gt; _sud clas), distribution(rp) df(6) ipwtype(stabilised) vce(mestimation) eform
+. *______________________________________________
+. *______________________________________________
+. * INVERSE PROBABILITY WEIGHTED ADJUSTED ROYSTON PARMAR - DF6, NO STAGGERED ENTRY, BINARY TREA
+&gt; TMENT (1-DROPOUT VS. 0-COMPLETION)
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n
+&gt; _off_vio n_off_acq n_off_sud clas), distribution(rp) df(6) genw(rpdf6_m_nostag_ten_viv) ipwty
+&gt; pe(stabilised) vce(mestimation) eform
 11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -4657,7 +4647,8 @@ Iteration 1:   log likelihood = -33474.525
 Iteration 2:   log likelihood = -33449.458  
 Iteration 3:   log likelihood =  -33449.44  
 Iteration 4:   log likelihood =  -33449.44  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -35121.157  
 Iteration 1:   log likelihood = -35121.157  
@@ -4689,8 +4680,10 @@ motivodeegreso_mod_imp_rec2 |   1.486419   .0298203    19.76   0.000     1.42910
 Note: Estimates are transformed only in the first equation.
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone polico
-&gt; nsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(6) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severit
+&gt; y_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(6) gen
+&gt; w(rpdf6_m_nostag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
 8363 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -4701,7 +4694,8 @@ Iteration 1:   log likelihood = -34725.723
 Iteration 2:   log likelihood =  -34696.15  
 Iteration 3:   log likelihood = -34696.127  
 Iteration 4:   log likelihood = -34696.127  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -36548.788  
 Iteration 1:   log likelihood = -36548.788  
@@ -4737,7 +4731,8 @@ Note: Estimates are transformed only in the first equation.
 
 . predict rmst13_b in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
 
-. predictnl drmst_b= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_b_se)
+. predictnl drmst_b= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(m
+&gt; otivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_b_se)
 Warning: prediction doesn't vary with respect to e(b).
 (70,862 missing values generated)
 Warning: prediction constant over observations; perhaps you meant to run nlcom.
@@ -4747,7 +4742,12 @@ Warning: prediction constant over observations; perhaps you meant to run nlcom.
 
 </code></pre>
 <p><strong>Staggered entry</strong></p>
-<pre><code>. stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
+<pre><code>. *______________________________________________
+. *______________________________________________
+. * ADJUSTED ROYSTON PARMAR - DF10,  STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLET
+&gt; ION)
+. 
+. stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
 
      failure event:  event == 1
 obs. time interval:  (0, age_offending_imp]
@@ -4766,8 +4766,10 @@ obs. time interval:  (0, age_offending_imp]
                                           last observed exit t =  90.65027
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off
-&gt; _sud clas), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n
+&gt; _off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) genw(rpdf10_m_stag_ten_viv) ipwty
+&gt; pe(stabilised) vce(mestimation) eform
 11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -4778,7 +4780,8 @@ Iteration 1:   log likelihood = -33474.525
 Iteration 2:   log likelihood = -33449.458  
 Iteration 3:   log likelihood =  -33449.44  
 Iteration 4:   log likelihood =  -33449.44  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -35121.157  
 Iteration 1:   log likelihood = -35121.157  
@@ -4824,8 +4827,10 @@ Note: Estimates are transformed only in the first equation.
 . estimates store df10_stipw
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec dg_cie_10_rec sud_severity_icd10 ma
-&gt; crozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(10) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec dg_cie_10_r
+&gt; ec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution
+&gt; (rp) df(10) genw(rpdf10_m_stag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
 8363 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -4837,7 +4842,8 @@ Iteration 1:   log likelihood = -34725.723
 Iteration 2:   log likelihood =  -34696.15  
 Iteration 3:   log likelihood = -34696.127  
 Iteration 4:   log likelihood = -34696.127  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -36548.788  
 Iteration 1:   log likelihood = -36548.788  
@@ -4882,9 +4888,15 @@ Note: Estimates are transformed only in the first equation.
 . estimates store df10_stipw2
 
 </code></pre>
-<pre><code>. 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off
-&gt; _sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+<pre><code>. *______________________________________________
+. *______________________________________________
+. * INVERSE PROBABILITY WEIGHTED ADJUSTED GOMPERTZ - STAGGERED ENTRY, BINARY TREATMENT (1-DROPO
+&gt; UT VS. 0-COMPLETION)
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n
+&gt; _off_vio n_off_acq n_off_sud clas), distribution(gompertz) genw(gomp_m_stag_ten_viv) ipwtype(
+&gt; stabilised) vce(mestimation)
 11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -4895,7 +4907,8 @@ Iteration 1:   log likelihood = -33474.525
 Iteration 2:   log likelihood = -33449.458  
 Iteration 3:   log likelihood =  -33449.44  
 Iteration 4:   log likelihood =  -33449.44  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -35121.157  
 Iteration 1:   log likelihood = -35121.157  
@@ -4905,7 +4918,7 @@ Fitting weighted survival model to obtain point estimates
          failure _d:  event == 1
    analysis time _t:  age_offending_imp
   enter on or after:  time edad_al_egres_imp
-             weight:  [pweight=_stipw_weight]
+             weight:  [pweight=gomp_m_stag_ten_viv]
 
 Fitting constant-only model:
 
@@ -4942,8 +4955,10 @@ Note: _cons estimates baseline hazard.
 . estimates store gomp_stipw
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone polico
-&gt; nsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severit
+&gt; y_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) gen
+&gt; w(gomp_m_stag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation)
 8363 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -4954,7 +4969,8 @@ Iteration 1:   log likelihood = -34725.723
 Iteration 2:   log likelihood =  -34696.15  
 Iteration 3:   log likelihood = -34696.127  
 Iteration 4:   log likelihood = -34696.127  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -36548.788  
 Iteration 1:   log likelihood = -36548.788  
@@ -4964,7 +4980,7 @@ Fitting weighted survival model to obtain point estimates
          failure _d:  event == 1
    analysis time _t:  age_offending_imp
   enter on or after:  time edad_al_egres_imp
-             weight:  [pweight=_stipw_weight]
+             weight:  [pweight=gomp_m_stag_or_ing_num_hij]
 
 Fitting constant-only model:
 
@@ -5001,9 +5017,15 @@ Note: _cons estimates baseline hazard.
 . estimates store gomp_stipw2
 
 </code></pre>
-<pre><code>. 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off
-&gt; _sud clas), distribution(rp) df(6) ipwtype(stabilised) vce(mestimation) eform
+<pre><code>. *______________________________________________
+. *______________________________________________
+. * ADJUSTED ROYSTON PARMAR - DF6,  STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETI
+&gt; ON)
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n
+&gt; _off_vio n_off_acq n_off_sud clas), distribution(rp) df(6) genw(rpdf6_m_stag_ten_viv) ipwtype
+&gt; (stabilised) vce(mestimation) eform
 11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -5014,7 +5036,8 @@ Iteration 1:   log likelihood = -33474.525
 Iteration 2:   log likelihood = -33449.458  
 Iteration 3:   log likelihood =  -33449.44  
 Iteration 4:   log likelihood =  -33449.44  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -35121.157  
 Iteration 1:   log likelihood = -35121.157  
@@ -5057,8 +5080,10 @@ Note: Estimates are transformed only in the first equation.
 . estimates store df6_stipw
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec dg_cie_10_rec sud_severity_icd10 ma
-&gt; crozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(6) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin
+&gt; _mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec dg_cie_10_r
+&gt; ec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution
+&gt; (rp) df(6) genw(rpdf6_m_stag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
 8363 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -5070,7 +5095,8 @@ Iteration 1:   log likelihood = -34725.723
 Iteration 2:   log likelihood =  -34696.15  
 Iteration 3:   log likelihood = -34696.127  
 Iteration 4:   log likelihood = -34696.127  
-Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weigh
+&gt; ts
 
 Iteration 0:   log likelihood = -36548.788  
 Iteration 1:   log likelihood = -36548.788  
@@ -5134,7 +5160,8 @@ Akaike's information criterion and Bayesian information criterion
 . matrix stats_stipw=r(S)
 
 . 
-. estwrite df6_stipw gomp_stipw df10_stipw df6_stipw2 gomp_stipw2 df10_stipw2 using &quot;${pathdata2}parmodels_m2_stipw_22.sters&quot;, replace
+. estwrite df6_stipw gomp_stipw df10_stipw df6_stipw2 gomp_stipw2 df10_stipw2 using &quot;${pathdata
+&gt; 2}parmodels_m2_stipw_22.sters&quot;, replace
 (saving df6_stipw)
 (saving gomp_stipw)
 (saving df10_stipw)
@@ -5144,6 +5171,6 @@ Akaike's information criterion and Bayesian information criterion
 (file parmodels_m2_stipw_22.sters saved)
 
 </code></pre>
-<p>Saved at= 07:39:34  6 Jan 2023</p>
+<p>Saved at= 23:56:55 16 Feb 2023</p>
 <pre><code>
 </code></pre>

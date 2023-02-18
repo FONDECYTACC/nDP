@@ -101,19 +101,32 @@ pre.plot {
 /* Applies to outputs that are not code other than R*/
 
 pre {
-  overflow-x: auto !important;
+  overflow-x: auto !important
+  line-height: 1 !important
+  font-size: 9px !important;
 }
 pre code {
   word-wrap: normal !important;
   white-space: pre !important;
+  line-height: 1 !important;
+  font-size: 9px !important;
 }
+
+/*   
+font-size: 0.8em;  
+*/
+
+/* 
+https://stackoverflow.com/questions/25646333/code-chunk-font-size-in-rmarkdown-with-knitr-and-latex 
+*/
+
 /*
 pre:not(.sourceCode) { 
   white-space: nowrap !important;
 }
 */
 .sourceCode { /* Important gives precedence  */
-  font-size: 10px !important;
+  font-size: 9px !important;
   line-height: 50% !important;
 }
 
@@ -170,6 +183,13 @@ padding: 0px;
 .controlly{
     overflow-y:scroll;
     height:350px;
+    overflow-x: scroll; 
+}
+
+
+.controlly2{
+    overflow-y:scroll;
+    height:550px;
     overflow-x: scroll; 
 }
 
@@ -263,7 +283,7 @@ pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando pa
 if(!require(pacman)){install.packages("pacman")}
 if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
 
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, 
+pacman::p_load(ggpattern, withr, boot, matrixStats, knitr, tidyr, 
                stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, 
                rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, 
                RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, 
@@ -273,8 +293,9 @@ pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr,
                rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, psych,
                daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, 
                distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, 
-               sqldf,  adjustedCurves, ggpmisc, rms, irrCAC, install=T)
+               sqldf,  adjustedCurves, ggpmisc, rms, irrCAC, xaringanExtra, install=T)
 
+xaringanExtra::use_panelset()
 #Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
 
 
@@ -383,8 +404,9 @@ knitr::knit_hooks$set(
 
 ```{r bring_db1, echo=T, fig.align='center', message=T, error=T, eval=T}
 
-### 1.- Ver qué es Base_fiscalia_v9, por qué tiene 49,970 IDs y 174,961 filas
-### 2.- CONS_C1_df_dup_SEP_2020
+### 1.- What is Base_fiscalia_v9, why it has 49,970 IDs & 174,961 rows : paste0("Patients in PO records with unique combination of ID, RUC, end type and date of comission of the offense and offense ", a_tab11_lab_aft_d1 (p= 5,470; RUCs= 5,993; n= 8,291) --> should be only people that commit offenses, not victims)
+
+### 2.- why the difference of 49,970- 49,252????
 ### 3.- 
 
 Base_fiscalia_v10b_dic_2022<-
@@ -394,8 +416,14 @@ Base_fiscalia_v10b_dic_2022<-
              FROM Base_fiscalia_v9
              ) AS y
   ON x.hash_key == y.id AND 
-  x.edad_al_egres_imp > y.age_offending_imp AND x.dup = 1") #2022-11-25  added dup // #changed the direction to past events, where age at discharge is greater than the age of commission
+  x.dup = 1
+  ") #2022-11-25  added dup // #changed the direction to past events, where age at discharge is greater than the age of commission //FEB 2023: WHERE ano_bd_first='2015' OR ano_bd_first='2016' OR ano_bd_first='2017' OR ano_bd_first='2018' OR ano_bd_first='2019'
 
+message(
+paste0("First, for each baseline admission of patients in C1 (", format(length(unique(CONS_C1_df_dup_SEP_2020_22_d$hash_key)), big.mark=","), "; n= ",format(nrow(CONS_C1_df_dup_SEP_2020_22_d), big.mark=","),"), we found the PO records in which is found as the offender (p=", format(length(unique(Base_fiscalia_v9$id)), big.mark=","), "; n= ",format(nrow(Base_fiscalia_v9), big.mark=","),") (p= ", format(length(unique(Base_fiscalia_v10b_dic_2022$hash_key)), big.mark=","), "; n= ",format(nrow(Base_fiscalia_v10b_dic_2022), big.mark=","),"). We did not exclude patients in C1 that were registered in databases before 2015 in this step (Feb 2023)")
+)
+
+invisible("49,970 patients")
 
 Base_fiscalia_v11b_dic_2022<-
   Base_fiscalia_v10b_dic_2022 %>% 
@@ -412,7 +440,9 @@ Base_fiscalia_v11b_dic_2022<-
   dplyr::group_by(hash_key,dateofbirth_imp) %>% 
   summarise(n_off_acq= ifelse(sum(crime_code_group_rec_prof=="Acquisitive", na.rm=T)>0, 1,0), n_off_vio= ifelse(sum(crime_code_group_rec_prof=="Violent", na.rm=T)>0, 1,0), n_off_sud= ifelse(sum(crime_code_group_rec_prof== "Substance-related", na.rm=T)>0, 1,0), n_off_oth=  ifelse(sum(crime_code_group_rec_prof== "Other", na.rm=T)>0, 1,0)) %>% 
   dplyr::ungroup() %>% 
-  dplyr::mutate(n_prev_off= rowSums(select(., starts_with("n_")))) 
+  dplyr::mutate(n_off= rowSums(select(., starts_with("n_")))) 
+
+message(paste0( "Afterwards, we counted the offenses by type of offense (Acquisitive, violent, substance-related and other) and the total by each user before baseline admisson (p= ", format(length(unique(Base_fiscalia_v11b_dic_2022$hash_key)), big.mark=","), "; cases with records in P.O.= ",format(as.numeric(table(is.na(Base_fiscalia_v10b_dic_2022$dateofbirth_imp))[[2]]), big.mark=","),")." ))
 ```
 
 ```{r bring_db2, echo=T, fig.align='center', message=T, error=T, eval=T}
@@ -421,6 +451,7 @@ Base_fiscalia_v11b_dic_2022<-
 CONS_TOP_2022<-
   # 107307
   CONS_TOP%>% 
+  # dplyr::left_join(subset(dplyr::mutate(dplyr::group_by(Base_fiscalia_v9, id), hash_rn=row_number())%>% ungroup(), hash_rn==1), by= c("HASH_KEY" = "id"))%>% 
   dplyr::left_join(subset(dplyr::mutate(dplyr::group_by(Base_fiscalia_v11b_dic_2022, hash_key), hash_rn=row_number())%>% ungroup(), hash_rn==1), by= c("HASH_KEY" = "hash_key"))%>% 
   dplyr::mutate(fech_ap_top_num= as.numeric(as.Date(str_sub(as.character(lubridate::parse_date_time(Fecha.Aplicación.TOP, c("%Y-%m-%d"),exact=T)),1,10))))%>% #No parse failures
   dplyr::select(HASH_KEY, fech_ap_top_num, Fecha.Aplicación.TOP, dateofbirth_imp, Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro) %>% 
@@ -436,21 +467,24 @@ CONS_TOP_2022<-
                 edad_b_ap_top_num_lim= edad_b_ap_top_num-(1/12)) %>% 
   dplyr::select(-dateofbirth_imp, -dateofbirth_imp_num) %>% 
   dplyr::filter(!is.na(edad_a_ap_top_num)) %>% 
-  dplyr::group_by(HASH_KEY, edad_a_ap_top_num) %>% 
+  dplyr::group_by(HASH_KEY, edad_a_ap_top_num) %>%
   dplyr::slice(1) %>% 
   dplyr::ungroup()
+
+message(paste0("Then, we standardized the varibles in TOP (e.g., dates format) and counted self-reported offenses, and also we standardized data with PO records (dates of birth) to get the age when the patient have answered TOP and the age previous [ (1/12)*365.25 ]=",round((1/12)*365.25,0)," days before TOP application. This resulted in ", format(nrow(CONS_TOP_2022), big.mark=","), " rows (combination of different application dates and patients) of ", format(length(unique(CONS_TOP_2022$HASH_KEY)), big.mark=","), " patients."))
 
 ```
 
 ```{r bring_db3, echo=T, fig.align='center', message=T, error=T, eval=T}
-#reduzco la base a casos en los que no tenga la misma condena por el mismo delito
-
 Base_fiscalia_v9_dic_2022<-
 Base_fiscalia_v9 %>% 
   dplyr::group_by(id, caseid, end_type, fec_comision_simple, crime_code_c) %>% 
   dplyr::slice(1) %>% 
   dplyr::ungroup()
 
+message(
+paste0("We reduced PO records to those that do not have the same sentence for the same offense committed at the same date in the same process (case ID/RUC) (p= ", format(length(unique(Base_fiscalia_v9_dic_2022$id)), big.mark=","), "; n= ",format(nrow(Base_fiscalia_v9_dic_2022), big.mark=","),")")
+)
 
 #busco en la base de datos de fiscalía, algún delito que haya cometido en el transcurso 
 #del último mes anterior a la aplicación del TOP
@@ -464,6 +498,9 @@ Base_fiscalia_v13c_dic_2022<-
   x.edad_a_ap_top_num > y.age_offending_imp AND 
   x.edad_a_ap_top_num_lim < y.age_offending_imp") #2022-11-25  added dup // #changed the direction to past events, where age at discharge is greater than the age of commission
 
+message(
+paste0("Of the total of TOP applications (p= ", format(length(unique(CONS_TOP_2022$HASH_KEY)), big.mark=","), "; n= ",format(nrow(CONS_TOP_2022), big.mark=","),"), we looked for offenses comitted in the period of thirty days before (`x.edad_a_ap_top_num_lim`) the application of TOP (p= ", format(length(unique(Base_fiscalia_v13c_dic_2022$HASH_KEY)), big.mark=","), "; n= ",format(nrow(Base_fiscalia_v13c_dic_2022), big.mark=","),"). If this database contains more records, is beacause there may be some patients that had more than one record as a result of more than one application of TOP. This will be resolved in the next step")
+)
 
 #Luego, contar por cada combinación de HASH y fecha de aplicación, el número de delitos segun familai de delito
 #crime_code_group
@@ -496,6 +533,12 @@ Base_fiscalia_v13c_dic_2022_2<-
 #crime_code_group_rec
 #age_offending_imp
 
+invisible("# 131 rows added, why?")
+message("Patients than had more than one combination of application date and ID. That means, they answered TOP more than one time, and in at least 2 of these times they had previous records: "); Base_fiscalia_v13c_dic_2022_2 %>% 
+    dplyr::count(HASH_KEY, fech_ap_top_num) %>% 
+    dplyr::filter(n>1) %>% 
+    dplyr::summarise(sum=sum(n), n=n(), tot=sum-n)
+
 Base_fiscalia_v13c_dic_2022_3<-
 Base_fiscalia_v13c_dic_2022_2 %>% 
   dplyr::ungroup() %>% 
@@ -503,76 +546,291 @@ Base_fiscalia_v13c_dic_2022_2 %>%
                 acq=dplyr::if_else(crime_code_group_rec_prof=="Acquisitive",1,0,0),
                 sud=dplyr::if_else(crime_code_group_rec_prof=="Substance-related",1,0,0),
                 oth=dplyr::if_else(crime_code_group_rec_prof=="Other",1,0,0)) %>% 
-  dplyr::mutate(tot= rowSums(select(., c("vio","acq","sud","oth")))) %>% 
+  dplyr::mutate(tot= rowSums(select(., c("vio","acq","sud","oth")), na.rm=T)) %>% 
+  dplyr::mutate(acq_top= rowSums(select(., c("Hurto","Robo")), na.rm=T)) %>%
+  dplyr::mutate(sud_top= rowSums(select(., c("Venta.Drogas")), na.rm=T)) %>%
+  dplyr::mutate(vio_top= rowSums(select(., c("Riña", "Total.VIF")), na.rm=T)) %>%
+  dplyr::mutate(oth_top= rowSums(select(., c("Otro")), na.rm=T)) %>% 
   dplyr::group_by(HASH_KEY, fech_ap_top_num) %>% 
   dplyr::mutate(vio=sum(vio,na.rm=T), acq=sum(acq,na.rm=T), sud=sum(sud,na.rm=T), 
                 oth=sum(oth,na.rm=T), tot=sum(tot,na.rm=T), n=n()) %>%
   dplyr::slice(1) %>% 
   dplyr::ungroup() 
 #Los que tienen todo pelado en caseid es porque no tienen fecha de comisión en los últimos 30 días
-
-
+message(
+paste0("For each combination of TOP application, count the number of previous offenses in PO records (those with 0s are people that did not committed an offense recorded by PO in the period previous to the application of TOP) (p= ", format(length(unique(Base_fiscalia_v13c_dic_2022_3$HASH_KEY)), big.mark=","), "; n= ",format(nrow(Base_fiscalia_v13c_dic_2022_3), big.mark=","),")")
+)
 ```
 
 <br>
 
 ## Comparison
 
-We compared the records of TOP with the records of PO
+We compared the records of TOP (`Hurto`,`Robo`, `Venta.Drogas`, `Riña`, `Total.VIF`, `Otro`, & `tot_off_top`) with the records of PO (`vio`, `acq`, `sud`, `oth` & `tot`). We grouped TOPs self-reports of offenses related to burglary or robbery into acquisitive (`acq_top`), the reports of drug-selling into substance related (`sud_top`) and reports of fights and domestic violence into violent (`vio_top`) and Other into other (`oth_top`).
 
-```{r chisq-tot, echo=T, fig.align='center', message=T, error=T, eval=T}
+```{r recode-comparison, echo=T, fig.align='center', message=T, error=T, eval=T}
 
-dodge <- position_dodge(.3) # how much jitter on the x-axis?
-
-# Base_fiscalia_v13c_dic_2022_3 %>% 
-#   ggplot(aes(tot, tot_off_top))+
-#   geom_point(position = position_jitter(w = 0.8, h = 0.8))
-
-cat("Total records of offenses vs. TOP reported offenses")
-paste0(median(Base_fiscalia_v13c_dic_2022_3$tot,na.rm=T), ' (',quantile(Base_fiscalia_v13c_dic_2022_3$tot,.25,na.rm=T),', ',quantile(Base_fiscalia_v13c_dic_2022_3$tot,.75, na.rm=T),')')
-
-paste0(median(Base_fiscalia_v13c_dic_2022_3$tot_off_top,na.rm=T), ' (',quantile(Base_fiscalia_v13c_dic_2022_3$tot_off_top,.25,na.rm=T),', ',quantile(Base_fiscalia_v13c_dic_2022_3$tot_off_top,.75, na.rm=T),')')
-
-cat("Spearman correlation: Total records of offenses vs. TOP reported offenses")
-cor.test(Base_fiscalia_v13c_dic_2022_3$tot_off_top, Base_fiscalia_v13c_dic_2022_3$tot, method="spearman", exact=F)
-
-pol_p<-
-polychor(Base_fiscalia_v13c_dic_2022_3$tot_off_top, Base_fiscalia_v13c_dic_2022_3$tot, std.err=T, ML=T)
-
-cat("Polychoric correlation: Total records of offenses vs. TOP reported offenses")
-capture.output(print(pol_p))[c(2,3)]
-
-cat("Overdispersion")
-var(Base_fiscalia_v13c_dic_2022_3$tot_off_top)/mean(Base_fiscalia_v13c_dic_2022_3$tot_off_top)
-#The variance is not much greater than the mean, which suggests that we will have over-dispersion in the model.
-# obtained with a poisson regression
-
-cat("Recode")
-Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec<-
-ifelse(Base_fiscalia_v13c_dic_2022_3$tot_off_top>=5,4,Base_fiscalia_v13c_dic_2022_3$tot_off_top)
-
-cat("Confusion Matrix")
-caret::confusionMatrix(factor(Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec), factor(Base_fiscalia_v13c_dic_2022_3$tot))
-
-cat("Kappa with ordinal weights")
-irrCAC::kappa2.table(table(ordered(Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec), ordered(Base_fiscalia_v13c_dic_2022_3$tot)),weights = irrCAC::ordinal.weights(0:4))
-#To choose between linear and quadratic weights, ask yourself if the difference between being off by 1 vs. 2 categories is the same as the difference between being off by 2 vs. 3 categories. With linear weights, the penalty is always the same (e.g., 0.33 credit is subtracted for each additional category). However, this is not the case for quadratic weights, where penalties begin mild then grow harsher.
-#CONS: Depends on the marginal distribution (prevalence) of the categories
-
-cat("Plot")
-ggstatsplot::ggscatterstats(tot_off_top, tot, data=Base_fiscalia_v13c_dic_2022_3, 
-                            type="nonparametric", point.width.jitter=.9, point.height.jitter=.9,
-                            xlab="Number of TOP offenses", ylab="Number of PO offenses", 
-                            title="Relationship between PO and TOP")
-```
-
-```{r chisq-tot-2, echo=T, fig.align='center', message=T, error=T, eval=T}
-cat("Recode")
+cat("Recode to binary measures")
 Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin<-
 ifelse(Base_fiscalia_v13c_dic_2022_3$tot_off_top>=1,1,0)
 Base_fiscalia_v13c_dic_2022_3$tot_bin<-
 ifelse(Base_fiscalia_v13c_dic_2022_3$tot>=1,1,0)
 
+Base_fiscalia_v13c_dic_2022_3$vio_bin<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$vio>=1,1,0)
+Base_fiscalia_v13c_dic_2022_3$acq_bin<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$acq>=1,1,0)
+Base_fiscalia_v13c_dic_2022_3$sud_bin<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$sud>=1,1,0)
+Base_fiscalia_v13c_dic_2022_3$oth_bin<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$oth>=1,1,0)
+
+Base_fiscalia_v13c_dic_2022_3$acq_top_bin<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$acq_top>=1,1,0)
+Base_fiscalia_v13c_dic_2022_3$sud_top_bin<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$sud_top>=1,1,0)
+Base_fiscalia_v13c_dic_2022_3$vio_top_bin<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$vio_top>=1,1,0)
+Base_fiscalia_v13c_dic_2022_3$oth_top_bin<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$oth_top>=1,1,0)
+```
+
+::: controlly2
+
+::::: {.panelset}
+
+```{r chisq-tot, echo=T, fig.align='center', message=T, error=T, eval=T, results='asis', layout="l-body-outset"}
+cat("::: {.panel}", "\n", "[Total]{.panel-name}", "\n")
+
+cat("**Total records of offenses vs. TOP reported offenses**")
+paste0("**Records from PO**")
+message(
+paste0(median(Base_fiscalia_v13c_dic_2022_3$tot,na.rm=T), ' (p2.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$tot,.025,na.rm=T),',  p97.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$tot,1-.025, na.rm=T),')')
+)
+paste0("**Reports from TOP**")
+message(
+  paste0(median(Base_fiscalia_v13c_dic_2022_3$tot_off_top,na.rm=T), ' (p 2.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$tot_off_top,.025,na.rm=T),',  p97.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$tot_off_top,1-.025, na.rm=T),')')
+)
+pol_p<-
+polychor(Base_fiscalia_v13c_dic_2022_3$tot_off_top, Base_fiscalia_v13c_dic_2022_3$tot, std.err=T, ML=T)
+
+pol_p2<-
+psych::polychoric(table(Base_fiscalia_v13c_dic_2022_3$tot_off_top, Base_fiscalia_v13c_dic_2022_3$tot))
+#rho	: The (matrix) of tetrachoric/polychoric/biserial correlations
+#tau	: The normal equivalent of the cutpoints
+
+#for ordinal variables, the same idea holds...but now we have more than one τ-cut to subdivide the normal distribution into regions associated with the different values of the ordinal measure.
+
+# polychoric is appropriate when the manifest ordinal variables came from categorizing latent normal variables & not otherwise. (In practice, it's more like when you are willing to assume thi
+
+#We start with a relative frequency pattern for our contingency table of ordinal data in the lower-left, and we find the optimal solution for correlation and tau-cuts to get us back to a bivariate normal distribution that would have comparable relative joint-frequencies.
+
+cat("**Polychoric correlation: Total records of offenses vs. TOP reported offenses**")
+message(
+capture.output(print(pol_p))[c(2,3)]
+)
+cat("**Overdispersion**")
+message(
+round(var(Base_fiscalia_v13c_dic_2022_3$tot_off_top)/mean(Base_fiscalia_v13c_dic_2022_3$tot_off_top),2)
+)
+#The variance is not much greater than the mean, which suggests that we will have over-dispersion in the model.
+# obtained with a poisson regression
+
+cat("**Recode**")
+Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$tot_off_top>=4,4,Base_fiscalia_v13c_dic_2022_3$tot_off_top)
+
+cat("**Confusion Matrix**")
+#For more than two classes, these results are calculated comparing each factor level to the remaining levels (i.e. a "one versus all" approach).
+# accuracy should be higher than No information rate (naive classifier) in order to be model significant. 
+#No information rate tests whether our classifier does better than random assignment
+# A hypothesis test is also computed to evaluate whether the overall accuracy rate is greater than the rate of the largest class. P-Value [Acc > NIR]
+#Null Error Rate: This is how often you would be wrong if you always predicted the majority class.
+# but sometimes the best classifier for a particular application will sometimes have a higher error rate than the null error rate, as in the accuracy paradox
+#if the incidence of category A is dominant, being found in 99% of cases, then predicting that every case is category A will have an accuracy of 99%
+
+#Kappa statistics is a measure of how the classification results compare to values assigned by chance. P-value mcnemar, can produce NA values with sparse tables)
+pander::pander(caret::confusionMatrix(factor(Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec), factor(Base_fiscalia_v13c_dic_2022_3$tot))) 
+
+cat("**Kappa with ordinal weights**")
+pander::pander(irrCAC::kappa2.table(table(ordered(Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec), ordered(Base_fiscalia_v13c_dic_2022_3$tot)),weights = irrCAC::ordinal.weights(0:4)))
+#really low
+#To choose between linear and quadratic weights, ask yourself if the difference between being off by 1 vs. 2 categories is the same as the difference between being off by 2 vs. 3 categories. With linear weights, the penalty is always the same (e.g., 0.33 credit is subtracted for each additional category). However, this is not the case for quadratic weights, where penalties begin mild then grow harsher.
+#CONS: Depends on the marginal distribution (prevalence) of the categories
+
+cat("**Plot**")
+ggstatsplot::ggscatterstats(tot_off_top, tot, data=Base_fiscalia_v13c_dic_2022_3, 
+                            type="nonparametric", point.width.jitter=.9, point.height.jitter=.9,
+                            xlab="Number of TOP offenses", ylab="Number of PO offenses", 
+                            title="Relationship between Total counts of offenses from PO and TOP")
+
+cat(":::", "\n")
+
+
+
+cat("::: {.panel}", "\n", "[Acquisitive]{.panel-name}", "\n")
+
+cat("**Total records of offenses vs. TOP reported offenses**")
+paste0("**Records from PO**")
+message(
+paste0("Mdn= ", median(Base_fiscalia_v13c_dic_2022_3$acq,na.rm=T), ' (p2.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$acq,.025,na.rm=T),',  p97.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$acq,1-.025, na.rm=T),')')
+)
+
+paste0("**Reports from TOP**")
+message(
+paste0("Mdn= ", median(Base_fiscalia_v13c_dic_2022_3$acq_top,na.rm=T), ' (p 2.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$acq_top,.025,na.rm=T),',  p97.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$acq_top,1-.025, na.rm=T),')')
+)
+
+pol_p_acq<-
+polychor(Base_fiscalia_v13c_dic_2022_3$acq_top, Base_fiscalia_v13c_dic_2022_3$acq, std.err=T, ML=T)
+
+pol_p2_acq<-
+psych::polychoric(table(Base_fiscalia_v13c_dic_2022_3$acq_top, Base_fiscalia_v13c_dic_2022_3$acq))
+
+cat("**Polychoric correlation: Total records of offenses vs. TOP reported offenses**")
+message(capture.output(print(pol_p_acq))[c(2,3)])
+
+cat("**Recode**")
+Base_fiscalia_v13c_dic_2022_3$acq_rec<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$acq>=2,2,Base_fiscalia_v13c_dic_2022_3$acq)
+
+cat("**Confusion Matrix**")
+pander::pander(tidy(caret::confusionMatrix(factor(Base_fiscalia_v13c_dic_2022_3$acq_top), factor(Base_fiscalia_v13c_dic_2022_3$acq_rec))))
+
+cat("**Kappa with ordinal weights**")
+pander::pander(irrCAC::kappa2.table(table(ordered(Base_fiscalia_v13c_dic_2022_3$acq_top), ordered(Base_fiscalia_v13c_dic_2022_3$acq_rec)),weights = irrCAC::ordinal.weights(0:2)))
+
+cat("**Plot**")
+ggstatsplot::ggscatterstats(acq_top, acq, data=Base_fiscalia_v13c_dic_2022_3, 
+                            type="nonparametric", point.width.jitter=.9, point.height.jitter=.9,
+                            xlab="Number of TOP offenses", ylab="Number of PO offenses", 
+                            title="Relationship between counts of Acquisitive offenses from PO and TOP")
+
+
+
+cat(":::", "\n")
+cat("::: {.panel}", "\n", "[SUD]{.panel-name}", "\n")
+
+
+cat("**Total records of offenses vs. TOP reported offenses**")
+paste0("**Records from PO**")
+message(
+paste0("Mdn= ", median(Base_fiscalia_v13c_dic_2022_3$sud,na.rm=T), ' (p2.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$sud,.025,na.rm=T),',  p97.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$sud,1-.025, na.rm=T),')')
+)
+
+paste0("**Reports from TOP**")
+message(
+paste0("Mdn= ", median(Base_fiscalia_v13c_dic_2022_3$sud_top,na.rm=T), ' (p 2.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$sud_top,.025,na.rm=T),',  p97.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$sud_top,1-.025, na.rm=T),')')
+)
+
+pol_p_sud<-
+polychor(Base_fiscalia_v13c_dic_2022_3$sud_top, Base_fiscalia_v13c_dic_2022_3$sud, std.err=T, ML=T)
+
+pol_p2_sud<-
+psych::polychoric(table(Base_fiscalia_v13c_dic_2022_3$sud_top, Base_fiscalia_v13c_dic_2022_3$sud))
+
+cat("**Polychoric correlation: Total records of offenses vs. TOP reported offenses**")
+message(capture.output(print(pol_p_sud))[c(2,3)])
+
+cat("**Recode**")
+Base_fiscalia_v13c_dic_2022_3$sud_rec<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$sud>=1,1,Base_fiscalia_v13c_dic_2022_3$sud)
+
+cat("**Confusion Matrix**")
+pander::pander(tidy(
+caret::confusionMatrix(factor(Base_fiscalia_v13c_dic_2022_3$sud_top), factor(Base_fiscalia_v13c_dic_2022_3$sud_rec))
+))
+
+
+cat(":::", "\n")
+cat("::: {.panel}", "\n", "[Violent]{.panel-name}", "\n")
+
+cat("**Total records of offenses vs. TOP reported offenses**")
+paste0("**Records from PO**")
+message(
+paste0("Mdn= ", median(Base_fiscalia_v13c_dic_2022_3$vio,na.rm=T), ' (p2.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$vio,.025,na.rm=T),',  p97.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$vio,1-.025, na.rm=T),')')
+)
+
+paste0("**Reports from TOP**")
+message(
+paste0("Mdn= ", median(Base_fiscalia_v13c_dic_2022_3$vio_top,na.rm=T), ' (p 2.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$vio_top,.025,na.rm=T),',  p97.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$vio_top,1-.025, na.rm=T),')')
+)
+
+pol_p_vio<-
+polychor(Base_fiscalia_v13c_dic_2022_3$vio_top, Base_fiscalia_v13c_dic_2022_3$vio, std.err=T, ML=T)
+
+pol_p2_vio<-
+psych::polychoric(table(Base_fiscalia_v13c_dic_2022_3$vio_top, Base_fiscalia_v13c_dic_2022_3$vio))
+
+cat("**Polychoric correlation: Total records of offenses vs. TOP reported offenses**")
+message(capture.output(print(pol_p_vio))[c(2,3)])
+
+cat("**Recode**")
+Base_fiscalia_v13c_dic_2022_3$vio_rec<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$vio>=2,2,Base_fiscalia_v13c_dic_2022_3$vio)
+
+cat("**Confusion Matrix**")
+pander::pander(tidy(
+  caret::confusionMatrix(factor(Base_fiscalia_v13c_dic_2022_3$vio_top), factor(Base_fiscalia_v13c_dic_2022_3$vio_rec))
+))
+
+cat("**Kappa with ordinal weights**")
+pander::pander(
+irrCAC::kappa2.table(table(ordered(Base_fiscalia_v13c_dic_2022_3$vio_top), ordered(Base_fiscalia_v13c_dic_2022_3$vio_rec)),weights = irrCAC::ordinal.weights(0:2))
+)
+
+cat("**Plot**")
+ggstatsplot::ggscatterstats(vio_top, vio, data=Base_fiscalia_v13c_dic_2022_3, 
+                            type="nonparametric", point.width.jitter=.9, point.height.jitter=.9,
+                            xlab="Number of TOP offenses", ylab="Number of PO offenses", 
+                            title="Relationship between counts of violent offenses from PO and TOP")
+
+
+cat(":::", "\n")
+cat("::: {.panel}", "\n", "[Other]{.panel-name}", "\n")
+
+cat("**Total records of offenses vs. TOP reported offenses**")
+paste0("**Records from PO**")
+message(
+paste0("Mdn= ", median(Base_fiscalia_v13c_dic_2022_3$oth,na.rm=T), ' (p2.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$oth,.025,na.rm=T),',  p97.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$oth,1-.025, na.rm=T),')')
+)
+
+paste0("**Reports from TOP**")
+message(
+paste0("Mdn= ", median(Base_fiscalia_v13c_dic_2022_3$oth_top,na.rm=T), ' (p 2.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$oth_top,.025,na.rm=T),',  p97.5= ',quantile(Base_fiscalia_v13c_dic_2022_3$oth_top,1-.025, na.rm=T),')')
+)
+
+pol_p_oth<-
+polychor(Base_fiscalia_v13c_dic_2022_3$oth_top, Base_fiscalia_v13c_dic_2022_3$oth, std.err=T, ML=T)
+
+pol_p2_oth<-
+psych::polychoric(table(Base_fiscalia_v13c_dic_2022_3$oth_top, Base_fiscalia_v13c_dic_2022_3$oth))
+
+cat("**Polychoric correlation: Total records of offenses vs. TOP reported offenses**")
+message(capture.output(print(pol_p_oth))[c(2,3)])
+
+cat("**Recode**")
+Base_fiscalia_v13c_dic_2022_3$oth_rec<-
+ifelse(Base_fiscalia_v13c_dic_2022_3$oth>=1,1,Base_fiscalia_v13c_dic_2022_3$oth)
+
+cat("**Confusion Matrix**")
+pander::pander(tidy(
+caret::confusionMatrix(factor(Base_fiscalia_v13c_dic_2022_3$oth_top), factor(Base_fiscalia_v13c_dic_2022_3$oth_rec))
+))
+
+cat(":::", "\n")
+
+```
+
+:::::
+
+:::
+
+
+```{r chisq-tot-2, echo=T, fig.align='center', message=T, error=T, eval=F}
+#
+cat("Manually construct measure tables")
+#http://rstudio-pubs-static.s3.amazonaws.com/370944_96c386c03ac54ef3bec4535d49e92890.html
 
 confusion_table = table(Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin, Base_fiscalia_v13c_dic_2022_3$tot_bin)
 confusion_table[1,1] = 'TN'
@@ -638,6 +896,8 @@ get_f1_score <- function(df, predicted, actual){
   return(f1_score)
 }
 
+caret::confusionMatrix(factor(Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin), factor(Base_fiscalia_v13c_dic_2022_3$tot_bin))
+
 score = data.frame(accuracy=get_accuracy(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
       classification_error_rate=get_classification_error_rate(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
       precision=get_precision(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
@@ -649,63 +909,73 @@ score = data.frame(accuracy=get_accuracy(Base_fiscalia_v13c_dic_2022_3, 'tot_off
 knitr::kable(score, caption= "Table 1. Properties")# %>% kableExtra::kable_classic()
 ```
 
-```{r chisq_sud, echo=T, fig.align='center', message=T, error=T, eval=T, fig.show='hide'}
-cor.test(Base_fiscalia_v13c_dic_2022_3$Venta.Drogas, Base_fiscalia_v13c_dic_2022_3$sud, method="spearman", exact=F)
-
-pol_p2<-
-  polychor(Base_fiscalia_v13c_dic_2022_3$Venta.Drogas, Base_fiscalia_v13c_dic_2022_3$sud, std.err=T, ML=T)
-
-pchisq(pol_p2$chisq,pol_p2$df, lower.tail=F)
-
-Base_fiscalia_v13c_dic_2022_3$adquisitivo<- ifelse(Base_fiscalia_v13c_dic_2022_3$Robo==0, Base_fiscalia_v13c_dic_2022_3$Hurto,0)
-
-Base_fiscalia_v13c_dic_2022_3$acq_rec<-ifelse(Base_fiscalia_v13c_dic_2022_3$acq>0,1,0)
-
-Base_fiscalia_v13c_dic_2022_3$tot_rec<-ifelse(Base_fiscalia_v13c_dic_2022_3$tot>0,1,0)
-
-
-round(prop.table(table(Base_fiscalia_v13c_dic_2022_3$acq, Base_fiscalia_v13c_dic_2022_3$adquisitivo)),2)  
-round(prop.table(table(Base_fiscalia_v13c_dic_2022_3$acq_rec, Base_fiscalia_v13c_dic_2022_3$adquisitivo)),2)  
-
-chisq.test(table(Base_fiscalia_v13c_dic_2022_3$acq_rec, Base_fiscalia_v13c_dic_2022_3$adquisitivo))
-
-ggstatsplot::ggpiestats(acq, adquisitivo, data=Base_fiscalia_v13c_dic_2022_3, 
-     type="nonparametric", point.width.jitter=.9, point.height.jitter=.9,
-     #palette = "default_jama",
-     xlab="Presencia delitos adquisitivos TOP", ylab="Recuento delitos Adquisitivos Fiscalía", 
-     title="Relación entre datos fiscalía y TOP, con registros de delitos \ncometidos últimos 30 días desde la aplicación del TOP")
-```
-
 <br>
 
 ## ROC
 
-```{r roc, echo=T, fig.align='center', message=T, error=T, eval=T}
 
-library(ROCit)
+For ROC curves, we dichotomized into committing a crime or not against reporting or not (`*_bin`). Posteriorly, we calculated confidence intervals using bootstrap with 500 replications.
+
+::: controlly2
+
+<div class="layout-chunk" data-layout="l-body">
+
+```{r roc, echo=T, fig.align='center', message=T, error=T, eval=T, results='asis', layout="l-body-outset"}
+#Acquisitive  SUD   Violent Other
+suppressMessages(suppressWarnings(library(ROCit)))
 ## Warning: package 'ROCit' was built under R version 3.5.2
-ROCit_obj <- rocit(score=Base_fiscalia_v13c_dic_2022_3$adquisitivo,class=Base_fiscalia_v13c_dic_2022_3$acq_rec)
-plot(ROCit_obj)
+message("Error in convertclass(class, reference = negref) :    class must have exactly two unique values)")
 
-Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec<-ifelse(Base_fiscalia_v13c_dic_2022_3$tot_off_top>0,1,0)
+cat("::::: {.panelset}", "\n")
+cat("::: {.panel}", "\n", "[Total]{.panel-name}", "\n")
 
-ROCit_obj <- rocit(score=Base_fiscalia_v13c_dic_2022_3$tot_off_top,class=Base_fiscalia_v13c_dic_2022_3$tot_rec)
+ROCit_obj <- rocit(score=Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin,class=Base_fiscalia_v13c_dic_2022_3$tot_bin)
 plot(ROCit_obj)
 
 #Del YOuden, el óptimo es...
-ciROC(ROCit_obj,nboot = 500)
+pander::pander(ciROC(ROCit_obj,nboot = 500))
 #FPR: 1-especificidad
 #TPR: Sensibilidad
 
-ROCit_obj2 <- rocit(score=Base_fiscalia_v13c_dic_2022_3$tot_off_top_rec,class=Base_fiscalia_v13c_dic_2022_3$tot_rec)
-plot(ROCit_obj2)
+cat(":::", "\n")
+cat("::: {.panel}", "\n", "[Acquisitive]{.panel-name}", "\n")
 
-#Del YOuden, el óptimo es...
-ciROC(ROCit_obj2,nboot = 500)
-#FPR: 1-especificidad
-#TPR: Sensibilidad
+ROCit_acq <- rocit(score=Base_fiscalia_v13c_dic_2022_3$acq_top_bin,class=Base_fiscalia_v13c_dic_2022_3$acq_bin)
+plot(ROCit_acq)
 
+pander::pander(ciROC(ROCit_acq,nboot = 500))
+
+cat(":::", "\n")
+cat("::: {.panel}", "\n", "[SUD]{.panel-name}", "\n")
+
+ROCit_sud <- rocit(score=Base_fiscalia_v13c_dic_2022_3$sud_top_bin,class=Base_fiscalia_v13c_dic_2022_3$sud_bin)
+plot(ROCit_sud)
+
+pander::pander(ciROC(ROCit_sud,nboot = 500))
+
+cat(":::", "\n")
+cat("::: {.panel}", "\n", "[Violent]{.panel-name}", "\n")
+
+ROCit_vio <- rocit(score=Base_fiscalia_v13c_dic_2022_3$vio_top_bin,class=Base_fiscalia_v13c_dic_2022_3$vio_bin)
+plot(ROCit_vio)
+
+pander::pander(ciROC(ROCit_vio,nboot = 500))
+
+cat(":::", "\n")
+cat("::: {.panel}", "\n", "[Other]{.panel-name}", "\n")
+
+ROCit_oth <- rocit(score=Base_fiscalia_v13c_dic_2022_3$oth_top_bin,class=Base_fiscalia_v13c_dic_2022_3$oth_bin)
+plot(ROCit_oth)
+
+pander::pander(ciROC(ROCit_oth,nboot = 500))
+
+cat(":::", "\n")
+cat(":::::", "\n")
 ```
+
+</div>
+
+:::
 
 <br>
 
@@ -713,14 +983,14 @@ ciROC(ROCit_obj2,nboot = 500)
 
 ```{r flwchrt-export-svg-1,echo=T, paged.print=TRUE, eval=T, error=T}
 
-a_tab1_lab_aft_d<- paste0('Original C1 Dataset \n(n = ', formatC(nrow(CONS_C1), format='f', big.mark=',', digits=0), ';\npatients: ',formatC(CONS_C1%>% dplyr::distinct(HASH_KEY)%>% nrow(), format='f', big.mark=',', digits=0),')')
+a_tab1_lab_aft_d<- paste0('Original C1 Dataset \n(p= ', formatC(CONS_C1%>% dplyr::distinct(HASH_KEY)%>% nrow(), format='f', big.mark=',', digits=0), ';\np= ', formatC(nrow(CONS_C1), format='f', big.mark=',', digits=0),')')
 
 a_tab2_lab_aft_d<- paste0('&#8226;Remove duplicated entries\\\\\\l&#8226;Overlapping treatments of patients\\\\\\l&#8226;Intermediate treatment events (continuous referrals)    \\\\\\l')
 
-a_tab3_lab_aft_d<- paste0('      C1 Dataset          \n(n = ', formatC(nrow(CONS_C1_df_dup_SEP_2020), format='f', big.mark=',', digits=0), ';\npatients: ',formatC(CONS_C1_df_dup_SEP_2020%>% dplyr::distinct(hash_key)%>% nrow(), format='f', big.mark=',', digits=0),')')
+a_tab3_lab_aft_d<- paste0('      C1 Dataset          \n(p= ', formatC(CONS_C1_df_dup_SEP_2020%>% dplyr::distinct(hash_key)%>% nrow(), format='f', big.mark=',', digits=0), ';\nn= ', formatC(nrow(CONS_C1_df_dup_SEP_2020), format='f', big.mark=',', digits=0),')')
 
 
-a_tab4_lab_aft_d<- paste0('Original Prosecutors Office\n(n = ',format(nrow(Base_fiscalia_v2),big.mark=","), ';\nCauses= ',Base_fiscalia_v2%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','), ';\nRel.=',Base_fiscalia_v2%>%dplyr::distinct(idrelacion)%>%nrow()%>%format(big.mark=','), ';\nRUC_Vic_Imp=',Base_fiscalia_v2%>%dplyr::mutate(rel=paste0(ruc,"_",idsujeto_victima,"_",idsujeto_imputado,"_","iddelito"))%>%dplyr::distinct(rel)%>%nrow()%>%format(big.mark=','), ';\nindividuals= ',Base_fiscalia_v2%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','),')')
+a_tab4_lab_aft_d<- paste0('Original Prosecutors Office\n(p= ',Base_fiscalia_v2%>% dplyr::distinct(rut_enc_saf)%>% nrow() %>% format(big.mark=','), ';\nCauses= ',Base_fiscalia_v2%>% dplyr::distinct(ruc)%>% nrow() %>% format(big.mark=','), ';\nRel.=',Base_fiscalia_v2%>%dplyr::distinct(idrelacion)%>%nrow()%>%format(big.mark=','), ';\nRUC_Vic_Imp=',Base_fiscalia_v2%>%dplyr::mutate(rel=paste0(ruc,"_",idsujeto_victima,"_",idsujeto_imputado,"_","iddelito"))%>%dplyr::distinct(rel)%>%nrow()%>%format(big.mark=','), ';\nn= ',format(nrow(Base_fiscalia_v2),big.mark=","),')')
 
 #crimes committed after study follow-up
 a_tab5_lab_aft_d1<-
@@ -768,7 +1038,7 @@ a_tab5_lab_aft_d5<-
 
 a_tab5_lab_aft_d<- paste0('&#8226;Filter crimes committed after study follow-up period',a_tab5_lab_aft_d1,'\\\\\\l&#8226;Remove duplicated entries',a_tab5_lab_aft_d2,'\\\\\\l&#8226;Correct dates (birth, comission of crime, end of judicial proceedings), missing nationality and sex\\\\\\l&#8226;Erase entries with missing values in  comission of crime, end of judicial proceedings',a_tab5_lab_aft_d12,'\\\\\\l&#8226;Erase entries with values in comission of crime when minor to 14 years old after imputation',a_tab5_lab_aft_d13,'\\\\\\l&#8226;Filter crimes committed before study follow-up',a_tab5_lab_aft_d3,'\\\\\\l&#8226;Filter records with cause of end of the proceedings= administrative annulment',a_tab5_lab_aft_d4,'\\\\\\l&#8226;Filter records with cause of end of the proceedings= grouped to another case',a_tab5_lab_aft_d5,'\\\\\\l')
 
-a_tab6_lab_aft_d<- paste0("O.P. Dataset \n(n= ", formatC(nrow(Base_fiscalia_v8),big.mark = ","),";\nindividuals= ",Base_fiscalia_v8%>% dplyr::distinct(rut_enc_saf)%>% nrow()%>% formatC(big.mark = ","),")")
+a_tab6_lab_aft_d<- paste0("O.P. Dataset \n(p= ", dplyr::distinct(Base_fiscalia_v8, rut_enc_saf)%>% nrow()%>% formatC(big.mark = ","), ";\nn= ",formatC(nrow(Base_fiscalia_v8),big.mark = ","),")")
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -911,49 +1181,33 @@ plot_merge_flowchart_excercise<-
         ", width = 1200,
           height = 900)
 
+DPI = 1200
+WidthCM = 11
+HeightCM = 8
+
 plot_merge_flowchart_excercise
+
+library(DiagrammeRsvg)
+
+plot_merge_flowchart_excercise %>%
+  export_svg %>% charToRaw %>% rsvg::rsvg_pdf("./_figs/_flowchart_comm_DAD.pdf")
+plot_merge_flowchart_excercise %>% DiagrammeRsvg::export_svg()%>%charToRaw %>% rsvg::rsvg(width = WidthCM *(DPI/2.54), height = HeightCM *(DPI/2.54)) %>% png::writePNG("./_figs/_flowchart_comm_DAD.png")
+
+htmlwidgets::saveWidget(plot_merge_flowchart_excercise, "./_figs/_flowchart_comm_DAD.html")
+webshot::webshot("./_figs/_flowchart_comm_DAD.html", "./_figs/_flowchart_comm_DAD.png",vwidth = 1200, vheight = 900, zoom = 3)
+webshot::webshot("./_figs/_flowchart_comm_DAD.html", "./_figs/_flowchart_comm_DAD_alt.pdf")
 ```
 
-```{r flwchrt-export-svg-2,echo=T, paged.print=TRUE, eval=T, error=T}
-library(DiagrammeR) 
-
-
-        tab8 -> blank65 [label= '        Selected the first row with distinct information regarding patient ID, case ID, crime code', fontsize = 8]
-        
-        tab8 -> blank7 [arrowhead= none]
-        blank7 [label = '', width = 0.0001, height = 0.0001]
-        tab9 [label= '@@9',fontsize = 7]
-        tab10 [label= '@10']        
-        blank7 -> tab9 
-        blank7 -> tab10
-                    subgraph {
-          rank = same; blank7; tab9;
-                    }
-
-        # blank [label = '', width = 0.0001, height = 0.0001]
-        # 
-        # tab3 [label = '@@3']
-        # 
-        # tab4 [label = '@@4',fontsize = 8]
-        # blank2 [label = '', width = 0.0001, height = 0.0001]
-        # tab5 [label = '@@5',fontsize = 7]
-        # tab6 [label= '@@6']
-        # 
-        # blank3 [label = '', width = 0.0001, height = 0.0001]
-        # blank4 [label = '', width = 0.0001, height = 0.0001]      
-        # blank5 [label = '', width = 0.0001, height = 0.0001] 
-        # 
-        # blank6 [label = '', width = 0.0001, height = 0.0001]
-        # tab7 [label = '@@7',fontsize = 7]
-        # tab8 [label= '@@8']
-#tab1 -> blank [label= '        Selected the first row with distinct information regarding patient ID, case ID, crime code', fontsize = 8]
-
-a_tab10_lab_aft_d<- paste0("TOP Dataset \n(n= ", formatC(nrow(CONS_TOP),big.mark = ","),";\nindividuals= ",CONS_TOP%>% dplyr::distinct(HASH_KEY)%>% nrow()%>% formatC(big.mark = ","),")")
+```{r flwchrt-export-svg-2, echo=T, paged.print=TRUE, eval=T, error=T}
+a_tab10_lab_aft_d<- paste0("TOP Dataset \n(p= ", dplyr::distinct(CONS_TOP, HASH_KEY)%>% nrow()%>% formatC(big.mark = ","),";\nn= ",formatC(nrow(CONS_TOP),big.mark = ","),")")
 
 #bring_db3
 a_tab11_lab_aft_d1<- 
     paste0( '(p= ',format(nrow(dplyr::distinct(dplyr::group_by(Base_fiscalia_v9, id, caseid, end_type, fec_comision_simple, crime_code_c) %>% dplyr::slice(-1) %>% dplyr::ungroup(),id)), big.mark=","), '; RUCs= ', format(nrow(dplyr::distinct(dplyr::group_by(Base_fiscalia_v9, id, caseid, end_type, fec_comision_simple, crime_code_c) %>% dplyr::slice(-1) %>% dplyr::ungroup(),caseid)), big.mark=","), '; n= ', format(nrow(dplyr::group_by(Base_fiscalia_v9, id, caseid, end_type, fec_comision_simple, crime_code_c) %>% dplyr::slice(-1) %>% dplyr::ungroup()), big.mark=",") , ')'
     )
+message(
+paste0("Patients in PO records with unique combination of ID, RUC, end type and date of comission of the offense and offense ", a_tab11_lab_aft_d1)
+)
 
 a_tab11_lab_aft_d<- paste0('&#8226;Count events such as shoplifting, theft, domestic violence, drug selling, fights, or related behavior in the last four weeks','\\\\\\l',
                            '&#8226;Get PO data with more than one record with the same case ID, sentence, date of offense and type of crime ', a_tab11_lab_aft_d1,'\\\\\\l')
@@ -1002,6 +1256,13 @@ plot_merge_flowchart_excercise2<-
 
 plot_merge_flowchart_excercise2
 
+plot_merge_flowchart_excercise2 %>%
+  export_svg %>% charToRaw %>% rsvg::rsvg_pdf("./_figs/_flowchart2_comm_DAD.pdf")
+plot_merge_flowchart_excercise2 %>% DiagrammeRsvg::export_svg()%>%charToRaw %>% rsvg::rsvg(width = WidthCM *(DPI/2.54), height = HeightCM *(DPI/2.54)) %>% png::writePNG("./_figs/_flowchart2_comm_DAD.png")
+
+htmlwidgets::saveWidget(plot_merge_flowchart_excercise2, "./_figs/_flowchart2_comm_DAD.html")
+webshot::webshot("./_figs/_flowchart2_comm_DAD.html", "./_figs/_flowchart2_comm_DAD.png",vwidth = 1200, vheight = 900, zoom = 3)
+webshot::webshot("./_figs/_flowchart2_comm_DAD.html", "./_figs/_flowchart2_comm_DAD_alt.pdf")
 ```
 
 <br>
@@ -1014,14 +1275,15 @@ Sys.Date()
 message(paste0("Editor context: ", path))
 
 if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.RData")
+    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/14_alt.RData")
   } else if (grepl("andre",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("C:/Users/andre/Desktop/SUD_CL/14.RData")
+    save.image("C:/Users/andre/Desktop/SUD_CL/14_alt.RData")
   } else if (grepl("E:",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.RData")
+    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/14_alt.RData")
   } else {
-    save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"14.RData"))
+    save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"14_alt.RData"))
   }
+#load(paste0(dirname(rstudioapi::getSourceEditorContext()$path),"/14_alt.RData"))
 
 sesion_info <- devtools::session_info()
 dplyr::select(
@@ -1046,27 +1308,11 @@ initComplete = htmlwidgets::JS(
         "}")))
 ```
 
-# Export
-
-```{r export, warning=FALSE, echo=T, error=T, eval=T}
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-# IMPUTATION
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-# 
-# Base_fiscalia_v14_miss %>% 
-#   dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
-#   data.table::data.table() %>% 
-#   rio::export(file = paste0("fiscalia_mariel_jan_2023_match_SENDA_miss.dta"))
-```
-
 
 ::: controlly
-```{r label_to_stata, echo=T, paged.print=TRUE}
+```{r label_to_stata, echo=T, paged.print=TRUE, eval= F}
 #put name of the file
-file<- "fiscalia_mariel_jan_2023_match_SENDA.dta"
+file<- "fiscalia_ags_jan_2023_match_SENDA.dta"
 
 export_lab_stata_merge<-
   tibble::rownames_to_column(data.frame(Hmisc::label(dplyr::select(Base_fiscalia_v13,  all_of(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación"))))))%>% data.frame() %>%

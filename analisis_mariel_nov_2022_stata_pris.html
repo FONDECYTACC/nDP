@@ -85,13 +85,13 @@ c:\ado\plus\m\matselrc.ado
 
 </code></pre>
 <h1><a href="#exercise" id="exercise">Exercise</a></h1>
-<p>Date created: 01:44:03  6 Jan 2023.</p>
+<p>Date created: 14:53:35 16 Feb 2023.</p>
 <p>Get the folder</p>
 <pre><code>
 E:\Mi unidad\Alvacast\SISTRAT 2022 (github)
 
 
-Fecha:  6 Jan 2023, considerando un SO Windows para el usuario: andre
+Fecha: 16 Feb 2023, considerando un SO Windows para el usuario: andre
 
 </code></pre>
 <head>
@@ -104,7 +104,7 @@ Fecha:  6 Jan 2023, considerando un SO Windows para el usuario: andre
 </script>
 </head>
 <p>Path data= ;</p>
-<p>Time:  6 Jan 2023, considering an OS Windows</p>
+<p>Time: 16 Feb 2023, considering an OS Windows</p>
 <p>The file is located and named as: E:\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA_pris.dta</p>
 <p>=============================================================================</p>
 <h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
@@ -140,8 +140,9 @@ Fecha:  6 Jan 2023, considerando un SO Windows para el usuario: andre
 . 
 . *encode policonsumo, generate(policon) *already numeric
 . 
-. *motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_10_rec i.dg_trs_cons_
-&gt; sus_or i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth
+. *motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq
+&gt; _cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_10_rec i.dg_trs_cons_sus_or i.macrozona i.n
+&gt; _off_vio i.n_off_acq i.n_off_sud i.n_off_oth
 </code></pre>
 <p>Then we set the data base in surirval format and bring the urban-rural classification of municipallities from this <a href="&quot;https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.masvidarural.gob.cl%2Fwp-content%2Fuploads%2F2021%2F04%2FClasificacion-comunas-PNDR.xlsx&amp;wdOrigin=BROWSELINK&quot;">link</a>.</p>
 <pre><code>. cap qui noi frame create temp
@@ -160,7 +161,8 @@ Fecha:  6 Jan 2023, considerando un SO Windows para el usuario: andre
 . 
 . *recode comuna if 
 . *http://www.sinim.cl/archivos/centro_descargas/modificacion_instructivo_pres_codigos.pdf
-. *file:///C:/Users/CISSFO~1/AppData/Local/Temp/MicrosoftEdgeDownloads/4ef08de9-6832-4db6-8124-f69a7b256270/codigoComunas-20180801%20(1).pdf
+. *file:///C:/Users/CISSFO~1/AppData/Local/Temp/MicrosoftEdgeDownloads/4ef08de9-6832-4db6-8124-f69a7b256270/codigoComunas-20180
+&gt; 801%20(1).pdf
 . 
 . replace comuna= &quot;16101&quot; if strpos(strlower(comuna),&quot;8401&quot;)&gt;0
 (434 real changes made)
@@ -528,7 +530,8 @@ Treatmen |  160,259.188   .0172595         35781   25.36071  48.78303         .
 &gt; legend(cols(4)) ///
 &gt; graphregion(color(white) lwidth(large)) bgcolor(white) ///
 &gt; plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001&quot;) ///
-&gt; legend(order(1 &quot;95CI Tr Completion&quot; 2 &quot;Tr Completion&quot; 3 &quot;95CI Early Tr Disch&quot; 4 &quot;Early Tr Disch &quot; 5 &quot;95CI Late Tr Disch&quot; 6 &quot;Late Tr Disch&quot; )size(*.5)region(lstyle(none)) region(c(none)) nobox)
+&gt; legend(order(1 &quot;95CI Tr Completion&quot; 2 &quot;Tr Completion&quot; 3 &quot;95CI Early Tr Disch&quot; 4 &quot;Early Tr Disch &quot; 5 &quot;95CI Late Tr Disch&quot; 6 &quot;L
+&gt; ate Tr Disch&quot; )size(*.5)region(lstyle(none)) region(c(none)) nobox)
 
          failure _d:  event == 1
    analysis time _t:  age_offending_imp
@@ -538,17 +541,19 @@ Treatmen |  160,259.188   .0172595         35781   25.36071  48.78303         .
 (note:  named style large not found in class linewidth, default attributes used)
 (note:  linewidth not found in scheme, default attributes used)
 
-. graph save &quot;tto2.gph&quot;, replace
-(file tto2.gph saved)
+. graph save &quot;`c(pwd)'\_figs\tto2.gph&quot;, replace
+(note: file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\tto2.gph not found)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\tto2.gph saved)
 
 </code></pre>
-<p><img src="tto2.svg" width="800" ></p>
+<p><img src="_figs/tto2.svg" width="800" ></p>
 <p>=============================================================================</p>
 <h2><a href="#survival-analyses" id="survival-analyses">Survival Analyses</a></h2>
 <p>=============================================================================</p>
 <p>We tested the schoefeld residuals.</p>
-<pre><code>. *c(&quot;edad_al_ing_1&quot;, &quot;edad_ini_cons&quot;, &quot;dias_treat_imp_sin_na_1&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;, &quot;compromiso_biopsicosocial&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;ma
-&gt; crozona&quot;, &quot;policonsumo&quot;, &quot;n_prev_off&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;, &quot;n_off_sud&quot;, &quot;n_off_oth&quot;)
+<pre><code>. *c(&quot;edad_al_ing_1&quot;, &quot;edad_ini_cons&quot;, &quot;dias_treat_imp_sin_na_1&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;,
+&gt;  &quot;compromiso_biopsicosocial&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;macrozona&quot;, &quot;policonsumo
+&gt; &quot;, &quot;n_prev_off&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;, &quot;n_off_sud&quot;, &quot;n_off_oth&quot;)
 . 
 . global sim 1e5 //5e1 1e5 
 
@@ -560,9 +565,11 @@ Treatmen |  160,259.188   .0172595         35781   25.36071  48.78303         .
 (70,773 missing values generated)
 
 . 
-. global covs &quot;edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas&quot;
+. global covs &quot;edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_
+&gt; cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas&quot;
 
-. global covs_2 &quot;motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas&quot;
+. global covs_2 &quot;motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc t
+&gt; en_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas&quot;
 
 . 
 . 
@@ -2823,7 +2830,7 @@ Akaike's information criterion and Bayesian information criterion
 . ** to order AICs
 . *https://www.statalist.org/forums/forum/general-stata-discussion/general/1665263-sorting-matrix-including-rownames
 . mata :
-------------------------------------------------- mata (type end to exit) ------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------- mata (type end to exit) -----------------------------------------------------
 : 
 : void st_sort_matrix(
 &gt; //argumento de la matriz
@@ -2846,7 +2853,7 @@ Akaike's information criterion and Bayesian information criterion
 
 : 
 : end
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------
 
 . //mata: mata drop st_sort_matrix()
 . 
@@ -2913,12 +2920,15 @@ obs. time interval:  (0, diff]
 . cap rm bsreg12.dta bsreg22.dta
 
 . 
-. *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_1, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, policonsumo, n_off_vio
-&gt; , n_off_acq, n_off_sud, n_off_oth)
+. *count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_1, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, 
+&gt; fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, policonsumo, n_off_vio, n_off_acq, n_off_sud
+&gt; , n_off_oth)
 </code></pre>
 <p>First we calculated the difference between those patients who did and did not complete baseline treatment, given that this analysis is restricted to 2 values.</p>
-<pre><code>. *Micki Hill &amp; Paul C Lambert &amp; Michael J Crowther, 2021. &quot;Introducing stipw: inverse probability weighted parametric survival models,&quot; London Stata Conference 2021 15, Stata Users Group.
-. *https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&amp;wdOrigin=BROWSELINK
+<pre><code>. *Micki Hill &amp; Paul C Lambert &amp; Michael J Crowther, 2021. &quot;Introducing stipw: inverse probability weighted parametric survival
+&gt;  models,&quot; London Stata Conference 2021 15, Stata Users Group.
+. *https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&amp;wdOrigin=B
+&gt; ROWSELINK
 . 
 . *Treatment variable should be a binary variable with values 0 and 1.
 . gen     motivodeegreso_mod_imp_rec2 = 0
@@ -2930,19 +2940,25 @@ obs. time interval:  (0, diff]
 (35,781 real changes made)
 
 . 
-. recode motivodeegreso_mod_imp_rec3 (1=0 &quot;Tr Completion&quot;) (3=1 &quot;Tr Non-completion (Late)&quot;) (2=2 &quot;Tr Non-completion (Early)&quot;), gen(caus_disch_mod_imp_rec) 
+. recode motivodeegreso_mod_imp_rec3 (1=0 &quot;Tr Completion&quot;) (3=1 &quot;Tr Non-completion (Late)&quot;) (2=2 &quot;Tr Non-completion (Early)&quot;), 
+&gt; gen(caus_disch_mod_imp_rec) 
 (55066 differences between motivodeegreso_mod_imp_rec3 and caus_disch_mod_imp_rec)
 
 . lab var caus_disch_mod_imp_rec &quot;Baseline treatment outcome&quot; 
 
 . 
-. global covs_3 &quot;i.caus_disch_mod_imp_rec edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq 
-&gt; i.n_off_sud i.clas&quot;
+. global covs_3 &quot;i.caus_disch_mod_imp_rec edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_b
+&gt; iosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud i.clas&quot;
 
 . 
-. global covs_3b &quot;i.caus_disch_mod_imp_rec edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.origen_ingreso_mod numero_de_hijos_mod i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.poli
-&gt; consumo i.n_off_vio i.n_off_acq i.n_off_sud i.clas&quot;
+. global covs_3b &quot;i.caus_disch_mod_imp_rec edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_
+&gt; biosoc i.origen_ingreso_mod numero_de_hijos_mod i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.
+&gt; n_off_acq i.n_off_sud i.clas&quot;
 
+. 
+. *______________________________________________
+. *______________________________________________
+. * ADJUSTED ROYSTON PARMAR - DF5, NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
 . 
 . stpm2 $covs_3 , scale(hazard) df(5) eform
 
@@ -3104,8 +3120,14 @@ xb                                  |
 Note: Estimates are transformed only in the first equation.
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distri
-&gt; bution(rp) df(5) ipwtype(stabilised) vce(mestimation) eform
+. *______________________________________________
+. *______________________________________________
+. * INVERSE PROBABILITY WEIGHTED ADJUSTED ROYSTON PARMAR - DF5, NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETIO
+&gt; N)
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten
+&gt; _viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(5) genw(
+&gt; rpdf5_m_nostag_ten_viv) ipwtype(stabilised) vce(mestimation) eform
 11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3147,8 +3169,9 @@ motivodeegreso_mod_imp_rec2 |   1.665297   .0835877    10.16   0.000     1.50926
 ---------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_
-&gt; off_acq n_off_sud clas), distribution(rp) df(5) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ori
+&gt; gen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas
+&gt; ), distribution(rp) df(5) genw(rpdf5_m_nostag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
 8363 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3195,7 +3218,8 @@ Note: Estimates are transformed only in the first equation.
 
 . predict rmst13 in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
 
-. predictnl drmst= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_se)
+. predictnl drmst= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax
+&gt; (3)) in 1, se(drmst_se)
 Warning: prediction doesn't vary with respect to e(b).
 (70,862 missing values generated)
 Warning: prediction constant over observations; perhaps you meant to run nlcom.
@@ -3205,9 +3229,13 @@ Warning: prediction constant over observations; perhaps you meant to run nlcom.
 
 </code></pre>
 <p>We used a gompertz distribution, assuming that baseline treatment outcome showed proportional hazards</p>
-<pre><code>. 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distri
-&gt; bution(gompertz) ipwtype(stabilised) vce(mestimation)
+<pre><code>. *______________________________________________
+. *______________________________________________
+. * INVERSE PROBABILITY WEIGHTED ADJUSTED GOMPERTZ - NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten
+&gt; _viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) genw(
+&gt; gomp_m_nostag_ten_viv) ipwtype(stabilised) vce(mestimation)
 11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3227,7 +3255,7 @@ Fitting weighted survival model to obtain point estimates
 
          failure _d:  event == 1
    analysis time _t:  diff
-             weight:  [pweight=_stipw_weight]
+             weight:  [pweight=gomp_m_nostag_ten_viv]
 
 Fitting constant-only model:
 
@@ -3261,8 +3289,9 @@ motivodeegreso_mod_imp_rec2 |    1.66392   .0835046    10.15   0.000     1.50804
 ---------------------------------------------------------------------------------------------
 Note: _cons estimates baseline hazard.
 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_
-&gt; off_acq n_off_sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ori
+&gt; gen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas
+&gt; ), distribution(gompertz) genw(gomp_m_nostag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation)
 8363 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3282,7 +3311,7 @@ Fitting weighted survival model to obtain point estimates
 
          failure _d:  event == 1
    analysis time _t:  diff
-             weight:  [pweight=_stipw_weight]
+             weight:  [pweight=gomp_m_nostag_or_ing_num_hij]
 
 Fitting constant-only model:
 
@@ -3325,7 +3354,8 @@ r(198);
 option at() not allowed
 r(198);
 
-. predictnl drmst_c= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_c_se)
+. predictnl drmst_c= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tm
+&gt; ax(3)) in 1, se(drmst_c_se)
 option rmst not allowed
 predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) invalid
 r(198);
@@ -3335,7 +3365,12 @@ r(198);
 
 </code></pre>
 <p>We used another model with only 2 degrees of freedom according to the lowest BIC</p>
-<pre><code>. stpm2 $covs_3 , scale(hazard) df(2) eform
+<pre><code>. 
+. *______________________________________________
+. *______________________________________________
+. * ADJUSTED ROYSTON PARMAR - DF2,  NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
+. 
+. stpm2 $covs_3 , scale(hazard) df(2) eform
 
 Iteration 0:   log likelihood = -17255.265  
 Iteration 1:   log likelihood = -17238.669  
@@ -3489,8 +3524,14 @@ xb                                  |
 Note: Estimates are transformed only in the first equation.
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distri
-&gt; bution(rp) df(2) ipwtype(stabilised) vce(mestimation) eform
+. *______________________________________________
+. *______________________________________________
+. * INVERSE PROBABILITY WEIGHTED ADJUSTED ROYSTON PARMAR - DF2, NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETIO
+&gt; N)
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten
+&gt; _viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(2) genw(
+&gt; rpdf2_m_nostag_ten_viv) ipwtype(stabilised) vce(mestimation) eform
 11108 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3529,8 +3570,9 @@ motivodeegreso_mod_imp_rec2 |   1.664996   .0835719    10.16   0.000     1.50899
 ---------------------------------------------------------------------------------------------
 Note: Estimates are transformed only in the first equation.
 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_
-&gt; off_acq n_off_sud clas), distribution(rp) df(2) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ori
+&gt; gen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas
+&gt; ), distribution(rp) df(2) genw(rpdf2_m_nostag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
 8363 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3574,7 +3616,8 @@ Note: Estimates are transformed only in the first equation.
 
 . predict rmst13_b in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
 
-. predictnl drmst_b= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_b_se)
+. predictnl drmst_b= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tm
+&gt; ax(3)) in 1, se(drmst_b_se)
 Warning: prediction doesn't vary with respect to e(b).
 (70,862 missing values generated)
 Warning: prediction constant over observations; perhaps you meant to run nlcom.
@@ -3584,7 +3627,11 @@ Warning: prediction constant over observations; perhaps you meant to run nlcom.
 
 </code></pre>
 <p><strong>Staggered entry</strong></p>
-<pre><code>. stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
+<pre><code>. *______________________________________________
+. *______________________________________________
+. * ADJUSTED ROYSTON PARMAR - DF5,  STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
+. 
+. stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
 
      failure event:  event == 1
 obs. time interval:  (0, age_offending_imp]
@@ -3603,8 +3650,9 @@ obs. time interval:  (0, age_offending_imp]
                                           last observed exit t =  90.65027
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distributio
-&gt; n(rp) df(5) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten
+&gt; _viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(5) genw(rpdf5
+&gt; _m_stag_ten_viv) ipwtype(stabilised) vce(mestimation) eform
 11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3655,8 +3703,9 @@ Note: Estimates are transformed only in the first equation.
 . estimates store df5_stipw
 
 . 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_
-&gt; off_acq n_off_sud), distribution(rp) df(5) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ori
+&gt; gen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), di
+&gt; stribution(rp) df(5) genw(rpdf5_m_stag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
 8361 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3705,9 +3754,13 @@ Note: Estimates are transformed only in the first equation.
 . estimates store df5_stipw2
 
 </code></pre>
-<pre><code>. 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distributio
-&gt; n(gompertz) ipwtype(stabilised) vce(mestimation)
+<pre><code>. *______________________________________________
+. *______________________________________________
+. * INVERSE PROBABILITY WEIGHTED ADJUSTED GOMPERTZ - STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten
+&gt; _viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(gompertz) genw(gomp_
+&gt; m_stag_ten_viv) ipwtype(stabilised) vce(mestimation)
 11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3728,7 +3781,7 @@ Fitting weighted survival model to obtain point estimates
          failure _d:  event == 1
    analysis time _t:  age_offending_imp
   enter on or after:  time edad_al_egres_imp
-             weight:  [pweight=_stipw_weight]
+             weight:  [pweight=gomp_m_stag_ten_viv]
 
 Fitting constant-only model:
 
@@ -3764,8 +3817,9 @@ Note: _cons estimates baseline hazard.
 
 . estimates store gomp_stipw
 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_
-&gt; off_acq n_off_sud clas), distribution(gompertz) ipwtype(stabilised) vce(mestimation)
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ori
+&gt; gen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas
+&gt; ), distribution(gompertz) genw(gomp_m_stag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation)
 8363 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3786,7 +3840,7 @@ Fitting weighted survival model to obtain point estimates
          failure _d:  event == 1
    analysis time _t:  age_offending_imp
   enter on or after:  time edad_al_egres_imp
-             weight:  [pweight=_stipw_weight]
+             weight:  [pweight=gomp_m_stag_or_ing_num_hij]
 
 Fitting constant-only model:
 
@@ -3825,8 +3879,13 @@ Note: _cons estimates baseline hazard.
 </code></pre>
 <p>Given that the model with 2 degrees of freedom did not converge, we calculated the estimates with the second model with best AIC (3 degrees of freedom).</p>
 <pre><code>. 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distributio
-&gt; n(rp) df(3) ipwtype(stabilised) vce(mestimation) eform
+. *______________________________________________
+. *______________________________________________
+. * ADJUSTED ROYSTON PARMAR - DF3,  STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
+. 
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten
+&gt; _viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(3) genw(rpdf3
+&gt; _m_stag_ten_viv) ipwtype(stabilised) vce(mestimation) eform
 11106 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3881,8 +3940,9 @@ Note: Estimates are transformed only in the first equation.
 
 . estimates store df3_stipw
 
-. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_
-&gt; off_acq n_off_sud), distribution(rp) df(3) ipwtype(stabilised) vce(mestimation) eform
+. stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ori
+&gt; gen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), di
+&gt; stribution(rp) df(3) genw(rpdf3_m_stag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
 8361 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -3954,7 +4014,8 @@ Akaike's information criterion and Bayesian information criterion
 . matrix stats_stipw=r(S)
 
 . 
-. estwrite df5_stipw gomp_stipw df3_stipw df5_stipw2 gomp_stipw2 df3_stipw2 using &quot;${pathdata2}parmodels_m2_stipw_22.sters&quot;, replace
+. estwrite df5_stipw gomp_stipw df3_stipw df5_stipw2 gomp_stipw2 df3_stipw2 using &quot;${pathdata2}parmodels_m2_stipw_22.sters&quot;, re
+&gt; place
 (saving df5_stipw)
 (saving gomp_stipw)
 (saving df3_stipw)
@@ -3964,6 +4025,6 @@ Akaike's information criterion and Bayesian information criterion
 (file parmodels_m2_stipw_22.sters saved)
 
 </code></pre>
-<p>Saved at= 03:56:25  6 Jan 2023</p>
+<p>Saved at= 17:03:52 16 Feb 2023</p>
 <pre><code>
 </code></pre>
