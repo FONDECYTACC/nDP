@@ -56,3 +56,7 @@ output:
 - [Material for SER 2023 (step 1: parametric partitioned survival models & multistate models)](an_ser_2023_step_1.html)
 
 - [Material for SER 2023 (step 2: parametric partitioned survival models & multistate models)](an_ser_2023_step_2.html)
+
+**Short commentary: Self-reported offending vs. official records: estimating the gap in the Chilean context**
+
+- [Step 1](_report_crimes_top_vs_po.html)
