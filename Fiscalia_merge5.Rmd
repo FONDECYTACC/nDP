@@ -839,6 +839,9 @@ risk(coxfit_more_var8,ND2, .3)
 risk(coxfit_more_var8,ND2, 1)
 risk(coxfit_more_var8,ND2, 3)
 risk(coxfit_more_var8,ND2, 5)
+```
+
+```{r diag2-6, echo=T, fig.align='center', message=T, error=T, eval=F}
 
 cat("(====================================================================)")
 invisible("http://dx.doi.org/10.7910/DVN/ELT9VD")
@@ -1243,13 +1246,13 @@ Sys.Date()
 message(paste0("Editor context: ", path))
 
 if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.RData")
+    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/15.RData")
   } else if (grepl("andre",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("C:/Users/andre/Desktop/SUD_CL/14.RData")
+    save.image("C:/Users/andre/Desktop/SUD_CL/15.RData")
   } else if (grepl("E:",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/14.RData")
+    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/15.RData")
   } else {
-    save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"14.RData"))
+    save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"15.RData"))
   }
 
 sesion_info <- devtools::session_info()
@@ -1286,7 +1289,7 @@ initComplete = htmlwidgets::JS(
 ```{r miss, warning=FALSE, echo=T, error=T, eval=T}
 set.seed(2125)
 Base_fiscalia_v14_miss <-
-subset(Base_fiscalia_v14, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "classification",       "clas_r")) %>% 
+subset(Base_fiscalia_v14, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "classification", "clas_r")) %>% 
   dplyr::arrange(hash_key, fech_ing_num_1) %>% 
    missRanger::missRanger(
                 formula = . ~ . - hash_key,
@@ -1298,7 +1301,7 @@ subset(Base_fiscalia_v14, select= c(c("hash_key", cont_vars_desc, cat_vars_desc,
 
 set.seed(2125)
   Base_fiscalia_v14_pris_miss <-
-subset(Base_fiscalia_v14_pris, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "classification",       "clas_r")) %>% 
+subset(Base_fiscalia_v14_pris, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "classification", "clas_r")) %>% 
   dplyr::arrange(hash_key, fech_ing_num_1) %>% 
      missRanger::missRanger(
                 formula = . ~ . - hash_key,

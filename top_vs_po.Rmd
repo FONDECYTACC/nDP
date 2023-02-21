@@ -293,7 +293,8 @@ pacman::p_load(ggpattern, withr, boot, matrixStats, knitr, tidyr,
                rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, psych,
                daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, 
                distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, 
-               sqldf,  adjustedCurves, ggpmisc, rms, irrCAC, xaringanExtra, install=T)
+               sqldf,  adjustedCurves, ggpmisc, rms, irrCAC, xaringanExtra, VGAM, mlogit, rpart,
+               rpart.plot, partykit, randomForest, nn, car, install=T)
 
 xaringanExtra::use_panelset()
 #Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
@@ -440,7 +441,7 @@ Base_fiscalia_v11b_dic_2022<-
   dplyr::group_by(hash_key,dateofbirth_imp) %>% 
   summarise(n_off_acq= ifelse(sum(crime_code_group_rec_prof=="Acquisitive", na.rm=T)>0, 1,0), n_off_vio= ifelse(sum(crime_code_group_rec_prof=="Violent", na.rm=T)>0, 1,0), n_off_sud= ifelse(sum(crime_code_group_rec_prof== "Substance-related", na.rm=T)>0, 1,0), n_off_oth=  ifelse(sum(crime_code_group_rec_prof== "Other", na.rm=T)>0, 1,0)) %>% 
   dplyr::ungroup() %>% 
-  dplyr::mutate(n_off= rowSums(select(., starts_with("n_")))) 
+  dplyr::mutate(n_off= rowSums(dplyr::select(., dplyr::starts_with("n_")), na.rm=T)) 
 
 message(paste0( "Afterwards, we counted the offenses by type of offense (Acquisitive, violent, substance-related and other) and the total by each user before baseline admisson (p= ", format(length(unique(Base_fiscalia_v11b_dic_2022$hash_key)), big.mark=","), "; cases with records in P.O.= ",format(as.numeric(table(is.na(Base_fiscalia_v10b_dic_2022$dateofbirth_imp))[[2]]), big.mark=","),")." ))
 ```
@@ -546,11 +547,11 @@ Base_fiscalia_v13c_dic_2022_2 %>%
                 acq=dplyr::if_else(crime_code_group_rec_prof=="Acquisitive",1,0,0),
                 sud=dplyr::if_else(crime_code_group_rec_prof=="Substance-related",1,0,0),
                 oth=dplyr::if_else(crime_code_group_rec_prof=="Other",1,0,0)) %>% 
-  dplyr::mutate(tot= rowSums(select(., c("vio","acq","sud","oth")), na.rm=T)) %>% 
-  dplyr::mutate(acq_top= rowSums(select(., c("Hurto","Robo")), na.rm=T)) %>%
-  dplyr::mutate(sud_top= rowSums(select(., c("Venta.Drogas")), na.rm=T)) %>%
-  dplyr::mutate(vio_top= rowSums(select(., c("Riña", "Total.VIF")), na.rm=T)) %>%
-  dplyr::mutate(oth_top= rowSums(select(., c("Otro")), na.rm=T)) %>% 
+  dplyr::mutate(tot= rowSums(dplyr::select(., c("vio","acq","sud","oth")), na.rm=T)) %>% 
+  dplyr::mutate(acq_top= rowSums(dplyr::select(., c("Hurto","Robo")), na.rm=T)) %>%
+  dplyr::mutate(sud_top= rowSums(dplyr::select(., c("Venta.Drogas")), na.rm=T)) %>%
+  dplyr::mutate(vio_top= rowSums(dplyr::select(., c("Riña", "Total.VIF")), na.rm=T)) %>%
+  dplyr::mutate(oth_top= rowSums(dplyr::select(., c("Otro")), na.rm=T)) %>% 
   dplyr::group_by(HASH_KEY, fech_ap_top_num) %>% 
   dplyr::mutate(vio=sum(vio,na.rm=T), acq=sum(acq,na.rm=T), sud=sum(sud,na.rm=T), 
                 oth=sum(oth,na.rm=T), tot=sum(tot,na.rm=T), n=n()) %>%
@@ -564,9 +565,156 @@ paste0("For each combination of TOP application, count the number of previous of
 
 <br>
 
-## Comparison
+## Descriptives
 
-We compared the records of TOP (`Hurto`,`Robo`, `Venta.Drogas`, `Riña`, `Total.VIF`, `Otro`, & `tot_off_top`) with the records of PO (`vio`, `acq`, `sud`, `oth` & `tot`). We grouped TOPs self-reports of offenses related to burglary or robbery into acquisitive (`acq_top`), the reports of drug-selling into substance related (`sud_top`) and reports of fights and domestic violence into violent (`vio_top`) and Other into other (`oth_top`).
+
+
+```{r desc0-get-municipallity-info, echo=T, fig.align='center', message=T, error=T, eval=T}
+#http://observatorio.ministeriodesarrollosocial.gob.cl/pobreza-comunal-2020
+
+Comunas_PNDR <- readxl::read_excel("Clasificacion-comunas-PNDR.xlsx")%>% 
+  dplyr::mutate(cod= dplyr::case_when(as.character(cod_com)=="16101"~"8401",
+                                      as.character(cod_com)=="16102"~"8402",
+                                      as.character(cod_com)=="16103"~"8406",
+                                      as.character(cod_com)=="16104"~"8407",
+                                      as.character(cod_com)=="16105"~"8410",
+                                      as.character(cod_com)=="16106"~"8411",
+                                      as.character(cod_com)=="16107"~"8413",
+                                      as.character(cod_com)=="16108"~"8418",
+                                      as.character(cod_com)=="16109"~"8421",
+                                      as.character(cod_com)=="16201"~"8414",
+                                      as.character(cod_com)=="16202"~"8403",
+                                      as.character(cod_com)=="16203"~"8404",
+                                      as.character(cod_com)=="16204"~"8408",
+                                      as.character(cod_com)=="16205"~"8412",
+                                      as.character(cod_com)=="16206"~"8415",
+                                      as.character(cod_com)=="16207"~"8420",
+                                      as.character(cod_com)=="16301"~"8416",
+                                      as.character(cod_com)=="16302"~"8405",
+                                      as.character(cod_com)=="16303"~"8409",
+                                      as.character(cod_com)=="16304"~"8417",
+                                      as.character(cod_com)=="16305"~"8419",
+                                      T~ as.character(cod_com)
+                                      ))
+
+#http://observatorio.ministeriodesarrollosocial.gob.cl/pobreza-comunal-2011
+pobr_mult_2020<-readxl::read_excel("Estimaciones_de_Tasa_de_Pobreza_por_Ingresos_por_Comunas_2020_revisada2022_09.xlsx", skip=1) %>% dplyr::mutate(anio=2020) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2019<-readxl::read_excel("Estimaciones_de_Tasa_de_Pobreza_por_Ingresos_por_Comunas_2020_revisada2022_09.xlsx", skip=1) %>% dplyr::mutate(anio=2019) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2018<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2017.xlsx", skip=1) %>% dplyr::mutate(anio=2018) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2017<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2017.xlsx", skip=1) %>% dplyr::mutate(anio=2017) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2016<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2015.xlsx", skip=1) %>% dplyr::mutate(anio=2016) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2015<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_multidimensional_2015.xlsx", skip=1) %>% dplyr::mutate(anio=2015) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2014<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_2013.xlsx", skip=1)%>% dplyr::mutate(anio=2014) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2013<-readxl::read_excel("PLANILLA_Estimaciones_comunales_tasa_pobreza_por_ingresos_2013.xlsx", skip=1)%>% dplyr::mutate(anio=2013) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2012<-readxl::read_excel("Estimacion_tasa_de_pobreza_comunal_2011_(nueva _metodologia).xlsx", skip=1)%>% dplyr::mutate(anio=2012) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2011<-readxl::read_excel("Estimacion_tasa_de_pobreza_comunal_2011_(nueva _metodologia).xlsx", skip=1)%>% dplyr::mutate(anio=2011) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2010<-readxl::read_excel("Estimacion_tasa_de_pobreza_comunal_2011_(nueva _metodologia).xlsx", skip=1)%>% dplyr::mutate(anio=2010) %>% dplyr::rename_at(vars( contains("Porcentaje de") ), ~"porc_pobr") %>% dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2009<-readxl::read_excel("PobrezaporComunas_SAE_20092011.xlsx", skip=3)%>% dplyr::mutate(anio=2009) %>% dplyr::select(anio, everything()) %>% dplyr::select(1:5) %>%  dplyr::rename_at(vars( contains("Incidencia pobreza") ), ~"porc_pobr") %>% dplyr::rename("Código"=2, "Nombre comuna"=3) %>%  dplyr::mutate(Región=rep("")) %>%  dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2008<-readxl::read_excel("PobrezaporComunas_SAE_20092011.xlsx", skip=3)%>% dplyr::mutate(anio=2008) %>% dplyr::select(anio, everything()) %>% dplyr::select(1:5) %>%  dplyr::rename_at(vars( contains("Incidencia pobreza") ), ~"porc_pobr") %>% dplyr::rename("Código"=2, "Nombre comuna"=3) %>%  dplyr::mutate(Región=rep("")) %>%  dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+pobr_mult_2007<-readxl::read_excel("PobrezaporComunas_SAE_20092011.xlsx", skip=3)%>% dplyr::mutate(anio=2007) %>% dplyr::select(anio, everything()) %>% dplyr::select(1:5) %>%  dplyr::rename_at(vars( contains("Incidencia pobreza") ), ~"porc_pobr") %>% dplyr::rename("Código"=2, "Nombre comuna"=3) %>%  dplyr::mutate(Región=rep("")) %>%  dplyr::select(anio, Código, Región, `Nombre comuna`, porc_pobr)
+
+# replace comuna= "16103" if strpos(strlower(comuna),"8406")>0
+# replace comuna= "16104" if strpos(strlower(comuna),"8407")>0
+# replace comuna= "16105" if strpos(strlower(comuna),"8410")>0
+# replace comuna= "16106" if strpos(strlower(comuna),"8411")>0
+# replace comuna= "16107" if strpos(strlower(comuna),"8413")>0
+# replace comuna= "16108" if strpos(strlower(comuna),"8418")>0
+# replace comuna= "16109" if strpos(strlower(comuna),"8421")>0
+# replace comuna= "16201" if strpos(strlower(comuna),"8414")>0
+# replace comuna= "16202" if strpos(strlower(comuna),"8403")>0
+# replace comuna= "16203" if strpos(strlower(comuna),"8404")>0
+# replace comuna= "16204" if strpos(strlower(comuna),"8408")>0
+# replace comuna= "16205" if strpos(strlower(comuna),"8412")>0
+# replace comuna= "16206" if strpos(strlower(comuna),"8415")>0
+# replace comuna= "16207" if strpos(strlower(comuna),"8420")>0
+# replace comuna= "16301" if strpos(strlower(comuna),"8416")>0
+# replace comuna= "16302" if strpos(strlower(comuna),"8405")>0
+# replace comuna= "16303" if strpos(strlower(comuna),"8409")>0
+# replace comuna= "16304" if strpos(strlower(comuna),"8417")>0
+# replace comuna= "16305" if strpos(strlower(comuna),"8419")>0
+pobr_mult_2007_2020<-
+rbind.data.frame(pobr_mult_2007, pobr_mult_2008, pobr_mult_2009, pobr_mult_2010, pobr_mult_2011, pobr_mult_2012, pobr_mult_2013, pobr_mult_2014, pobr_mult_2015, pobr_mult_2016, pobr_mult_2017, pobr_mult_2018, pobr_mult_2019, pobr_mult_2020) %>% 
+  dplyr::mutate(cod= dplyr::case_when(Código=="16101"~"8401",
+                                      Código=="16102"~"8402",
+                                      Código=="16103"~"8406",
+                                      Código=="16104"~"8407",
+                                      Código=="16105"~"8410",
+                                      Código=="16106"~"8411",
+                                      Código=="16107"~"8413",
+                                      Código=="16108"~"8418",
+                                      Código=="16109"~"8421",
+                                      Código=="16201"~"8414",
+                                      Código=="16202"~"8403",
+                                      Código=="16203"~"8404",
+                                      Código=="16204"~"8408",
+                                      Código=="16205"~"8412",
+                                      Código=="16206"~"8415",
+                                      Código=="16207"~"8420",
+                                      Código=="16301"~"8416",
+                                      Código=="16302"~"8405",
+                                      Código=="16303"~"8409",
+                                      Código=="16304"~"8417",
+                                      Código=="16305"~"8419",
+                                      T~ Código
+                                      ))
+
+
+#2023-02-01:classifications by municipality
+class_centros <- readxl::read_excel(paste0(path,"/_ig_borquez/class_centros.xlsx"))%>%
+    tidylog::left_join(dplyr::distinct(CONS_C1_df_dup_SEP_2020, id_centro, nombre_centro), by=c("nombre_centro_1" ="nombre_centro"))%>%
+    dplyr::group_by(id_centro)%>%
+    slice(1)%>% 
+    dplyr::ungroup()%>%
+    dplyr::mutate(id_centro=dplyr::case_when(grepl("Allende",nombre_centro_1) & is.na(id_centro)~ "475",  T~ as.character(id_centro)))%>%
+    dplyr::group_by(id_centro)%>%
+    slice(1)
+    #dplyr::filter(grepl("Allende",nombre_centro_1))
+
+
+CONS_C1_df_dup_SEP_2020_22_e<-
+CONS_C1_df_dup_SEP_2020_22_d %>% 
+  dplyr::mutate(comuna_residencia_cod_rec= as.character(readr::parse_number(as.character(comuna_residencia_cod))), anio_ing_tr= lubridate::epiyear(fech_ing)) %>% #glimpse()
+  dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec"="cod", "anio_ing_tr"="anio")) %>% 
+  dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec"="cod"))%>%
+  #2023-02-01
+  dplyr::left_join(class_centros[,c("id_centro", "nombre_centro_1", "classification")], by= "id_centro")%>%
+    purrr::when(nrow(.)>nrow(CONS_C1_df_dup_SEP_2020_22_d) ~ stop("More cases in the new database"), ~.) %>% 
+  dplyr::mutate(via_adm_sus_prin_act= factor(dplyr::case_when(via_adm_sus_prin_act=="Injected Intravenously or Intramuscularly"~ "Other",T~as.character(via_adm_sus_prin_act)))) %>% 
+  #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+dplyr::mutate(con_quien_vive_joel=dplyr::case_when(
+    grepl("Solo$",con_quien_vive, ignore.case=T)~"Alone",
+    grepl("Con abuelos",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("Con hermanos",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("Con la madre \\(sola\\)",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("Con otro pariente",con_quien_vive, ignore.case=T)~"Others",
+    grepl("con hijos y padres o familia",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("con la pareja y padres o familia de origen",con_quien_vive, ignore.case=T)~"With couple/children",
+    grepl("con padres o familia de origen",con_quien_vive, ignore.case=T)~"Family of origin",
+    #2021-10-01
+    grepl("Únicamente con hijos",con_quien_vive, ignore.case=T)~"With couple/children",
+    grepl("Únicamente con pareja",con_quien_vive, ignore.case=T)~"With couple/children",
+    #2021-10-01
+    grepl("Con la Pareja, Hijos y Padres o Familia de Origen",con_quien_vive, ignore.case=T)~"With couple/children", 
+    grepl("Hijos y Padres o Familia de Origen",con_quien_vive, ignore.case=T)~"Family of origin",
+    #2021-10-01
+    grepl("Únicamente con la pareja e hijos",con_quien_vive, ignore.case=T)~"With couple/children",
+    grepl("Con amigos",con_quien_vive, ignore.case=T)~"Others",
+    grepl("Con otro NO pariente",con_quien_vive, ignore.case=T)~"Others",
+    grepl("*Otros$",con_quien_vive, ignore.case=T)~"Others")) 
+  
+#TO CHECK IF SOME MUNICIPALLITIES DID NOT JOIN
+  #dplyr::filter(is.na(porc_pobr)) %>% dplyr::select(comuna_residencia_cod, anio_ing_tr)
+
+#TO CHECK IF SOME MUNICIPALLITIES DID NOT JOIN
+  #dplyr::filter(is.na(porc_pobr)) %>% dplyr::select(comuna_residencia_cod, anio_ing_tr)  
+
+#Private Therapeutic Community, ref
+CONS_C1_df_dup_SEP_2020_22_e$clas_r <- relevel(factor(CONS_C1_df_dup_SEP_2020_22_e$Clasificación), ref = "Urbana")
+CONS_C1_df_dup_SEP_2020_22_e$via_adm_sus_prin_act <- relevel(factor(CONS_C1_df_dup_SEP_2020_22_e$via_adm_sus_prin_act), ref = "Oral (drunk or eaten)")
+
+```
+
 
 ```{r recode-comparison, echo=T, fig.align='center', message=T, error=T, eval=T}
 
@@ -593,7 +741,82 @@ Base_fiscalia_v13c_dic_2022_3$vio_top_bin<-
 ifelse(Base_fiscalia_v13c_dic_2022_3$vio_top>=1,1,0)
 Base_fiscalia_v13c_dic_2022_3$oth_top_bin<-
 ifelse(Base_fiscalia_v13c_dic_2022_3$oth_top>=1,1,0)
+
+
 ```
+Join the data of the comparison between TOP reports and PO records, with the baseline information at admission of each patient.
+
+```{r desc1, echo=T, fig.align='center', message=T, error=T, eval=T, layout="l-body-outset"}
+vars_db<-
+c("edad_a_ap_top_num", "end_type", "fech_ap_top_num", "sex", "duplicates_filtered", "id_centro", "macrozona", "nombre_region", "comuna_residencia_cod", "escolaridad_rec", "estado_conyugal_2", "freq_cons_sus_prin", "via_adm_sus_prin_act", "con_quien_vive_joel", "sus_principal_mod", "origen_ingreso_mod", "numero_de_hijos_mod", "tenencia_de_la_vivienda_mod", "sus_ini_mod_mvv", "condicion_ocupacional_corr", "dg_trs_cons_sus_or", "comorbidity_icd_10", "clas_r", "classification")
+  
+Base_fiscalia_v13c_dic_2022_4 <-
+Base_fiscalia_v13c_dic_2022_3 %>% 
+  tidylog::left_join(CONS_C1_df_dup_SEP_2020_22_e, by=c("HASH_KEY"="hash_key")) %>% 
+  dplyr::select(any_of(c("HASH_KEY",vars_db, paste0(c("acq","sud","vio","oth"),"_bin"), paste0(c("acq","sud","vio","oth"),"_top_bin"), "numero_de_hijos_mod", "tot_off_top","tot_off_top_bin", "tot", "tot_bin", "edad_a_ap_top_num", "fech_ap_top"))) %>% 
+   #multinomial
+  dplyr::mutate(discrepancies=dplyr::case_when(tot> tot_off_top~ "underreport", tot< tot_off_top~ "overreport", T~ "coincidence")) %>% 
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+  dplyr::mutate(tenencia_de_la_vivienda_mod2=
+                  factor(dplyr::case_when(tenencia_de_la_vivienda_mod=="Allegado"~"Stays temporarily with a relative", tenencia_de_la_vivienda_mod=="Arrienda"~"Renting", tenencia_de_la_vivienda_mod=="Cedida"~"Owner/Transferred dwellings/Pays Dividends", tenencia_de_la_vivienda_mod=="Ocupación Irregular"~"Illegal Settlement", tenencia_de_la_vivienda_mod=="Otros"~"Others", tenencia_de_la_vivienda_mod=="Paga dividendo"~"Owner/Transferred dwellings/Pays Dividends", tenencia_de_la_vivienda_mod=="Propia"~"Owner/Transferred dwellings/Pays Dividends", T~NA_character_)))%>% 
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+  # dplyr::mutate(numero_de_hijos_mod_joel=dplyr::case_when(
+  #   grepl("Si$",embarazo, ignore.case=T)~as.integer(numero_de_hijos_mod+1),
+  #   T~as.integer(numero_de_hijos_mod)))%>% 
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+    dplyr::mutate(freq_cons_sus_prin=parse_factor(as.character(freq_cons_sus_prin),levels=c('Less than 1 day a week','2 to 3 days a week','4 to 6 days a week','1 day a week or more','Daily'), ordered =T,trim_ws=F,include_na =F)) %>% #, locale=locale(encoding = "Latin1")
+  dplyr::mutate(freq_cons_sus_prin=if_else(freq_cons_sus_prin=='Did not use','Less than 1 day a week',as.character(freq_cons_sus_prin),NA_character_)) 
+
+attr(Base_fiscalia_v13c_dic_2022_4$escolaridad_rec,"label") <- "Educational Attainment"
+attr(Base_fiscalia_v13c_dic_2022_4$freq_cons_sus_prin,"label") <- "Primary Substance at Admission Usage
+Frequency"
+attr(Base_fiscalia_v13c_dic_2022_4$fech_ap_top_num,"label") <- "Date of discharge"
+attr(Base_fiscalia_v13c_dic_2022_4$edad_a_ap_top_num,"label") <- "Age at TOP application"
+attr(Base_fiscalia_v13c_dic_2022_4$end_type,"label") <- "Date of discharge"
+attr(Base_fiscalia_v13c_dic_2022_4$comorbidity_icd_10,"label") <- "Comorbidity ICD-10 (with amount of different diagnosis)"
+attr(Base_fiscalia_v13c_dic_2022_4$con_quien_vive_joel,"label") <- "Living conditions"
+attr(Base_fiscalia_v13c_dic_2022_4$acq_bin,"label") <- "Pre-treatment Criminality, Acquisitive (PO) (dichotomized)"
+attr(Base_fiscalia_v13c_dic_2022_4$sud_bin,"label") <- "Pre-treatment Criminality, Substance-related (PO) (dichotomized)"
+attr(Base_fiscalia_v13c_dic_2022_4$vio_bin,"label") <- "Pre-treatment Criminality, Violent (PO) (dichotomized)"
+attr(Base_fiscalia_v13c_dic_2022_4$oth_bin,"label") <- "Pre-treatment Criminality, Other (PO) (dichotomized)"
+attr(Base_fiscalia_v13c_dic_2022_4$acq_top_bin,"label") <- "Pre-treatment Criminality, Acquisitive (TOP) (dichotomized)"
+attr(Base_fiscalia_v13c_dic_2022_4$sud_top_bin,"label") <- "Pre-treatment Criminality, Substance-related (TOP) (dichotomized)"
+attr(Base_fiscalia_v13c_dic_2022_4$vio_top_bin,"label") <- "Pre-treatment Criminality, Violent (TOP) (dichotomized)"
+attr(Base_fiscalia_v13c_dic_2022_4$oth_top_bin,"label") <- "Pre-treatment Criminality, Other (TOP) (dichotomized)"
+attr(Base_fiscalia_v13c_dic_2022_4$tot_off_top,"label") <- "Count of previous TOP offenses"
+attr(Base_fiscalia_v13c_dic_2022_4$tot_off_top_bin,"label") <- "Count of previous TOP offenses (dichotomized)"
+attr(Base_fiscalia_v13c_dic_2022_4$tot,"label") <- "Count of previous offenses"
+attr(Base_fiscalia_v13c_dic_2022_4$tot_bin,"label") <- "Count of previous PO offenses (dichotomized)"
+attr(Base_fiscalia_v13c_dic_2022_4$discrepancies,"label") <- "Relationship between total records (PO) and reports of offenses (TOP)"
+attr(Base_fiscalia_v13c_dic_2022_4$classification,"label") <- "Types of ther. center"
+attr(Base_fiscalia_v13c_dic_2022_4$clas_r,"label") <- "Rurality classification"
+
+tbone_desc_merge<-
+CreateTableOne(vars= setdiff(c(vars_db, paste0(c("acq","sud","vio","oth"),"_bin"), paste0(c("acq","sud","vio","oth"),"_top_bin"), "tot_off_top","tot_off_top_bin", "tot", "tot_bin", "edad_a_ap_top_num", "fech_ap_top"),c("id_centro", "comuna_residencia_cod")), data=  Base_fiscalia_v13c_dic_2022_4, factorVars = c(setdiff(vars_db,c("edad_a_ap_top_num","fech_ap_top_num","id_centro")),  paste0(c("acq","sud","vio","oth"),"_bin"), paste0(c("acq","sud","vio","oth"),"_top_bin")), smd=T,  addOverall = T, includeNA=T, strata="discrepancies", test=T) #
+
+as.data.frame.TableOne(tbone_desc_merge, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  #knitr::kable(size=10, format="markdown",caption= "Summary descriptives, by discrepancy between PO records and TOP reports of offenses", escape=T)
+ knitr::kable(size=10, format="html",caption= "Summary descriptives, by discrepancy between PO records and TOP reports of offenses", escape=T) %>% kableExtra::kable_classic()%>% 
+    kableExtra::scroll_box(width = "100%", height = "550px") 
+```
+
+
+<br>
+
+## Comparison
+
+We compared the records of TOP (`Hurto`,`Robo`, `Venta.Drogas`, `Riña`, `Total.VIF`, `Otro`, & `tot_off_top`) with the records of PO (`vio`, `acq`, `sud`, `oth` & `tot`). We grouped TOPs self-reports of offenses related to burglary or robbery into acquisitive (`acq_top`), the reports of drug-selling into substance related (`sud_top`) and reports of fights and domestic violence into violent (`vio_top`) and Other into other (`oth_top`).
+
 
 ::: controlly2
 
@@ -978,6 +1201,193 @@ cat(":::::", "\n")
 :::
 
 <br>
+
+## Analysis
+
+::: controlly2
+
+```{r an-1, eval=T, echo=T, error=T, message=FALSE, warning=FALSE, paged.print=TRUE, layout="l-body-outset"}
+mlogit.display2 <- function(multinom.model, decimal=2, alpha=.05) {
+  s <- summary(multinom.model)
+  z <- s$coefficients/s$standard.errors
+  pnorm.z <- pnorm(z)
+  pgroup <- cut(pnorm.z, c(0,0.0005,0.005,0.025,0.975, 0.995, 0.9995,1))
+  stars <-c("***","**","*","","*","**","***")
+  #x <-paste(round(s$coefficients,decimal),"/",round(s$standard.errors,decimal+1),stars[pgroup], sep="")
+   x <-paste(round(s$coefficients,decimal),"", "", sep="")
+  dim(x) <- dim(z)
+  colnames(x) <- colnames(s$coefficients)
+  rownames(x) <- rownames(s$coefficients)
+  
+  x1 <- t( x)
+  x2 <- t(exp(s$coefficients))
+  x2 <- round(x2,decimal)
+  x2.1 <- t(exp(s$coefficients-qnorm(1-alpha/2)*s$standard.errors))
+  x2.1 <- round(x2.1,decimal)
+  x2.2 <- t(exp(s$coefficients+qnorm(1-alpha/2)*s$standard.errors))
+  x2.2 <- round(x2.2,decimal)
+  x2 <- paste(x2,"(", x2.1, ",", x2.2, ")",  sep="")
+  dim(x2) <- dim(x1)
+  x2[1,] <- "-"
+  x3 <- cbind(x1[,1],x2[,1])
+  for(i in 2: (length(s$lab)-1)){x3 <- cbind(x3, cbind(x1[,i],x2[,i]))}
+  x4 <- rbind(c("Coeff./SE",paste("RRR(",100-100*alpha,"%CI)   ",sep=""),"Coeff./SE",paste("RRR(",100-100*alpha,"%CI)   ",sep="")),x3)
+  colnames.x4 <- c(s$lab[2],"")
+  for(i in 3:(length(s$lab))){colnames.x4 <- c(colnames.x4,c(s$lab[i],""))}
+  colnames(x4) <- colnames.x4
+  rownames(x4) <- c("",s$coefnames)
+  cat("\n")
+  cat(paste("Outcome =",as.character(s$term)[2],"; ","Referent group = ",s$lab[1],sep=""), "\n")
+  
+
+  assign(paste0("output_", deparse(substitute(multinom.model))),data.table::data.table(x4, keep.rownames=T), envir = .GlobalEnv)
+    
+  print.noquote(x4)
+  cat("\n")
+  cat("Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 ", "\n")
+  cat("\n")
+  cat(paste("Residual Deviance:", round(s$deviance,decimal), "\n"))
+  cat(paste("AIC =", round(s$AIC,digits=decimal), "\n"))
+  cat("\n")
+}
+
+
+library(rpart)
+library(rpart.plot)
+library(partykit)
+#Random Forest
+library(randomForest)
+library(epiDisplay)
+
+form<-
+as.formula(paste("discrepancies~ ", paste(setdiff(c(vars_db, "numero_de_hijos_mod", "tot_off_top","tot_off_top_bin", "tot", "tot_bin", "edad_a_ap_top_num", "fech_ap_top"), c("id_centro", "comuna_residencia_cod",  "tot_off_top", "tot", "tot_off_top_bin", "tot_bin", "end_type", "fech_ap_top", "nombre_region")), collapse="+ "))) #paste0(c("acq","sud","vio","oth"),"_bin"),   paste0(c("acq","sud","vio","oth"),"_top_bin"), 
+
+form_multilev<-
+as.formula(paste("discrepancies~ ", paste(setdiff(c(vars_db, "numero_de_hijos_mod", "tot_off_top","tot_off_top_bin", "tot", "tot_bin", "edad_a_ap_top_num", "fech_ap_top"), c("id_centro", "comuna_residencia_cod", "tot_off_top", "tot",  "tot_off_top_bin", "tot_bin", "end_type", "fech_ap_top", "nombre_region")), collapse="+ "), "| HASH_KEY"))
+
+set.seed(2125)
+#Increase the MaxNWts parameter by passing it directly
+#Error in nnet.default(X, Y, w, mask = mask, size = 0, skip = TRUE, softmax = TRUE,  :  too many (2502) weights
+#In both GLMs and nnet::multinom it is the case that covariates should be scaled to make sure that the fit converges.
+invisible("Multinomial logistic")
+logit <- nnet::multinom(formula= form, data=Base_fiscalia_v13c_dic_2022_4 %>% dplyr::mutate_if(is.numeric, ~scale(.)),MaxNWts=84581, maxit= 1e3)
+
+bs <- function(formula, data, indices) {
+  d = data[indices,] # allows boot to select sample
+  fit = nnet::multinom(formula, data=d, Hess = TRUE, trace=F, MaxNWts=84581, maxit= 1e3)
+  s = summary(fit)
+  return( cbind(s$coefficients, s$standard.errors) )
+}
+
+# 5 replications
+results = list()
+set.seed(2125)
+results <- boot(
+  data=Base_fiscalia_v13c_dic_2022_4 %>% dplyr::mutate_if(is.numeric, ~scale(.)), statistic=bs, R=2e3, parallel='multicore', formula=form
+)
+
+#mm <- nnet::multinom(discrepancies ~ .+0, data=Base_fiscalia_v13c_dic_2022_4 %>% dplyr::mutate_if(is.numeric, ~scale(.)), trace=F)
+#lmtest::lrtest(mm, "Speciesversicolor")
+#Error in `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]) : 
+#car::Anova(mm)
+
+#https://stackoverflow.com/questions/33170335/bootstrap-multinomial-regression-in-r
+# label the estimates
+
+subModelNames <- colnames(results$t0)
+varNames <- rownames(results$t0)
+
+estNames <- apply(expand.grid(varNames,subModelNames),1,function(x) paste(x,collapse="_"))
+colnames(results$t) <- estNames
+
+library(car)
+multinom_cis_norm<-round(exp(confint(results, level=0.95, type="norm")),2)
+multinom_cis_perc<-round(exp(confint(results, level=0.95, type="perc")),2)
+#multinom_cis_bca<-confint(results, level=0.95, type="bca") #slow
+#In confint.boot(results, level = 0.95, type = "bca") :
+#  BCa method fails for this problem.  Using 'perc' instead
+
+multinom_cis_logit <- round(exp(confint(logit)),2)
+multinom_cis_logit12 <-confint(logit)
+
+# plot the results
+#hist(results, legend="separate")
+
+mlogit.display2(logit)
+
+tibble(output_logit) %>% 
+      dplyr::slice(-1) %>% 
+      tidyr::separate(V2, sep="\\(", into= c("RRR_ov","CI_ov")) %>% 
+      tidyr::separate(CI_ov, sep="\\,", into= c("ci_lo_ov","ci_up_ov")) %>% 
+      tidyr::separate(V4, sep="\\(", into= c("RRR_und","CI_und")) %>% 
+      tidyr::separate(CI_und, sep="\\,", into= c("ci_lo_und","ci_up_und")) %>% 
+      dplyr::mutate(ci_up_ov= gsub("\\)","",ci_up_ov)) %>% 
+      dplyr::mutate(ci_up_und= gsub("\\)","",ci_up_und)) %>% 
+#output_logit %>% 
+  knitr::kable("markdown", caption="Outputs from the multinomial model")
+  # knitr::kable("html", caption="Outputs from the multinomial model") %>% 
+  # kableExtra::kable_classic()
+```
+:::
+
+```{r an-2, eval=F, echo=T, error=T, message=FALSE, warning=FALSE, paged.print=TRUE}
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+#Base_fiscalia_v13c_dic_2022_4$discrepancies <- factor(Base_fiscalia_v13c_dic_2022_4$discrepancies,
+#  levels = c("admin", "manage", "custodial"), ordered = FALSE)
+
+# bw_vglm <- VGAM::vglm(formula= form, family = multinomial,
+#   data = bwmale2)
+# coef(bw_vglm, matrix = TRUE)
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#https://rubenfcasal.github.io/aprendizaje_estadistico/cart-con-el-paquete-rpart.html
+
+set.seed(2125)
+ind <- sample(x = 2, size = nrow(Base_fiscalia_v13c_dic_2022_4), replace = T, prob = c(0.7, 0.3))
+train <- Base_fiscalia_v13c_dic_2022_4[ind == 1, ]
+test <- Base_fiscalia_v13c_dic_2022_4[ind == 2, ]
+
+mod1.2 <- rpart(form, data = train)
+#mod1 #print(mod1)
+#summary(mod1)
+rpart.plot(mod1.2)
+rpart.rules(mod1.2, style = "tall")
+
+form2<-
+as.formula(paste("discrepancies~ ", paste(setdiff(c(vars_db, "numero_de_hijos_mod", "edad_a_ap_top_num", "fech_ap_top"), c("id_centro", "comuna_residencia_cod")), collapse="+ ")))
+
+form2_multilev<-
+as.formula(paste("discrepancies~ ", paste(setdiff(c(vars_db, "numero_de_hijos_mod", "edad_a_ap_top_num", "fech_ap_top"), c("id_centro", "comuna_residencia_cod")), collapse="+ "), "| HASH_KEY"))
+
+mod1.3 <- rpart(form2, data = train, cp=0)
+
+head(mod1.3$cptable, 10)
+
+xerror <- mod1.3$cptable[,"xerror"]
+imin.xerror <- which.min(xerror)
+# Valor óptimo
+mod1.3$cptable[imin.xerror, ]
+upper.xerror <- xerror[imin.xerror] + mod1.3$cptable[imin.xerror, "xstd"]
+icp <- min(which(xerror <= upper.xerror))
+cp <- mod1.3$cptable[icp, "CP"]
+tree <- prune(mod1.3, cp = cp)
+rpart.plot(tree, box.palette = "Blues") 
+
+invisible("can take more than 15 hours, because the model was taking municipallity and center ID!")
+
+#tm_cl <- mlogit::mlogit(formula= form_multilev, data=Base_fiscalia_v13c_dic_2022_4)#, reflevel = "coincidence")
+#pivot_longer(Base_fiscalia_v13c_dic_2022_4, id=c("HASH_KEY", "edad_a_ap_top_num"))
+#modelsummary(list("Conditional logit"=tm_cl), 
+#             fmt=3, estimate="{estimate}{stars}")
+```
 
 # Flowchart
 
