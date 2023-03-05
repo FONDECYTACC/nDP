@@ -294,7 +294,7 @@ pacman::p_load(ggpattern, withr, boot, matrixStats, knitr, tidyr,
                daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, 
                distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, 
                sqldf,  adjustedCurves, ggpmisc, rms, irrCAC, xaringanExtra, VGAM, mlogit, rpart,
-               rpart.plot, partykit, randomForest, nn, car, install=T)
+               rpart.plot, partykit, randomForest, nn, car, WeightedROC, WeightIt, nstall=T)
 
 xaringanExtra::use_panelset()
 #Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
@@ -471,6 +471,8 @@ CONS_TOP_2022<-
   dplyr::group_by(HASH_KEY, edad_a_ap_top_num) %>%
   dplyr::slice(1) %>% 
   dplyr::ungroup()
+
+
 
 message(paste0("Then, we standardized the varibles in TOP (e.g., dates format) and counted self-reported offenses, and also we standardized data with PO records (dates of birth) to get the age when the patient have answered TOP and the age previous [ (1/12)*365.25 ]=",round((1/12)*365.25,0)," days before TOP application. This resulted in ", format(nrow(CONS_TOP_2022), big.mark=","), " rows (combination of different application dates and patients) of ", format(length(unique(CONS_TOP_2022$HASH_KEY)), big.mark=","), " patients."))
 
@@ -1242,10 +1244,6 @@ mlogit.display2 <- function(multinom.model, decimal=2, alpha=.05) {
 
   assign(paste0("output_", deparse(substitute(multinom.model))),data.table::data.table(x4, keep.rownames=T), envir = .GlobalEnv)
     
-  print.noquote(x4)
-  cat("\n")
-  cat("Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 ", "\n")
-  cat("\n")
   cat(paste("Residual Deviance:", round(s$deviance,decimal), "\n"))
   cat(paste("AIC =", round(s$AIC,digits=decimal), "\n"))
   cat("\n")
@@ -1257,7 +1255,6 @@ library(rpart.plot)
 library(partykit)
 #Random Forest
 library(randomForest)
-library(epiDisplay)
 
 form<-
 as.formula(paste("discrepancies~ ", paste(setdiff(c(vars_db, "numero_de_hijos_mod", "tot_off_top","tot_off_top_bin", "tot", "tot_bin", "edad_a_ap_top_num", "fech_ap_top"), c("id_centro", "comuna_residencia_cod",  "tot_off_top", "tot", "tot_off_top_bin", "tot_bin", "end_type", "fech_ap_top", "nombre_region")), collapse="+ "))) #paste0(c("acq","sud","vio","oth"),"_bin"),   paste0(c("acq","sud","vio","oth"),"_top_bin"), 
@@ -1388,6 +1385,90 @@ invisible("can take more than 15 hours, because the model was taking municipalli
 #modelsummary(list("Conditional logit"=tm_cl), 
 #             fmt=3, estimate="{estimate}{stars}")
 ```
+
+## Inverse probability Adjusted ROC
+
+::: controlly2
+
+<div class="layout-chunk" data-layout="l-body">
+
+```{r roc, echo=T, fig.align='center', message=T, error=T, eval=T, results='asis', layout="l-body-outset"}
+invisible("In the end, this is very similar to a predict from a logistic regression and comparison with the true value")
+
+## Warning: package 'ROCit' was built under R version 3.5.2
+message("Error in convertclass(class, reference = negref) :    class must have exactly two unique values)")
+
+set.seed(2125)
+W2 <- weightit(as.formula(paste("motivodeegreso_mod_imp_rec~", paste(vars_cov, collapse = "+"))),
+               data=Base_fiscalia_v13c_dic_2022_3[which(!is.na(Base_fiscalia_v14$motivodeegreso_mod_imp_rec))], stabilize = T, method = "ps", estimand = "ATE", int=T, use.mlogit = FALSE)
+invisible("Warning: Missing values are present in the covariates. See ?WeightIt::method_ps for information on how these are handled.")
+invisible("Warning message:
+Some extreme weights were generated. Examine them with summary() and maybe trim them with trim().")
+Base_fiscalia_v14_mod$weight_mult_a1 <-W2$weights
+
+set.seed(2125)
+W1 <- weightit(as.formula(paste("con_quien_vive_joel~", paste(c(), collapse = "+"))),
+               data=Base_fiscalia_v13c_dic_2022_3, stabilize = T,
+                method = "bart", estimand = "ATE", int=T,
+                use.mlogit = FALSE)
+prueba2_imp22$weight_mult_a0 <-W1$weights
+
+
+
+
+cat("::::: {.panelset}", "\n")
+cat("::: {.panel}", "\n", "[Total]{.panel-name}", "\n")
+
+
+ROCit_obj_adj <-WeightedROC(fitted(Model3), Model3$y, weights(psurvey))
+plot(ROCit_obj)
+
+#Del YOuden, el óptimo es...
+pander::pander(ciROC(ROCit_obj,nboot = 500))
+#FPR: 1-especificidad
+#TPR: Sensibilidad
+
+cat(":::", "\n")
+cat("::: {.panel}", "\n", "[Acquisitive]{.panel-name}", "\n")
+
+ROCit_acq <- rocit(score=Base_fiscalia_v13c_dic_2022_3$acq_top_bin,class=Base_fiscalia_v13c_dic_2022_3$acq_bin)
+plot(ROCit_acq)
+
+pander::pander(ciROC(ROCit_acq,nboot = 500))
+
+cat(":::", "\n")
+cat("::: {.panel}", "\n", "[SUD]{.panel-name}", "\n")
+
+ROCit_sud <- rocit(score=Base_fiscalia_v13c_dic_2022_3$sud_top_bin,class=Base_fiscalia_v13c_dic_2022_3$sud_bin)
+plot(ROCit_sud)
+
+pander::pander(ciROC(ROCit_sud,nboot = 500))
+
+cat(":::", "\n")
+cat("::: {.panel}", "\n", "[Violent]{.panel-name}", "\n")
+
+ROCit_vio <- rocit(score=Base_fiscalia_v13c_dic_2022_3$vio_top_bin,class=Base_fiscalia_v13c_dic_2022_3$vio_bin)
+plot(ROCit_vio)
+
+pander::pander(ciROC(ROCit_vio,nboot = 500))
+
+cat(":::", "\n")
+cat("::: {.panel}", "\n", "[Other]{.panel-name}", "\n")
+
+ROCit_oth <- rocit(score=Base_fiscalia_v13c_dic_2022_3$oth_top_bin,class=Base_fiscalia_v13c_dic_2022_3$oth_bin)
+plot(ROCit_oth)
+
+pander::pander(ciROC(ROCit_oth,nboot = 500))
+
+cat(":::", "\n")
+cat(":::::", "\n")
+```
+
+</div>
+
+:::
+
+<br>
 
 # Flowchart
 
@@ -1691,8 +1772,10 @@ if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
   } else if (grepl("E:",rstudioapi::getSourceEditorContext()$path)==T){
     save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/14_alt.RData")
   } else {
-    save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"14_alt.RData"))
+    tryCatch(save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"14_alt.RData")),
+              error= save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"/14_alt.RData")))
   }
+
 #load(paste0(dirname(rstudioapi::getSourceEditorContext()$path),"/14_alt.RData"))
 
 sesion_info <- devtools::session_info()
@@ -1718,35 +1801,3 @@ initComplete = htmlwidgets::JS(
         "}")))
 ```
 
-
-::: controlly
-```{r label_to_stata, echo=T, paged.print=TRUE, eval= F}
-#put name of the file
-file<- "fiscalia_ags_jan_2023_match_SENDA.dta"
-
-export_lab_stata_merge<-
-  tibble::rownames_to_column(data.frame(Hmisc::label(dplyr::select(Base_fiscalia_v13,  all_of(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación"))))))%>% data.frame() %>%
-  dplyr::rename("code" = !!names(.[1]), "label" = !!names(.[2]))%>% data.frame()%>%
-  dplyr::mutate(first= "cap noi label variable")%>%
-  dplyr::mutate(final= paste0(first, " ",code,' "',label,'"'))%>%
-  dplyr::select(-code,-label,-first)%>%
-  dplyr::rename("*clear all"="final") %>%
-  rbind(paste0('cap noi save "', gsub('/', '\\', path, fixed=T),'\\',file,'", replace'))%>%
-  rbind(paste0('cap noi save "', gsub('/', '\\', path, fixed=T),'\\',file,'", replace'))
-
-rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear'),export_lab_stata_merge) %>% knitr::kable("markdown")
-
-write.table(rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',file,'", clear'),export_lab_stata_merge), file = paste0(path,"/_label_var_to_stata_jan2023.do"), sep = "",row.names = FALSE, quote = FALSE, fileEncoding="UTF-8")
-```
-:::
-
-<br>
-
-<div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:350px; overflow-x: scroll; width:100%">
-
-```{stata 2, collectcode=F, include=T, error=T, cleanlog=F}
-*should be in the same folder of the .Rmd to work
-cap noi do _label_var_to_stata_jan2023
-```
-
-</div>
