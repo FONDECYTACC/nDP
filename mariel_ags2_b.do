@@ -95,83 +95,8 @@ replace motivodeegreso_mod_imp_rec3 = 3 if strpos(motivodeegreso_mod_imp_rec,"La
 <</dd_do>>
 ~~~~
 
-Then we set the data base in surirval format and bring the urban-rural classification of municipallities from this [link]("https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.masvidarural.gob.cl%2Fwp-content%2Fuploads%2F2021%2F04%2FClasificacion-comunas-PNDR.xlsx&wdOrigin=BROWSELINK").
+Then we set the data base in surirval format 
 
-~~~~
-<<dd_do>>
-cap qui noi frame create temp
-frame temp: import excel "Clasificacion-comunas-PNDR.xlsx", firstrow clear
-*frame temp: browse
-frame change default
-
-*select code of municipality
-gen str20 comuna = ustrregexs(1) if ustrregexm(comuna_residencia_cod,"([\d,]+)")
-
-*recode comuna if 
-*http://www.sinim.cl/archivos/centro_descargas/modificacion_instructivo_pres_codigos.pdf
-*file:///C:/Users/CISSFO~1/AppData/Local/Temp/MicrosoftEdgeDownloads/4ef08de9-6832-4db6-8124-f69a7b256270/codigoComunas-20180801%20(1).pdf
-
-replace comuna= "16101" if strpos(strlower(comuna),"8401")>0
-replace comuna= "16102" if strpos(strlower(comuna),"8402")>0
-replace comuna= "16103" if strpos(strlower(comuna),"8406")>0
-replace comuna= "16104" if strpos(strlower(comuna),"8407")>0
-replace comuna= "16105" if strpos(strlower(comuna),"8410")>0
-replace comuna= "16106" if strpos(strlower(comuna),"8411")>0
-replace comuna= "16107" if strpos(strlower(comuna),"8413")>0
-replace comuna= "16108" if strpos(strlower(comuna),"8418")>0
-replace comuna= "16109" if strpos(strlower(comuna),"8421")>0
-replace comuna= "16201" if strpos(strlower(comuna),"8414")>0
-replace comuna= "16202" if strpos(strlower(comuna),"8403")>0
-replace comuna= "16203" if strpos(strlower(comuna),"8404")>0
-replace comuna= "16204" if strpos(strlower(comuna),"8408")>0
-replace comuna= "16205" if strpos(strlower(comuna),"8412")>0
-replace comuna= "16206" if strpos(strlower(comuna),"8415")>0
-replace comuna= "16207" if strpos(strlower(comuna),"8420")>0
-replace comuna= "16301" if strpos(strlower(comuna),"8416")>0
-replace comuna= "16302" if strpos(strlower(comuna),"8405")>0
-replace comuna= "16303" if strpos(strlower(comuna),"8409")>0
-replace comuna= "16304" if strpos(strlower(comuna),"8417")>0
-replace comuna= "16305" if strpos(strlower(comuna),"8419")>0
-
-destring comuna, replace
-
-*frame temp: gen str20 comuna = ustrregexs(1) if ustrregexm(cod_com,"([\d,]+)")
-
-frlink m:1 comuna, frame(temp cod_com) //*Clasificación
-frget Clasificación, from(temp)
-
-encode Clasificación, generate(clas)
-*70,863
-<</dd_do>>
-~~~~
-
-
-~~~~
-<<dd_do>>
-*si no está perdido cod_region, significa que hubo un registro (0/1) y el tiempo es el tiempo desde 
-*set the indicator
-gen event=0
-replace event=1 if !missing(offender_d)
-*replace event=1 if !missing(sex)
-
-gen diff= age_offending_imp-edad_al_egres_imp
-
-*age time
-stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
-
-stdescribe, weight
-<</dd_do>>
-~~~~
-
-We calculate the incidence rate.
-
-~~~~
-<<dd_do>>
-stsum, by (motivodeegreso_mod_imp_rec)
-<</dd_do>>
-~~~~
- 
-We open the files
 
 ~~~~
 <<dd_do>>
@@ -212,8 +137,8 @@ local ttl `" "Tr Completion" "Tr Disch (Early)" "Tr Disch (Late)" "'
 forvalues i = 1/3 {
 cap drop sum_*
 	gettoken title ttl: ttl
-cap qui egen sum_`i' = total(_t) if motivodeegreso_mod_imp_rec3==`i'
-cap qui tab _d motivodeegreso_mod_imp_rec3 if _d==1 & motivodeegreso_mod_imp_rec3==`i'
+cap qui egen sum_`i' = total(_t) if motivodeegreso_mod_imp_rec==`i'
+cap qui tab _d motivodeegreso_mod_imp_rec if _d==1 & motivodeegreso_mod_imp_rec==`i'
 scalar n_eventos`i' =r(N)
 qui tabstat sum_`i', save
 scalar sum_`i'_total =r(StatTotal)[1,1]
@@ -237,13 +162,13 @@ We recode the discharge cause to contrast them
 
 ~~~~
 <<dd_do>>
-cap noi recode motivodeegreso_mod_imp_rec3 (1=0 "Tr Completion" ) ///
+cap noi recode motivodeegreso_mod_imp_rec (1=0 "Tr Completion" ) ///
 			 (2=1 "Early Disch") ///
 			 (else=.), gen(tto_2_1)
-cap noi recode motivodeegreso_mod_imp_rec3 (1=0 "Tr Completion" ) ///
+cap noi recode motivodeegreso_mod_imp_rec (1=0 "Tr Completion" ) ///
 			 (3=1 "Late Disch") ///
 			 (else=.), gen(tto_3_1)
-cap noi recode motivodeegreso_mod_imp_rec3 (2=0 "Early Disch" ) ///
+cap noi recode motivodeegreso_mod_imp_rec (2=0 "Early Disch" ) ///
 			 (3=1 "Late Disch") ///
 			 (else=.), gen(tto_3_2)
 <</dd_do>>
@@ -358,8 +283,8 @@ global boots 1e3 //5e1 2e3
 global times 0 90 365 1096 1826
 range timevar0 90 1826 90
 
-global covs "edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas"
-global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas"
+global covs "edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas sus_ini_mod_mvv dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
+global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas sus_ini_mod_mvv dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
 
 
 stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)

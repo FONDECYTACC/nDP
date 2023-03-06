@@ -218,7 +218,7 @@ vars_cov<-c("tr_modality", "edad_al_ing_1", "sex", "edad_ini_cons", "dias_treat_
 *sex_enc sud_severity_icd10 
 */
 
-global covs "i.motivodeegreso_mod_imp_rec i.tr_modality edad_al_ing_1 i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.numero_de_hijos_mod i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.clas_r porc_pobr"
+global covs "i.motivodeegreso_mod_imp_rec i.tr_modality edad_al_ing_1 i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.numero_de_hijos_mod i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.clas_r porc_pobr i.sus_ini_mod_mvv dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
 
 
 qui stcox  $covs , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
@@ -274,7 +274,7 @@ vars_cov<-c("tr_modality", "edad_al_ing_1", "sex", "edad_ini_cons", "dias_treat_
 
 */
 
-global covs_3 "i.motivodeegreso_mod_imp_rec i.tr_modality edad_al_ing_1 i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.numero_de_hijos_mod i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.clas_r porc_pobr"
+global covs_3 "i.motivodeegreso_mod_imp_rec i.tr_modality edad_al_ing_1 i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.numero_de_hijos_mod i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.clas_r porc_pobr i.sus_ini_mod_mvv dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
 
 qui stcox  $covs_3 , efron robust nolog schoenfeld(sch_b*) scaledsch(sca_b*)
 qui estat phtest, log detail
@@ -329,7 +329,7 @@ lab var motivodeegreso_late "Baseline treatment outcome- Late dropout(dich)"
 cap noi rename motivodeegreso_late mot_egr_late
 cap noi rename motivodeegreso_early mot_egr_early
 
-global covs_3b "mot_egr_early mot_egr_late i.tr_modality edad_al_ing_1 i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.numero_de_hijos_mod i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.clas_r porc_pobr"
+global covs_3b "mot_egr_early mot_egr_late i.tr_modality edad_al_ing_1 i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.numero_de_hijos_mod i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.clas_r porc_pobr i.sus_ini_mod_mvv dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
 
 forvalues i=1/10 {
 	forvalues j=1/7 {
@@ -526,9 +526,10 @@ tab numero_de_hijos_mod, gen(num_hij)
 tab tenencia_de_la_vivienda_mod, gen(tenviv)
 tab macrozona, gen(mzone)
 tab clas_r, gen(rural)
+tab sus_ini_mod_mvv, gen(susini)
 
 *REALLY NEEDS DUMMY VARS
-global covs_3b_dum "mot_egr_early mot_egr_late tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr"
+global covs_3b_dum "mot_egr_early mot_egr_late tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
 
 qui noi stpm2 $covs_3b_dum , scale(hazard) df(6) eform tvc(mot_egr_early mot_egr_late) dftvc(1) 
 
@@ -637,7 +638,7 @@ First we calculated the difference between those patients who did and did not co
 *______________________________________________
 * NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
 
-global covs_4_dum "motivodeegreso_mod_imp_rec2 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr"
+global covs_4_dum "motivodeegreso_mod_imp_rec2 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
 
 *  tvar must be a binary variable with 1 = treatment/exposure and 0 = control.
 rename motivodeegreso_mod_imp_rec2 mot_egr_imp_rec2
@@ -668,7 +669,7 @@ local varslab "exp wei gom logn llog"
 forvalues i = 1/5 {
  local v : word `i' of `vars'
  local v2 : word `i' of `varslab'
-qui noi stipw (logit mot_egr_imp_rec2 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr ), distribution(`v') genw(`v2'_m_nostag) ipwtype(stabilised) vce(mestimation)
+qui noi stipw (logit mot_egr_imp_rec2 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec), distribution(`v') genw(`v2'_m_nostag) ipwtype(stabilised) vce(mestimation)
 estimates  store m_stipw_nostag_`v2'
 	}
 *}
@@ -692,7 +693,7 @@ esttab matrix(stats_2) using "testreg_aic_bic_mariel_23_2.html", replace
 ~~~~
 <<dd_do>>
 
-qui noi stipw (logit mot_egr_imp_rec2 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr ), distribution(rp) df(5) dftvc(1) genw(rpdf5_m_nostag_tvcdf1_fin) ipwtype(stabilised) vce(mestimation) eform
+qui noi stipw (logit mot_egr_imp_rec2 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec), distribution(rp) df(5) dftvc(1) genw(rpdf5_m_nostag_tvcdf1_fin) ipwtype(stabilised) vce(mestimation) eform
 
 
 stpm2_standsurv, at1(mot_egr_imp_rec2 0 ) at2(mot_egr_imp_rec2 1 ) timevar(tt) ci contrast(difference) ///
@@ -752,7 +753,7 @@ rename mot_egr_imp_rec_dum3 motegr_dum3
 
 forvalues i=1/10 {
 	forvalues j=1/7 {
-qui noi stipw (logit motegr_dum3 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr ), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m2_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
+qui noi stipw (logit motegr_dum3 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m2_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
 estimates  store m2_stipw_nostag_rp`i'_tvcdf`j'
 	}
 }
@@ -767,7 +768,7 @@ local varslab "exp wei gom logn llog"
 forvalues i = 1/5 {
  local v : word `i' of `vars'
  local v2 : word `i' of `varslab'
-qui noi stipw (logit motegr_dum3 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr ), distribution(`v') genw(`v2'_m2_nostag) ipwtype(stabilised) vce(mestimation)
+qui noi stipw (logit motegr_dum3 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec), distribution(`v') genw(`v2'_m2_nostag) ipwtype(stabilised) vce(mestimation)
 estimates  store m2_stipw_nostag_`v2'
 	}
 *}
@@ -792,7 +793,7 @@ esttab matrix(stats_3) using "testreg_aic_bic_mariel_23_3.html", replace
 ~~~~
 <<dd_do>>
 
-qui noi stipw (logit motegr_dum3 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr ), distribution(rp) df(5) dftvc(1) genw(m2_stipw_nostag_rp5_tvcdf1_fin) ipwtype(stabilised) vce(mestimation) eform
+qui noi stipw (logit motegr_dum3 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec), distribution(rp) df(5) dftvc(1) genw(m2_stipw_nostag_rp5_tvcdf1_fin) ipwtype(stabilised) vce(mestimation) eform
 
 
 sts gen km_b=s, by(motegr_dum3)

@@ -173,6 +173,13 @@ padding: 0px;
     overflow-x: scroll; 
 }
 
+
+.controlly2{
+    overflow-y:scroll;
+    height:550px;
+    overflow-x: scroll; 
+}
+
 </style>
 ```
 ```{=html}
@@ -1440,11 +1447,13 @@ initComplete = htmlwidgets::JS(
 
 <br>
 
-+a##`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`
+##`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`
 
 <br>
 
 # Missing data
+
+::: controlly
 
 ```{r miss, warning=FALSE, echo=T, error=T, eval=T}
 set.seed(2125)
@@ -1476,6 +1485,8 @@ Base_fiscalia_v14_miss2 <-
 subset(Base_fiscalia_v14, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, cat_vars_dg_fis, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "clas_centers_r", "clas_r", "sus_ini_mod_mvv")) %>% 
   dplyr::arrange(hash_key, fech_ing_num_1) %>% 
   dplyr::mutate(dg_cie_10_rec= dplyr::case_when(as.character(dg_cie_10_rec)=="Diagnosis unknown (under study)"~NA_character_,T~as.character(dg_cie_10_rec))) %>% 
+  dplyr::mutate(SUM = rowSums(dplyr::mutate_all(dplyr::select(., dplyr::starts_with("dg_fis")),~as.numeric(.)-1))) %>% 
+    dplyr::mutate(across(dplyr::starts_with("dg_fis"), ~factor(dplyr::case_when(as.character(dg_fis_in_study)=="Presence" & SUM==1 ~NA_character_,T~as.character(.))))) %>%
    missRanger::missRanger(
                 formula = . ~ . - hash_key,
                 num.trees = 200, 
@@ -1489,6 +1500,8 @@ set.seed(2125)
 subset(Base_fiscalia_v14_pris, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, cat_vars_dg_fis, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "clas_centers_r", "clas_r", "sus_ini_mod_mvv")) %>% 
   dplyr::arrange(hash_key, fech_ing_num_1) %>% 
     dplyr::mutate(dg_cie_10_rec= dplyr::case_when(as.character(dg_cie_10_rec)=="Diagnosis unknown (under study)"~NA_character_,T~as.character(dg_cie_10_rec))) %>% 
+    dplyr::mutate(SUM = rowSums(dplyr::mutate_all(dplyr::select(., dplyr::starts_with("dg_fis")),~as.numeric(.)-1))) %>% 
+    dplyr::mutate(across(dplyr::starts_with("dg_fis"), ~factor(dplyr::case_when(as.character(dg_fis_in_study)=="Presence" & SUM==1 ~NA_character_,T~as.character(.))))) %>%
      missRanger::missRanger(
                 formula = . ~ . - hash_key,
                 num.trees = 200, 
@@ -1497,6 +1510,8 @@ subset(Base_fiscalia_v14_pris, select= c(c("hash_key", cont_vars_desc, cat_vars_
                 verbose = 2, 
                 seed = 2125)
 ```
+
+:::
 
 <br>
 
@@ -1583,7 +1598,7 @@ write.table(rbind(paste0('cap noi use "', gsub('/', '\\', path, fixed=T),'\\',fi
 
 ```{stata 2, collectcode=F, include=T, error=T, cleanlog=F}
 *should be in the same folder of the .Rmd to work
-cap noi do _label_var_to_stata_jan2023
+cap noi do _label_var_to_stata_jan2023_mod
 ```
 
 </div>
