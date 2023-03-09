@@ -362,6 +362,7 @@ cap drop _start
 
 cap gen _start= 0
 
+*The stset command is used for survival analysis to set the time variable and specify the structure of the dataset, while the [pw] option specifies the weights for each observation in the analysis.
 stset diff2 [pw=ipw_wgt2], enter(_start) failure(contact_js==1) //*scale(12) 
 
 stsum, by (poly)

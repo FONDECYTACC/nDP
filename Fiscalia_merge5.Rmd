@@ -264,7 +264,7 @@ pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando pa
 if(!require(pacman)){install.packages("pacman")}
 if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
 
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, survRM2, easystats, tidylog, sqldf,  adjustedCurves, ggpmisc, rms, SpatialEpiApp, spatsurv, SuperLearner, install=T)
+pacman::p_load(ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi, stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, survRM2, easystats, tidylog, sqldf,  adjustedCurves, ggpmisc, rms, SpatialEpiApp, spatsurv, SuperLearner, survex, install=T)
 
 pacman::p_load(WeightIt, coxed, twang, survey, dbarts, jskm, adjustedCurves, pammtools, hrcomprisk, randomForestSRC, install=T, force=T)
 if(!require(AdjKM.CIF)){try(devtools::install_github("Lesly1031/AdjKM.CIF",dependencies = TRUE, force=T, upgrade="never"))}
@@ -1079,6 +1079,35 @@ invisible("Error in finalizeData(c(subj.names, yvar.names, xvar.names), data, na
 
 <br>
 
+# Survex
+
+```{r survex1, echo=T, fig.align='center', message=T, error=T, eval=F}
+
+require("survex")
+library("survival")
+library("ranger")
+
+prueba_stata<-rio::import("mariel_feb_23.dta")
+
+my_vector <- c("motivodeegreso_mod_imp_rec", "tr_mod2", "edad_al_ing_1", "sex_dum2", "edad_ini_cons", "esc1", "esc2", "sus_prin2", "sus_prin3", "sus_prin4", "sus_prin5", "fr_cons_sus_prin2", "fr_cons_sus_prin3", "fr_cons_sus_prin4", "fr_cons_sus_prin5", "cond_ocu2", "cond_ocu3", "cond_ocu4", "cond_ocu5", "cond_ocu6", "policonsumo", "num_hij2", "tenviv1", "tenviv2", "tenviv4", "tenviv5", "mzone2", "mzone3", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "rural2", "rural3", "porc_pobr", "susini2", "susini3", "susini4", "susini5", "dg_fis_anemia", "dg_fis_card", "dg_fis_enf_som", "dg_fis_ets", "dg_fis_hep_alc", "dg_fis_hep_b", "dg_fis_hep_cro", "dg_fis_inf", "dg_fis_otr_cond_fis_ries_vit", "dg_fis_otr_cond_fis", "dg_fis_pat_buc", "dg_fis_pat_ges_intrau", "dg_fis_trau_sec")
+
+# create a model
+model <- ranger(as.formula(paste("Surv(diff, event)~ ", paste(my_vector, collapse = "+"))), data = prueba_stata[complete.cases(prueba_stata[,my_vector]),])
+
+# create an explainer
+explainer <- explain(model, 
+                     data = veteran[, -c(3, 4)],
+                     y = Surv(veteran$time, veteran$status))
+
+# evaluate the model
+model_performance(explainer)
+
+# visualize permutation-based feature importance
+plot(model_parts(explainer))
+
+```
+
+
 # IPW
 
 We calculated the restricted mean survival time and lost, considering that proportionality of trends could be violated.
@@ -1404,53 +1433,6 @@ akm_rmst(time=prueba2_imp22$yrs_to_tr_dropout, status=prueba2_imp22$event, group
 
 <br>
 
-# Session Info
-
-```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE}
-message(Sys.getenv("R_LIBS_USER"))
-Sys.Date()
-message(paste0("Editor context: ", path))
-
-if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/15.RData")
-  } else if (grepl("andre",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("C:/Users/andre/Desktop/SUD_CL/15.RData")
-  } else if (grepl("E:",rstudioapi::getSourceEditorContext()$path)==T){
-    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/15.RData")
-  } else {
-     tryCatch(save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"15.RData")),
-              error= save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"/15.RData")))
-  }
-
-sesion_info <- devtools::session_info()
-dplyr::select(
-  tibble::as_tibble(sesion_info$packages),
-  c(package, loadedversion, source)
-) %>% 
-  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Variable' = 2, 'Percentage'= 3),
-              caption = htmltools::tags$caption(
-        style = 'caption-side: top; text-align: left;',
-        '', htmltools::em('Packages')),
-      options=list(
-initComplete = htmlwidgets::JS(
-        "function(settings, json) {",
-        "$(this.api().tables().body()).css({
-            'font-family': 'Helvetica Neue',
-            'font-size': '50%', 
-            'code-inline-font-size': '15%', 
-            'white-space': 'nowrap',
-            'line-height': '0.75em',
-            'min-height': '0.5em'
-            });",#;
-        "}")))
-```
-
-<br>
-
-##`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`
-
-<br>
-
 # Missing data
 
 ::: controlly
@@ -1512,6 +1494,53 @@ subset(Base_fiscalia_v14_pris, select= c(c("hash_key", cont_vars_desc, cat_vars_
 ```
 
 :::
+
+<br>
+
+# Session Info
+
+```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE}
+message(Sys.getenv("R_LIBS_USER"))
+Sys.Date()
+message(paste0("Editor context: ", path))
+
+if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/15.RData")
+  } else if (grepl("andre",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("C:/Users/andre/Desktop/SUD_CL/15.RData")
+  } else if (grepl("E:",rstudioapi::getSourceEditorContext()$path)==T){
+    save.image("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/15.RData")
+  } else {
+     tryCatch(save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"15.RData")),
+              error= save.image(paste0(sub("2019","2022",sub("SUD_CL","",path)),"/15.RData")))
+  }
+
+sesion_info <- devtools::session_info()
+dplyr::select(
+  tibble::as_tibble(sesion_info$packages),
+  c(package, loadedversion, source)
+) %>% 
+  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Variable' = 2, 'Percentage'= 3),
+              caption = htmltools::tags$caption(
+        style = 'caption-side: top; text-align: left;',
+        '', htmltools::em('Packages')),
+      options=list(
+initComplete = htmlwidgets::JS(
+        "function(settings, json) {",
+        "$(this.api().tables().body()).css({
+            'font-family': 'Helvetica Neue',
+            'font-size': '50%', 
+            'code-inline-font-size': '15%', 
+            'white-space': 'nowrap',
+            'line-height': '0.75em',
+            'min-height': '0.5em'
+            });",#;
+        "}")))
+```
+
+<br>
+
+##`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`
 
 <br>
 

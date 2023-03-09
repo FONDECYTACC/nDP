@@ -1,0 +1,34 @@
+StataFileTM:00001:01100:GREC:                          :
+00007:00007:00001:
+*! classname: twowaygraph_g
+*! family: twoway
+*! date:  7 Mar 2023
+*! time: 18:33:13
+*! graph_scheme: s2color
+*! naturallywhite: 1
+*! end
+
+// File created by Graph Editor Recorder.
+// Edit only if you know what you are doing.
+
+.yaxis1.reset_rule 5, tickset(major) ruletype(suggest) 
+// yaxis1 edits
+
+.yaxis1.style.editstyle majorstyle(use_labels(no)) editcopy
+.yaxis1.major.label_format = `"%10.2g"'
+.yaxis1.style.editstyle majorstyle(alternate(no)) editcopy
+// yaxis1 edits
+
+.yaxis1.style.editstyle majorstyle(use_labels(no)) editcopy
+.yaxis1.major.label_format = `"%10.2g"'
+.yaxis1.style.editstyle majorstyle(alternate(no)) editcopy
+// yaxis1 edits
+
+.yaxis1.reset_rule 5, tickset(major) ruletype(suggest) 
+// yaxis1 edits
+
+.yaxis1.reset_rule 5, tickset(major) ruletype(suggest) 
+// yaxis1 edits
+
+
+// <end>

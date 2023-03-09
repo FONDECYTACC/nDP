@@ -294,7 +294,7 @@ pacman::p_load(ggpattern, withr, boot, matrixStats, knitr, tidyr,
                daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, 
                distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, 
                sqldf,  adjustedCurves, ggpmisc, rms, irrCAC, xaringanExtra, VGAM, mlogit, rpart,
-               rpart.plot, partykit, randomForest, nn, car, WeightedROC, WeightIt, nstall=T)
+               rpart.plot, partykit, randomForest, nn, car, WeightedROC, WeightIt, pROC, install=T)
 
 xaringanExtra::use_panelset()
 #Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
@@ -568,8 +568,6 @@ paste0("For each combination of TOP application, count the number of previous of
 <br>
 
 ## Descriptives
-
-
 
 ```{r desc0-get-municipallity-info, echo=T, fig.align='center', message=T, error=T, eval=T}
 #http://observatorio.ministeriodesarrollosocial.gob.cl/pobreza-comunal-2020
@@ -1057,81 +1055,95 @@ cat(":::", "\n")
 cat("Manually construct measure tables")
 #http://rstudio-pubs-static.s3.amazonaws.com/370944_96c386c03ac54ef3bec4535d49e92890.html
 
-confusion_table = table(Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin, Base_fiscalia_v13c_dic_2022_3$tot_bin)
-confusion_table[1,1] = 'TN'
-confusion_table[1,2] = 'FN'
-confusion_table[2,1] = 'FP'
-confusion_table[2,2] = 'TP'
-
-get_accuracy <- function(df, predicted, actual){
-  confusion_table = table(df[[predicted]],df[[actual]])
-  TP = confusion_table[2,2]
-  TN = confusion_table[1,1]
-  FN = confusion_table[1,2]
-  FP = confusion_table[2,1]
-  accuracy = round((TP + TN) / sum(TP,FP,TN,FN), 2)
-  return(accuracy)
-}
-get_classification_error_rate <- function(df, predicted, actual){
-  confusion_table = table(df[[predicted]],df[[actual]])
-  TP = confusion_table[2,2]
-  TN = confusion_table[1,1]
-  FN = confusion_table[1,2]
-  FP = confusion_table[2,1]
-  classification_error_rate = round((FP + FN) / sum(TP,FP,TN,FN),2)
-  return(classification_error_rate)
-}
-get_precision <- function(df, predicted, actual){
-  confusion_table = table(df[[predicted]],df[[actual]])
-  TP = confusion_table[2,2]
-  TN = confusion_table[1,1]
-  FN = confusion_table[1,2]
-  FP = confusion_table[2,1]
-  precision = round(TP / (TP + FP), 2)
-  return(precision)
-}
-get_sensitivity <- function(df, predicted, actual){
-  confusion_table = table(df[[predicted]],df[[actual]])
-  TP = confusion_table[2,2]
-  TN = confusion_table[1,1]
-  FN = confusion_table[1,2]
-  FP = confusion_table[2,1]
-  sensitivity = round(TP / (TP + FN), 2)
-  return(sensitivity)
-}
-get_specificity <- function(df, predicted, actual){
-  confusion_table = table(df[[predicted]],df[[actual]])
-  TP = confusion_table[2,2]
-  TN = confusion_table[1,1]
-  FN = confusion_table[1,2]
-  FP = confusion_table[2,1]
-  specificity = round(TN / (TN + FP), 2)
-  return(specificity)
-}
-get_f1_score <- function(df, predicted, actual){
-  confusion_table = table(df[[predicted]],df[[actual]])
-  TP = confusion_table[2,2]
-  TN = confusion_table[1,1]
-  FN = confusion_table[1,2]
-  FP = confusion_table[2,1]
+#confusion_table = table(Base_fiscalia_v13c_dic_2022_3[["tot_off_top_bin"]], Base_fiscalia_v13c_dic_2022_3[["tot_bin"]])
+score_classifier <- function(df, predicted, actual) {
+  confusion_table <- table(get(df)[[predicted]], get(df)[[actual]])
+  confusion_table[1, 1] <- 'TN'
+  confusion_table[1, 2] <- 'FN'
+  confusion_table[2, 1] <- 'FP'
+  confusion_table[2, 2] <- 'TP'  
+    
+  get_accuracy <- function(df, predicted, actual) {
+    confusion_table <- table(get(df)[[predicted]], get(df)[[actual]])
+    TP <- confusion_table[2, 2]
+    TN <- confusion_table[1, 1]
+    FN <- confusion_table[1, 2]
+    FP <- confusion_table[2, 1]
+    accuracy <- round((TP + TN) / sum(TP, FP, TN, FN), 2)
+    return(accuracy)
+  }
   
-  precision = round(TP / (TP + FP), 2)
-  sensitivity = round(TP / (TP + FN), 2)
-  f1_score = round((2 * precision * sensitivity) / (precision + sensitivity), 2)
-  return(f1_score)
+  get_classification_error_rate <- function(df, predicted, actual) {
+    confusion_table <- table(get(df)[[predicted]], get(df)[[actual]])
+    TP <- confusion_table[2, 2]
+    TN <- confusion_table[1, 1]
+    FN <- confusion_table[1, 2]
+    FP <- confusion_table[2, 1]
+    classification_error_rate <- round((FP + FN) / sum(TP, FP, TN, FN), 2)
+    return(classification_error_rate)
+  }
+  
+  get_precision <- function(df, predicted, actual) {
+    confusion_table <- table(get(df)[[predicted]], get(df)[[actual]])
+    TP <- confusion_table[2, 2]
+    TN <- confusion_table[1, 1]
+    FN <- confusion_table[1, 2]
+    FP <- confusion_table[2, 1]
+    precision <- round(TP / (TP + FP), 2)
+    return(precision)
+  }
+  
+  get_sensitivity <- function(df, predicted, actual) {
+    confusion_table <- table(get(df)[[predicted]], get(df)[[actual]])
+    TP <- confusion_table[2, 2]
+    TN <- confusion_table[1, 1]
+    FN <- confusion_table[1, 2]
+    FP <- confusion_table[2, 1]
+    sensitivity <- round(TP / (TP + FN), 2)
+    return(sensitivity)
+  }
+  
+  get_specificity <- function(df, predicted, actual) {
+    confusion_table <- table(get(df)[[predicted]], get(df)[[actual]])
+    TP <- confusion_table[2, 2]
+    TN <- confusion_table[1, 1]
+    FN <- confusion_table[1, 2]
+    FP <- confusion_table[2, 1]
+    specificity <- round(TN / (TN + FP), 2)
+    return(specificity)
+  }
+  
+  get_f1_score <- function(df, predicted, actual) {
+    confusion_table <- table(get(df)[[predicted]], get(df)[[actual]])
+    TP <- confusion_table[2, 2]
+    TN <- confusion_table[1, 1]
+    FN <- confusion_table[1, 2]
+    FP <- confusion_table[2, 1]
+    
+    precision <- round(TP / (TP + FP), 2)
+    sensitivity <- round(TP / (TP + FN), 2)
+    f1_score <- round((2 * precision * sensitivity) / (precision + sensitivity), 2)
+    return(f1_score)
+  }
+
+  score_df <- data.frame(accuracy = get_accuracy(df, predicted, actual),
+                          classification_error_rate = get_classification_error_rate(df, predicted, actual),
+                          precision = get_precision(df, predicted, actual),
+                          sensitivity = get_sensitivity(df, predicted, actual),
+                          specificity = get_specificity(df, predicted, actual),
+                          f1_score=get_f1_score(df, predicted, actual))
+return(score_df)
 }
-
-caret::confusionMatrix(factor(Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin), factor(Base_fiscalia_v13c_dic_2022_3$tot_bin))
-
-score = data.frame(accuracy=get_accuracy(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
-      classification_error_rate=get_classification_error_rate(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
-      precision=get_precision(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
-      sensitivity=get_sensitivity(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
-      specificity=get_specificity(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'),
-      f1_score=get_f1_score(Base_fiscalia_v13c_dic_2022_3, 'tot_off_top_bin', 'tot_bin'))
+# caret::confusionMatrix(factor(Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin), factor(Base_fiscalia_v13c_dic_2022_3$tot_bin))
 
 #We can also combine precision and recall into an F1 score. This is the harmonic mean of precision and recall.
-knitr::kable(score, caption= "Table 1. Properties")# %>% kableExtra::kable_classic()
+rbind(c("TOTAL",score_classifier("Base_fiscalia_v13c_dic_2022_3", "tot_off_top_bin", "tot_bin")),
+      c("Acquisitive",score_classifier("Base_fiscalia_v13c_dic_2022_3", "acq_top_bin", "acq_bin")),
+      c("SUD-rel",score_classifier("Base_fiscalia_v13c_dic_2022_3", "sud_top_bin", "sud_bin")),
+      c("Violent",score_classifier("Base_fiscalia_v13c_dic_2022_3", "vio_top_bin", "vio_bin")),
+      c("Other",score_classifier("Base_fiscalia_v13c_dic_2022_3", "oth_top_bin", "oth_bin"))) %>% 
+knitr::kable("markdown",caption= "Table 1. Properties")# %>% kableExtra::kable_classic()
+
 ```
 
 <br>
@@ -1139,68 +1151,95 @@ knitr::kable(score, caption= "Table 1. Properties")# %>% kableExtra::kable_class
 ## ROC
 
 
-For ROC curves, we dichotomized into committing a crime or not against reporting or not (`*_bin`). Posteriorly, we calculated confidence intervals using bootstrap with 500 replications.
+For ROC curves, we dichotomized into committing a crime or not against reporting or not (`*_bin`). Posteriorly, we calculated confidence intervals using bootstrap with 2000 replications.
 
 ::: controlly2
 
-<div class="layout-chunk" data-layout="l-body">
+```{r roc, echo=T, fig.align='center', message=T, error=T, eval=T, layout="l-body-outset"}
 
-```{r roc, echo=T, fig.align='center', message=T, error=T, eval=T, results='asis', layout="l-body-outset"}
+source("https://raw.githubusercontent.com/ianhussey/SCED/master/R/ruscios_A.R")
+
+n_boot<- 2e3
 #Acquisitive  SUD   Violent Other
 suppressMessages(suppressWarnings(library(ROCit)))
 ## Warning: package 'ROCit' was built under R version 3.5.2
 message("Error in convertclass(class, reference = negref) :    class must have exactly two unique values)")
 
-cat("::::: {.panelset}", "\n")
-cat("::: {.panel}", "\n", "[Total]{.panel-name}", "\n")
+# ROCit_obj <- rocit(score=Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin,class=Base_fiscalia_v13c_dic_2022_3$tot_bin)
+# plot(ROCit_obj)
+cat("TOTAL")
+roc1 <- roc(Base_fiscalia_v13c_dic_2022_3$tot_bin, Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin)
+roc1_auc<-ci.auc(roc1, method= "bootstrap", boot.n= n_boot)
 
-ROCit_obj <- rocit(score=Base_fiscalia_v13c_dic_2022_3$tot_off_top_bin,class=Base_fiscalia_v13c_dic_2022_3$tot_bin)
-plot(ROCit_obj)
+paste0("AUC= ", round(attr(roc1_auc,"auc")[[1]],3)," (95% CI: ",round(as.numeric(roc1_auc[1]),3), ", ", round(as.numeric(roc1_auc[3]),3),")")
 
 #Del YOuden, el óptimo es...
-pander::pander(ciROC(ROCit_obj,nboot = 500))
+#pander::pander(ciROC(ROCit_obj,nboot = 500))
 #FPR: 1-especificidad
 #TPR: Sensibilidad
 
-cat(":::", "\n")
-cat("::: {.panel}", "\n", "[Acquisitive]{.panel-name}", "\n")
+cat("Acquisitive")
+roc2 <- roc(Base_fiscalia_v13c_dic_2022_3$acq_bin, Base_fiscalia_v13c_dic_2022_3$acq_top_bin)
+roc2_auc<-ci.auc(roc2, method= "bootstrap", boot.n= n_boot)
 
-ROCit_acq <- rocit(score=Base_fiscalia_v13c_dic_2022_3$acq_top_bin,class=Base_fiscalia_v13c_dic_2022_3$acq_bin)
-plot(ROCit_acq)
+paste0("AUC= ", round(attr(roc2_auc,"auc")[[1]],3)," (95% CI: ",round(as.numeric(roc2_auc[1]),3), ", ", round(as.numeric(roc2_auc[3]),3),")")
 
-pander::pander(ciROC(ROCit_acq,nboot = 500))
+# ROCit_acq <- rocit(score=Base_fiscalia_v13c_dic_2022_3$acq_bin,class=Base_fiscalia_v13c_dic_2022_3$acq_top_bin)
+# plot(ROCit_acq)
+# pander::pander(ciROC(ROCit_acq,nboot = 500))
 
-cat(":::", "\n")
-cat("::: {.panel}", "\n", "[SUD]{.panel-name}", "\n")
+cat("Substance-related")
+roc3 <- roc(Base_fiscalia_v13c_dic_2022_3$sud_bin, Base_fiscalia_v13c_dic_2022_3$sud_top_bin)
+roc3_auc<-ci.auc(roc3, method= "bootstrap", boot.n= n_boot)
 
-ROCit_sud <- rocit(score=Base_fiscalia_v13c_dic_2022_3$sud_top_bin,class=Base_fiscalia_v13c_dic_2022_3$sud_bin)
-plot(ROCit_sud)
+paste0("AUC= ", round(attr(roc3_auc,"auc")[[1]],3)," (95% CI: ",round(as.numeric(roc3_auc[1]),3), ", ", round(as.numeric(roc3_auc[3]),3),")")
 
-pander::pander(ciROC(ROCit_sud,nboot = 500))
+# ROCit_sud <- rocit(score=Base_fiscalia_v13c_dic_2022_3$sud_top_bin,class=Base_fiscalia_v13c_dic_2022_3$sud_bin)
+# plot(ROCit_sud)
+# pander::pander(ciROC(ROCit_sud,nboot = 500))
 
-cat(":::", "\n")
-cat("::: {.panel}", "\n", "[Violent]{.panel-name}", "\n")
+cat("Violent")
+roc4 <- roc(Base_fiscalia_v13c_dic_2022_3$vio_bin, Base_fiscalia_v13c_dic_2022_3$vio_top_bin)
+roc4_auc<-ci.auc(roc4, method= "bootstrap", boot.n= n_boot)
 
-ROCit_vio <- rocit(score=Base_fiscalia_v13c_dic_2022_3$vio_top_bin,class=Base_fiscalia_v13c_dic_2022_3$vio_bin)
-plot(ROCit_vio)
+paste0("AUC= ", round(attr(roc4_auc,"auc")[[1]],3)," (95% CI: ",round(as.numeric(roc4_auc[1]),3), ", ", round(as.numeric(roc4_auc[3]),3),")")
 
-pander::pander(ciROC(ROCit_vio,nboot = 500))
+# ROCit_vio <- rocit(score=Base_fiscalia_v13c_dic_2022_3$vio_top_bin,class=Base_fiscalia_v13c_dic_2022_3$vio_bin)
+# plot(ROCit_vio)
+# pander::pander(ciROC(ROCit_vio,nboot = 500))
 
-cat(":::", "\n")
-cat("::: {.panel}", "\n", "[Other]{.panel-name}", "\n")
+cat("Others")
+roc5 <- roc(Base_fiscalia_v13c_dic_2022_3$oth_bin, Base_fiscalia_v13c_dic_2022_3$oth_top_bin)
+roc5_auc<-ci.auc(roc5, method= "bootstrap", boot.n= n_boot)
 
-ROCit_oth <- rocit(score=Base_fiscalia_v13c_dic_2022_3$oth_top_bin,class=Base_fiscalia_v13c_dic_2022_3$oth_bin)
-plot(ROCit_oth)
+paste0("AUC= ", round(attr(roc5_auc,"auc")[[1]],3)," (95% CI: ",round(as.numeric(roc5_auc[1]),3), ", ", round(as.numeric(roc5_auc[3]),3),")")
 
-pander::pander(ciROC(ROCit_oth,nboot = 500))
-
-cat(":::", "\n")
-cat(":::::", "\n")
+# ROCit_oth <- rocit(score=Base_fiscalia_v13c_dic_2022_3$oth_top_bin,class=Base_fiscalia_v13c_dic_2022_3$oth_bin)
+# plot(ROCit_oth)
+# pander::pander(ciROC(ROCit_oth,nboot = 500))
 ```
 
-</div>
-
 :::
+
+```{r roc-plot, echo=T, fig.align='center', message=T, error=T, eval=T, fig.cap= "ROC curves by type of crimes", layout="l-body-outset"}
+
+
+# Create a basic roc object
+data(aSAH)
+roclist <- list("TOTAL" = roc1,
+                "Acquisitive" = roc2,
+                "SUD-related" = roc3,
+                "Violent" = roc4,
+                "Other crimes" = roc5)
+
+g <- ggroc(roclist, aes = "linetype", legacy.axes = TRUE) +
+  geom_abline() +
+  theme_classic() +
+  labs(x = "1 - Specificity",
+       y = "Sensitivity",
+       linetype = "Type of crimes")
+g
+```
 
 <br>
 
@@ -1208,7 +1247,7 @@ cat(":::::", "\n")
 
 ::: controlly2
 
-```{r an-1, eval=T, echo=T, error=T, message=FALSE, warning=FALSE, paged.print=TRUE, layout="l-body-outset"}
+```{r an-1, eval=T, echo=T, error=T, fig.align='center', message=FALSE, warning=FALSE, paged.print=TRUE, layout="l-body-outset"}
 mlogit.display2 <- function(multinom.model, decimal=2, alpha=.05) {
   s <- summary(multinom.model)
   z <- s$coefficients/s$standard.errors
@@ -1385,88 +1424,6 @@ invisible("can take more than 15 hours, because the model was taking municipalli
 #modelsummary(list("Conditional logit"=tm_cl), 
 #             fmt=3, estimate="{estimate}{stars}")
 ```
-
-## Inverse probability Adjusted ROC
-
-::: controlly2
-
-<div class="layout-chunk" data-layout="l-body">
-
-```{r roc, echo=T, fig.align='center', message=T, error=T, eval=T, results='asis', layout="l-body-outset"}
-invisible("In the end, this is very similar to a predict from a logistic regression and comparison with the true value")
-
-## Warning: package 'ROCit' was built under R version 3.5.2
-message("Error in convertclass(class, reference = negref) :    class must have exactly two unique values)")
-
-set.seed(2125)
-W2 <- weightit(as.formula(paste("motivodeegreso_mod_imp_rec~", paste(vars_cov, collapse = "+"))),
-               data=Base_fiscalia_v13c_dic_2022_3[which(!is.na(Base_fiscalia_v14$motivodeegreso_mod_imp_rec))], stabilize = T, method = "ps", estimand = "ATE", int=T, use.mlogit = FALSE)
-invisible("Warning: Missing values are present in the covariates. See ?WeightIt::method_ps for information on how these are handled.")
-invisible("Warning message:
-Some extreme weights were generated. Examine them with summary() and maybe trim them with trim().")
-Base_fiscalia_v14_mod$weight_mult_a1 <-W2$weights
-
-set.seed(2125)
-W1 <- weightit(as.formula(paste("con_quien_vive_joel~", paste(c(), collapse = "+"))),
-               data=Base_fiscalia_v13c_dic_2022_3, stabilize = T,
-                method = "bart", estimand = "ATE", int=T,
-                use.mlogit = FALSE)
-prueba2_imp22$weight_mult_a0 <-W1$weights
-
-
-
-
-cat("::::: {.panelset}", "\n")
-cat("::: {.panel}", "\n", "[Total]{.panel-name}", "\n")
-
-
-ROCit_obj_adj <-WeightedROC(fitted(Model3), Model3$y, weights(psurvey))
-plot(ROCit_obj)
-
-#Del YOuden, el óptimo es...
-pander::pander(ciROC(ROCit_obj,nboot = 500))
-#FPR: 1-especificidad
-#TPR: Sensibilidad
-
-cat(":::", "\n")
-cat("::: {.panel}", "\n", "[Acquisitive]{.panel-name}", "\n")
-
-ROCit_acq <- rocit(score=Base_fiscalia_v13c_dic_2022_3$acq_top_bin,class=Base_fiscalia_v13c_dic_2022_3$acq_bin)
-plot(ROCit_acq)
-
-pander::pander(ciROC(ROCit_acq,nboot = 500))
-
-cat(":::", "\n")
-cat("::: {.panel}", "\n", "[SUD]{.panel-name}", "\n")
-
-ROCit_sud <- rocit(score=Base_fiscalia_v13c_dic_2022_3$sud_top_bin,class=Base_fiscalia_v13c_dic_2022_3$sud_bin)
-plot(ROCit_sud)
-
-pander::pander(ciROC(ROCit_sud,nboot = 500))
-
-cat(":::", "\n")
-cat("::: {.panel}", "\n", "[Violent]{.panel-name}", "\n")
-
-ROCit_vio <- rocit(score=Base_fiscalia_v13c_dic_2022_3$vio_top_bin,class=Base_fiscalia_v13c_dic_2022_3$vio_bin)
-plot(ROCit_vio)
-
-pander::pander(ciROC(ROCit_vio,nboot = 500))
-
-cat(":::", "\n")
-cat("::: {.panel}", "\n", "[Other]{.panel-name}", "\n")
-
-ROCit_oth <- rocit(score=Base_fiscalia_v13c_dic_2022_3$oth_top_bin,class=Base_fiscalia_v13c_dic_2022_3$oth_bin)
-plot(ROCit_oth)
-
-pander::pander(ciROC(ROCit_oth,nboot = 500))
-
-cat(":::", "\n")
-cat(":::::", "\n")
-```
-
-</div>
-
-:::
 
 <br>
 

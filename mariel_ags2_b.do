@@ -37,6 +37,15 @@ cap noi which matselrc
 if _rc==111 {		
 cap noi net install dm79, from(http://www.stata.com/stb/stb56)
 	}
+cap noi which stpm2_standsurv
+if _rc==111 {		
+cap noi net install stpm2_standsurv.pkg, from(http://fmwww.bc.edu/RePEc/bocode/s)
+	}
+cap noi which fs
+if _rc==111 {		
+	ssc install fs
+	}
+
 <</dd_do>>
 ~~~~
 
@@ -48,6 +57,8 @@ Get the folder
 
 ~~~~
 <<dd_do: nocommand>>
+* codebook, compact
+
 *para poner la carpeta que aloja a tu proyecto
 pathutil split "`c(filename)'"
 	cap qui noi cd `"`dir'"'
@@ -56,18 +67,18 @@ pathutil split "`c(filename)'"
 <</dd_do>>
 ~~~~
 
-<<dd_include: "${pathdata}header.txt" >>
+<<dd_include: "${pathdata2}header.txt" >>
 
 <<dd_display: "Path data= ${pathdata};">>
 
-<<dd_display: "Time: `c(current_date)', considering an OS `c(os)'">>
+<<dd_display: "Tiempo: `c(current_date)', considerando un SO `c(os)'">>
 
 
-The file is located and named as: <<dd_display: "`c(pwd)'fiscalia_mariel_oct_2022_match_SENDA_pris.dta" >>
+The file is located and named as: <<dd_display: "`c(pwd)'fiscalia_mariel_oct_2022_match_SENDA.dta" >>
  
 
 =============================================================================
-## Structure database and survival
+## Structure database
 =============================================================================
 
  
@@ -76,27 +87,98 @@ We open the files
 ~~~~
 <<dd_do>>
 use "fiscalia_mariel_feb_2023_match_SENDA_pris.dta", clear
-encode escolaridad_rec, gen(esc_rec)
-encode sex, generate(sex_enc)
-encode sus_principal_mod, generate(sus_prin_mod)
-encode freq_cons_sus_prin, generate(fr_sus_prin)
-encode compromiso_biopsicosocial, generate(comp_biosoc)
-encode tenencia_de_la_vivienda_mod, generate(ten_viv)
+
+*b) muestreo de 5% de los datos
+*set seed 2125
+*sample 5
+
+fs mariel_ags_*.do
+di "`r(dofile)'"
+
+*tostring tr_modality, gen(tr_modality_str)
+cap noi encode tr_modality_str, gen(newtr_modality)
+cap confirm variable newtr_modality
+    if !_rc {		
+cap noi drop tr_modality
+cap noi rename newtr_modality tr_modality
+	}
+
+cap noi encode condicion_ocupacional_cor, gen(newcondicion_ocupacional_cor)
+cap confirm variable newcondicion_ocupacional_cor
+    if !_rc {		
+cap noi drop condicion_ocupacional_cor
+cap noi rename newcondicion_ocupacional_cor condicion_ocupacional_cor
+	}
+
+cap noi encode tipo_centro, gen(newtipo_centro)
+cap confirm variable newtipo_centro
+    if !_rc {		
+cap noi drop tipo_centro
+cap noi rename newtipo_centro tipo_centro
+	}
+
+cap noi encode sus_ini_mod_mvv, gen(newsus_ini_mod_mvv)
+cap confirm variable newsus_ini_mod_mvv
+    if !_rc {		
+cap noi drop sus_ini_mod_mvv
+cap noi rename newsus_ini_mod_mvv sus_ini_mod_mvv
+	}	
+	
+cap noi decode freq_cons_sus_prin, gen(str_freq_cons_sus_prin)
+cap confirm variable str_freq_cons_sus_prin
+    if !_rc {	
+cap noi drop freq_cons_sus_prin
+label def freq_cons_sus_prin2 1 "Less than 1 day a week" 2 "1 day a week or more" 3 "2 to 3 days a week" 4 "4 to 6 days a week" 5 "Daily"
+encode str_freq_cons_sus_prin, gen(freq_cons_sus_prin) label (freq_cons_sus_prin2)
+	}
+
+
+cap noi encode escolaridad_rec, gen(esc_rec)
+cap noi encode sex, generate(sex_enc)
+cap noi encode sus_principal_mod, gen(sus_prin_mod)
+cap noi encode freq_cons_sus_prin, gen(fr_sus_prin)
+cap noi encode compromiso_biopsicosocial, gen(comp_biosoc)
+cap noi encode tenencia_de_la_vivienda_mod, gen(ten_viv)
 *encode dg_cie_10_rec, generate(dg_cie_10_mental_h) *already numeric
-encode dg_trs_cons_sus_or, generate(sud_severity_icd10)
-encode macrozona, generate(macrozone)
-gen     motivodeegreso_mod_imp_rec3 = 1
-replace motivodeegreso_mod_imp_rec3 = 2 if strpos(motivodeegreso_mod_imp_rec,"Early")>0
-replace motivodeegreso_mod_imp_rec3 = 3 if strpos(motivodeegreso_mod_imp_rec,"Late")>0
+cap noi encode dg_trs_cons_sus_or, gen(sud_severity_icd10)
+cap noi encode macrozona, gen(macrozone)
+
+*2023-02-28, not done in R
+cap noi recode numero_de_hijos_mod  (0=0 "No children") (1/10=1 "Children"), gen(newnumero_de_hijos_mod) 
+cap confirm variable newnumero_de_hijos_mod
+    if !_rc {	
+drop numero_de_hijos_mod  
+cap noi rename newnumero_de_hijos_mod numero_de_hijos_mod 
+	}
+*not necessary: 2023-02-28
+*gen     motivodeegreso_mod_imp_rec3 = 1
+*replace motivodeegreso_mod_imp_rec3 = 2 if strpos(motivodeegreso_mod_imp_rec,"Early")>0
+*replace motivodeegreso_mod_imp_rec3 = 3 if strpos(motivodeegreso_mod_imp_rec,"Late")>0
 
 *encode policonsumo, generate(policon) *already numeric
 
-*motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.compromiso_biopsicosocial i.tenencia_de_la_vivienda_mod i.dg_cie_10_rec i.dg_trs_cons_sus_or i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth
 <</dd_do>>
 ~~~~
 
-Then we set the data base in surirval format 
+We show a table of missing values
 
+~~~~
+<<dd_do>>
+misstable sum motivodeegreso_mod_imp_rec tr_modality edad_al_ing_1 sex_enc edad_ini_cons escolaridad_rec sus_principal_mod freq_cons_sus_prin condicion_ocupacional_cor policonsumo numero_de_hijos_mod tenencia_de_la_vivienda_mod macrozona n_off_vio n_off_acq n_off_sud n_off_oth clas_r porc_pobr sus_ini_mod_mvv dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec
+<</dd_do>>
+~~~~
+
+And missing patterns
+
+~~~~
+<<dd_do>>
+misstable pat motivodeegreso_mod_imp_rec tr_modality edad_al_ing_1 sex_enc edad_ini_cons escolaridad_rec sus_principal_mod freq_cons_sus_prin condicion_ocupacional_cor policonsumo numero_de_hijos_mod tenencia_de_la_vivienda_mod macrozona n_off_vio n_off_acq n_off_sud n_off_oth clas_r porc_pobr sus_ini_mod_mvv dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec
+<</dd_do>>
+~~~~
+
+=============================================================================
+## Survival
+=============================================================================
 
 ~~~~
 <<dd_do>>
@@ -106,7 +188,12 @@ gen event=0
 replace event=1 if !missing(offender_d)
 *replace event=1 if !missing(sex)
 
+*correct time to event if _st=0
 gen diff= age_offending_imp-edad_al_egres_imp
+gen diffc= cond(diff<0.001, 0.001, diff)
+drop diff
+rename diffc diff
+lab var diff "Time to offense leading to imprisonment" 
 
 *age time
 stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
@@ -125,120 +212,6 @@ stsum, by (motivodeegreso_mod_imp_rec)
 
 
 =============================================================================
-## Descriptives
-=============================================================================
- 
-
-
-~~~~
-<<dd_do>>
-
-local ttl `" "Tr Completion" "Tr Disch (Early)" "Tr Disch (Late)" "' 
-forvalues i = 1/3 {
-cap drop sum_*
-	gettoken title ttl: ttl
-cap qui egen sum_`i' = total(_t) if motivodeegreso_mod_imp_rec==`i'
-cap qui tab _d motivodeegreso_mod_imp_rec if _d==1 & motivodeegreso_mod_imp_rec==`i'
-scalar n_eventos`i' =r(N)
-qui tabstat sum_`i', save
-scalar sum_`i'_total =r(StatTotal)[1,1]
-scalar ir_t = round((n_eventos`i'/sum_`i'_total)*1000,.1)
-*di ir_t
-*es numérico, para no generar incompatibilidad, se pasa a escalar
-global dens_inc`i' "Incidence rate ratio for `title' (`i') (x1,000 person-days):  `=scalar(ir_t)'"
-*di %9.1f (n_eventos`i'/sum_`i'_total)*1000
-}
-<</dd_do>>
-~~~~
-
-- <<dd_display: "$dens_inc1">>
-
-- <<dd_display: "$dens_inc2">>
-
-- <<dd_display: "$dens_inc3">>
-
-
-We recode the discharge cause to contrast them
-
-~~~~
-<<dd_do>>
-cap noi recode motivodeegreso_mod_imp_rec (1=0 "Tr Completion" ) ///
-			 (2=1 "Early Disch") ///
-			 (else=.), gen(tto_2_1)
-cap noi recode motivodeegreso_mod_imp_rec (1=0 "Tr Completion" ) ///
-			 (3=1 "Late Disch") ///
-			 (else=.), gen(tto_3_1)
-cap noi recode motivodeegreso_mod_imp_rec (2=0 "Early Disch" ) ///
-			 (3=1 "Late Disch") ///
-			 (else=.), gen(tto_3_2)
-<</dd_do>>
-~~~~
-
-
-We explored the inicidence rate ratios (IRR) of each cause of discharge.
-
-~~~~
-<<dd_do>>
-
-*set trace on
-local stname `" "2_1" "3_1" "3_2" "' 
-local titl `" "Early Disch vs Tr Completion" "Late Disch vs Tr Completion" "Late vs Early Disch" "' 
-foreach s of local stname {
-	gettoken title titl: titl
-cap noi qui ir _d tto_`s' _t
-scalar ir_`s' =round(r(irr),.01)
-*di ir_`s'
-scalar ir_`s'_lb =round(r(lb_irr),.01) 
-*di ir_`s'_lb
-scalar ir_`s'_ub =round(r(ub_irr),.01)
-*di ir_`s'_ub
-local ir1= ir_`s'
-local ir2= ir_`s'_lb
-local ir3= ir_`s'_ub
-*di  in gr _col(13) " `title': IRR `ir1' (IC 95% `ir2' - `ir3') "
-global irr_`s' " `title': IRR `ir1' (IC 95% `ir2' - `ir3') "
-global ir_`s' "`ir1' (IC 95% `ir2' - `ir3')"
-}	
-<</dd_do>>
-~~~~
-
-We generated a log-rank test to compare the expected to the observed result, obtaining that:
-
-- <<dd_display: "$irr_2_1">>, so patients with an Early Discharge had a greater incidence rate than patients in Tr Completion
-
-- <<dd_display: "$irr_3_1">>, so patients with a Late Discharge had a greater incidence rate than patients in Tr Completion
-
-- <<dd_display: "$irr_3_2">>, so patients with a Late Discharge had a lower incidence rate than patients with an Early Discharge
-
-
-~~~~
-<<dd_do>>
-*set trace on
-local stname `" "2_1" "3_1" "3_2" "' 
-local titl `" "Early Disch vs Tr Completion" "Late Disch vs Tr Completion" "Late vs Early Disch" "' 
-foreach s of local stname {
-	gettoken title titl: titl
-cap noi qui sts test tto_`s', logrank
-scalar logrank_chi`s'= round(r(chi2),.01)
-scalar logrank_df`s'= r(df)
-scalar logrank_p_`s'= round(chiprob(r(df),r(chi2)),.001)
-local lr1= logrank_chi`s'
-local lr2= logrank_df`s'
-local lr3= logrank_p_`s'
-global logrank_`s' " Chi^2(`lr2')=`lr1',p=`lr3'"
-}
-*set trace off
-<</dd_do>>
-~~~~
-
-- With a value of <<dd_display: "$logrank_2_1">>, survival curves between patients that had an Early Disch y Tr Completion were significantly different.
-
-- With a value of <<dd_display: "$logrank_3_1">>, survival curves between patients that had an Late Disch y Tr Completion were significantly different.
-
-- With a value of <<dd_display: "$logrank_3_2">>, survival curves between patients that had an Late y Early Disch were significantly different.
-
-
-=============================================================================
 ## Graph
 =============================================================================
 
@@ -246,7 +219,6 @@ We generated a graph with every type of treatment and the Nelson-Aalen estimate.
 
 ~~~~
 <<dd_do>>
-cap rm "tto2.svg"
 sts graph, na by (motivodeegreso_mod_imp_rec) ci ///
 title("Comission of an offense (end with imprisonment)") /// 
 subtitle("Nelson-Aalen Cum Hazards w/ Confidence Intervals 95%") ///
@@ -259,12 +231,11 @@ legend(cols(4)) ///
 graphregion(color(white) lwidth(large)) bgcolor(white) ///
 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
 legend(order(1 "95CI Tr Completion" 2 "Tr Completion" 3 "95CI Early Tr Disch" 4 "Early Tr Disch " 5 "95CI Late Tr Disch" 6 "Late Tr Disch" )size(*.5)region(lstyle(none)) region(c(none)) nobox)
-graph save "`c(pwd)'\_figs\tto2.gph", replace
+graph save "`c(pwd)'\_figs\tto_2023_p.gph", replace
 <</dd_do>>
 ~~~~
-
-<<dd_graph: saving("./_figs/tto2.svg") width(800) replace>>
-
+		
+<<dd_graph: saving("tto_2023_p.svg") width(800) replace>>
 
 
 
@@ -272,111 +243,147 @@ graph save "`c(pwd)'\_figs\tto2.gph", replace
 ## Survival Analyses
 =============================================================================
 
+**Staggered entry**
+
 We tested the schoefeld residuals.
 
 ~~~~
 <<dd_do>>
-*c("edad_al_ing_1", "edad_ini_cons", "dias_treat_imp_sin_na_1", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "compromiso_biopsicosocial", "tenencia_de_la_vivienda_mod", "dg_cie_10_rec", "dg_trs_cons_sus_or", "macrozona", "policonsumo", "n_prev_off", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth")
-
 global sim 1e5 //5e1 1e5 
 global boots 1e3 //5e1 2e3
 global times 0 90 365 1096 1826
 range timevar0 90 1826 90
 
-global covs "edad_al_ing_1 edad_ini_cons dias_treat_imp_sin_na_1 sex esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas sus_ini_mod_mvv dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
-global covs_2 "motivodeegreso_mod_imp_rec3 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas sus_ini_mod_mvv dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
+/*
+vars_cov<-c("tr_modality", "edad_al_ing_1", "sex", "edad_ini_cons", "dias_treat_imp_sin_na_1", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "condicion_ocupacional_corr", "via_adm_sus_prin_act", "policonsumo", "origen_ingreso_mod", "numero_de_hijos_mod", "tenencia_de_la_vivienda_mod", "dg_cie_10_rec", "dg_trs_cons_sus_or", "macrozona", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "clas_centers_r", "clas_r", "porc_pobr")
+*sex_enc sud_severity_icd10 
+*/
+
+global covs "i.motivodeegreso_mod_imp_rec i.tr_modality i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.numero_de_hijos_mod i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.clas_r porc_pobr i.sus_ini_mod_mvv dg_fis_anemia dg_fis_card dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
 
 
-stcox  $covs_2 , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
-estat phtest, log detail
-scalar chi2_scho_test = r(chi2)
+qui noi stcox  $covs , efron robust nolog schoenfeld(sch*) scaledsch(sca*)
 
+qui noi estat phtest, log detail
 mat mat_scho_test = r(phtest)
+scalar chi2_scho_test = r(chi2)
+scalar chi2_scho_test_df = r(df)
+scalar chi2_scho_test_p = r(p)
 
-esttab matrix(mat_scho_test) using "mat_scho_test2.csv", replace
-esttab matrix(mat_scho_test) using "mat_scho_test2.html", replace
+
+esttab matrix(mat_scho_test) using "mat_scho_test_02_2023_p.csv", replace
+esttab matrix(mat_scho_test) using "mat_scho_test_02_2023_p.html", replace
 
 <</dd_do>>
 ~~~~
 
-<<dd_include: "${pathdata2}mat_scho_test2.html" >>
+<<dd_display: "Chi^2(`=round(chi2_scho_test_df,.01)')= `=round(chi2_scho_test,.01)', p= `=round(chi2_scho_test_p,.0001)'">>
 
+<<dd_include: "${pathdata2}mat_scho_test_02_2023_p.html" >>
 
-We generated a list of parametric survival models with different distributions (Exponential, Weibull, Gompertz, Log-logistic, Log-normal & Generalized gamma). Aditionally, we defined a series of Royston-Parmar models with a function of restricted cubic splines, in which the knots (#df -1) are defined in each percentile of the distribution. We saved the estimates in the file called `parmodels_m2_nov_22_2'.
-
+**Reset-time**
 
 ~~~~
 <<dd_do>>
+*reset time, only compatible with stteffects (same entry times)
+stset diff, failure(event ==1) 
+<</dd_do>>
+~~~~
 
-		// Cox w/tvc
+~~~~
+<<dd_do>>
+*Micki Hill & Paul C Lambert & Michael J Crowther, 2021. "Introducing stipw: inverse probability weighted parametric survival models," London Stata Conference 2021 15, Stata Users Group.
+*https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&wdOrigin=BROWSELINK
+
+*Treatment variable should be a binary variable with values 0 and 1.
+gen     motivodeegreso_mod_imp_rec2 = 0
+replace motivodeegreso_mod_imp_rec2 = 1 if motivodeegreso_mod_imp_rec==2
+replace motivodeegreso_mod_imp_rec2 = 1 if motivodeegreso_mod_imp_rec==3
+
+recode motivodeegreso_mod_imp_rec2 (0=1 "Tr Completion") (1=0 "Tr Non-completion (Late & Early)"), gen(caus_disch_mod_imp_rec) 
+
+cap noi gen motegr_dum3= motivodeegreso_mod_imp_rec2 
+
+replace motegr_dum3 = 0 if motivodeegreso_mod_imp_rec==2
+
+lab var motegr_dum3 "Baseline treatment outcome(dich, 1= Late Dropout)" 
+
+lab var caus_disch_mod_imp_rec "Baseline treatment outcome(dich)" 
+
+/*
+vars_cov<-c("tr_modality", "edad_al_ing_1", "sex", "edad_ini_cons", "dias_treat_imp_sin_na_1", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "condicion_ocupacional_corr", "via_adm_sus_prin_act", "policonsumo", "origen_ingreso_mod", "numero_de_hijos_mod", "tenencia_de_la_vivienda_mod", "dg_cie_10_rec", "dg_trs_cons_sus_or", "macrozona", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "clas_centers_r", "clas_r", "porc_pobr")
+*sex_enc sud_severity_icd10 
+
+*dias_treat_imp_sin_na_1 
+*i.clas_centers_r 
+*i.origen_ingreso_mod 
+*i.via_adm_sus_prin_act 
+*i.sud_severity_icd10
+*/
+
+global covs_3 "i.motivodeegreso_mod_imp_rec i.tr_modality edad_al_ing_1 i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.numero_de_hijos_mod i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.clas_r porc_pobr i.sus_ini_mod_mvv dg_fis_anemia dg_fis_card dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
+
+qui noi stcox  $covs_3 , efron robust nolog schoenfeld(sch_b*) scaledsch(sca_b*)
+qui noi estat phtest, log detail
+mat mat_scho_test2 = r(phtest)
+scalar chi2_scho_test2 = r(chi2)
+scalar chi2_scho_test2_df = r(df)
+scalar chi2_scho_test2_p = r(p)
+ 
+esttab matrix(mat_scho_test2) using "mat_scho_test_02_2023_2_p.csv", replace
+esttab matrix(mat_scho_test2) using "mat_scho_test_02_2023_2_p.html", replace
+
+<</dd_do>>
+~~~~
+
+<<dd_display: "Chi^2(`=round(chi2_scho_test2_df,.01)')= `=round(chi2_scho_test2,.01)', p= `=round(chi2_scho_test2_p,.0001)'">>
+
+<<dd_include: "${pathdata2}mat_scho_test_02_2023_2_p.html" >>
+
+
+=============================================================================
+## Adjusted Survival Analyses
+=============================================================================
+
+In view of nonproportional hazards, we explored different shapes of time-dependent effects and baseline hazards.
+
+~~~~
+<<dd_do>>
+*______________________________________________
+*______________________________________________
+* ADJUSTED ROYSTON PARMAR - NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
+
+
+*Factor variables not allowed for tvc() option. Create your own dummy varibles.
+gen     motivodeegreso_mod_imp_rec_earl = 1
+replace motivodeegreso_mod_imp_rec_earl  = 0 if motivodeegreso_mod_imp_rec==1
+replace motivodeegreso_mod_imp_rec_earl  = 0 if motivodeegreso_mod_imp_rec==3
+
+gen     motivodeegreso_mod_imp_rec_late = 1
+replace motivodeegreso_mod_imp_rec_late  = 0 if motivodeegreso_mod_imp_rec==1
+replace motivodeegreso_mod_imp_rec_late  = 0 if motivodeegreso_mod_imp_rec==2
+
+*recode motivodeegreso_mod_imp_rec_earl (1=1 "Early dropout") (0=0 "Tr. comp & Late dropout"), gen(newmotivodeegreso_mod_imp_rec_e)
+*recode motivodeegreso_mod_imp_rec_late (1=1 "Late dropout") (0=0 "Tr. comp & Early dropout"), gen(newmotivodeegreso_mod_imp_rec_l)
+
+lab var motivodeegreso_mod_imp_rec_earl "Baseline treatment outcome- Early dropout(dich)" 
+lab var motivodeegreso_mod_imp_rec_late "Baseline treatment outcome- Late dropout(dich)" 
+
+cap noi rename motivodeegreso_mod_imp_rec_late mot_egr_late
+cap noi rename motivodeegreso_mod_imp_rec_earl mot_egr_early
+
+global covs_3b "mot_egr_early mot_egr_late i.tr_modality edad_al_ing_1 i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.numero_de_hijos_mod i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.clas_r porc_pobr i.sus_ini_mod_mvv i.dg_fis_anemia i.dg_fis_card i.dg_fis_enf_som i.dg_fis_ets i.dg_fis_hep_alc i.dg_fis_hep_b i.dg_fis_hep_cro i.dg_fis_inf i.dg_fis_otr_cond_fis_ries_vit i.dg_fis_otr_cond_fis i.dg_fis_pat_buc i.dg_fis_pat_ges_intrau i.dg_fis_trau_sec"
+
+forvalues i=1/10 {
 	forvalues j=1/7 {
-		di in yellow "{bf: ***********}"
-		di in yellow "{bf: family Cox tvc `j'}"
-		di in yellow "{bf: ***********}"
-		set seed 2125
-		qui cap noi stmerlin $covs_2 , dist(exponential) tvc(motivodeegreso_mod_imp_rec3) dftvc(`j')
-		estimates store m2_1_cox`j'	
+set seed 2125
+qui noi stpm2 $covs_3b , scale(hazard) df(`i') eform tvc(mot_egr_early mot_egr_late) dftvc(`j') /* difficult failconvlininit  */
+estimates  store m_nostag_rp`i'_tvc_`j'
 	}
+}
+*convergence not achieved
+*even with diff and failconvlnint
 
-	// Gompertz
-	di in yellow "{bf: ***********}"
-	di in yellow "{bf: family Gomp}"
-	di in yellow "{bf: ***********}"
-	set seed 2125
-	qui cap noi stmerlin $covs_2 , dist(gompertz)
-	//qui cap noi merlin (_time $covs if _trans == 1, family(gompertz, fail(_status)))
-	estimates store m2_1_gom
-
-	// Weibull
-	di in yellow "{bf: ***********}"
-	di in yellow "{bf: family Weibull}"
-	di in yellow "{bf: ***********}"
-	set seed 2125
-	qui cap noi stmerlin $covs_2 , dist(weibull)
-	//qui cap noi merlin (_time $covs if _trans == 1, family(gompertz, fail(_status)))
-	estimates store m2_1_wei
-	
-	// Log logistic
-	di in yellow "{bf: ***********}"
-	di in yellow "{bf: family Logl}"
-	di in yellow "{bf: ***********}"
-	set seed 2125
-	qui cap noi stmerlin $covs_2 , dist(loglogistic)
-	//qui cap noi merlin (_time $covs if _trans == 1, family(loglogistic, fail(_status)))
-	estimates store m2_1_logl
-
-	// Log normal
-	di in yellow "{bf: ***********}"
-	di in yellow "{bf: family Logn}"
-	di in yellow "{bf: ***********}"
-	set seed 2125
-	qui cap noi stmerlin $covs_2 , dist(lognormal)
-	//qui cap noi merlin (_time $covs if _trans == 1, family(lognormal, fail(_status)))
-	estimates store m2_1_logn
-	
-	// Generalised gamma
-	di in yellow "{bf: ***********}"
-	di in yellow "{bf: family Ggam}"
-	di in yellow "{bf: ***********}"
-	set seed 2125
-	qui cap noi stmerlin $covs_2 , dist(ggamma)
-	//qui cap noi merlin (_time $covs if _trans == 1, family(ggamma, fail(_status)))
-	estimates store m2_1_ggam
-
-	// Royston Parmar models
-	forvalues j=1/10 {
-		di in yellow "{bf: ***********}"
-		di in yellow "{bf: family RP`j'}"
-		di in yellow "{bf: ***********}"
-		set seed 2125
-		qui cap noi stmerlin $covs_2, dist(rp) df(`j')
-		//qui cap noi merlin (_time $covs if _trans == 1, family(rp, df(`j') fail(_status)))
-		estimates store m2_1_rp`j'
-		*estimates save "${pathdata2}parmodels.ster", append	
-	}	
-
-*rcs(time, df(3) orthog)
-estwrite _all using "${pathdata2}parmodels_m2_nov_22_2.sters", replace
 <</dd_do>>
 ~~~~
 
@@ -384,20 +391,15 @@ We obtained a summary of distributions by AICs and BICs.
 
 ~~~~
 <<dd_do>>
-*estread "${pathdata2}parmodels_aic_bic_22_2.sters"
-
 *file:///G:/Mi%20unidad/Alvacast/SISTRAT%202019%20(github)/_supp_mstates/stata/1806.01615.pdf
 *rcs - restricted cubic splines on log hazard scale
 *rp - Royston-Parmar model (restricted cubic spline on log cumulative hazard scale)
 qui count if _d == 1
 	// we count the amount of cases with the event in the strata
 	//we call the estimates stored, and the results...
-estimates stat m2_1_*, n(`r(N)')
+estimates stat m_nostag_rp*, n(`r(N)')
 	//we store in a matrix de survival
 matrix stats_1=r(S)
-
-
-estimates clear
 
 ** to order AICs
 *https://www.statalist.org/forums/forum/general-stata-discussion/general/1665263-sorting-matrix-including-rownames
@@ -425,188 +427,528 @@ void st_sort_matrix(
 end
 //mata: mata drop st_sort_matrix()
 
-mata : st_sort_matrix("stats_1", 6)
-esttab matrix(stats_1) using "testreg_aic_bic_22_2.csv", replace
-esttab matrix(stats_1) using "testreg_aic_bic_22_2.html", replace
+mata : st_sort_matrix("stats_1", 5) // 5 AIC, 6 BIC
+esttab matrix(stats_1) using "testreg_aic_bic_mariel_23_1_p.csv", replace
+esttab matrix(stats_1) using "testreg_aic_bic_mariel_23_1_p.html", replace
+
+*weibull: Log cumulative hazard is linear in log t: ln⁡𝐻(𝑡)=𝑘 ln⁡〖𝑡−〖k ln〗⁡𝜆 〗
+*Splines generalize to (almost) any baseline hazard shape.
+*Stable estimates on the log cumulative hazard scale.
+*ln⁡𝐻(𝑡)=𝑠(ln⁡〖𝑡)−〖k ln〗⁡𝜆 〗
 
 <</dd_do>>
 ~~~~
 
-<<dd_include: "${pathdata2}testreg_aic_bic_22_2.html" >>
+<<dd_include: "${pathdata2}testreg_aic_bic_mariel_23_1_p.html" >>
 
 
+In case of the more flexible parametric models (non-standard), we selected the models that showed the best trade-off between lower complexity and better fit, and this is why we also considered the BIC. If a model with less parameters had greater or equal AIC (or differences lower than 2) but also had better BIC (<=2), we favoured the model with less parameters.
 
+The baseline hazard function was fitted using restricted cubic splines with 6 degrees of freedom, generating 5 interior knots placed at equally-spaced percentiles (17, 33, 50, 67 & 83). To allow for non-proportional hazards, the time-dependent effect of treatment outcome was fitted using restricted cubic splines with 1 degrees of freedom.
+
+~~~~
+<<dd_do>>
+
+*The per(1000) option multiplies the hazard rate by 1000 as it is easier to interpret the rate per 1000 years than per person per year.
+
+range tt 0 7 28
+
+estimates replay m_nostag_rp6_tvc_1
+estimates restore m_nostag_rp6_tvc_1
+
+predict h0, hazard timevar(tt) at(mot_egr_early 0 mot_egr_late 0) zeros ci per(1000)
+
+predict h1, hazard timevar(tt) at(mot_egr_early 1 mot_egr_late 0) zeros ci per(1000)
+
+predict h2, hazard timevar(tt) at(mot_egr_early 0 mot_egr_late 1) zeros ci per(1000)
+
+twoway  (rarea h0_lci h0_uci tt, color(red%25)) ///             
+                 (rarea h1_lci h1_uci tt, color(blue%25)) ///
+				 (rarea h2_lci h2_uci tt, color(green%25)) ///
+                 (line h0 tt, lcolor(red) lwidth(thick)) ///
+                 (line h1 tt, lcolor(blue) lwidth(thick)) ///
+				 (line h2 tt, lcolor(green) lwidth(thick)) ///
+                 ,xtitle("Years from treatment outcome") ///
+                 ytitle("Imprisonment rate (per 1000 py) (covariates at 0)") ///
+                 legend(order( 4 "Tr. completion" 5 "Early dropout" 6 "Late dropout") ring(0) pos(1) cols(1)region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(hazards_in_zeros, replace)
+				 
+graph save "`c(pwd)'\_figs\h_m_ns_rp6tvc1.gph", replace
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp6tvc1.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
+
+sts gen km=s, by(motivodeegreso_mod_imp_rec)
+
+gen zero=0
+
+estimates restore m_nostag_rp6_tvc_1
+
+// Marginal survival 
+predict ms0, meansurv timevar(tt) at(mot_egr_early 0 mot_egr_late 0) ci 
+
+predict ms1, meansurv timevar(tt) at(mot_egr_early 1 mot_egr_late 0) ci 
+
+predict ms2, meansurv timevar(tt) at(mot_egr_early 0 mot_egr_late 1) ci 
+
+twoway  (rarea ms0_lci ms0_uci tt, color(red%25)) ///             
+                 (rarea ms1_lci ms1_uci tt, color(blue%25)) ///
+				 (rarea ms2_lci ms2_uci tt, color(green%25)) ///
+				 (line km _t if motivodeegreso_mod_imp_rec==1 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(red%50)) ///
+				 (line km _t if motivodeegreso_mod_imp_rec==2 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(blue%50)) ///
+				 (line km _t if motivodeegreso_mod_imp_rec==3 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(green%50)) ///
+                 (line ms0 tt, lcolor(red) lwidth(thick)) ///
+                 (line ms1 tt, lcolor(blue) lwidth(thick)) ///
+				 (line ms2 tt, lcolor(green) lwidth(thick)) ///
+                 ,xtitle("Years from treatment outcome") ///
+                 ytitle("Probibability of avoiding imprisonment (standardized)") ///
+                 legend(order( 4 "Tr. completion" 5 "Early dropout" 6 "Late dropout") ring(0) pos(1) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) )  /// //text(.5 1 "IR = <0.001") ///
+                 name(km_vs_standsurv, replace)
+graph save "`c(pwd)'\_figs\h_m_ns_rp6tvc2.gph", replace
+
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp6tvc2.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
+*https://www.pauldickman.com/software/stata/sex-differences/
+
+estimates restore m_nostag_rp6_tvc_1
+
+predictnl diff_ms = predict(meansurv timevar(tt)) - ///
+                  predict(meansurv at(mot_egr_early 1 mot_egr_late 0) timevar(tt)) ///
+                  if mot_egr_early==0, ci(diff_ms_l diff_ms_u)
+
+predictnl diff_ms2 = predict(meansurv timevar(tt)) - ///
+                  predict(meansurv at(mot_egr_early 0 mot_egr_late 1) timevar(tt)) ///
+                  if mot_egr_late==0, ci(diff_ms2_l diff_ms2_u)
+				  
+predictnl diff_ms3 = predict(meansurv at(mot_egr_early 1 mot_egr_late 0) timevar(tt)) - ///
+                  predict(meansurv at(mot_egr_early 0 mot_egr_late 1) timevar(tt)) ///
+                  if mot_egr_late==0, ci(diff_ms3_l diff_ms3_u)
+
+				  
+twoway  (rarea diff_ms_l diff_ms_u tt, color(red%25)) ///     
+				  (line diff_ms tt, lcolor(red) lwidth(thick)) ///
+		(rarea diff_ms2_l diff_ms2_u tt, color(blue%25)) ///     
+				  (line diff_ms2 tt, lcolor(blue) lwidth(thick)) ///		
+		(rarea diff_ms3_l diff_ms3_u tt, color(green%25)) ///     				  
+				  (line diff_ms3 tt, lcolor(green) lwidth(thick)) ///					  
+				  (line zero tt, lcolor(black%20) lwidth(thick)) ///
+				   ,xtitle("Years from treatment outcome") ///
+                 ytitle("Differences  of avoiding imprisonment (standardized)") ///
+                 legend(order( 2 "Early vs. tr. completion" 4 "Late dropout vs. tr. completion" 6 "Late vs. early dropout") ring(2) pos(1) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(surv_diffs, replace)
+graph save "`c(pwd)'\_figs\h_m_ns_rp6_stddif_s.gph", replace
+
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp6_stddiff_s.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
+
+cap noi tab tr_modality, gen(tr_mod)
+cap noi tab sex_enc, gen(sex_dum)
+cap noi tab escolaridad_rec, gen(esc)
+cap noi tab sus_principal_mod, gen(sus_prin)
+cap noi tab freq_cons_sus_prin, gen(fr_cons_sus_prin)
+cap noi tab condicion_ocupacional_cor, gen(cond_ocu)
+cap noi tab numero_de_hijos_mod, gen(num_hij)
+cap noi tab tenencia_de_la_vivienda_mod, gen(tenviv)
+cap noi tab macrozona, gen(mzone)
+cap noi tab clas_r, gen(rural)
+cap noi tab sus_ini_mod_mvv, gen(susini)
+
+local varslab "dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
+forvalues i = 1/14 {
+	local v : word `i' of `varslab'
+	di "`v'"
+	gen `v'2= 0
+	replace `v'2 =1 if `v'==2
+}
+
+*REALLY NEEDS DUMMY VARS
+global covs_3b_dum "mot_egr_early mot_egr_late tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia2 dg_fis_card2 dg_fis_enf_som2 dg_fis_ets2 dg_fis_hep_alc2 dg_fis_hep_b2 dg_fis_hep_cro2 dg_fis_inf2 dg_fis_otr_cond_fis_ries_vit2 dg_fis_otr_cond_fis2 dg_fis_pat_buc2 dg_fis_pat_ges_intrau2 dg_fis_trau_sec2"
+
+qui noi stpm2 $covs_3b_dum , scale(hazard) df(6) eform tvc(mot_egr_early mot_egr_late) dftvc(1) 
+estimates store m_nostag_rp6_tvc_1_dum
+
+estimates restore m_nostag_rp6_tvc_1_dum
+
+stpm2_standsurv, at1(mot_egr_early 0 mot_egr_late 0) at2(mot_egr_early 1 mot_egr_late 0) timevar(tt) ci contrast(difference) ///
+     atvar(s_tr_comp s_early_drop) contrastvar(sdiff_tr_comp_early_drop)
+
+stpm2_standsurv, at1(mot_egr_early 0 mot_egr_late 0) at2(mot_egr_early 0 mot_egr_late 1) timevar(tt) ci contrast(difference) ///
+     atvar(s_tr_comp0 s_late_drop) contrastvar(sdiff_tr_comp_late_drop)
+
+stpm2_standsurv, at1(mot_egr_early 1 mot_egr_late 0) at2(mot_egr_early 0 mot_egr_late 1) timevar(tt) ci contrast(difference) ///
+     atvar(s_early_drop0 s_late_drop0) contrastvar(sdiff_early_late_drop)	
+
+cap noi drop s_tr_comp0 s_early_drop0 s_late_drop0
+twoway  (rarea s_tr_comp_lci s_tr_comp_uci tt, color(red%25)) ///             
+                 (rarea s_early_drop_lci s_early_drop_uci tt, color(blue%25)) ///
+				 (rarea s_late_drop_lci s_late_drop_uci tt, color(green%25)) ///
+				 (line km _t if motivodeegreso_mod_imp_rec==1 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(red%50)) ///
+				 (line km _t if motivodeegreso_mod_imp_rec==2 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(blue%50)) ///
+				 (line km _t if motivodeegreso_mod_imp_rec==3 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(green%50)) ///
+                 (line s_tr_comp tt, lcolor(red) lwidth(thick)) ///
+                 (line s_early_drop tt, lcolor(blue) lwidth(thick)) ///
+				 (line s_late_drop tt, lcolor(green) lwidth(thick)) ///
+                 ,xtitle("Years from treatment outcome") ///
+                 ytitle("Probibability of avoiding imprisonment (standardized)") ///
+                 legend(order( 4 "Tr. completion" 5 "Early dropout" 6 "Late dropout") ring(0) pos(1) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(km_vs_standsurv, replace)
+graph save "`c(pwd)'\_figs\h_m_ns_rp6_s.gph", replace
+
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp6_s.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
+
+twoway  (rarea sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci tt, color(blue%20)) ///
+                 (line sdiff_tr_comp_early_drop tt, lcolor(blue)) ///
+		(rarea sdiff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci tt, color(red%20)) ///
+                 (line sdiff_tr_comp_late_drop tt, lcolor(red)) ///
+		(rarea sdiff_early_late_drop_lci sdiff_early_late_drop_uci tt, color(green%20)) ///
+                 (line sdiff_early_late_drop tt, lcolor(green)) ///				 
+         				  (line zero tt, lcolor(black%20) lwidth(thick)) ///
+         , ylabel(, format(%3.1f)) ///
+         ytitle("Difference in Survival (years)") ///
+         xtitle("Years from baseline treatment outcome") ///
+		 legend(order( 1 "Early vs. Tr. completion" 3 "Late vs. Tr. completion" 5 "Late vs. Early dropout") ring(0) pos(7) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(s_diff, replace)
+graph save "`c(pwd)'\_figs\h_m_ns_rp6_stdif_s2.gph", replace
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp6_stdif_s2.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
+
+estimates restore m_nostag_rp6_tvc_1_dum
+
+stpm2_standsurv, at1(mot_egr_early 0 mot_egr_late 0) at2(mot_egr_early 1 mot_egr_late 0) timevar(tt) rmst ci contrast(difference) ///
+     atvar(rmst_h0 rmst_h1) contrastvar(rmstdiff_tr_comp_early_drop)
+
+stpm2_standsurv, at1(mot_egr_early 0 mot_egr_late 0) at2(mot_egr_early 0 mot_egr_late 1) timevar(tt) rmst ci contrast(difference) ///
+     atvar(rmst_h00 rmst_h2) contrastvar(rmstdiff_tr_comp_late_drop)
+
+stpm2_standsurv, at1(mot_egr_early 1 mot_egr_late 0) at2(mot_egr_early 0 mot_egr_late 1) timevar(tt) rmst ci contrast(difference) ///
+     atvar(rmst_h11 rmst_h22) contrastvar(rmstdiff_early_late_drop)	
+	 
+cap noi drop rmst_h00 rmst_h11 rmst_h22
+twoway  (rarea rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci tt, color(blue%20)) ///
+                 (line rmstdiff_tr_comp_early_drop tt, lcolor(blue)) ///
+		(rarea rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci tt, color(red%20)) ///
+                 (line rmstdiff_tr_comp_late_drop tt, lcolor(red)) ///
+		(rarea rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci tt, color(green%20)) ///
+                 (line rmstdiff_early_late_drop tt, lcolor(green)) ///				 
+         				  (line zero tt, lcolor(black%20) lwidth(thick)) ///
+         , ylabel(, format(%3.1f)) ///
+         ytitle("Difference in RMST (years)") ///
+         xtitle("Years from baseline treatment outcome") ///
+		 legend(order( 1 "Early vs. Tr. completion" 3 "Late vs. Tr. completion" 5 "Late vs. Early dropout") ring(0) pos(7) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(RMSTdiff, replace)
+graph save "`c(pwd)'\_figs\h_m_ns_rp6_stdif_rmst.gph", replace
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("_figs/h_m_ns_rp6_stdif_rmst.svg") width(800) replace>>
+
+
+=============================================================================
 ### IPTW Royston-Parmar
+=============================================================================
 
-
-~~~~
-<<dd_do>>
-*reset time, only compatible with stteffects (same entry times)
-stset diff, failure(event ==1) 
-*stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
-
-cap rm bsreg12.dta bsreg22.dta
-
-*count if missing(motivodeegreso_mod_imp_rec3, edad_al_ing_1, edad_ini_cons, dias_treat_imp_sin_na_1, esc_rec, sus_prin_mod, fr_sus_prin, comp_biosoc, ten_viv, dg_cie_10_rec, sud_severity_icd10, macrozone, policonsumo, n_off_vio, n_off_acq, n_off_sud, n_off_oth)
-<</dd_do>>
-~~~~
-
-
-First we calculated the difference between those patients who did and did not complete baseline treatment, given that this analysis is restricted to 2 values.
-
-~~~~
-<<dd_do>>
-*Micki Hill & Paul C Lambert & Michael J Crowther, 2021. "Introducing stipw: inverse probability weighted parametric survival models," London Stata Conference 2021 15, Stata Users Group.
-*https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&wdOrigin=BROWSELINK
-
-*Treatment variable should be a binary variable with values 0 and 1.
-gen     motivodeegreso_mod_imp_rec2 = 0
-replace motivodeegreso_mod_imp_rec2 = 1 if strpos(motivodeegreso_mod_imp_rec,"Early")>0
-replace motivodeegreso_mod_imp_rec2 = 1 if strpos(motivodeegreso_mod_imp_rec,"Late")>0
-
-recode motivodeegreso_mod_imp_rec3 (1=0 "Tr Completion") (3=1 "Tr Non-completion (Late)") (2=2 "Tr Non-completion (Early)"), gen(caus_disch_mod_imp_rec) 
-lab var caus_disch_mod_imp_rec "Baseline treatment outcome" 
-
-global covs_3 "i.caus_disch_mod_imp_rec edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud i.clas"
-
-global covs_3b "i.caus_disch_mod_imp_rec edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.origen_ingreso_mod numero_de_hijos_mod i.dg_cie_10_rec i.sud_severity_icd10 i.macrozone i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud i.clas"
-
-*______________________________________________
-*______________________________________________
-* ADJUSTED ROYSTON PARMAR - DF5, NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
-
-stpm2 $covs_3 , scale(hazard) df(5) eform
-
-stpm2 $covs_3b , scale(hazard) df(5) eform
-
-*______________________________________________
-*______________________________________________
-* INVERSE PROBABILITY WEIGHTED ADJUSTED ROYSTON PARMAR - DF5, NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
-
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(5) genw(rpdf5_m_nostag_ten_viv) ipwtype(stabilised) vce(mestimation) eform
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(5) genw(rpdf5_m_nostag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
-
-predict rmst03 in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
-predict rmst13 in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
-predictnl drmst= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_se)
-
-cap list rmst03 rmst13  drmst in 1
-<</dd_do>>
-~~~~
-
-We used a gompertz distribution, assuming that baseline treatment outcome showed proportional hazards
+First we calculated the difference between those patients who did and did not complete baseline treatment, given that the analysis of stipw is restricted to 2 values and does not allow multi-valued treatments.
 
 ~~~~
 <<dd_do>>
 *______________________________________________
 *______________________________________________
-* INVERSE PROBABILITY WEIGHTED ADJUSTED GOMPERTZ - NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
+* NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
 
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) genw(gomp_m_nostag_ten_viv) ipwtype(stabilised) vce(mestimation)
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) genw(gomp_m_nostag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation)
+global covs_4_dum "motivodeegreso_mod_imp_rec2 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia dg_fis_card dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
 
-predict rmst03_c in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
-predict rmst13_c in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
-predictnl drmst_c= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_c_se)
+*  tvar must be a binary variable with 1 = treatment/exposure and 0 = control.
+rename motivodeegreso_mod_imp_rec2 mot_egr_imp_rec2
 
-cap list rmst03_c rmst13_c  drmst_c in 1
-<</dd_do>>
-~~~~
+gen mot_egr_imp_rec= motivodeegreso_mod_imp_rec
 
-We used another model with only 2 degrees of freedom according to the lowest BIC 
-   
-~~~~
-<<dd_do>>
+tab mot_egr_imp_rec, gen(mot_egr_imp_rec_dum)
 
-*______________________________________________
-*______________________________________________
-* ADJUSTED ROYSTON PARMAR - DF2,  NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
+cap noi drop mot_egr_imp_rec
 
-stpm2 $covs_3 , scale(hazard) df(2) eform
+ *mot_egr_imp_rec_dum2 = early; mot_egr_imp_rec_dum3= late
 
-stpm2 $covs_3b , scale(hazard) df(2) eform
+*exponential weibull gompertz lognormal loglogistic
+*10481 observations have missing treatment and/or missing confounder values and/or _st = 0.
+forvalues i=1/10 {
+	forvalues j=1/7 {
+estimates  store m_stipw_nostag_rp`i'_tvcdf`j'
+	}
+}
 
-*______________________________________________
-*______________________________________________
-* INVERSE PROBABILITY WEIGHTED ADJUSTED ROYSTON PARMAR - DF2, NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
+*https://core.ac.uk/download/pdf/6990318.pdf
 
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(2) genw(rpdf2_m_nostag_ten_viv) ipwtype(stabilised) vce(mestimation) eform
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(rp) df(2) genw(rpdf2_m_nostag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
+*The following options are not permitted with streg models:
+*bknots, bknotstvc, df, dftvc, failconvlininit, knots, knotstvc knscale, noorthorg, eform, alleq, keepcons, showcons, lininit
+*forvalues j=1/7 {
+local vars "exponential weibull gompertz lognormal loglogistic"
+local varslab "exp wei gom logn llog"
+forvalues i = 1/5 {
+ local v : word `i' of `vars'
+ local v2 : word `i' of `varslab'
+qui noi stipw (logit mot_egr_imp_rec2 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia dg_fis_card dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec), distribution(`v') genw(`v2'_m_nostag) ipwtype(stabilised) vce(mestimation)
+estimates  store m_stipw_nostag_`v2'
+	}
+*}
 
-predict rmst03_b in 1, at(motivodeegreso_mod_imp_rec2 0) rmst stdp tmax(3)
-predict rmst13_b in 1, at(motivodeegreso_mod_imp_rec2 1) rmst stdp tmax(3)
-predictnl drmst_b= predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3))- predict(rmst at(motivodeegreso_mod_imp_rec2 1) tmax(3)) in 1, se(drmst_b_se)
-
-cap list rmst03_b rmst13_b  drmst_b in 1
-<</dd_do>>
-~~~~
-
-**Staggered entry**
-
-~~~~
-<<dd_do>>
-*______________________________________________
-*______________________________________________
-* ADJUSTED ROYSTON PARMAR - DF5,  STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
-
-stset age_offending_imp, fail(event ==1) enter(edad_al_egres_imp)
-
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(5) genw(rpdf5_m_stag_ten_viv) ipwtype(stabilised) vce(mestimation) eform
-estimates store df5_stipw
-
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(5) genw(rpdf5_m_stag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
-estimates store df5_stipw2
-<</dd_do>>
-~~~~
-
-
-~~~~
-<<dd_do>>
-*______________________________________________
-*______________________________________________
-* INVERSE PROBABILITY WEIGHTED ADJUSTED GOMPERTZ - STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
-
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(gompertz) genw(gomp_m_stag_ten_viv) ipwtype(stabilised) vce(mestimation)
-estimates store gomp_stipw
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud clas), distribution(gompertz) genw(gomp_m_stag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation)
-estimates store gomp_stipw2
-<</dd_do>>
-~~~~
-
-Given that the model with 2 degrees of freedom did not converge, we calculated the estimates with the second model with best AIC (3 degrees of freedom).
-
-~~~~
-<<dd_do>>
-
-*______________________________________________
-*______________________________________________
-* ADJUSTED ROYSTON PARMAR - DF3,  STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
-
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc ten_viv dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(3) genw(rpdf3_m_stag_ten_viv) ipwtype(stabilised) vce(mestimation) eform
-estimates store df3_stipw
-stipw (logit motivodeegreso_mod_imp_rec2 edad_al_ing_1 edad_ini_cons sex_enc esc_rec sus_prin_mod fr_sus_prin comp_biosoc origen_ingreso_mod numero_de_hijos_mod dg_cie_10_rec sud_severity_icd10 macrozone policonsumo n_off_vio n_off_acq n_off_sud), distribution(rp) df(3) genw(rpdf3_m_stag_or_ing_num_hij) ipwtype(stabilised) vce(mestimation) eform
-estimates store df3_stipw2
-<</dd_do>>
-~~~~
-
-~~~~
-<<dd_do>>
 qui count if _d == 1
 	// we count the amount of cases with the event in the strata
 	//we call the estimates stored, and the results...
-estimates stat df5_stipw gomp_stipw df3_stipw, n(`r(N)')
+estimates stat m_stipw_nostag_*, n(`r(N)')
 	//we store in a matrix de survival
-matrix stats_stipw=r(S)
+matrix stats_2=r(S)
+mata : st_sort_matrix("stats_2", 5) // 5 AIC, 6 BIC
+esttab matrix(stats_2) using "testreg_aic_bic_mariel_23_2_p.csv", replace
+esttab matrix(stats_2) using "testreg_aic_bic_mariel_23_2_p.html", replace
 
-estwrite df5_stipw gomp_stipw df3_stipw df5_stipw2 gomp_stipw2 df3_stipw2 using "${pathdata2}parmodels_m2_stipw_22.sters", replace
+*m_stipw_nostag_rp5_tvcdf1
 <</dd_do>>
 ~~~~
+
+<<dd_include: "${pathdata2}testreg_aic_bic_mariel_23_2_p.html" >>
+
+~~~~
+<<dd_do>>
+
+estimates restore m_stipw_nostag_rp5_tvcdf1
+
+stpm2_standsurv, at1(mot_egr_imp_rec2 0 ) at2(mot_egr_imp_rec2 1 ) timevar(tt) ci contrast(difference) ///
+     atvar(s_comp_a s_nocomp_a) contrastvar(sdiff_comp_vs_nocomp)
+
+stpm2_standsurv, at1(mot_egr_imp_rec2 0 ) at2(mot_egr_imp_rec2 1 ) timevar(tt) rmst ci contrast(difference) ///
+     atvar(rmst_comp_a rmst_nocomp_a) contrastvar(rmstdiff_comp_vs_nocomp)
+
+sts gen km_a=s, by(mot_egr_imp_rec2)
+	 
+twoway  (rarea s_comp_a_lci s_comp_a_uci tt, color(red%25)) ///             
+                 (rarea s_nocomp_a_lci s_nocomp_a_uci tt, color(blue%25)) ///
+				 (line km_a _t if mot_egr_imp_rec2==0 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(red%50)) ///
+				 (line km_a _t if mot_egr_imp_rec2==1 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(blue%50)) ///
+                 (line s_comp_a tt, lcolor(red) lwidth(thick)) ///
+                 (line s_nocomp_a tt, lcolor(blue) lwidth(thick)) ///
+                 ,xtitle("Years from treatment outcome") ///
+                 ytitle("Probibability of avoiding imprisonment (standardized)") ///
+                 legend(order(5 "Tr. completion" 6 "No completion") ring(0) pos(1) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(km_vs_standsurv_fin_a, replace)
+graph save "`c(pwd)'\_figs\h_m_ns_rp5_a_p.gph", replace
+
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp5_a_p.svg") width(800) replace>>
+
+
+~~~~
+<<dd_do>>
+
+twoway  (rarea rmst_comp_a_lci rmst_comp_a_uci tt, color(red%25)) ///             
+                 (rarea rmst_nocomp_a_lci rmst_nocomp_a_uci tt, color(blue%25)) ///
+                 (line rmst_comp_a tt, lcolor(red) lwidth(thick)) ///
+                 (line rmst_nocomp_a tt, lcolor(blue) lwidth(thick)) ///
+                 ,xtitle("Years from treatment outcome") ///
+                 ytitle("Restricted Mean Survival Times (standardized)") ///
+                 legend(order(1 "Tr. completion" 2 "No completion") ring(0) pos(5) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(rmst_std_fin_a, replace)	 
+graph save "`c(pwd)'\_figs\h_m_ns_rp5_stdif_rmst_a_p.gph", replace
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp5_stdiff_rmst_a_p.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
+*______________________________________________
+*______________________________________________
+* NO STAGGERED ENTRY, BINARY TREATMENT (1-LATE VS. 0-COMPLETION & EARLY DROP)
+
+forvalues i=1/10 {
+	forvalues j=1/7 {
+qui noi stipw (logit motegr_dum3 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia2 dg_fis_card2 dg_fis_enf_som2 dg_fis_ets2 dg_fis_hep_alc2 dg_fis_hep_b2 dg_fis_hep_cro2 dg_fis_inf2 dg_fis_otr_cond_fis_ries_vit2 dg_fis_otr_cond_fis2 dg_fis_pat_buc2 dg_fis_pat_ges_intrau2 dg_fis_trau_sec2), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m2_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
+estimates  store m2_stipw_nostag_rp`i'_tvcdf`j'
+	}
+}
+
+*https://core.ac.uk/download/pdf/6990318.pdf
+
+*The following options are not permitted with streg models:
+*bknots, bknotstvc, df, dftvc, failconvlininit, knots, knotstvc knscale, noorthorg, eform, alleq, keepcons, showcons, lininit
+*forvalues j=1/7 {
+local vars "exponential weibull gompertz lognormal loglogistic"
+local varslab "exp wei gom logn llog"
+forvalues i = 1/5 {
+ local v : word `i' of `vars'
+ local v2 : word `i' of `varslab'
+qui noi stipw (logit motegr_dum3 tr_mod2 edad_al_ing_1 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 dg_fis_anemia2 dg_fis_card2 dg_fis_enf_som2 dg_fis_ets2 dg_fis_hep_alc2 dg_fis_hep_b2 dg_fis_hep_cro2 dg_fis_inf2 dg_fis_otr_cond_fis_ries_vit2 dg_fis_otr_cond_fis2 dg_fis_pat_buc2 dg_fis_pat_ges_intrau2 dg_fis_trau_sec2), distribution(`v') genw(`v2'_m2_nostag) ipwtype(stabilised) vce(mestimation)
+estimates  store m2_stipw_nostag_`v2'
+	}
+*}
+*
+*Just a workaround: I dropped the colinear variables from the regressions manually. I know this sounds like a solution, but it was an issue because I was looping over subsamples, so I didn't know what would be colinear before running.
+
+
+qui count if _d == 1
+	// we count the amount of cases with the event in the strata
+	//we call the estimates stored, and the results...
+estimates stat m2_stipw_nostag_*, n(`r(N)')
+	//we store in a matrix de survival
+matrix stats_3=r(S)
+mata : st_sort_matrix("stats_3", 5) // 5 AIC, 6 BIC
+esttab matrix(stats_3) using "testreg_aic_bic_mariel_23_3_p.csv", replace
+esttab matrix(stats_3) using "testreg_aic_bic_mariel_23_3_p.html", replace
+
+<</dd_do>>
+~~~~
+
+<<dd_include: "${pathdata2}testreg_aic_bic_mariel_23_3_p.html" >>
+
+~~~~
+<<dd_do>>
+
+estimates restore m2_stipw_nostag_rp5_tvcdf1
+
+sts gen km_b=s, by(motegr_dum3)
+
+
+stpm2_standsurv, at1(motegr_dum3 0 ) at2(motegr_dum3 1 ) timevar(tt) ci contrast(difference) ///
+     atvar(s_tr_comp_early_b s_late_drop_b) contrastvar(sdiff_tr_comp_early_vs_late)
+
+* s_tr_comp_early_b s_tr_comp_early_b_lci s_tr_comp_early_b_uci s_late_drop_b s_late_drop_b_lci s_late_drop_b_uci sdiff_tr_comp_early_vs_late sdiff_tr_comp_early_vs_late_lci sdiff_tr_comp_early_vs_late_uci	 
+
+twoway  (rarea s_tr_comp_early_b_lci s_tr_comp_early_b_uci tt, color(red%25)) ///             
+                 (rarea s_late_drop_b_lci s_late_drop_b_uci tt, color(blue%25)) ///
+				 (line km_b _t if motegr_dum3==0 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(red%50)) ///
+				 (line km_b _t if motegr_dum3==1 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(blue%50)) ///
+                 (line s_tr_comp_early_b tt, lcolor(red) lwidth(thick)) ///
+                 (line s_late_drop_b tt, lcolor(blue) lwidth(thick)) ///
+                 ,xtitle("Years from treatment outcome") ///
+                 ytitle("Probibability of avoiding imprisonment (standardized)") ///
+                 legend(order(5 "Tr. completion & Early dropout" 6 "Late dropout") ring(0) pos(1) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(km_vs_standsurv_fin_b, replace)
+graph save "`c(pwd)'\_figs\h_m_ns_rp6_22_b_p.gph", replace
+
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp6_22_b_p.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
+
+twoway  (rarea sdiff_tr_comp_early_vs_late_lci sdiff_tr_comp_early_vs_late_uci tt, color(blue%20)) ///
+                 (line sdiff_tr_comp_early_vs_late tt, lcolor(blue)) ///
+		(rarea sdiff_comp_vs_nocomp_lci sdiff_comp_vs_nocomp_uci tt, color(red%20)) ///
+                 (line sdiff_comp_vs_nocomp tt, lcolor(red)) ///		 
+				 (line zero tt, lcolor(black%20) lwidth(thick)) ///
+         , ylabel(, format(%3.1f)) ///
+         ytitle("Difference in Survival (years)") ///
+         xtitle("Years from baseline treatment outcome") ///
+		 legend(order( 1 "Late dropout vs. Early & Tr. completion" 3 "Noncompletion vs. completion") ring(0) pos(1) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(s_diff_fin_ab, replace)
+graph save "`c(pwd)'\_figs\h_m_ns_rp5_stdif_s_b_p.gph", replace
+			
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp5_stdif_s_b_p.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
+estimates restore m2_stipw_nostag_rp5_tvcdf1
+
+stpm2_standsurv, at1(motegr_dum3 0 ) at2(motegr_dum3 1 ) timevar(tt) rmst ci contrast(difference) ///
+     atvar(rmst_comp_early_b rmst_late_drop_b) contrastvar(rmstdiff_comp_early_vs_late)
+
+twoway  (rarea rmst_comp_early_b_lci rmst_comp_early_b_uci tt, color(red%25)) ///             
+                 (rarea rmst_late_drop_b_lci rmst_late_drop_b_uci tt, color(blue%25)) ///
+                 (line rmst_comp_early_b tt, lcolor(red) lwidth(thick)) ///
+                 (line rmst_late_drop_b tt, lcolor(blue) lwidth(thick)) ///
+                 ,xtitle("Years from treatment outcome") ///
+                 ytitle("Restricted Mean Survival Times (standardized)") ///
+                 legend(order(1 "Tr. completion & Early dropout" 2 "Late dropout") ring(0) pos(5) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(rmst_std_fin_b, replace)	 
+graph save "`c(pwd)'\_figs\h_m_ns_rp5_stdif_rmst_b_p.gph", replace
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp5_stdif_rmst_b_p.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
+
+twoway  (rarea rmstdiff_comp_early_vs_late_lci rmstdiff_comp_early_vs_late_uci tt, color(blue%20)) ///
+                 (line rmstdiff_comp_early_vs_late tt, lcolor(blue)) ///
+		 (rarea rmstdiff_comp_vs_nocomp_lci rmstdiff_comp_vs_nocomp_uci tt, color(red%20)) ///
+                 (line rmstdiff_comp_vs_nocomp tt, lcolor(red)) ///		 
+         				  (line zero tt, lcolor(black%20) lwidth(thick)) ///
+         , ylabel(, format(%3.1f)) ///
+         ytitle("Difference in RMST (years)") ///
+         xtitle("Years from baseline treatment outcome") ///
+		 legend(order( 1 "Late dropout vs. Early & Tr. completion" 3 "Noncompletion vs. completion") ring(0) pos(7) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(RMSTdiff_fin_ab, replace)
+graph save "`c(pwd)'\_figs\h_m_ns_rp5_stdif_rmst_ab_p.gph", replace
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp5_stdif_rmst_ab_p.svg") width(800) replace>>
+
+
    
 <<dd_display: "Saved at= `c(current_time)' `c(current_date)'">>
 
 ~~~~
 <<dd_do:nocommand>>
-	cap qui save "mariel_nov_22_2.dta", all replace emptyok
+	estwrite _all using "mariel_feb_23.sters", replace
+
+	cap qui save "mariel_feb_23.dta", all replace emptyok
 <</dd_do>>
 ~~~~
 
@@ -616,13 +958,13 @@ estwrite df5_stipw gomp_stipw df3_stipw df5_stipw2 gomp_stipw2 df3_stipw2 using 
 /*
 FORMA DE EXPORTAR LOS DATOS Y EL MARKDOWN
 
-cap rm "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_nov_2022_stata_pris.html"
-dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags2.do", saving("E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_nov_2022_stata_pris.html") replace nostop 
-copy "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_nov_2022_stata_pris.html" "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_nov_2022_stata_pris.html", replace
+cap rm "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_feb_2023_stata.html"
+dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags_b.do", saving("E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata.html") replace nostop 
+copy "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata.html" "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_feb_2023_stata.html", replace
 
-cap rm "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2012 (github)/analisis_mariel_nov_2022_stata_pris.html"
-dyndoc "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags2.do", saving("C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_nov_2022_stata_pris.html") replace nostop 
-copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_nov_2022_stata_pris.html" "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_nov_2022_stata_pris.html", replace
+cap rm "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2012 (github)/analisis_mariel_feb_2023_stata.html"
+dyndoc "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags_b.do", saving("C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata.html") replace nostop 
+copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata.html" "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_feb_2023_stata.html", replace
 
 _outputs
 */
