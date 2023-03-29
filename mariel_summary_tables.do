@@ -59,10 +59,10 @@ if _rc==111 {
 
 ### Condemnatory_Sentence_Listwise
 
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#### #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#### #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #### Condemnatory_Sentence_Listwise_Main
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#### #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
 
 **Survival**
@@ -101,6 +101,9 @@ esttab matrix(est_as11) using "${pathdata2}prob_condsent_m0_main.html", replace
 <</dd_do>>
 ~~~~
 
+<<dd_include: "${pathdata2}prob_condsent_m0_main.html" >>
+
+
 **RMST**
 
 ~~~~
@@ -137,6 +140,8 @@ matrix colnames est_as12 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late
 esttab matrix(est_as12) using "${pathdata2}rmst_condsent_m0_main.html", replace 
 <</dd_do>>
 ~~~~
+
+<<dd_include: "${pathdata2}rmst_condsent_m0_main.html" >>
 
 **Difference Survival**
 
@@ -178,6 +183,8 @@ esttab matrix(est_as13) using "${pathdata2}prob_condsent_m0_main_diff.html", rep
 <</dd_do>>
 ~~~~
 
+<<dd_include: "${pathdata2}prob_condsent_m0_main_diff.html" >>
+
 
 **Difference RMST**
 
@@ -218,6 +225,9 @@ matrix colnames est_as14 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Co
 esttab matrix(est_as14) using "${pathdata2}rmst_condsent_m0_main_diff.html", replace 
 <</dd_do>>
 ~~~~
+
+<<dd_include: "${pathdata2}rmst_condsent_m0_main_diff.html" >>
+
 
 #### Condemnatory_Sentence_Listwise_IPW
 
@@ -261,6 +271,8 @@ esttab matrix(est_as15) using "${pathdata2}prob_condsent_m0_IPW_diff.html", repl
 <</dd_do>>
 ~~~~
 
+<<dd_include: "${pathdata2}prob_condsent_m0_IPW_diff.html" >>
+
 
 **Difference RMST**
 
@@ -302,10 +314,13 @@ esttab matrix(est_as16) using "${pathdata2}rmst_condsent_m0_main_IPW_diff.html",
 <</dd_do>>
 ~~~~
 
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+<<dd_include: "${pathdata2}rmst_condsent_m0_main_IPW_diff.html" >>
+
+
+#### #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#### #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #### Imprisonment_Listwise_IPW
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#### #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
 **Survival**
 
@@ -343,6 +358,9 @@ esttab matrix(est_as21) using "${pathdata2}prob_prison_m0_main.html", replace
 <</dd_do>>
 ~~~~
 
+<<dd_include: "${pathdata2}prob_prison_m0_main.html" >>
+
+
 **RMST**
 
 ~~~~
@@ -379,6 +397,9 @@ matrix colnames est_as12 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late
 esttab matrix(est_as22) using "${pathdata2}rmst_prison_m0_main.html", replace 
 <</dd_do>>
 ~~~~
+
+<<dd_include: "${pathdata2}rmst_prison_m0_main.html" >>
+
 
 **Difference Survival**
 
@@ -420,6 +441,8 @@ esttab matrix(est_as23) using "${pathdata2}prob_prison_m0_main_diff.html", repla
 <</dd_do>>
 ~~~~
 
+<<dd_include: "${pathdata2}prob_prison_m0_main_diff.html" >>
+
 
 **Difference RMST**
 
@@ -460,6 +483,9 @@ matrix colnames est_as24 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Co
 esttab matrix(est_as24) using "${pathdata2}rmst_prison_m0_main_diff.html", replace 
 <</dd_do>>
 ~~~~
+
+<<dd_include: "${pathdata2}rmst_prison_m0_main_diff.html" >>
+
 
 #### Imprisonment, Listwise, IPW
 
@@ -503,6 +529,8 @@ esttab matrix(est_as25) using "${pathdata2}prob_prison_m0_IPW_diff.html", replac
 <</dd_do>>
 ~~~~
 
+<<dd_include: "${pathdata2}prob_prison_m0_IPW_diff.html" >>
+
 
 **Difference RMST**
 
@@ -544,12 +572,14 @@ esttab matrix(est_as26) using "${pathdata2}rmst_prison_m0_main_IPW_diff.html", r
 <</dd_do>>
 ~~~~
 
+<<dd_include: "${pathdata2}rmst_prison_m0_main_IPW_diff.html" >>
+
 
 ### 
 
 ~~~~
 <<dd_do>>
-cap qui noi use "mariel_feb_23_m2.dta"
+cap qui noi use "mariel_feb_23_m2.dta", clear
 *estread using "mariel_feb_23_m2.sters", replace
 <</dd_do>>
 ~~~~
@@ -558,7 +588,7 @@ cap qui noi use "mariel_feb_23_m2.dta"
 
 ~~~~
 <<dd_do>>
-cap qui noi use "mariel_feb_23_2.dta"
+cap qui noi use "mariel_feb_23_2.dta", clear
 *estread using "mariel_feb_23_2.sters", replace
 <</dd_do>>
 ~~~~
@@ -567,7 +597,7 @@ cap qui noi use "mariel_feb_23_2.dta"
 
 ~~~~
 <<dd_do>>
-cap qui noi use "mariel_feb_23_2_m1.dta"
+cap qui noi use "mariel_feb_23_2_m1.dta", clear
 *estread using "mariel_feb_23_2_m1.sters", replace
 <</dd_do>>
 ~~~~
@@ -576,7 +606,7 @@ cap qui noi use "mariel_feb_23_2_m1.dta"
 
 ~~~~
 <<dd_do>>
-cap qui noi use "mariel_feb_23_2_m2.dta"
+cap qui noi use "mariel_feb_23_2_m2.dta", clear
 *estread using "mariel_feb_23_2_m2.sters", replace
 <</dd_do>>
 ~~~~

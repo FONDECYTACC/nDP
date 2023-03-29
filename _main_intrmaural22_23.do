@@ -77,3 +77,10 @@ copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_m
 *#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 *SUMMARY
 *#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+cap rm "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/res_intram_feb_2023_stata.html"
+dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_summary_tables.do", saving("E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\res_intram_feb_2023_stata.html") replace nostop 
+copy "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\res_intram_feb_2023_stata.html" "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\res_intram_feb_2023_stata.html", replace
+
+cap rm "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/res_intram_feb_2023_stata.html"
+dyndoc "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_summary_tables.do", saving("C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\res_intram_feb_2023_stata.html") replace nostop 
+copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\res_intram_feb_2023_stata.html" "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\res_intram_feb_2023_stata.html", replace
