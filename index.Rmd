@@ -47,9 +47,21 @@ output:
 
 - [Descriptive glimpse and initial analysis (Imprisonment only)](analisis_mariel_nov_2022_stata_pris.html)
 
-- [Descriptive glimpse and initial analysis (UPDATED)](analisis_mariel_feb_2023_stata.html)
+- [Main analyses](analisis_mariel_feb_2023_stata.html)
 
-- [Descriptive glimpse and initial analysis (Imprisonment only)](analisis_mariel_feb_2023_stata_pris.html)
+- [Main analyses (Imprisonment only)](analisis_mariel_feb_2023_stata_pris.html)
+
+- [Main analyses](analisis_mariel_feb_2023_stata.html)
+
+- [Main analyses (Imprisonment only)](analisis_mariel_feb_2023_stata_pris.html)
+
+- [Main analyses of Imputed Data](analisis_mariel_feb_2023_stata_m1.html)
+
+- [Main analyses of Imputed Data (Imprisonment only)](analisis_mariel_feb_2023_stata_pris_m1.html)
+
+- [Main analyses of Imputed Data (including diagnoses in-study)](analisis_mariel_feb_2023_stata_m2.html)
+
+- [Main analyses of Imputed Data (Imprisonment only, including diagnoses in-study)](analisis_mariel_feb_2023_stata_pris_m2.html)
 
 - [Poster (idea)](pres_dic_22.html)
 

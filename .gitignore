@@ -92,3 +92,4 @@ renv.lock
 *prueba_g_methods.xlsx
 *.sters
 parmodels_m2_nov_22.sters
+*.rds

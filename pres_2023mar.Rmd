@@ -591,15 +591,15 @@ if(isTRUE(getOption('knitr.in.progress'))==T){
 
 
 tasks <- c("Revisión de la literatura", "Análisis estadístico principal", "Análisis de sensibilidad", "Reporte de progreso", "Arreglos finales", "Manuscrito publicable", "Presentación en congresos/seminarios")
-tasks <- c("Literature review", "Main statistic analysis", "Sensitivity analyses", "Progress report", "Final arrangements", "Manuscript read\nfor submission", "Presentation in\nscientific meetings")
+tasks <- c("Literature review", "Main statistic analysis", "Sensitivity analyses", "Progress report", "Final arrangements", "Manuscript read for submission", "Presentation in scientific meetings")
 
 
 invisible(Sys.setlocale(category = "LC_ALL", locale = "spanish"))
 
 dfr <- data.frame(
   name        = factor(tasks, levels = tasks),
-  start.date  = as.Date(c("2022-06-12", "2022-06-12", "2022-10-01", "2023-01-01", "2023-04-01","2023-04-01","2023-04-01")),
-  end.date    = as.Date(c("2022-10-31", "2022-10-31", "2023-02-28", "2023-03-30","2023-06-30","2023-06-30","2023-06-30")),
+  start.date  = as.Date(c("2023-06-12", "2023-06-12", "2023-10-01", "2024-01-01", "2024-04-01","2024-04-01","2024-04-01")),
+  end.date    = as.Date(c("2023-10-31", "2023-10-31", "2024-02-28", "2024-03-30","2024-06-30","2024-06-30","2024-06-30")),
   Critical = c("Yes", "No", "Yes", "Yes", "No", "Yes", "Yes"),
   Actor= factor(c("AGS, JRT & MM","AGS & JRT","AGS & JRT", "AGS, JRT & MM", "AGS, JRT & MM", "AGS, JRT & MM", "AGS, JRT & MM"))
 )
@@ -608,8 +608,7 @@ for (i in 1:nrow(dfr)){
 } 
 dfr$mean_date<-as.Date(dfr$mean_date, origin="1970-01-01")
 
-size_gplot<- 13/2.5
-
+size_gplot<- 13/2.8
 
 ggant<-
 ggplot(dfr, aes(x =start.date, xend= end.date, y=factor(name, levels = rev(levels(name))), yend = factor(name, levels = rev(levels(name))))) +
@@ -619,10 +618,10 @@ ggplot(dfr, aes(x =start.date, xend= end.date, y=factor(name, levels = rev(level
   scale_fill_manual(values="gray30")+# #FE4A17 ##21177A
   xlab(NULL) + ylab(NULL)+
   theme_minimal()+
-  geom_label(data=dfr, aes(x=mean_date, y=factor(name, levels = rev(levels(name))),  label = Actor), size=size_gplot*1, color="gray40",show.legend=F#,
+  geom_label(data=dfr, aes(x=mean_date, y=factor(name, levels = rev(levels(name))),  label = Actor), size=size_gplot*.6, color="gray40",show.legend=F#,
              #nudge_x = c(-300, -200, -200, -100)
              ) +
-    scale_x_date(date_breaks = "2 months",date_labels="%b '%y",limits=c(as.Date("2022-06-01"),as.Date("2023-08-02")))+
+    scale_x_date(date_breaks = "2 months",date_labels="%b '%y",limits=c(as.Date("2023-06-01"),as.Date("2024-08-02")))+
       theme(axis.text.x= element_text(size=size_gplot*2.692),
           axis.text.y= element_text(size=size_gplot*2.692),
         axis.title.x = element_blank(),
@@ -640,6 +639,8 @@ ggplot(dfr, aes(x =start.date, xend= end.date, y=factor(name, levels = rev(level
   labs(caption="AGS= Andrés González; JRT= José Ruiz-Tagle; MM= Mariel Mateo")
 
 #"800 x400" exportar
+
+ggsave("_figs/gantt_mar2023.png",ggant, width = 8, height = 2, dpi = 400)
 
 invisible("Para exportar a formato .png")
 

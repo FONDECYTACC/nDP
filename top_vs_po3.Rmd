@@ -1,0 +1,177 @@
+
+```{r paso2b-lca-select,eval=T, echo=T, paged.print=TRUE, eval=F}
+#https://link.springer.com/article/10.1007/s00355-021-01365-4
+
+#global maximum likelihood solution
+#Dolan, P., Laffan, K. & Velias, A. Who’s miserable now? Identifying clusters of people with the lowest subjective wellbeing in the UK. Soc Choice Welf 58, 679–710 (2022). https://doi.org/10.1007/s00355-021-01365-4
+
+#Specifically, to establish the appropriate class number, we took 50 random samples of 60,000 (~ 33% of total sample) and run the clustering algorithm (poLCA) for number of classes (n) from 1 to 10 on each of them. For each run, we have set the number of repetitions (nrep) to 30 and maximum iterations (maxiter) to 4000. A high number of repetitions and iterations allows the model to re-start from new random initial values which is crucial for finding the global rather than local maximum.
+
+#. To avoid these local maxima, it is a standard to run poLCA with the same model specification and same number of classes multiple times using different starting values, to locate the estimated model parameters that correspond to the model with the global maximum likelihood. Upon re-running the model 50 times we observe convergence to the same maximum log-likelihood value. 
+
+
+#http://www.sscnet.ucla.edu/polisci/faculty/lewis/pdf/poLCA-JSS-final.pdf#page=14&zoom=100,165,279
+# We estimate this model 500 times, and after each function call, we record the maximum
+# log-likelihood and the estimated population sizes of the three types of survey respondent.
+# Following McCutcheon (1987), from whom these data were obtained, we label the three types
+# ideal, skeptics, and believers. Among other characteristics, the ideal type is the most likely to
+# have a good understanding of surveys, while the believer type is the least likely.
+
+#the model with lowest BIC
+min_bic_index <- tab_ppio$ModelIndex[which.min(tab_ppio$bic)]
+
+seed<-2125
+old <- Sys.time()
+
+mlmat <- matrix(NA,nrow=500,ncol=6) #nclass is the number of classes plus one
+for (i in 1:500) {
+  gss.lc <- poLCA(mydata_preds, mydata_preds, nclass=min_bic_index, maxiter=3000, nrep=30, tol=1e-100)
+  mlmat[i,1] <- gss.lc$llik
+  o <- order(gss.lc$probs$decision_rec[,1],decreasing=T)
+  mlmat[i,-1] <- gss.lc$P[o]
+}
+
+new<-(Sys.time())
+time_diff <- (Sys.time() - old)/60
+paste0("The model took ",round(new-old,2)," minutes")
+```
+
+::: controlly
+```{r paso2-2-lca-select,eval=T, echo=T, paged.print=TRUE,error=T, eval=F}
+# job::job(
+# {
+if(!require(poLCA)){install.packages("poLCA")}
+old <- Sys.time()
+#lca_adj<-
+if(no_mostrar==0){
+  set.seed(2125)
+  polca<-
+    poLCA(f_adj, mydata_preds, nclass=5, maxiter=50000,
+          tol=1e-11, na.rm=T,
+          nrep=1000, verbose=F, calc.se=TRUE)
+  invisible("Por lo visto el de 5 clases no compila. Más bien, el error viene de aquí: https://github.com/dlinzer/poLCA/issues/15")
+  #la correcta
+  fixInNamespace(x = "poLCA", pos = as.environment("package:poLCA"))
+  #trace(poLCA, edit = T)
+  #poLCA <- edit(poLCA)
+  #poLCA::poLCA <- edit(poLCA::poLCA)
+  
+  body(poLCA)[[5]][[4]][[15]][[4]][[5]][[4]][[5]][[3]][[11]][[3]][[6]][[3]]<-ifelse(grepl("rowSums",as.character(body(poLCA)[[5]][[4]][[15]][[4]][[5]][[4]][[5]][[3]][[11]][[3]][[6]][[3]])[[2]]),expression(tryNA(sum(log(rowSums(prior * poLCA.ylik.C(vp, y))) - log(.Machine$double.xmax)))))
+  
+}
+lca_entropia(x="adj", seed= 2125, k= 5, f= f_adj, dat= mydata_preds, nbr_repet= clus_iter, na_rm= T)
+
+#The default is 1000, but this will be insufficient for certain models
+#x=texto distintivo
+#y =seed ej: 4345
+#k= cuantos modelos se van a calcular
+#f= función
+#dat= datos
+#nbr_repet= número de repeeticiones With nrep=10 it runs every model 10 times and keeps the model with the lowest BIC. To avoid finding a local maximum, the argument nrep=5 tells the program to repeat nrep times, each time with different starting values, and keep the fit with the highest likelihood.
+#na_rm= permitir valores perdidos
+new<-(Sys.time())
+time_diff <- (Sys.time() - old)/60
+paste0("The model took ",round(time_diff,2), " hours")
+
+# }, 
+# title = "LCA, prueba de 1 a 10, ajustado por causal", import= "all")
+#rm(list = ls(pattern = "ppio"))
+```
+:::
+  
+::: controlly
+```{r table-ppio,eval=T, echo=T, paged.print=TRUE, eval=F, error=T}
+
+tab_ppio<-data.frame(matrix(rep(999,18),nrow=1)) #number of columns
+names(tab_ppio)<-c("log-likelihood","Chi2","Chi2_pval",
+                   "resid. df","AIC", "BIC",
+                   "aBIC","cAIC","likelihood-ratio","LLik_pval","Entropy", "Entropy.R2","Dev Change","df","pval", "n_classes","blrt","blrt_pval")
+relative.entropy<-function(lc){
+  en<--sum(lc$posterior*
+             log(lc$posterior),na.rm=T)
+  e<-1-en/(nrow(lc$posterior)*log(ncol(lc$posterior)))
+  return(e)
+}
+
+for(i in 2:10){
+  skip_to_next <- FALSE
+  
+  # Note that print(b) fails since b doesn't exist
+  tryCatch(head(matrix(model_array_ppio[[i]]$predclass),0), error = function(e) { skip_to_next <<- TRUE})
+  if(skip_to_next) { next }   else {
+    
+    mod<- model_array_ppio[[i]]
+    mod_min1<- model_array_ppio[[i-1]]
+    
+    mod$y <- mod$y
+    mod$K.j <- t(matrix(apply(mod$y,2,max)))
+    mod$C <- max(mod$K.j)
+    mod$J <- ncol(mod$y)
+    mod$I <- mod$J # number of items            
+    mod$df <- mod$C^mod$I - mod$npar - 1      
+    mod$Chisq.pvalue <-(1 - pchisq(mod$Chisq, mod$df))
+    mod$Gsq.pvalue <-(1 - pchisq(mod$Gsq, mod$df))
+    tab_ppio<- rbind(tab_ppio,
+                     c(mod$llik,
+                       mod$Chisq,
+                       mod$Chisq.pvalue,
+                       mod$resid.df,
+                       mod$aic,
+                       mod$bic,
+                       (-2*mod$llik) +
+                         (log((mod$N + 2)/24) *
+                            mod$npar),
+                       (-2*mod$llik) +
+                         mod$npar *
+                         (1 + log(mod$N)),
+                       mod$Gsq,
+                       mod$Gsq.pvalue,
+                       relative.entropy(mod),
+                       entropy.R2(mod),
+                       (mod_min1$Gsq- mod$Gsq),
+                       (mod_min1$resid.df- mod$resid.df),
+                       (pchisq(mod_min1$Gsq- mod$Gsq,  mod_min1$resid.df- mod$resid.df)),
+                       i,
+                       fitted_log_ratio_array_ppio[[i]],
+                       p_value_array_ppio[[i]]
+                     ))
+  }
+}
+tab_ppio<-round(tab_ppio[-1,],2)
+
+tab_ppio %>% knitr::kable("markdown", caption="Comparison of unadjusted models")
+```
+:::
+
+
+
+
+
+
+for (nclass in 2:n_class_max) {
+
+  # get the null and alt models
+  # these are models with one number of class differences
+  null_model <- model_array[[nclass - 1]]
+  alt_model <- model_array[[nclass]]
+
+  # for each bootstrap sample, store the log likelihood ratio here
+  bootstrap_results <- poLCAParallel::blrt(
+    null_model, alt_model,
+    n_bootstrap, n_thread, nrep
+  )
+
+  # log likelihood ratio to compare the two models
+  fitted_log_ratio_array[nclass] <- bootstrap_results[["fitted_log_ratio"]]
+  # store the log likelihoods ratios for all bootstrap samples
+  bootstrap_log_ratio_array[[nclass]] <-
+    bootstrap_results[["bootstrap_log_ratio"]]
+  # store the p value for this nclass
+  p_value_array <- c(p_value_array, bootstrap_results[["p_value"]])
+  
+  #progress bar
+  cat(paste0(round(nclass / n_class_max * 100), '% completed'))
+  Sys.sleep(.05)
+  if (nclass == n_class_max) cat(': Done')
+  else cat('\014')
+}

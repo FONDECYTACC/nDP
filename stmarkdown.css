@@ -45,6 +45,54 @@ h4{ font-size:1.2em; }
 h5{ font-size:1em; }
 h6{ font-size:0.9em; }
 
+
+
+pre.stata{
+  background-color: #f8f8f8; 
+  border: 1px solid #ddd;
+  margin-bottom: 1em;
+  overflow: auto;
+  padding: 1em;
+  border-radius: 5px;
+}
+
+
+pre.stata.error {
+  background-color: #FFB6C1;
+}
+
+.stata-output {
+  margin-bottom: 1em;
+}
+
+.button-container {
+  text-align: right;
+  margin-bottom: 1em;
+}
+
+.code-container {
+  display: none;
+}
+
+.show-code-button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.show-code-button:hover {
+  background-color: #3e8e41;
+}
+
+
+
 blockquote{
 color:#666666;
 margin:0;

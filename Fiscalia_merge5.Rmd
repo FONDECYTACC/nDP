@@ -294,6 +294,23 @@ options(scipen=2) #display numbers rather scientific number
 
 #remotes::install_github("chjackson/flexsurv-dev", upgrade = "never")
 #devtools::install_github("hputter/mstate", upgrade = "never")
+invisible("#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_")
+invisible("ERASE INFORMATION")
+rm(list = setdiff(ls(), c("CONS_C1_df_dup_SEP_2020", "Base_fiscalia_v13", "Base_fiscalia_v13_pris")))
+invisible("#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_")
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+# Own Mode method to calculate mode
+Mode <- function(x, na.rm = FALSE) {
+  # it takes two areguments x, and na.rm
+  if(na.rm){ #if na.rm is false it means no need to remove NA values
+    x = x[!is.na(x)]
+  }
+
+  valx <- unique(x)
+  return(valx[which.max(tabulate(match(x, valx)))])
+}
 
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
@@ -348,20 +365,6 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(time_it = TRUE)
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-
-# Own Mode method to calculate mode
-Mode <- function(x, na.rm = FALSE) {
-  # it takes two areguments x, and na.rm
-  if(na.rm){ #if na.rm is false it means no need to remove NA values
-    x = x[!is.na(x)]
-  }
-
-  valx <- unique(x)
-  return(valx[which.max(tabulate(match(x, valx)))])
-}
-
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 
@@ -648,9 +651,37 @@ Base_fiscalia_v13 %>%
   dplyr::mutate(escolaridad_rec=parse_factor(as.character(escolaridad_rec),levels=c('3-Completed primary school or less', '2-Completed high school or less', '1-More than high school'), ordered =T,trim_ws=T,include_na =F, locale=locale(encoding = "Latin1"))) %>%  
   dplyr::mutate(freq_cons_sus_prin=parse_factor(as.character(freq_cons_sus_prin),levels=c('Less than 1 day a week','2 to 3 days a week','4 to 6 days a week','1 day a week or more','Daily'), ordered =T,trim_ws=F,include_na =F)) %>% #, locale=locale(encoding = "Latin1")
   dplyr::mutate(across(c("motivodeegreso_mod_imp_rec","sus_principal_mod", "origen_ingreso_mod", "tenencia_de_la_vivienda_mod", "condicion_ocupacional_corr", "dg_cie_10_rec", "macrozona", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "classification", "tr_modality"),~as.factor(.)))%>% 
-  dplyr::mutate(via_adm_sus_prin_act= factor(dplyr::case_when(via_adm_sus_prin_act=="Injected Intravenously or Intramuscularly"~ "Other",T~via_adm_sus_prin_act)))
+  dplyr::mutate(via_adm_sus_prin_act= factor(dplyr::case_when(via_adm_sus_prin_act=="Injected Intravenously or Intramuscularly"~ "Other",T~via_adm_sus_prin_act))) %>% 
 #TO CHECK IF SOME MUNICIPALLITIES DID NOT JOIN
   #dplyr::filter(is.na(porc_pobr)) %>% dplyr::select(comuna_residencia_cod, anio_ing_tr)
+  dplyr::mutate(con_quien_vive_joel=dplyr::case_when(
+    grepl("Solo$",con_quien_vive, ignore.case=T)~"Alone",
+    grepl("Con abuelos",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("Con hermanos",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("Con la madre \\(sola\\)",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("Con otro pariente",con_quien_vive, ignore.case=T)~"Others",
+    grepl("con hijos y padres o familia",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("con la pareja y padres o familia de origen",con_quien_vive, ignore.case=T)~"With couple/children",
+    grepl("con padres o familia de origen",con_quien_vive, ignore.case=T)~"Family of origin",
+    #2021-10-01
+    grepl("Únicamente con hijos",con_quien_vive, ignore.case=T)~"With couple/children",
+    grepl("Únicamente con pareja",con_quien_vive, ignore.case=T)~"With couple/children",
+    #2021-10-01
+    grepl("Con la Pareja, Hijos y Padres o Familia de Origen",con_quien_vive, ignore.case=T)~"With couple/children",
+    grepl("Hijos y Padres o Familia de Origen",con_quien_vive, ignore.case=T)~"Family of origin",
+    #2021-10-01
+    grepl("Únicamente con la pareja e hijos",con_quien_vive, ignore.case=T)~"With couple/children",
+    grepl("Con amigos",con_quien_vive, ignore.case=T)~"Others",
+    grepl("Con otro NO pariente",con_quien_vive, ignore.case=T)~"Others",
+    grepl("*Otros$",con_quien_vive, ignore.case=T)~"Others")) %>% 
+  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","embarazo")), by= "hash_key")%>%
+  dplyr::mutate(numero_de_hijos_mod_joel=dplyr::case_when(grepl("Si$",embarazo, ignore.case=T)~as.integer(numero_de_hijos_mod+1),T~as.integer(numero_de_hijos_mod)))  %>% 
+  dplyr::mutate(ano_nac_corr=as.numeric(stringr::str_sub(as.character(fech_nac_rec),1,4))) %>% 
+  dplyr::mutate(num_hijos_mod_joel_bin=dplyr::if_else(numero_de_hijos_mod_joel>0, 1, 0)) %>%
+  dplyr::mutate(across(c("dg_fis_otr_cond_fis_ries_vit", "dg_fis_pat_ges_intrau", "dg_fis_hep_cro", "dg_fis_hep_alc", "dg_fis_enf_som", "dg_fis_otr_cond_fis", "dg_fis_hep_alc", "dg_fis_ets", "dg_fis_card"), ~as.numeric(.)-1)) %>%
+  dplyr::mutate(dg_fis_total = rowSums(dplyr::select(., c("dg_fis_otr_cond_fis_ries_vit", "dg_fis_pat_ges_intrau", "dg_fis_hep_cro", "dg_fis_hep_alc", "dg_fis_enf_som", "dg_fis_otr_cond_fis", "dg_fis_hep_alc", "dg_fis_ets", "dg_fis_card")))) %>% 
+  dplyr::mutate(cnt_dg_trs_fis= dplyr::case_when(dg_fis_total>=1~ "One or more", as.character(dg_fis_in_study)== "Presence" & dg_fis_total== 0~"Diagnosis unknown (under study)", dg_fis_total==0~"Without physical comorbidity")) %>% #janitor::tabyl(cnt_dg_trs_fis)
+  dplyr::mutate(fis_comorbidity_icd_10=parse_factor(as.character(cnt_dg_trs_fis),levels=c('Without physical comorbidity', 'Diagnosis unknown (under study)','One or more'), ordered =T,trim_ws=F,include_na =F)) #, locale=locale(encoding = "Latin1") 
 
 Base_fiscalia_v14_pris<-
 Base_fiscalia_v13_pris %>% 
@@ -666,12 +697,39 @@ Base_fiscalia_v13_pris %>%
   dplyr::mutate(freq_cons_sus_prin=parse_factor(as.character(freq_cons_sus_prin),levels=c('Less than 1 day a week','2 to 3 days a week','4 to 6 days a week','1 day a week or more','Daily'), ordered =T,trim_ws=F,include_na =F)) %>% #, locale=locale(encoding = "Latin1")
   dplyr::mutate(freq_cons_sus_prin= as.factor(freq_cons_sus_prin)) %>% 
   dplyr::mutate(across(c("motivodeegreso_mod_imp_rec","sus_principal_mod", "origen_ingreso_mod", "tenencia_de_la_vivienda_mod", "condicion_ocupacional_corr", "dg_cie_10_rec", "macrozona", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "classification", "tr_modality"),~as.factor(.))) %>% 
-  dplyr::mutate(via_adm_sus_prin_act= factor(dplyr::case_when(via_adm_sus_prin_act=="Injected Intravenously or Intramuscularly"~ "Other",T~via_adm_sus_prin_act)))
-
-
+  dplyr::mutate(via_adm_sus_prin_act= factor(dplyr::case_when(via_adm_sus_prin_act=="Injected Intravenously or Intramuscularly"~ "Other",T~via_adm_sus_prin_act))) %>% 
 #TO CHECK IF SOME MUNICIPALLITIES DID NOT JOIN
   #dplyr::filter(is.na(porc_pobr)) %>% dplyr::select(comuna_residencia_cod, anio_ing_tr)  
-
+  dplyr::mutate(con_quien_vive_joel=dplyr::case_when(
+    grepl("Solo$",con_quien_vive, ignore.case=T)~"Alone",
+    grepl("Con abuelos",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("Con hermanos",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("Con la madre \\(sola\\)",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("Con otro pariente",con_quien_vive, ignore.case=T)~"Others",
+    grepl("con hijos y padres o familia",con_quien_vive, ignore.case=T)~"Family of origin",
+    grepl("con la pareja y padres o familia de origen",con_quien_vive, ignore.case=T)~"With couple/children",
+    grepl("con padres o familia de origen",con_quien_vive, ignore.case=T)~"Family of origin",
+    #2021-10-01
+    grepl("Únicamente con hijos",con_quien_vive, ignore.case=T)~"With couple/children",
+    grepl("Únicamente con pareja",con_quien_vive, ignore.case=T)~"With couple/children",
+    #2021-10-01
+    grepl("Con la Pareja, Hijos y Padres o Familia de Origen",con_quien_vive, ignore.case=T)~"With couple/children",
+    grepl("Hijos y Padres o Familia de Origen",con_quien_vive, ignore.case=T)~"Family of origin",
+    #2021-10-01
+    grepl("Únicamente con la pareja e hijos",con_quien_vive, ignore.case=T)~"With couple/children",
+    grepl("Con amigos",con_quien_vive, ignore.case=T)~"Others",
+    grepl("Con otro NO pariente",con_quien_vive, ignore.case=T)~"Others",
+    grepl("*Otros$",con_quien_vive, ignore.case=T)~"Others")) %>% 
+  dplyr::left_join(subset(CONS_C1_df_dup_SEP_2020, dup==1, c("hash_key","embarazo")), by= "hash_key")%>%
+  dplyr::mutate(numero_de_hijos_mod_joel=dplyr::case_when(grepl("Si$",embarazo, ignore.case=T)~as.integer(numero_de_hijos_mod+1),T~as.integer(numero_de_hijos_mod)))  %>% 
+  dplyr::mutate(ano_nac_corr=as.numeric(stringr::str_sub(as.character(fech_nac_rec),1,4))) %>% 
+  dplyr::mutate(num_hijos_mod_joel_bin=dplyr::if_else(numero_de_hijos_mod_joel>0, 1, 0)) %>%
+  dplyr::mutate(across(c("dg_fis_otr_cond_fis_ries_vit", "dg_fis_pat_ges_intrau", "dg_fis_hep_cro", "dg_fis_hep_alc", "dg_fis_enf_som", "dg_fis_otr_cond_fis", "dg_fis_hep_alc", "dg_fis_ets", "dg_fis_card"), ~as.numeric(.)-1)) %>%
+  dplyr::mutate(dg_fis_total = rowSums(dplyr::select(., c("dg_fis_otr_cond_fis_ries_vit", "dg_fis_pat_ges_intrau", "dg_fis_hep_cro", "dg_fis_hep_alc", "dg_fis_enf_som", "dg_fis_otr_cond_fis", "dg_fis_ets", "dg_fis_card")))) %>% 
+  dplyr::mutate(cnt_dg_trs_fis= dplyr::case_when(dg_fis_total>=1~ "One or more", as.character(dg_fis_in_study)== "Presence" & dg_fis_total== 0~"Diagnosis unknown (under study)", dg_fis_total==0~"Without physical comorbidity")) %>% #janitor::tabyl(cnt_dg_trs_fis)
+  dplyr::mutate(fis_comorbidity_icd_10=parse_factor(as.character(cnt_dg_trs_fis),levels=c('Without physical comorbidity', 'Diagnosis unknown (under study)','One or more'), ordered =T,trim_ws=F,include_na =F)) #, locale=locale(encoding = "Latin1") 
+                                          
+  
 #Base_fiscalia_v14 %>% dplyr::filter(dplyr::case_when(age_offending_imp-edad_al_egres_imp<=0~T,T~F))
 
 #Private Therapeutic Community, ref
@@ -691,9 +749,99 @@ Base_fiscalia_v14_pris$classification<- NULL
 
 cat_vars_dg_fis<-
 c("dg_fis_anemia", "dg_fis_card", "dg_fis_in_study", "dg_fis_enf_som", "dg_fis_ets", "dg_fis_hep_alc", "dg_fis_hep_b", "dg_fis_hep_cro", "dg_fis_inf", "dg_fis_otr_cond_fis_ries_vit", "dg_fis_otr_cond_fis", "dg_fis_pat_buc", "dg_fis_pat_ges_intrau", "dg_fis_trau_sec")
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+
+invisible("to see if there ar imbalances in the categories")
+#lapply(preds2, function(p) {round(prop.table(table(as.tibble(Base_fiscalia_v14_pris)[p], exclude=NULL)),3)*100})
+  #numero_de_hijos_mod_joel con_quien_vive_joel
+
+attr(Base_fiscalia_v14$motivodeegreso_mod_imp_rec,"label") <- "Motive of Discharge"
+attr(Base_fiscalia_v14$tr_modality,"label") <- "Treatment Modality"
+attr(Base_fiscalia_v14$edad_al_ing_1,"label") <- "Age (admission to treatment)"
+attr(Base_fiscalia_v14$sex,"label") <- "Sex"
+attr(Base_fiscalia_v14$edad_ini_cons,"label") <- "Age of Onset of Substance Use"
+attr(Base_fiscalia_v14$escolaridad_rec,"label") <- "Educational Attainment"
+attr(Base_fiscalia_v14$sus_principal_mod,"label") <- "Primary Substance (admission to treatment)"
+attr(Base_fiscalia_v14$freq_cons_sus_prin,"label") <- "Frequency of Substance Use (Primary Substance)"
+attr(Base_fiscalia_v14$condicion_ocupacional_corr,"label") <- "Corrected Occupational Status (f)"
+attr(Base_fiscalia_v14$policonsumo,"label") <- "Co-occurring Substance Use Disorders (Polysubstance use)"
+attr(Base_fiscalia_v14$num_hijos_mod_joel_bin,"label") <- "Number of Children (dichotomized)"
+attr(Base_fiscalia_v14$tenencia_de_la_vivienda_mod,"label") <- "Housing Situation (Tenure Status)"
+attr(Base_fiscalia_v14$macrozona,"label") <- "Macro Administrative Zone in Chile"
+attr(Base_fiscalia_v14$n_off_vio,"label") <- "Violent Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v14$n_off_acq,"label") <- "Acquisitive Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v14$n_off_sud,"label") <- "Substance-Related Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v14$n_off_oth,"label") <- "Other Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v14$dg_cie_10_rec,"label") <- "Psychiatric Comorbidity (ICD-10)"
+attr(Base_fiscalia_v14$dg_trs_cons_sus_or,"label") <- "SUD Severity (Dependence status)"
+attr(Base_fiscalia_v14$clas_r,"label") <- "Socioeconomic Classification"
+attr(Base_fiscalia_v14$porc_pobr,"label") <- "Percentage of people in poverty"
+attr(Base_fiscalia_v14$sus_ini_mod_mvv,"label") <- "Primary Substance (initial diagnosis)"
+attr(Base_fiscalia_v14$ano_nac_corr,"label") <- "Corrected birth year"
+attr(Base_fiscalia_v14$con_quien_vive_joel,"label") <- "Cohabitation status (Recoded) (f)"
+attr(Base_fiscalia_v14$fis_comorbidity_icd_10,"label") <- "Physical Comorbidity (ICD-10)"
+
+
+attr(Base_fiscalia_v14_pris$motivodeegreso_mod_imp_rec,"label") <- "Motive of Discharge"
+attr(Base_fiscalia_v14_pris$tr_modality,"label") <- "Treatment Modality"
+attr(Base_fiscalia_v14_pris$edad_al_ing_1,"label") <- "Age (admission to treatment)"
+attr(Base_fiscalia_v14_pris$sex,"label") <- "Sex"
+attr(Base_fiscalia_v14_pris$edad_ini_cons,"label") <- "Age of Onset of Substance Use"
+attr(Base_fiscalia_v14_pris$escolaridad_rec,"label") <- "Educational Attainment"
+attr(Base_fiscalia_v14_pris$sus_principal_mod,"label") <- "Primary Substance (admission to treatment)"
+attr(Base_fiscalia_v14_pris$freq_cons_sus_prin,"label") <- "Frequency of Substance Use (Primary Substance)"
+attr(Base_fiscalia_v14_pris$condicion_ocupacional_corr,"label") <- "Corrected Occupational Status (f)"
+attr(Base_fiscalia_v14_pris$policonsumo,"label") <- "Co-occurring Substance Use Disorders (Polysubstance use)"
+attr(Base_fiscalia_v14_pris$num_hijos_mod_joel_bin,"label") <- "Number of Children (dichotomized)"
+attr(Base_fiscalia_v14_pris$tenencia_de_la_vivienda_mod,"label") <- "Housing Situation (Tenure Status)"
+attr(Base_fiscalia_v14_pris$macrozona,"label") <- "Macro Administrative Zone in Chile"
+attr(Base_fiscalia_v14_pris$n_off_vio,"label") <- "Violent Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v14_pris$n_off_acq,"label") <- "Acquisitive Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v14_pris$n_off_sud,"label") <- "Substance-Related Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v14_pris$n_off_oth,"label") <- "Other Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v14_pris$dg_cie_10_rec,"label") <- "Psychiatric Comorbidity (ICD-10)"
+attr(Base_fiscalia_v14_pris$dg_trs_cons_sus_or,"label") <- "SUD Severity (Dependence status)"
+attr(Base_fiscalia_v14_pris$clas_r,"label") <- "Socioeconomic Classification"
+attr(Base_fiscalia_v14_pris$porc_pobr,"label") <- "Percentage of people in poverty"
+attr(Base_fiscalia_v14_pris$sus_ini_mod_mvv,"label") <- "Primary Substance (initial diagnosis)"
+attr(Base_fiscalia_v14_pris$ano_nac_corr,"label") <- "Corrected birth year"
+attr(Base_fiscalia_v14_pris$con_quien_vive_joel,"label") <- "Cohabitation status (Recoded) (f)"
+attr(Base_fiscalia_v14_pris$fis_comorbidity_icd_10,"label") <- "Physical Comorbidity (ICD-10)"
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+rbind(
+  cbind(cat="Admission to baseline treatment age",
+        Base_fiscalia_v13 %>% 
+          dplyr::summarise(min = as.Date(min(unclass(fech_ing_num_1), na.rm=T), origin = "1970-01-01"),
+           p025=as.Date(quantile(unclass(fech_ing_num_1), .025, na.rm=T), origin = "1970-01-01"),
+           p25=as.Date(quantile(unclass(fech_ing_num_1), .25, na.rm=T), origin = "1970-01-01"),
+           p50=as.Date(quantile(unclass(fech_ing_num_1), .5, na.rm=T), origin = "1970-01-01"),
+           p75=as.Date(quantile(unclass(fech_ing_num_1), .75, na.rm=T), origin = "1970-01-01"),
+           p975=as.Date(quantile(unclass(fech_ing_num_1), .975, na.rm=T), origin = "1970-01-01"),
+           max = as.Date(max(unclass(fech_ing_num_1), na.rm=T), origin = "1970-01-01"))),
+  cbind(cat="Date of birth (corrected)",
+        Base_fiscalia_v13 %>% 
+          dplyr::summarise(min = as.Date(min(unclass(fech_nac_rec), na.rm=T), origin = "1970-01-01"),
+           p025=as.Date(quantile(unclass(fech_nac_rec), .025, na.rm=T), origin = "1970-01-01"),
+           p25=as.Date(quantile(unclass(fech_nac_rec), .25, na.rm=T), origin = "1970-01-01"),
+           p50=as.Date(quantile(unclass(fech_nac_rec), .5, na.rm=T), origin = "1970-01-01"),
+           p75=as.Date(quantile(unclass(fech_nac_rec), .75, na.rm=T), origin = "1970-01-01"),
+           p975=as.Date(quantile(unclass(fech_nac_rec), .975, na.rm=T), origin = "1970-01-01"),
+           max = as.Date(max(unclass(fech_nac_rec), na.rm=T), origin = "1970-01-01")))) %>% 
+  knitr::kable(format="html",caption= "Summary of Dates (after correcting dates)") %>% #,col.names=c("Variables","Residential", "Ambulatory", "p-value")) %>% 
+  kableExtra::kable_classic(bootstrap_options = c("striped", "hover","condensed"),font_size= 12) 
 ```
 
 <br>
+
+# Explore
 
 ## Crude RMST & RMSTL
 
@@ -706,21 +854,25 @@ yrs_to_condemn_comp_cases<-
 Base_fiscalia_v14[complete.cases(Base_fiscalia_v14[,c("motivodeegreso_mod_imp_rec", "yrs_to_condemn", "event_r")]),"yrs_to_condemn"]
 event_r_comp_cases<-
 Base_fiscalia_v14[complete.cases(Base_fiscalia_v14[,c("motivodeegreso_mod_imp_rec", "yrs_to_condemn", "event_r")]),"event_r"]
+
+
 motivo_egreso_comp_cases <- Base_fiscalia_v14[complete.cases(Base_fiscalia_v14[,c("motivodeegreso_mod_imp_rec", "yrs_to_condemn", "event_r")]),"motivodeegreso_mod_imp_rec"]
 tr_comp_comp_cases<-ifelse(motivo_egreso_comp_cases=="Treatment completion",1,0)
 tr_early_drop_comp_cases<-ifelse(motivo_egreso_comp_cases=="Treatment non-completion (Early)",1,0)
 
 tr_late_drop_comp_cases<-ifelse(motivo_egreso_comp_cases=="Treatment non-completion (Late)",1,0)
 
+
+
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-
+cat("===============================================================================")
 cat("Treatment completion vs. Late and Early Dropouts at 3 months")
 survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_comp_comp_cases, tau=.33)
 
 cat("Treatment completion vs. Late and Early Dropouts at 1 year")
-survRM2::rmst2(yrs_to_condemn_comp_cases, event_r, tr_comp_comp_cases, tau=1)
+survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_comp_comp_cases, tau=1)
 
 cat("Treatment completion vs. Late and Early Dropouts at 3 years")
 survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_comp_comp_cases, tau=3)
@@ -730,40 +882,173 @@ survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_comp_comp_cases
 
 
 cat("===============================================================================")
+cat("Treatment completion vs. Late Dropouts at 3 months")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=.33)
 
+cat("Treatment completion vs. Late Dropouts at 1 year")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=1)
 
-cat("Treatment Late Discharge vs. Tratment completion and Early Dropouts at 3 months")
-survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_late_drop_comp_cases, tau=.33)
+cat("Treatment completion vs. Late Dropouts at 3 years")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=3)
 
-cat("Treatment Late Discharge vs. Tratment completion and Early Dropouts at 1 year")
-survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_late_drop_comp_cases, tau=1)
-
-cat("Treatment Late Discharge vs. Tratment completion and Early Dropouts at 3 years")
-survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_late_drop_comp_cases, tau=3)
-
-cat("Treatment Late Discharge vs. Tratment completion and Early Dropouts at 5 years")
-survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_late_drop_comp_cases, tau=5)
+cat("Treatment completion vs. Late Dropouts at 5 years")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases[!grepl("Early",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=5)
 
 
 cat("===============================================================================")
+cat("Treatment completion vs. Early Dropouts at 3 months")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=.33)
 
-cat("Treatment Early Discharge vs. Tratment completion and Late Dropouts at 3 months")
-survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_early_drop_comp_cases, tau=.33)
+cat("Treatment completion vs. Early Dropouts at 1 year")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=1)
 
-cat("Treatment Early Discharge vs. Tratment completion and Late Dropouts at 1 year")
-survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_early_drop_comp_cases, tau=1)
+cat("Treatment completion vs. Early Dropouts at 3 years")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=3)
 
-cat("Treatment Early Discharge vs. Tratment completion and Late Dropouts at 3 years")
-survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_early_drop_comp_cases, tau=3)
+cat("Treatment completion vs. Early Dropouts at 5 years")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases[!grepl("Late",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=5)
 
-cat("Treatment Early Discharge vs. Tratment completion and Late Dropouts at 5 years")
-survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_early_drop_comp_cases, tau=5)
+cat("===============================================================================")
+cat("Late vs. Early Dropouts at 3 months")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_early_drop_comp_cases[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=.33)
+
+cat("Late vs. Early Dropouts at 1 year")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_early_drop_comp_cases[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=1)
+
+cat("Late vs. Early Dropouts at 3 years")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_early_drop_comp_cases[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=3)
+
+cat("Late vs. Early Dropouts at 5 years")
+survRM2::rmst2(yrs_to_condemn_comp_cases$yrs_to_condemn[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases$event_r[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec)], 
+               tr_early_drop_comp_cases[grepl("non",motivo_egreso_comp_cases$motivodeegreso_mod_imp_rec),1], tau=5)
+
 ```
 :::
 
-- Those patients who completed treatment had more time avoiding condemnatory sentences and differences and ratios are statistically significant at three months to five years of follow-up.
 
-- Those with early discharge had less time avoiding avoiding condemnatory sentences and differences and ratios are statistically significant at three months to five years of follow-up.
+::: controlly 
+```{r rmst-pris, echo=T, fig.align='center', message=T, error=T, eval=T, fig.height= 10, fig.cap= "Kaplan-Meier curves by, Difference with age of offense from discharge (prison)"}
+#Treatment completion Treatment non-completion (Early)  Treatment non-completion (Late) 
+yrs_to_pris_comp_cases<-
+Base_fiscalia_v14_pris[complete.cases(Base_fiscalia_v14_pris[,c("motivodeegreso_mod_imp_rec", "yrs_to_pris", "event_r")]),"yrs_to_pris"]
+event_r_comp_cases_pris<-
+Base_fiscalia_v14_pris[complete.cases(Base_fiscalia_v14_pris[,c("motivodeegreso_mod_imp_rec", "yrs_to_pris", "event_r")]),"event_r"]
+
+
+motivo_egreso_comp_cases_pris <- Base_fiscalia_v14_pris[complete.cases(Base_fiscalia_v14_pris[,c("motivodeegreso_mod_imp_rec", "yrs_to_pris", "event_r")]),"motivodeegreso_mod_imp_rec"]
+tr_comp_comp_cases_pris<-ifelse(motivo_egreso_comp_cases_pris=="Treatment completion",1,0)
+tr_early_drop_comp_cases_pris<-ifelse(motivo_egreso_comp_cases_pris=="Treatment non-completion (Early)",1,0)
+
+tr_late_drop_comp_cases_pris<-ifelse(motivo_egreso_comp_cases_pris=="Treatment non-completion (Late)",1,0)
+
+
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+cat("===============================================================================")
+cat("Treatment completion vs. Late and Early Dropouts at 3 months")
+survRM2::rmst2(yrs_to_pris_comp_cases, event_r_comp_cases_pris, tr_comp_comp_cases_pris, tau=.33)
+
+cat("Treatment completion vs. Late and Early Dropouts at 1 year")
+survRM2::rmst2(yrs_to_pris_comp_cases, event_r_comp_cases_pris, tr_comp_comp_cases_pris, tau=1)
+
+cat("Treatment completion vs. Late and Early Dropouts at 3 years")
+survRM2::rmst2(yrs_to_pris_comp_cases, event_r_comp_cases_pris, tr_comp_comp_cases_pris, tau=3)
+
+cat("Treatment completion vs. Late and Early Dropouts at 5 years")
+survRM2::rmst2(yrs_to_pris_comp_cases, event_r_comp_cases_pris, tr_comp_comp_cases_pris, tau=5)
+
+
+cat("===============================================================================")
+cat("Treatment completion vs. Late Dropouts at 3 months")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases_pris[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=.33)
+
+cat("Treatment completion vs. Late Dropouts at 1 year")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases_pris[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=1)
+
+cat("Treatment completion vs. Late Dropouts at 3 years")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases_pris[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=3)
+
+cat("Treatment completion vs. Late Dropouts at 5 years")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases_pris[!grepl("Early",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=5)
+
+
+cat("===============================================================================")
+cat("Treatment completion vs. Early Dropouts at 3 months")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases_pris[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=.33)
+
+cat("Treatment completion vs. Early Dropouts at 1 year")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases_pris[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=1)
+
+cat("Treatment completion vs. Early Dropouts at 3 years")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases_pris[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=3)
+
+cat("Treatment completion vs. Early Dropouts at 5 years")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_comp_comp_cases_pris[!grepl("Late",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=5)
+
+cat("===============================================================================")
+cat("Late vs. Early Dropouts at 3 months")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_early_drop_comp_cases_pris[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=.33)
+
+cat("Late vs. Early Dropouts at 1 year")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_early_drop_comp_cases_pris[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=1)
+
+cat("Late vs. Early Dropouts at 3 years")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_early_drop_comp_cases_pris[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=3)
+
+cat("Late vs. Early Dropouts at 5 years")
+survRM2::rmst2(yrs_to_pris_comp_cases$yrs_to_pris[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               event_r_comp_cases_pris$event_r[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec)], 
+               tr_early_drop_comp_cases_pris[grepl("non",motivo_egreso_comp_cases_pris$motivodeegreso_mod_imp_rec),1], tau=5)
+
+```
+:::
 
 <br>
 
@@ -772,11 +1057,19 @@ survRM2::rmst2(yrs_to_condemn_comp_cases, event_r_comp_cases, tr_early_drop_comp
 We checked the proportionality and linearity of covariates.
 
 ::: controlly
-```{r diag, echo=T, fig.align='center', message=T, error=T, eval=T}
-vars_cov<-c("tr_modality", "edad_al_ing_1", "sex", "edad_ini_cons", "dias_treat_imp_sin_na_1", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "condicion_ocupacional_corr", "via_adm_sus_prin_act", "policonsumo", "origen_ingreso_mod", "numero_de_hijos_mod", "tenencia_de_la_vivienda_mod", "dg_cie_10_rec", "dg_trs_cons_sus_or", "macrozona", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "clas_centers_r", "clas_r", "porc_pobr")
+```{r diag11, echo=T, fig.align='center', message=T, error=T, eval=T}
+preds2<- c("motivodeegreso_mod_imp_rec", "tr_modality", "edad_al_ing_1", "sex", "edad_ini_cons", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "condicion_ocupacional_corr", "policonsumo", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "macrozona", "n_off_vio", "n_off_acq",  "n_off_sud", "n_off_oth", "clas_r", "dg_cie_10_rec", "dg_trs_cons_sus_or", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", "fis_comorbidity_icd_10")
+
+vars_cov<-c("motivodeegreso_mod_imp_rec", "tr_modality", "edad_al_ing_1", "sex", "edad_ini_cons", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "condicion_ocupacional_corr", "policonsumo", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "macrozona", "n_off_vio", "n_off_acq",  "n_off_sud", "n_off_oth", "dg_cie_10_rec", "dg_trs_cons_sus_or", "clas_r", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", "fis_comorbidity_icd_10")
+
+#numero_de_hijos_mod_joel ano_nac_corr con_quien_vive_joel
 
 coxfit_more_var1 <- coxph(as.formula(paste("Surv(yrs_to_condemn,  event_r) ~ motivodeegreso_mod_imp_rec +", paste(setdiff(vars_cov,""), collapse = "+"))), ties="efron", data= Base_fiscalia_v14)#[1:250,]
 #n_prev_off + 
+coxfit_more_var05 <- coxph(as.formula(paste("Surv(yrs_to_condemn,  event_r) ~ motivodeegreso_mod_imp_rec +", paste(setdiff(vars_cov,""), collapse = "+"))), ties="efron", data= Base_fiscalia_v14 %>% dplyr::mutate(edad_al_ing_1= VGAM::yeo.johnson(Base_fiscalia_v14$edad_al_ing_1, .5)))#[1:250,]
+
+
+#*If you are not directly interested in the relations of x1 or x2 to outcome and are simply controlling for them to analyze your predictor of main interest, then you don't have to worry much about the initially confusing display of p-values and hazard ratios for each of the terms associated with the splines.
 
 coxfit_more_var2 <- coxph(as.formula(paste("Surv(yrs_to_condemn,  event_r) ~ motivodeegreso_mod_imp_rec + rcs(edad_al_ing_1,3) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))), ties="efron", data= Base_fiscalia_v14)
 
@@ -794,43 +1087,48 @@ coxfit_more_var8 <- coxph(as.formula(paste("Surv(yrs_to_condemn,  event_r) ~ mot
 
 coxfit_more_var9 <- coxph(as.formula(paste("Surv(yrs_to_condemn,  event_r) ~ motivodeegreso_mod_imp_rec + ns(edad_al_ing_1,df= 4) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))), ties="efron", data= Base_fiscalia_v14)
 
-anova(coxfit_more_var1, coxfit_more_var2, coxfit_more_var3, coxfit_more_var4, coxfit_more_var5, coxfit_more_var6, coxfit_more_var7, coxfit_more_var8, coxfit_more_var9)
+anova(coxfit_more_var05, coxfit_more_var1, coxfit_more_var2, coxfit_more_var3, coxfit_more_var4, coxfit_more_var5, coxfit_more_var6, coxfit_more_var7, coxfit_more_var8, coxfit_more_var9)
 
-anova(coxfit_more_var4, coxfit_more_var8)
+anova(coxfit_more_var3, coxfit_more_var4, coxfit_more_var5,  coxfit_more_var8, coxfit_more_var9)
+
+invisible("coxfit_more_var3 , rcs 4, the best")
 
 # Dimitris Rizopoulos (https://stats.stackexchange.com/users/219012/dimitris-rizopoulos), Check log-linearity of a continuous variable to predict survival, URL (version: 2018-10-08): https://stats.stackexchange.com/q/370353
 
+# https://www.drizopoulos.com/courses/EMC/EP03.pdf
+
 # Create an effect plot to depict the relationship
-ND <- with(Base_fiscalia_v14, data.frame(edad_al_ing_1 = seq(min(edad_al_ing_1),  max(edad_al_ing_1), length.out = 500),
-  motivodeegreso_mod_imp_rec=rep(Mode(motivodeegreso_mod_imp_rec),500),
-  #edad_al_ing_1=rep(mean(edad_al_ing_1, na.rm=T))
-  sex= rep(Mode(sex),500),
-  tr_modality= rep(Mode(tr_modality),500),
-  edad_ini_cons=rep(quantile(edad_ini_cons, .5, na.rm=T),500),
-  dias_treat_imp_sin_na_1= rep(quantile(dias_treat_imp_sin_na_1, .5, na.rm=T),500),
-  escolaridad_rec= rep(Mode(escolaridad_rec),500),
-  sus_principal_mod= rep(Mode(sus_principal_mod),500),
-  freq_cons_sus_prin= rep(Mode(freq_cons_sus_prin),500),
-  condicion_ocupacional_corr= rep(Mode(condicion_ocupacional_corr),500),
-  via_adm_sus_prin_act= rep(Mode(via_adm_sus_prin_act),500),
-  policonsumo= rep(Mode(policonsumo),500),
-  origen_ingreso_mod= rep(Mode(origen_ingreso_mod),500),
-  numero_de_hijos_mod= rep(quantile(numero_de_hijos_mod, .5, na.rm=T),500),
-  tenencia_de_la_vivienda_mod= rep(Mode(tenencia_de_la_vivienda_mod),500),
-  dg_cie_10_rec = rep(Mode(dg_cie_10_rec),500),
-  dg_trs_cons_sus_or = rep(Mode(dg_trs_cons_sus_or),500),
-  macrozona = rep(Mode(macrozona),500),
-  #n_prev_off= rep(quantile(n_prev_off, .5, na.rm=T),500),
-  n_off_vio= rep(Mode(n_off_vio),500),
-  n_off_acq= rep(Mode(n_off_acq),500),
-  n_off_sud= rep(Mode(n_off_sud),500),
-  n_off_oth= rep(Mode(n_off_oth),500),
-  clas_centers_r= rep(Mode(clas_centers_r),500),
-  clas_r= rep(Mode(clas_r),500),
-  porc_pobr=rep(quantile(porc_pobr, .5, na.rm=T),500) 
+ND <- with(Base_fiscalia_v14, 
+data.frame(edad_al_ing_1 = seq(min(edad_al_ing_1),  max(edad_al_ing_1), length.out = 50),
+            motivodeegreso_mod_imp_rec=rep(Mode(motivodeegreso_mod_imp_rec),50),
+            #edad_al_ing_1=rep(mean(edad_al_ing_1, na.rm=T))
+            tr_modality= rep(Mode(tr_modality),50),
+            sex= rep(Mode(sex),50),
+            edad_ini_cons=rep(quantile(edad_ini_cons, .5, na.rm=T),50),
+            escolaridad_rec= rep(Mode(escolaridad_rec),50),
+            sus_principal_mod= rep(Mode(sus_principal_mod),50),
+            freq_cons_sus_prin= rep(Mode(freq_cons_sus_prin),50),
+            condicion_ocupacional_corr= rep(Mode(condicion_ocupacional_corr),50),
+            policonsumo= rep(Mode(policonsumo),50),
+            num_hijos_mod_joel_bin= rep(Mode(num_hijos_mod_joel_bin),50),
+            tenencia_de_la_vivienda_mod= rep(Mode(tenencia_de_la_vivienda_mod),50),
+            macrozona = rep(Mode(macrozona),50),
+            #n_prev_off= rep(quantile(n_prev_off, .5, na.rm=T),50),
+            n_off_vio= rep(Mode(n_off_vio),50),
+            n_off_acq= rep(Mode(n_off_acq),50),
+            n_off_sud= rep(Mode(n_off_sud),50),
+            n_off_oth= rep(Mode(n_off_oth),50),
+            dg_cie_10_rec = rep(Mode(dg_cie_10_rec),50),
+            dg_trs_cons_sus_or = rep(Mode(dg_trs_cons_sus_or),50),
+            clas_r= rep(Mode(clas_r),50),
+            porc_pobr=rep(quantile(porc_pobr, .5, na.rm=T),50),
+            sus_ini_mod_mvv=rep(Mode(sus_ini_mod_mvv),50),
+            ano_nac_corr=rep(quantile(ano_nac_corr, .5, na.rm=T),50),
+            con_quien_vive_joel=rep(Mode(con_quien_vive_joel),50),
+            fis_comorbidity_icd_10=rep(Mode(fis_comorbidity_icd_10),50)
 ))
 
-prs <- predict(coxfit_more_var8, newdata = ND, type = "lp", se.fit = TRUE)
+prs <- predict(coxfit_more_var3, newdata = ND, type = "lp", se.fit = TRUE)
 ND$pred <- prs[[1]]
 ND$se <- prs[[2]]
 ND$lo <- ND$pred - 1.96 * ND$se
@@ -839,68 +1137,49 @@ ND$up <- ND$pred + 1.96 * ND$se
 xyplot(pred + lo + up ~ edad_al_ing_1, data = ND,
        type = "l", col = "black", lwd = 2, lty = c(1, 2, 2),
        abline = list(h = 0, lty = 2, lwd = 2, col = "red"),
-       xlab = "Risk Factor", ylab = "log Hazard Ratio")
+       xlab = "Risk Factor", ylab = "log Hazard Ratio", main="Admission age")
 
-prs2 <- predict(coxfit_more_var1, newdata = ND%>% dplyr::mutate(edad_ini_cons= seq(min(Base_fiscalia_v14$edad_ini_cons,na.rm=T),  max(Base_fiscalia_v14$edad_ini_cons,na.rm=T), length.out = 500))%>% dplyr::mutate(edad_al_ing_1= quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T)), type = "lp", se.fit = TRUE)
+
+prs2 <- predict(coxfit_more_var3, newdata = ND%>% dplyr::mutate(edad_ini_cons= seq(min(Base_fiscalia_v14$edad_ini_cons,na.rm=T),  max(Base_fiscalia_v14$edad_ini_cons,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T))), type = "lp", se.fit = TRUE)
 ND$pred2 <- prs2[[1]]
 ND$se2 <- prs2[[2]]
 ND$lo2 <- ND$pred2 - 1.96 * ND$se2
 ND$up2 <- ND$pred2 + 1.96 * ND$se2
 
-xyplot(pred2 + lo2 + up2 ~ edad_ini_cons, data = ND%>% dplyr::mutate(edad_ini_cons= seq(min(Base_fiscalia_v14$edad_ini_cons,na.rm=T),  max(Base_fiscalia_v14$edad_ini_cons,na.rm=T), length.out = 500))%>% dplyr::mutate(edad_al_ing_1= quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T)),
+xyplot(pred2 + lo2 + up2 ~ edad_ini_cons, data = ND%>% dplyr::mutate(edad_ini_cons= seq(min(Base_fiscalia_v14$edad_ini_cons,na.rm=T),  max(Base_fiscalia_v14$edad_ini_cons,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T))),
        type = "l", col = "black", lwd = 2, lty = c(1, 2, 2),
        abline = list(h = 0, lty = 2, lwd = 2, col = "red"),
-       xlab = "Risk Factor", ylab = "log Hazard Ratio")
+       xlab = "Risk Factor", ylab = "log Hazard Ratio", main="Substance use onset age")
 
-prs3 <- predict(coxfit_more_var8, newdata = ND%>% dplyr::mutate(dias_treat_imp_sin_na_1= seq(min(Base_fiscalia_v14$dias_treat_imp_sin_na_1,na.rm=T),  max(Base_fiscalia_v14$dias_treat_imp_sin_na_1,na.rm=T), length.out = 500))%>% dplyr::mutate(edad_al_ing_1= quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T)), type = "lp", se.fit = TRUE)
+prs3 <- predict(coxfit_more_var3, newdata = ND%>% dplyr::mutate(ano_nac_corr= seq(min(Base_fiscalia_v14$ano_nac_corr,na.rm=T),  max(Base_fiscalia_v14$ano_nac_corr,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T))), type = "lp", se.fit = TRUE)
 ND$pred3 <- prs3[[1]]
 ND$se3 <- prs3[[2]]
 ND$lo3 <- ND$pred3 - 1.96 * ND$se3
 ND$up3 <- ND$pred3 + 1.96 * ND$se3
 
-xyplot(pred3 + lo3 + up3 ~ dias_treat_imp_sin_na_1, data = ND%>% dplyr::mutate(dias_treat_imp_sin_na_1= seq(min(Base_fiscalia_v14$dias_treat_imp_sin_na_1,na.rm=T),  max(Base_fiscalia_v14$dias_treat_imp_sin_na_1,na.rm=T), length.out = 500))%>% dplyr::mutate(edad_al_ing_1= quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T)),
+xyplot(pred3 + lo3 + up3 ~ ano_nac_corr, data = ND%>% dplyr::mutate(ano_nac_corr= seq(min(Base_fiscalia_v14$ano_nac_corr,na.rm=T),  max(Base_fiscalia_v14$ano_nac_corr,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T))),
        type = "l", col = "black", lwd = 2, lty = c(1, 2, 2),
        abline = list(h = 0, lty = 2, lwd = 2, col = "red"),
-       xlab = "Risk Factor", ylab = "log Hazard Ratio")
+       xlab = "Risk Factor", ylab = "log Hazard Ratio", main="Year of birth")
 
-prs4 <- predict(coxfit_more_var8, newdata = ND%>% dplyr::mutate(numero_de_hijos_mod= seq(min(Base_fiscalia_v14$numero_de_hijos_mod,na.rm=T),  max(Base_fiscalia_v14$numero_de_hijos_mod,na.rm=T), length.out = 500))%>% dplyr::mutate(edad_al_ing_1= quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T)), type = "lp", se.fit = TRUE)
+prs4 <- predict(coxfit_more_var3, newdata = ND%>% dplyr::mutate(porc_pobr= seq(min(Base_fiscalia_v14$porc_pobr,na.rm=T),  max(Base_fiscalia_v14$porc_pobr,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T))), type = "lp", se.fit = TRUE)
 ND$pred4 <- prs4[[1]]
 ND$se4 <- prs4[[2]]
 ND$lo4 <- ND$pred4 - 1.96 * ND$se4
 ND$up4 <- ND$pred4 + 1.96 * ND$se4
 
-xyplot(pred4 + lo4 + up4 ~ numero_de_hijos_mod, data = ND%>% dplyr::mutate(numero_de_hijos_mod= seq(min(Base_fiscalia_v14$numero_de_hijos_mod,na.rm=T),  max(Base_fiscalia_v14$numero_de_hijos_mod,na.rm=T), length.out = 500))%>% dplyr::mutate(edad_al_ing_1= quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T)),
+xyplot(pred4 + lo4 + up4 ~ porc_pobr, data = ND%>% dplyr::mutate(porc_pobr= seq(min(Base_fiscalia_v14$porc_pobr,na.rm=T),  max(Base_fiscalia_v14$porc_pobr,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T))),
        type = "l", col = "black", lwd = 2, lty = c(1, 2, 2),
        abline = list(h = 0, lty = 2, lwd = 2, col = "red"),
-       xlab = "Risk Factor", ylab = "log Hazard Ratio")
-
-prs5 <- predict(coxfit_more_var8, newdata = ND%>% dplyr::mutate(n_prev_off= seq(min(Base_fiscalia_v14$n_prev_off,na.rm=T),  max(Base_fiscalia_v14$n_prev_off,na.rm=T), length.out = 500))%>% dplyr::mutate(edad_al_ing_1= quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T)), type = "lp", se.fit = TRUE)
-ND$pred5 <- prs5[[1]]
-ND$se5 <- prs5[[2]]
-ND$lo5 <- ND$pred5 - 1.96 * ND$se5
-ND$up5 <- ND$pred5 + 1.96 * ND$se5
-
-xyplot(pred5 + lo5 + up5 ~ n_prev_off, data = ND%>% dplyr::mutate(n_prev_off= seq(min(Base_fiscalia_v14$n_prev_off,na.rm=T),  max(Base_fiscalia_v14$n_prev_off,na.rm=T), length.out = 500))%>% dplyr::mutate(edad_al_ing_1= quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T)),
-       type = "l", col = "black", lwd = 2, lty = c(1, 2, 2),
-       abline = list(h = 0, lty = 2, lwd = 2, col = "red"),
-       xlab = "Risk Factor", ylab = "log Hazard Ratio")
-
-prs6 <- predict(coxfit_more_var8, newdata = ND%>% dplyr::mutate(porc_pobr= seq(min(Base_fiscalia_v14$porc_pobr,na.rm=T),  max(Base_fiscalia_v14$porc_pobr,na.rm=T), length.out = 500))%>% dplyr::mutate(edad_al_ing_1= quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T)), type = "lp", se.fit = TRUE)
-ND$pred6 <- prs6[[1]]
-ND$se6 <- prs6[[2]]
-ND$lo6 <- ND$pred6 - 1.96 * ND$se6
-ND$up6 <- ND$pred6 + 1.96 * ND$se6
-
-xyplot(pred6 + lo6 + up6 ~ porc_pobr, data = ND%>% dplyr::mutate(porc_pobr= seq(min(Base_fiscalia_v14$porc_pobr,na.rm=T),  max(Base_fiscalia_v14$porc_pobr,na.rm=T), length.out = 500))%>% dplyr::mutate(edad_al_ing_1= quantile(Base_fiscalia_v14$edad_al_ing_1, .5, na.rm=T)),
-       type = "l", col = "black", lwd = 2, lty = c(1, 2, 2),
-       abline = list(h = 0, lty = 2, lwd = 2, col = "red"),
-       xlab = "Risk Factor", ylab = "log Hazard Ratio")
+       xlab = "Risk Factor", ylab = "log Hazard Ratio", main="Percentage of poverty")
 ```
 :::
 
+
 ::: controlly
-```{r diag2, echo=T, fig.align='center', message=T, error=T, eval=T}
+```{r diag2, echo=T, fig.align='center', message=T, error=T, eval=F}
 #http://www.sthda.com/english/wiki/cox-model-assumptions
+invisible("omitted")
 invisible("Martingale residual to assess nonlinearity, does not allow ns or rcs")
 # 
 # #https://github.com/kassambara/survminer/issues/357
@@ -936,113 +1215,201 @@ cat("______________________________________________________________________")
 res.cox_n_prev_off <- coxph(Surv(yrs_to_condemn,  event_r) ~ n_prev_off + log(n_prev_off) + I(log(n_prev_off)^2) + I(n_prev_off^2) +  I(sqrt(n_prev_off)), data = Base_fiscalia_v14%>% dplyr::filter(!is.na(n_prev_off)) %>% dplyr::mutate(n_prev_off= dplyr::case_when(n_prev_off==0~.0001,T~as.numeric(n_prev_off))))
 
 ggcoxfunctional(res.cox_n_prev_off,  data =  Base_fiscalia_v14%>% dplyr::filter(!is.na(n_prev_off)) %>% dplyr::mutate(n_prev_off= dplyr::case_when(n_prev_off==0~.0001,T~as.numeric(n_prev_off))), point.col = "blue", point.alpha = 0.5)
-# 
-# n_prev_off numero_de_hijos_mod
-# coxfit_pris_more_var <- coxph(Surv(edad_al_egres_imp,age_offending_imp,  event_r) ~ motivodeegreso_mod_imp_rec + edad_al_ing_1 + edad_ini_cons + dias_treat_imp_sin_na_1 + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + condicion_ocupacional_corr+ via_adm_sus_prin_act+ origen_ingreso_mod + numero_de_hijos_mod + tenencia_de_la_vivienda_mod + dg_cie_10_rec + dg_trs_cons_sus_or + macrozona + n_prev_off + n_off_vio + n_off_acq + n_off_sud + n_off_oth + clas_centers_r+ clas_r + porc_pobr, ties="efron", data= Base_fiscalia_v14_pris)#[1:250,]
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-check_PH <- cox.zph(coxfit_more_var8, transform="km")
+check_PH <- cox.zph(coxfit_more_var3, transform="km")
 data.frame(check_PH$table)%>% 
-  knitr::kable("markdown", caption= "Schoefeld residuals")
+  knitr::kable("markdown", caption= "Schoefeld residuals") #sigue alto
 ```
 :::
 
 ::: controlly
 ```{r diag2-2, echo=T, fig.align='center', message=T, error=T, eval=T}
-check_PH <- cox.zph(coxfit_more_var8, transform="km")
+check_PH <- cox.zph(coxfit_more_var3, transform="km")
 data.frame(check_PH$table)%>% 
   knitr::kable("markdown", caption= "Schoefeld residuals")
 ```
 :::
 
-```{r diag2-5, echo=T, fig.align='center', message=T, error=T, eval=T}
-#predict(coxfit_more_var8,type="expected")
 
-ND2 <- with(Base_fiscalia_v14, data.frame(edad_al_ing_1 = rep(quantile(edad_al_ing_1, .5, na.rm=T),3), 
-  motivodeegreso_mod_imp_rec= c(rep(as.character(unlist(strsplit(attr(table(Base_fiscalia_v14$motivodeegreso_mod_imp_rec),"name"), split="\t"))),1)),
-  #edad_al_ing_1=rep(mean(edad_al_ing_1, na.rm=T))
-  sex= rep(Mode(sex),3),
-  tr_modality= rep(Mode(tr_modality),3),
-  edad_ini_cons=rep(quantile(edad_ini_cons, .5, na.rm=T),3),
-  dias_treat_imp_sin_na_1= rep(quantile(dias_treat_imp_sin_na_1, .5, na.rm=T),3),
-  escolaridad_rec= rep(Mode(escolaridad_rec),3),
-  sus_principal_mod= rep(Mode(sus_principal_mod),3),
-  freq_cons_sus_prin= rep(Mode(freq_cons_sus_prin),3),
-  condicion_ocupacional_corr= rep(Mode(condicion_ocupacional_corr),3),
-  via_adm_sus_prin_act= rep(Mode(via_adm_sus_prin_act),3),
-  policonsumo= rep(Mode(policonsumo),3),  
-  origen_ingreso_mod= rep(Mode(origen_ingreso_mod),3),
-  numero_de_hijos_mod= rep(quantile(numero_de_hijos_mod, .5, na.rm=T),3),
-  tenencia_de_la_vivienda_mod= rep(Mode(tenencia_de_la_vivienda_mod),3),
-  dg_cie_10_rec = rep(Mode(dg_cie_10_rec),3),
-  dg_trs_cons_sus_or = rep(Mode(dg_trs_cons_sus_or),3),
-  macrozona = rep(Mode(macrozona),3),
-  #n_prev_off= rep(quantile(n_prev_off, .5, na.rm=T),3),
-  n_off_vio= rep(Mode(n_off_vio),3),
-  n_off_acq= rep(Mode(n_off_acq),3),
-  n_off_sud= rep(Mode(n_off_sud),3),
-  n_off_oth= rep(Mode(n_off_oth),3),
-  clas_centers_r= rep(Mode(clas_centers_r),3),
-  clas_r= rep(Mode(clas_r),3),
-  porc_pobr=rep(quantile(porc_pobr, .5, na.rm=T),3) 
+::: controlly
+```{r diag11-pris, echo=T, fig.align='center', message=T, error=T, eval=T}
+
+#numero_de_hijos_mod_joel ano_nac_corr con_quien_vive_joel
+
+coxfit_more_var21 <- coxph(as.formula(paste("Surv(yrs_to_pris,  event_r) ~ motivodeegreso_mod_imp_rec +", paste(setdiff(vars_cov,""), collapse = "+"))), ties="efron", data= Base_fiscalia_v14_pris)#[1:250,]
+#n_prev_off + 
+coxfit_more_var205 <- coxph(as.formula(paste("Surv(yrs_to_pris,  event_r) ~ motivodeegreso_mod_imp_rec +", paste(setdiff(vars_cov,""), collapse = "+"))), ties="efron", data= Base_fiscalia_v14_pris %>% dplyr::mutate(edad_al_ing_1= VGAM::yeo.johnson(Base_fiscalia_v14$edad_al_ing_1, .5)))#[1:250,]
+
+
+#*If you are not directly interested in the relations of x1 or x2 to outcome and are simply controlling for them to analyze your predictor of main interest, then you don't have to worry much about the initially confusing display of p-values and hazard ratios for each of the terms associated with the splines.
+
+coxfit_more_var22 <- coxph(as.formula(paste("Surv(yrs_to_pris,  event_r) ~ motivodeegreso_mod_imp_rec + rcs(edad_al_ing_1,3) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))), ties="efron", data= Base_fiscalia_v14_pris)
+
+coxfit_more_var23 <- coxph(as.formula(paste("Surv(yrs_to_pris,  event_r) ~ motivodeegreso_mod_imp_rec + rcs(edad_al_ing_1,4) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))), ties="efron", data= Base_fiscalia_v14_pris)
+
+coxfit_more_var24 <- coxph(as.formula(paste("Surv(yrs_to_pris,  event_r) ~ motivodeegreso_mod_imp_rec + rcs(edad_al_ing_1,5) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))), ties="efron", data= Base_fiscalia_v14_pris)
+
+coxfit_more_var25 <- coxph(as.formula(paste("Surv(yrs_to_pris,  event_r) ~ motivodeegreso_mod_imp_rec + rcs(edad_al_ing_1,6) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))), ties="efron", data= Base_fiscalia_v14_pris)
+
+coxfit_more_var26 <- coxph(as.formula(paste("Surv(yrs_to_pris,  event_r) ~ motivodeegreso_mod_imp_rec + ns(edad_al_ing_1) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))), ties="efron", data= Base_fiscalia_v14_pris)
+
+coxfit_more_var27 <- coxph(as.formula(paste("Surv(yrs_to_pris,  event_r) ~ motivodeegreso_mod_imp_rec + ns(edad_al_ing_1,df= 2) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))), ties="efron", data= Base_fiscalia_v14_pris)
+
+coxfit_more_var28 <- coxph(as.formula(paste("Surv(yrs_to_pris,  event_r) ~ motivodeegreso_mod_imp_rec + ns(edad_al_ing_1,df= 3) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))), ties="efron", data= Base_fiscalia_v14_pris)
+
+coxfit_more_var29 <- coxph(as.formula(paste("Surv(yrs_to_pris,  event_r) ~ motivodeegreso_mod_imp_rec + ns(edad_al_ing_1,df= 4) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))), ties="efron", data= Base_fiscalia_v14_pris)
+
+anova(coxfit_more_var205, coxfit_more_var21, coxfit_more_var22, coxfit_more_var23, coxfit_more_var24, coxfit_more_var25, coxfit_more_var26, coxfit_more_var27, coxfit_more_var28, coxfit_more_var29)
+
+anova(coxfit_more_var23, coxfit_more_var25, coxfit_more_var29,coxfit_more_var28)
+
+invisible("coxfit_more_var25 , rcs 6, the best; but for linearity, coxfit_more_var23")
+
+# Dimitris Rizopoulos (https://stats.stackexchange.com/users/219012/dimitris-rizopoulos), Check log-linearity of a continuous variable to predict survival, URL (version: 2018-10-08): https://stats.stackexchange.com/q/370353
+
+# Create an effect plot to depict the relationship
+ND_pris <- with(Base_fiscalia_v14_pris, 
+data.frame(edad_al_ing_1 = seq(min(edad_al_ing_1),  max(edad_al_ing_1), length.out = 50),
+            motivodeegreso_mod_imp_rec=rep(Mode(motivodeegreso_mod_imp_rec),50),
+            #edad_al_ing_1=rep(mean(edad_al_ing_1, na.rm=T))
+            tr_modality= rep(Mode(tr_modality),50),
+            sex= rep(Mode(sex),50),
+            edad_ini_cons=rep(quantile(edad_ini_cons, .5, na.rm=T),50),
+            escolaridad_rec= rep(Mode(escolaridad_rec),50),
+            sus_principal_mod= rep(Mode(sus_principal_mod),50),
+            freq_cons_sus_prin= rep(Mode(freq_cons_sus_prin),50),
+            condicion_ocupacional_corr= rep(Mode(condicion_ocupacional_corr),50),
+            policonsumo= rep(Mode(policonsumo),50),
+            num_hijos_mod_joel_bin= rep(Mode(num_hijos_mod_joel_bin),50),
+            tenencia_de_la_vivienda_mod= rep(Mode(tenencia_de_la_vivienda_mod),50),
+            macrozona = rep(Mode(macrozona),50),
+            #n_prev_off= rep(quantile(n_prev_off, .5, na.rm=T),50),
+            n_off_vio= rep(Mode(n_off_vio),50),
+            n_off_acq= rep(Mode(n_off_acq),50),
+            n_off_sud= rep(Mode(n_off_sud),50),
+            n_off_oth= rep(Mode(n_off_oth),50),
+            dg_cie_10_rec = rep(Mode(dg_cie_10_rec),50),
+            dg_trs_cons_sus_or = rep(Mode(dg_trs_cons_sus_or),50),
+            clas_r= rep(Mode(clas_r),50),
+            porc_pobr=rep(quantile(porc_pobr, .5, na.rm=T),50),
+            sus_ini_mod_mvv=rep(Mode(sus_ini_mod_mvv),50),
+            ano_nac_corr=rep(quantile(ano_nac_corr, .5, na.rm=T),50),
+            con_quien_vive_joel=rep(Mode(con_quien_vive_joel),50),
+            fis_comorbidity_icd_10=rep(Mode(fis_comorbidity_icd_10),50)
 ))
 
-#If you give it a fitted Cox model, then it calculates the Breslow estimator of the survival function under the fitted model.
+prs_pris <- predict(coxfit_more_var23, newdata = ND_pris, type = "lp", se.fit = TRUE)
+ND_pris$pred <- prs_pris[[1]]
+ND_pris$se <- prs_pris[[2]]
+ND_pris$lo <- ND_pris$pred - 1.96 * ND_pris$se
+ND_pris$up <- ND_pris$pred + 1.96 * ND_pris$se
 
-risk = function(model, newdata, time) {
-  rbind(est=as.numeric(1-summary(survfit(model, newdata = newdata, se.fit = T, conf.int = .95), times = time)$surv),
-  lo= as.numeric(1-summary(survfit(model, newdata = newdata, se.fit = T, conf.int = .95), times= time)$upper),
-  hi= as.numeric(1-summary(survfit(model, newdata = newdata, se.fit = T, conf.int = .95), times= time)$lower))
-}
-risk1<-
-round(risk(coxfit_more_var8,ND2, .33),2)
-risk2<-
-round(risk(coxfit_more_var8,ND2, 1),2)
-risk3<-
-round(risk(coxfit_more_var8,ND2, 3),2)
-risk4<-
-round(risk(coxfit_more_var8,ND2, 5),2)
+xyplot(pred + lo + up ~ edad_al_ing_1, data = ND_pris,
+       type = "l", col = "black", lwd = 2, lty = c(1, 2, 2),
+       abline = list(h = 0, lty = 2, lwd = 2, col = "red"),
+       xlab = "Risk Factor", ylab = "log Hazard Ratio", main="Admission age")
 
-risk_df<-
-data.frame(cbind(t=rep(c("3 months", "1 year", "3 years", "5 years"), each=3),mod= rep(c("T.comp", "Early drop", "Late drop"),4),rbind(t(risk1), t(risk2), t(risk3), t(risk4))))
+prs2 <- predict(coxfit_more_var23, newdata = ND_pris%>% dplyr::mutate(edad_ini_cons= seq(min(Base_fiscalia_v14_pris$edad_ini_cons,na.rm=T),  max(Base_fiscalia_v14_pris$edad_ini_cons,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14_pris$edad_al_ing_1, .5, na.rm=T))), type = "lp", se.fit = TRUE)
+ND_pris$pred2 <- prs2[[1]]
+ND_pris$se2 <- prs2[[2]]
+ND_pris$lo2 <- ND_pris$pred2 - 1.96 * ND_pris$se2
+ND_pris$up2 <- ND_pris$pred2 + 1.96 * ND_pris$se2
 
-colnames(risk_df) <- c("t", "Tr.status", "est", "lo", "hi")
+xyplot(pred2 + lo2 + up2 ~ edad_ini_cons, data = ND_pris%>% dplyr::mutate(edad_ini_cons= seq(min(Base_fiscalia_v14_pris$edad_ini_cons,na.rm=T),  max(Base_fiscalia_v14_pris$edad_ini_cons,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14_pris$edad_al_ing_1, .5, na.rm=T))),
+       type = "l", col = "black", lwd = 2, lty = c(1, 2, 2),
+       abline = list(h = 0, lty = 2, lwd = 2, col = "red"),
+       xlab = "Risk Factor", ylab = "log Hazard Ratio", main="Substance use onset age")
 
-risk_df %>% 
-  knitr::kable("markdown", caption="Predicted cumulative risk by tr. status (Cox model)")
+prs3 <- predict(coxfit_more_var23, newdata = ND_pris%>% dplyr::mutate(ano_nac_corr= seq(min(Base_fiscalia_v14_pris$ano_nac_corr,na.rm=T),  max(Base_fiscalia_v14_pris$ano_nac_corr,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14_pris$edad_al_ing_1, .5, na.rm=T))), type = "lp", se.fit = TRUE)
+ND_pris$pred3 <- prs3[[1]]
+ND_pris$se3 <- prs3[[2]]
+ND_pris$lo3 <- ND_pris$pred3 - 1.96 * ND_pris$se3
+ND_pris$up3 <- ND_pris$pred3 + 1.96 * ND_pris$se3
+
+xyplot(pred3 + lo3 + up3 ~ ano_nac_corr, data = ND_pris%>% dplyr::mutate(ano_nac_corr= seq(min(Base_fiscalia_v14_pris$ano_nac_corr,na.rm=T),  max(Base_fiscalia_v14_pris$ano_nac_corr,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14_pris$edad_al_ing_1, .5, na.rm=T))),
+       type = "l", col = "black", lwd = 2, lty = c(1, 2, 2),
+       abline = list(h = 0, lty = 2, lwd = 2, col = "red"),
+       xlab = "Risk Factor", ylab = "log Hazard Ratio", main="Year of birth")
+
+prs4 <- predict(coxfit_more_var23, newdata = ND_pris%>% dplyr::mutate(porc_pobr= seq(min(Base_fiscalia_v14_pris$porc_pobr,na.rm=T),  max(Base_fiscalia_v14_pris$porc_pobr,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14_pris$edad_al_ing_1, .5, na.rm=T))), type = "lp", se.fit = TRUE)
+ND_pris$pred4 <- prs4[[1]]
+ND_pris$se4 <- prs4[[2]]
+ND_pris$lo4 <- ND_pris$pred4 - 1.96 * ND_pris$se4
+ND_pris$up4 <- ND_pris$pred4 + 1.96 * ND_pris$se4
+
+xyplot(pred4 + lo4 + up4 ~ porc_pobr, data = ND_pris%>% dplyr::mutate(porc_pobr= seq(min(Base_fiscalia_v14_pris$porc_pobr,na.rm=T),  max(Base_fiscalia_v14_pris$porc_pobr,na.rm=T), length.out = 50))%>% dplyr::mutate(`rcs(edad_al_ing_1, 4)edad_al_ing_1`= log(quantile(Base_fiscalia_v14_pris$edad_al_ing_1, .5, na.rm=T))),
+       type = "l", col = "black", lwd = 2, lty = c(1, 2, 2),
+       abline = list(h = 0, lty = 2, lwd = 2, col = "red"),
+       xlab = "Risk Factor", ylab = "log Hazard Ratio", main="Percentage of poverty")
 ```
+:::
 
-```{r diag3, echo=T, fig.align='center', message=T, error=T, eval=T}
-KM_fit <- survfit(Surv(edad_al_egres_imp, age_offending_imp, event_r) ~ 
+
+::: controlly
+```{r diag2-2-pris, echo=T, fig.align='center', message=T, error=T, eval=T}
+check_PH_pris <- cox.zph(coxfit_more_var23, transform="km")
+data.frame(check_PH_pris$table)%>% 
+  knitr::kable("markdown", caption= "Schoefeld residuals (prison)")
+```
+:::
+
+<br>
+
+## Kaplan-Meier
+
+```{r diag3, echo=T, fig.align='center', message=T, error=T, eval=T, fig.cap= "Kaplan-Meier (Cond. Sentence)"}
+#Bradburn, M., Clark, T., Love, S. et al. Survival Analysis Part III: Multivariate data analysis – choosing a model and assessing its adequacy and fit. Br J Cancer 89, 605–611 (2003). https://doi.org/10.1038/sj.bjc.6601120
+
+KM_fit <- survfit(Surv(age_offending_imp-edad_al_egres_imp, event_r) ~ 
     strata(motivodeegreso_mod_imp_rec), data = Base_fiscalia_v14)
 
 par(mfrow = c(1, 2))
 
-plot(KM_fit, xlab = "Years", ylab = "Survival", col = 2:4)
+plot(KM_fit, xlab = "Years", ylab = "Survival", col = 2:4, main="Survival")
 #legend("topright", levels(factor(Base_fiscalia_v14$motivodeegreso_mod_imp_rec)), lty = 1, col = 2:4, bty = "n")
 
 plot(KM_fit, fun = function (s) -log(-log(s)), xlab = "Years", 
-    ylab = "-log(- log(Survival))", col = 2:4)
+    ylab = "-log(- log(Survival))", col = 2:4, main="-Log(−log(survival)) ")
 legend("topright", levels(factor(Base_fiscalia_v14$motivodeegreso_mod_imp_rec)), lty = 1, col = 2:4, bty = "n")
 ```
 
-<br>
 
-```{r diag4, echo=T, fig.align='center', message=T, error=T, eval=T}
-par(mfrow = c(1, 1))
+```{r diag3-pris, echo=T, fig.align='center', message=T, error=T, eval=T, fig.cap= "Kaplan-Meier (Prison)"}
+KM_fit_pris <- survfit(Surv(age_offending_imp-edad_al_egres_imp, event_r) ~ 
+    strata(motivodeegreso_mod_imp_rec), data = Base_fiscalia_v14_pris)
 
-plot(check_PH, var = 1)
-abline(h = coef(coxfit_more_var8)[1], col = "red", lwd = 2)
+par(mfrow = c(1, 2))
+
+plot(KM_fit_pris, xlab = "Years", ylab = "Survival", col = 2:4, main="Survival")
+#legend("topright", levels(factor(Base_fiscalia_v14$motivodeegreso_mod_imp_rec)), lty = 1, col = 2:4, bty = "n")
+
+plot(KM_fit_pris, fun = function (s) -log(-log(s)), xlab = "Years", 
+    ylab = "-log(- log(Survival))", col = 2:4, main="-Log(−log(survival)) ")
+legend("topright", levels(factor(Base_fiscalia_v14_pris$motivodeegreso_mod_imp_rec)), lty = 1, col = 2:4, bty = "n")
 ```
 
 <br>
 
+```{r diag4, echo=T, fig.align='center', message=T, error=T, eval=T, fig.cap="Schoefeld residuals, Treatment Outcome", fig.height=8}
+par(mfrow = c(2, 1))
+
+plot(check_PH, var = 1, ylab= "Beta(t) for Treatment outcome", col = "red", lwd = 2, main= "Cond. Sentence", xlab="")
+abline(h = coef(coxfit_more_var3)[1], col = "red", lwd = 2)
+
+plot(check_PH_pris, var = 1, ylab= "Beta(t) for Treatment outcome", col = "red", lwd = 2, main="Prison")
+abline(h = coef(coxfit_more_var23)[1], col = "red", lwd = 2)
+```
+
+```{r diag5, echo=T, fig.align='center', message=T, error=T, eval=T, fig.cap="Schoefeld residuals, Treatment Outcome", fig.height=8}
+
+```
 
 ```{r diag2-6, echo=T, fig.align='center', message=T, error=T, eval=F}
 
-cat("(====================================================================)")
+cat("(==============================# EXPERIMENTAL, COXED ======================================)")
 invisible("http://dx.doi.org/10.7910/DVN/ELT9VD")
 invisible("https://cran.r-project.org/web/packages/coxed/coxed.pdf")
 invisible("https://cran.r-project.org/web/packages/coxed/vignettes/coxed.html")
@@ -1077,34 +1444,25 @@ invisible("Error in finalizeData(c(subj.names, yvar.names, xvar.names), data, na
   data types cannot be character: please convert all characters to factors")
 ```
 
-<br>
-
-# Survex
-
 ```{r survex1, echo=T, fig.align='center', message=T, error=T, eval=F}
-
-require("survex")
-library("survival")
-library("ranger")
+# 
+cat("(==============================# EXPERIMENTAL, Survex ======================================)")
+require("mboost")
 
 prueba_stata<-rio::import("mariel_feb_23.dta")
 
 my_vector <- c("motivodeegreso_mod_imp_rec", "tr_mod2", "edad_al_ing_1", "sex_dum2", "edad_ini_cons", "esc1", "esc2", "sus_prin2", "sus_prin3", "sus_prin4", "sus_prin5", "fr_cons_sus_prin2", "fr_cons_sus_prin3", "fr_cons_sus_prin4", "fr_cons_sus_prin5", "cond_ocu2", "cond_ocu3", "cond_ocu4", "cond_ocu5", "cond_ocu6", "policonsumo", "num_hij2", "tenviv1", "tenviv2", "tenviv4", "tenviv5", "mzone2", "mzone3", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "rural2", "rural3", "porc_pobr", "susini2", "susini3", "susini4", "susini5", "dg_fis_anemia", "dg_fis_card", "dg_fis_enf_som", "dg_fis_ets", "dg_fis_hep_alc", "dg_fis_hep_b", "dg_fis_hep_cro", "dg_fis_inf", "dg_fis_otr_cond_fis_ries_vit", "dg_fis_otr_cond_fis", "dg_fis_pat_buc", "dg_fis_pat_ges_intrau", "dg_fis_trau_sec")
 
 # create a model
-model <- ranger(as.formula(paste("Surv(diff, event)~ ", paste(my_vector, collapse = "+"))), data = prueba_stata[complete.cases(prueba_stata[,my_vector]),])
+#ranger(as.formula(paste("Surv(diff, event)~ ", paste(my_vector, collapse = "+"))), data = prueba_stata[complete.cases(prueba_stata[,my_vector]),])
+model <- 
+  glmboost(as.formula(paste("Surv(diff, event)~ ", paste(my_vector, collapse = "+"))),
+  data = prueba_stata, family = CoxPH(), center = TRUE, control=boost_control(mstop = 500))
 
-# create an explainer
-explainer <- explain(model, 
-                     data = veteran[, -c(3, 4)],
-                     y = Surv(veteran$time, veteran$status))
+#Computes the predicted survivor function for a Cox proportional hazards model.
+pred_boost_cph<-survFit(model)
 
-# evaluate the model
-model_performance(explainer)
-
-# visualize permutation-based feature importance
-plot(model_parts(explainer))
-
+plot(varimp(model), blorder = "rev_alphabetical")
 ```
 
 
@@ -1381,6 +1739,7 @@ prueba2_imp22$weight_mult_d <- WeightIt::get_w_from_ps(ps.multi, prueba2_imp22$c
 
 ```
 
+
 We assess the covariates' balance after the weighting
 
 ::: controlly 
@@ -1433,6 +1792,95 @@ akm_rmst(time=prueba2_imp22$yrs_to_tr_dropout, status=prueba2_imp22$event, group
 
 <br>
 
+# Alternative Analysis
+
+## Flexsurvreg
+
+
+::: controlly
+
+```{r miss, warning=FALSE, echo=T, error=T, eval=T}
+#https://cran.r-project.org/web/packages/flexsurv/vignettes/flexsurv.pdf
+#https://search.r-project.org/CRAN/refmans/flexsurv/html/standsurv.html
+
+fiform<-
+as.formula(paste("Surv(yrs_to_pris,  event_r) ~ motivodeegreso_mod_imp_rec + rcs(edad_al_ing_1,4) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+")))
+
+
+dists_w_covs<-cbind.data.frame(covs=c(rep("fits_",(20)*1)), formal= rep(c("Weibull (AFT)", "Weibull (PH)", "Gompertz", "Log-logistic", "Gamma", "Generalized gamma", "Generalized gamma (original)", "Lognormal", "Exponential", "Generalized F", "Generalized F(original)", paste0("RP0",2:9),"RP10"),1*1), dist=c("weibull", "weibullph", "gompertz", "llogis", "gamma", "gengamma","gengamma.orig", "lnorm", "exp", "genf","genf.orig",rep("no dist",9)), model=rep(c("wei", "weiph", "gomp", "llogis", "gam","ggam", "ggam_orig", "logn", "exp", "genf","genf_orig", paste0("rp0",2:9),"rp10"),1*1), number= c(rep(0,11),2:10))
+
+no_attempts <- 5
+list_flexsurvreg <- list()
+
+for (i in 1:length(dists_w_covs$formal)){
+ if(grepl("RP", dists_w_covs$formal[i])==FALSE){
+    r <- NULL
+    attempt <- 0
+    while( is.null(r) && attempt <= no_attempts ) {
+      attempt <- attempt + 1
+      try(
+          r <- flexsurvreg(formula= as.formula(paste("Surv(yrs_to_condemn,  event_r) ~ motivodeegreso_mod_imp_rec + rcs(edad_al_ing_1,4) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))),
+                               data = Base_fiscalia_v14,
+                               dist = "gengamma.orig")
+      )
+    }
+    paste0("Model ",dists_w_covs$formal[i])
+    list_flexsurvreg[[i]] <- r
+ } else {
+    r <- NULL
+    attempt <- 0
+    while( is.null(r) && attempt <= no_attempts ) {
+      attempt <- attempt + 1
+      try(
+        r <- flexsurvspline(formula= as.formula(paste("Surv(yrs_to_condemn,  event_r) ~ motivodeegreso_mod_imp_rec + rcs(edad_al_ing_1,4) +", paste(setdiff(vars_cov,"edad_al_ing_1"), collapse = "+"))), 
+                            data = Base_fiscalia_v14,
+                            k= dists_w_covs$number[i])
+      )
+    }
+    paste0("Model ",dists_w_covs$formal[i])
+    list_flexsurvreg[[i]] <- r
+ }
+}
+#APR 2022, had to center the variable to avoid convergence issues
+Base_fiscalia_v14$edad_al_ing_1_cen<-as.numeric(scale(Base_fiscalia_v14$edad_al_ing_1, scale = F))
+Base_fiscalia_v14$ano_nac_corr_cen<-as.numeric(scale(Base_fiscalia_v14$ano_nac_corr, scale = F))
+Base_fiscalia_v14$porc_pobr_cen<-as.numeric(scale(Base_fiscalia_v14$porc_pobr, scale = F))
+
+if(is.ordered(Base_fiscalia_v14$fis_comorbidity_icd_10)){ Base_fiscalia_v14$fis_comorbidity_icd_10_chr <- as.character(Base_fiscalia_v14$fis_comorbidity_icd_10)}
+if(is.ordered(Base_fiscalia_v14$freq_cons_sus_prin)){ Base_fiscalia_v14$freq_cons_sus_prin_chr <- as.character(Base_fiscalia_v14$freq_cons_sus_prin)}
+if(is.ordered(Base_fiscalia_v14$escolaridad_rec)){ Base_fiscalia_v14$escolaridad_rec_chr <- as.character(Base_fiscalia_v14$escolaridad_rec)}
+
+#m_nostag_rp6_tvc_1
+rp06 <- flexsurvspline(formula= as.formula(paste("Surv(yrs_to_condemn,  event_r) ~ motivodeegreso_mod_imp_rec + rcs(edad_al_ing_1_cen,4) + ano_nac_corr_cen+ porc_pobr_cen+ fis_comorbidity_icd_10_chr+ freq_cons_sus_prin_chr+ escolaridad_rec_chr+", paste(setdiff(vars_cov,c("edad_al_ing_1", "ano_nac_corr", "porc_pobr", "fis_comorbidity_icd_10", "freq_cons_sus_prin", "escolaridad_rec")), collapse = "+"))), data = Base_fiscalia_v14, k= 6, control=list(reltol=1e-16,maxit = 1e5),method="Nelder-Mead") #reltol=1e-16),fnscale = 400, 
+#Choice of algorithm (CG, nlm, L-BFGS-B, Nelder-Mead)
+#-2 * -59529.74
+
+invisible("https://www.theanalysisfactor.com/wacky-hessian-matrix/")
+invisible("https://stackoverflow.com/a/58468209/9975513")
+invisible("https://github.com/chjackson/flexsurv-dev/issues/67")
+invisible("https://github.com/chjackson/flexsurv-dev/issues/54")
+invisible("https://github.com/chjackson/flexsurv-dev/issues/74")
+# There isn't necessarily going to be a solution. The likelihood surface that it is trying to maximise might just be too flat, so that there is no meaningful maximum. This usually happens when the data don't contain sufficient information about the parameters of the model.
+# BFGS is used as a default because it makes use of the gradient of the log-likelihood, which makes optimisation faster. In well-behaved problems, all optimisers should give the same answer. If they don't, then the answer with the higher likelihood (lower minus log likelihood) should be preferred.
+# Go to help(optim) as the manual page suggests - see "reltol" and "abstol". For example, flexsurvreg(..., control=list(reltol=1e-16), though this might not make any difference.
+
+
+#debugonce(flexsurvspline)
+
+# km.lc[[i]] <- survfit(formula= , data = Base_fiscalia_v14)
+
+# newdat_a_sc<-mutate(newdat_a,arrival=scale(1096- attr(scale(ms_d_match_surv_exp$arrival,scale=F),"scaled:center"),scale=F))
+# newdat_b_sc<-mutate(newdat_b,arrival=scale(1096- attr(scale(ms_d_match_surv_exp$arrival,scale=F),"scaled:center"),scale=F))
+# 
+# newdat_c_sc<-mutate(newdat_c,arrival=scale(731- attr(scale(ms_d_match_surv_oct_2022_exp$arrival,scale=F),"scaled:center"),scale=F))
+# newdat_d_sc<-mutate(newdat_d,arrival=scale(731- attr(scale(ms_d_match_surv_oct_2022_exp$arrival,scale=F),"scaled:center"),scale=F))
+
+
+```
+:::
+
+<br>
+
 # Missing data
 
 ::: controlly
@@ -1440,7 +1888,7 @@ akm_rmst(time=prueba2_imp22$yrs_to_tr_dropout, status=prueba2_imp22$event, group
 ```{r miss, warning=FALSE, echo=T, error=T, eval=T}
 set.seed(2125)
 Base_fiscalia_v14_miss <-
-subset(Base_fiscalia_v14, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, cat_vars_dg_fis, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "clas_centers_r", "clas_r", "sus_ini_mod_mvv")) %>% 
+subset(Base_fiscalia_v14, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
   dplyr::arrange(hash_key, fech_ing_num_1) %>% 
    missRanger::missRanger(
                 formula = . ~ . - hash_key,
@@ -1452,8 +1900,7 @@ subset(Base_fiscalia_v14, select= c(c("hash_key", cont_vars_desc, cat_vars_desc,
 
 set.seed(2125)
   Base_fiscalia_v14_pris_miss <-
-subset(Base_fiscalia_v14_pris, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, cat_vars_dg_fis, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "clas_centers_r", "clas_r", "sus_ini_mod_mvv")) %>% 
-  dplyr::arrange(hash_key, fech_ing_num_1) %>% 
+subset(Base_fiscalia_v14_pris, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
      missRanger::missRanger(
                 formula = . ~ . - hash_key,
                 num.trees = 200, 
@@ -1464,12 +1911,14 @@ subset(Base_fiscalia_v14_pris, select= c(c("hash_key", cont_vars_desc, cat_vars_
 
   set.seed(2125)
 Base_fiscalia_v14_miss2 <-
-subset(Base_fiscalia_v14, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, cat_vars_dg_fis, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "clas_centers_r", "clas_r", "sus_ini_mod_mvv")) %>% 
+subset(Base_fiscalia_v14, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
   dplyr::arrange(hash_key, fech_ing_num_1) %>% 
-  dplyr::mutate(dg_cie_10_rec= dplyr::case_when(as.character(dg_cie_10_rec)=="Diagnosis unknown (under study)"~NA_character_,T~as.character(dg_cie_10_rec))) %>% 
-  dplyr::mutate(SUM = rowSums(dplyr::mutate_all(dplyr::select(., dplyr::starts_with("dg_fis")),~as.numeric(.)-1))) %>% 
-    dplyr::mutate(across(dplyr::starts_with("dg_fis"), ~factor(dplyr::case_when(as.character(dg_fis_in_study)=="Presence" & SUM==1 ~NA_character_,T~as.character(.))))) %>%
-   missRanger::missRanger(
+  dplyr::mutate(dg_cie_10_rec= dplyr::case_when(as.character(dg_cie_10_rec)=="Diagnosis unknown (under study)"~NA_character_,T~as.character(dg_cie_10_rec)))%>%
+  #code to multiple response in  physical comorbidity (deprecated)
+  #dplyr::mutate(SUM = rowSums(dplyr::mutate_all(dplyr::select(., dplyr::starts_with("dg_fis")),~as.numeric(.)-1))) %>% 
+  #dplyr::mutate(across(dplyr::starts_with("dg_fis"), ~factor(dplyr::case_when(as.character(dg_fis_in_study)=="Presence" & SUM==1 ~NA_character_,T~as.character(.))))) %>%
+  dplyr::mutate(fis_comorbidity_icd_10= dplyr::case_when(as.character(fis_comorbidity_icd_10)=="Diagnosis unknown (under study)"~NA_character_,T~as.character(fis_comorbidity_icd_10)))%>% 
+  missRanger::missRanger(
                 formula = . ~ . - hash_key,
                 num.trees = 200, 
                 returnOOB=T,
@@ -1479,12 +1928,13 @@ subset(Base_fiscalia_v14, select= c(c("hash_key", cont_vars_desc, cat_vars_desc,
 
 set.seed(2125)
   Base_fiscalia_v14_pris_miss2 <-
-subset(Base_fiscalia_v14_pris, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, cat_vars_dg_fis, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "clas_centers_r", "clas_r", "sus_ini_mod_mvv")) %>% 
+subset(Base_fiscalia_v14_pris, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
   dplyr::arrange(hash_key, fech_ing_num_1) %>% 
-    dplyr::mutate(dg_cie_10_rec= dplyr::case_when(as.character(dg_cie_10_rec)=="Diagnosis unknown (under study)"~NA_character_,T~as.character(dg_cie_10_rec))) %>% 
-    dplyr::mutate(SUM = rowSums(dplyr::mutate_all(dplyr::select(., dplyr::starts_with("dg_fis")),~as.numeric(.)-1))) %>% 
-    dplyr::mutate(across(dplyr::starts_with("dg_fis"), ~factor(dplyr::case_when(as.character(dg_fis_in_study)=="Presence" & SUM==1 ~NA_character_,T~as.character(.))))) %>%
-     missRanger::missRanger(
+  dplyr::mutate(dg_cie_10_rec= dplyr::case_when(as.character(dg_cie_10_rec)=="Diagnosis unknown (under study)"~NA_character_,T~as.character(dg_cie_10_rec)))%>%
+  # dplyr::mutate(SUM = rowSums(dplyr::mutate_all(dplyr::select(., dplyr::starts_with("dg_fis")),~as.numeric(.)-1))) %>% 
+  # dplyr::mutate(across(dplyr::starts_with("dg_fis"), ~factor(dplyr::case_when(as.character(dg_fis_in_study)=="Presence" & SUM==1 ~NA_character_,T~as.character(.))))) %>%
+  dplyr::mutate(fis_comorbidity_icd_10= dplyr::case_when(as.character(fis_comorbidity_icd_10)=="Diagnosis unknown (under study)"~NA_character_,T~as.character(fis_comorbidity_icd_10)))%>% 
+   missRanger::missRanger(
                 formula = . ~ . - hash_key,
                 num.trees = 200, 
                 returnOOB=T,
@@ -1548,20 +1998,19 @@ initComplete = htmlwidgets::JS(
 
 ```{r export, warning=FALSE, echo=T, error=T, eval=T}
 #2023-01-01 we had a problem with edad_al_ing_fmt. This variable predict better (it had lower amount of missing data and was in wide format)
-cont_vars_desc[1]<-ifelse(cont_vars_desc[1]=="edad_al_ing_fmt","edad_al_ing_1",cont_vars_desc[1])
+
+#cont_vars_desc[1]<-ifelse(cont_vars_desc[1]=="edad_al_ing_fmt","edad_al_ing_1",cont_vars_desc[1])
 
 library(missRanger)
-attr(Base_fiscalia_v14$tipo_centro,"label") <- "Type of Center"
+#attr(Base_fiscalia_v14$tipo_centro,"label") <- "Type of Center"
 
-subset(Base_fiscalia_v14, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, cat_vars_dg_fis, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "clas_centers_r", "clas_r", "sus_ini_mod_mvv")) %>% 
+subset(Base_fiscalia_v14, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
   dplyr::arrange(hash_key, fech_ing_num_1)  %>% 
   dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
   data.table::data.table() %>% 
   rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA.dta"))
 
-attr(Base_fiscalia_v14_pris$tipo_centro,"label") <- "Type of Center"
-
-subset(Base_fiscalia_v14_pris, select= c(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, cat_vars_dg_fis, vars_desc, "id_centro", "comuna_residencia_cod", "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod"), "via_adm_sus_prin_act", "cat_ocupacional_corr", "clas_centers_r", "clas_r", "sus_ini_mod_mvv")) %>% 
+subset(Base_fiscalia_v14_pris, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
   dplyr::arrange(hash_key, fech_ing_num_1) %>%   
   dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
   data.table::data.table() %>% 
@@ -1604,8 +2053,10 @@ Base_fiscalia_v14_pris_miss2 %>%
 #put name of the file
 file<- "fiscalia_mariel_feb_2023_match_SENDA.dta"
 
+subset(Base_fiscalia_v14, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec")) %>% 
+
 export_lab_stata_merge<-
-  tibble::rownames_to_column(data.frame(Hmisc::label(dplyr::select(Base_fiscalia_v14,  all_of(c("hash_key", cont_vars_desc, cat_vars_desc, cat_vars_desc_off, vars_desc, "fech_ing_num_1", "fech_egres_imp", "cut_com_del", "cut_fec_nac","offender_d", "comuna_residencia_cod_rec", "porc_pobr", "Clasificación", "tipo_de_vivienda_mod", "via_adm_sus_prin_act", "cat_ocupacional_corr", "clas_centers_r", "clas_r"))))))%>% data.frame() %>%
+  tibble::rownames_to_column(data.frame(Hmisc::label(dplyr::select(Base_fiscalia_v14,  all_of(c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec"))))))%>% data.frame() %>%
   
   dplyr::rename("code" = !!names(.[1]), "label" = !!names(.[2]))%>% data.frame()%>%
   dplyr::mutate(first= "cap noi label variable")%>%
