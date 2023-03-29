@@ -744,7 +744,7 @@ graph save "`c(pwd)'\_figs\h_m_ns_rp6_stdif_rmst_pris.gph", replace
 <</dd_do>>
 ~~~~
 
-<<dd_graph: saving("_figs/h_m_ns_rp6_stdif_rmst_pris.svg") width(800) replace>>
+<<dd_graph: saving("h_m_ns_rp6_stdif_rmst_pris.svg") width(800) replace>>
 
 
 =============================================================================
@@ -1205,6 +1205,10 @@ graph save "`c(pwd)'\_figs\h_m_ns_rp5_stdif_rmst_abc_pris.gph", replace
 
 ~~~~
 <<dd_do:nocommand>>
+	frame late: cap qui save "mariel_feb_23_2_late.dta", all replace emptyok
+	frame early: cap qui save "mariel_feb_23_2_early.dta", all replace emptyok
+	frame early_late: cap qui save "mariel_feb_23_2_early_late.dta", all replace emptyok
+	
 	estwrite _all using "mariel_feb_23_2.sters", replace
 
 	cap qui save "mariel_feb_23_2.dta", all replace emptyok
