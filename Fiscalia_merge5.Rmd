@@ -1477,10 +1477,11 @@ Base_fiscalia_v14_miss <-
 subset(Base_fiscalia_v14, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
   dplyr::arrange(hash_key, fech_ing_num_1) %>% 
    missRanger::missRanger(
-                formula = . ~ . - hash_key,
+                formula = .  -offender_d - age_offending_imp ~ . - hash_key -offender_d - age_offending_imp,
                 num.trees = 200, 
+                pmm.k = 3,                
                 returnOOB=T,
-                maxiter=50,
+                maxiter= 50,
                 verbose = 2, 
                 seed = 2125)
 
@@ -1488,14 +1489,15 @@ set.seed(2125)
   Base_fiscalia_v14_pris_miss <-
 subset(Base_fiscalia_v14_pris, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
      missRanger::missRanger(
-                formula = . ~ . - hash_key,
+                formula = .  -offender_d - age_offending_imp ~ . - hash_key -offender_d - age_offending_imp,
                 num.trees = 200, 
+                pmm.k = 3,
                 returnOOB=T,
-                maxiter=50,
-                verbose = 2, 
+                maxiter= 50,
+                verbose = 2,
                 seed = 2125)
 
-  set.seed(2125)
+set.seed(2125)
 Base_fiscalia_v14_miss2 <-
 subset(Base_fiscalia_v14, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
   dplyr::arrange(hash_key, fech_ing_num_1) %>% 
@@ -1505,10 +1507,11 @@ subset(Base_fiscalia_v14, select= c("hash_key", vars_cov, "fech_ing_num_1", "fec
   #dplyr::mutate(across(dplyr::starts_with("dg_fis"), ~factor(dplyr::case_when(as.character(dg_fis_in_study)=="Presence" & SUM==1 ~NA_character_,T~as.character(.))))) %>%
   dplyr::mutate(fis_comorbidity_icd_10= dplyr::case_when(as.character(fis_comorbidity_icd_10)=="Diagnosis unknown (under study)"~NA_character_,T~as.character(fis_comorbidity_icd_10)))%>% 
   missRanger::missRanger(
-                formula = . ~ . - hash_key,
+                formula = .  -offender_d - age_offending_imp ~ . - hash_key -offender_d - age_offending_imp,
                 num.trees = 200, 
+                pmm.k = 3,                
                 returnOOB=T,
-                maxiter=50,
+                maxiter= 50,
                 verbose = 2, 
                 seed = 2125)
 
@@ -1521,10 +1524,11 @@ subset(Base_fiscalia_v14_pris, select= c("hash_key", vars_cov, "fech_ing_num_1",
   # dplyr::mutate(across(dplyr::starts_with("dg_fis"), ~factor(dplyr::case_when(as.character(dg_fis_in_study)=="Presence" & SUM==1 ~NA_character_,T~as.character(.))))) %>%
   dplyr::mutate(fis_comorbidity_icd_10= dplyr::case_when(as.character(fis_comorbidity_icd_10)=="Diagnosis unknown (under study)"~NA_character_,T~as.character(fis_comorbidity_icd_10)))%>% 
    missRanger::missRanger(
-                formula = . ~ . - hash_key,
+                formula = .  -offender_d - age_offending_imp ~ . - hash_key -offender_d - age_offending_imp,
                 num.trees = 200, 
+                pmm.k = 3,                
                 returnOOB=T,
-                maxiter=50,
+                maxiter= 50,
                 verbose = 2, 
                 seed = 2125)
 ```
