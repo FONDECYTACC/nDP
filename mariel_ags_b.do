@@ -1201,11 +1201,15 @@ graph save "`c(pwd)'\_figs\h_m_ns_rp5_stdif_rmst_abc.gph", replace
 <<dd_display: "Saved at= `c(current_time)' `c(current_date)'">>
 
 ~~~~
-<<dd_do:nocommand>>
+<<dd_do>>
 	frame late: cap qui save "mariel_feb_23_late.dta", all replace emptyok
 	frame early: cap qui save "mariel_feb_23_early.dta", all replace emptyok
 	frame early_late: cap qui save "mariel_feb_23_early_late.dta", all replace emptyok
+<</dd_do>>
+~~~~
 
+~~~~
+<<dd_do:nocommand>>
 	estwrite _all using "mariel_feb_23.sters", replace
 
 	cap qui save "mariel_feb_23.dta", all replace emptyok

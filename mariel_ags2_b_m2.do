@@ -346,27 +346,9 @@ graph save "`c(pwd)'\_figs\tto_2023_pris.gph", replace
 /*
 vars_cov<-c("motivodeegreso_mod_imp_rec", "tr_modality", "edad_al_ing_1", "sex", "edad_ini_cons", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "condicion_ocupacional_corr", "policonsumo", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "macrozona", "n_off_vio", "n_off_acq",  "n_off_sud", "n_off_oth", "dg_cie_10_rec", "dg_trs_cons_sus_or", "clas_r", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", "fis_comorbidity_icd_10")
 */
-
 global covs "i.motivodeegreso_mod_imp_rec i.tr_modality i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.num_hijos_mod_joel_bin i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.dg_cie_10_rec i.dg_trs_cons_sus_or i.clas_r porc_pobr i.sus_ini_mod_mvv ano_nac_corr i.con_quien_vive_joel i.fis_comorbidity_icd_10"
-
-
-qui noi stcox  $covs edad_al_ing_1, efron robust nolog schoenfeld(sch_a*) scaledsch(sca_a*) //change _a
-qui noi estat phtest, log detail
-mat mat_scho_test = r(phtest)
-scalar chi2_scho_test = r(chi2)
-scalar chi2_scho_test_df = r(df)
-scalar chi2_scho_test_p = r(p)
- 
-esttab matrix(mat_scho_test) using "mat_scho_test_02_2023_1_pris.csv", replace
-esttab matrix(mat_scho_test) using "mat_scho_test_02_2023_1_pris.html", replace
-
 <</dd_do>>
 ~~~~
-
-<<dd_display: "Chi^2(`=round(chi2_scho_test_df,.01)')= `=round(chi2_scho_test,.01)', p= `=round(chi2_scho_test_p,.0001)'">>
-
-<<dd_include: "${pathdata2}mat_scho_test_02_2023_1_pris.html" >>
-
 
 ~~~~
 <<dd_do>>
@@ -396,30 +378,6 @@ di "Log-likelihood difference (spline - linear): `=scalar(ll_diff)'"
 <<dd_display: "Log-likelihood difference (spline - linear): `=scalar(ll_diff)'">>
 
 Nevetheless, we chose the model with spline terms due to linearity over a better fit.
-
-~~~~
-<<dd_do>>
-*Micki Hill & Paul C Lambert & Michael J Crowther, 2021. "Introducing stipw: inverse probability weighted parametric survival models," London Stata Conference 2021 15, Stata Users Group.
-*https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&wdOrigin=BROWSELINK
-
-*Treatment variable should be a binary variable with values 0 and 1.
-
-qui noi stcox  $covs rc_x*, efron robust nolog schoenfeld(sch_b*) scaledsch(sca_b*) //change _b
-qui noi estat phtest, log detail
-mat mat_scho_test2 = r(phtest)
-scalar chi2_scho_test2 = r(chi2)
-scalar chi2_scho_test_df2 = r(df)
-scalar chi2_scho_test_p2 = r(p)
- 
-esttab matrix(mat_scho_test2) using "mat_scho_test_02_2023_2_pris.csv", replace
-esttab matrix(mat_scho_test2) using "mat_scho_test_02_2023_2_pris.html", replace
-
-<</dd_do>>
-~~~~
-
-<<dd_display: "Chi^2(`=round(chi2_scho_test_df2,.01)')= `=round(chi2_scho_test2,.01)', p= `=round(chi2_scho_test_p2,.0001)'">>
-
-<<dd_include: "${pathdata2}mat_scho_test_02_2023_2_pris.html" >>
 
 
 =============================================================================
@@ -1204,11 +1162,16 @@ graph save "`c(pwd)'\_figs\h_m_ns_rp5_stdif_rmst_abc_pris.gph", replace
 <<dd_display: "Saved at= `c(current_time)' `c(current_date)'">>
 
 ~~~~
-<<dd_do:nocommand>>
+<<dd_do>>
 	frame late: cap qui save "mariel_feb_23_2_m2_late.dta", all replace emptyok
 	frame early: cap qui save "mariel_feb_23_2_m2_early.dta", all replace emptyok
 	frame early_late: cap qui save "mariel_feb_23_2_m2_early_late.dta", all replace emptyok
-	
+<</dd_do>>
+~~~~
+
+
+~~~~
+<<dd_do:nocommand>>
 	estwrite _all using "mariel_feb_23_2.sters", replace
 
 	cap qui save "mariel_feb_23_2.dta", all replace emptyok
