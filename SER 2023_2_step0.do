@@ -416,8 +416,11 @@ frame example_b: stdescribe, weight
 
 
 **##############################**
+
 ### GET WEIGHTED BALANCE TABLES AND PROPORTIONAL HAZARDS FROM THE SELECTED WEIGHTS
+
 **##############################**
+
 
 ~~~~
 <<dd_do>>
@@ -557,7 +560,7 @@ esttab matrix(mat_scho_test) using "mat_scho_test_ser23.html", replace
 <</dd_do>>
 ~~~~
 
-<<dd_include: "${pathdata2}mat_scho_test_ser23.html" >>
+<<dd_include: "mat_scho_test_ser23.html" >>
 
 
 ~~~~
@@ -690,7 +693,7 @@ graph save "Graph" "`c(pwd)'\_figs\pbal2_mod.gph", replace
 <</dd_do>>
 ~~~~
 
-<<dd_graph: saving("./_figs/pbal2_mod.svg") width(800) replace>>
+<<dd_graph: saving("pbal2_mod.svg") width(800) replace>>
 
 Cocaine paste base and cocaine hydrochloride were the only variables that were not well adjusted if resticted the sample to the 5% and 95%.
 
@@ -879,7 +882,7 @@ twoway (rarea ajprob1_lci ajprob1_uci _t if poly==0 & _t <5, sort connect(stairs
 	saving("`c(pwd)'\_figs\msaj_1.gph", replace) //msaj_1.gph
 <</dd_do>>
 
-<<dd_graph: saving("./_figs/msaj_1.svg") width(800) replace>>
+<<dd_graph: saving("msaj_1.svg") width(800) replace>>
 
 <<dd_do:quietly>>
 twoway (rarea ajprob2_lci ajprob2_uci _t if poly==0 & _t <5, sort connect(stairstep stairstep) lcolor(gs8) color(gs8)) ///
@@ -896,7 +899,7 @@ twoway (rarea ajprob2_lci ajprob2_uci _t if poly==0 & _t <5, sort connect(stairs
 	saving("`c(pwd)'\_figs\msaj_2.gph", replace)
 <</dd_do>>
 
-<<dd_graph: saving("./_figs/msaj_2.svg") width(800) replace>>
+<<dd_graph: saving("msaj_2.svg") width(800) replace>>
 
 <<dd_do:quietly>>
 twoway (rarea ajprob3_lci ajprob3_uci _t if poly==0 & _t <5, sort connect(stairstep stairstep) lcolor(gs8) color(gs8)) ///
@@ -913,7 +916,7 @@ twoway (rarea ajprob3_lci ajprob3_uci _t if poly==0 & _t <5, sort connect(stairs
 	saving("`c(pwd)'\_figs\msaj_3.gph", replace) 
 <</dd_do>>
 
-<<dd_graph: saving("./_figs/msaj_3.svg") width(800) replace>>
+<<dd_graph: saving("msaj_3.svg") width(800) replace>>
 
 
 ~~~~
@@ -997,7 +1000,7 @@ frame example1: twoway (rbar bar trp_ajprob_3_5_12 _t2 if poly==0 & dup2==1 & _t
 	saving("`c(pwd)'\_figs\msaj_12_23.gph", replace)
 <</dd_do>>
 
-<<dd_graph: saving("./_figs/msaj_12_23.svg") width(800) replace>>
+<<dd_graph: saving("msaj_12_23.svg") width(800) replace>>
 
 
 <<dd_do:nocommand>>
@@ -1022,7 +1025,7 @@ frame example2: twoway (rbar bar trp_ajprob_3_5_13 _t2 if poly==0 & dup2==1 & _t
 	saving("`c(pwd)'\_figs\msaj_13_23.gph", replace)
 <</dd_do>>
 
-<<dd_graph: saving("./_figs/msaj_13_23.svg") width(800) replace>>
+<<dd_graph: saving("msaj_13_23.svg") width(800) replace>>
 
 <<dd_do:nocommand>>
 cap qui noi frame drop example3
@@ -1048,7 +1051,7 @@ frame example3: twoway (rbar bar trp_ajprob_3_5_23 _t2 if poly==0 & dup2==1 & _t
 
 <</dd_do>>
 
-<<dd_graph: saving("./_figs/msaj_23_23.svg") width(800) replace>>
+<<dd_graph: saving("msaj_23_23.svg") width(800) replace>>
 
 
 
@@ -1087,13 +1090,13 @@ foreach var of varlist trp_ajprob_3_5_12 trp_ajprob_3_5_12_lci trp_ajprob_3_5_12
 matrix est_msaj12 = (e_a_trp_ajprob_3_5_12, e_a_trp_ajprob_3_5_12_lci, e_a_trp_ajprob_3_5_12_uci, e_b_trp_ajprob_3_5_12, e_b_trp_ajprob_3_5_12_lci, e_b_trp_ajprob_3_5_12_uci)
 matrix colnames est_msaj12 = Est_NoPoly LCI UCI Est_Poly LCI UCI
 
-esttab matrix(est_msaj12) using "${pathdata2}pr_msaj12_23.html", replace 
+esttab matrix(est_msaj12) using "pr_msaj12_23.html", replace 
 <</dd_do>>
 ~~~~
 
 The transition probabilities are presented here:
 
-<<dd_include: "${pathdata2}pr_msaj12_23.html" >>
+<<dd_include: "pr_msaj12_23.html" >>
 
 **Transition Probabilities from Admission to Contact with the justice system**
 
@@ -1128,13 +1131,13 @@ foreach var of varlist trp_ajprob_3_5_13 trp_ajprob_3_5_13_lci trp_ajprob_3_5_13
 matrix est_msaj13 = (e_a_trp_ajprob_3_5_13, e_a_trp_ajprob_3_5_13_lci, e_a_trp_ajprob_3_5_13_uci, e_b_trp_ajprob_3_5_13, e_b_trp_ajprob_3_5_13_lci, e_b_trp_ajprob_3_5_13_uci)
 matrix colnames est_msaj13 = Est_NoPoly LCI UCI Est_Poly LCI UCI
 
-esttab matrix(est_msaj13) using "${pathdata2}pr_msaj13_23.html", replace 
+esttab matrix(est_msaj13) using "pr_msaj13_23.html", replace 
 <</dd_do>>
 ~~~~
 
 The transition probabilities are presented here:
 
-<<dd_include: "${pathdata2}pr_msaj13_23.html" >>
+<<dd_include: "pr_msaj13_23.html" >>
 
 **Transition Probabilities from Treatment Completion to Contact with the justice system**
 
@@ -1169,13 +1172,13 @@ foreach var of varlist trp_ajprob_3_5_23 trp_ajprob_3_5_23_lci trp_ajprob_3_5_23
 matrix est_msaj23 = (e_a_trp_ajprob_3_5_23, e_a_trp_ajprob_3_5_23_lci, e_a_trp_ajprob_3_5_23_uci, e_b_trp_ajprob_3_5_23, e_b_trp_ajprob_3_5_23_lci, e_b_trp_ajprob_3_5_23_uci)
 matrix colnames est_msaj23 = Est_NoPoly LCI UCI Est_Poly LCI UCI
 
-esttab matrix(est_msaj23) using "${pathdata2}pr_msaj23_23.html", replace 
+esttab matrix(est_msaj23) using "pr_msaj23_23.html", replace 
 <</dd_do>>
 ~~~~
 
 The transition probabilities are presented here:
 
-<<dd_include: "${pathdata2}pr_msaj23_23.html" >>
+<<dd_include: "pr_msaj23_23.html" >>
 
 
 ## Aalen-Johanssen, Tables of Lengths of stay
@@ -1214,13 +1217,13 @@ foreach var of varlist trp_ajlos_3_5_11 trp_ajlos_3_5_22 {
 matrix est_msaj12los = (e_a_trp_ajlos_3_5_11, e_b_trp_ajlos_3_5_11, e_a_trp_ajlos_3_5_22, e_b_trp_ajlos_3_5_22)
 matrix colnames est_msaj12los = LOS1_NoPoly LOS2_NoPoly LOS1_Poly LOS2_Poly
 
-esttab matrix(est_msaj12los) using "${pathdata2}los_msaj12_23.html", replace 
+esttab matrix(est_msaj12los) using "los_msaj12_23.html", replace 
 <</dd_do>>
 ~~~~
 
 The lengths of stay are presented here:
 
-<<dd_include: "${pathdata2}los_msaj12_23.html" >>
+<<dd_include: "los_msaj12_23.html" >>
 
 
 <<dd_display: "Saved at= `c(current_time)' `c(current_date)'">>

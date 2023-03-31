@@ -1,25 +1,73 @@
 <head>
-  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
 </head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <head>
-  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
 </head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <pre><code>. clear all
 
 . cap noi which tabout
-C:\Users\CISS Fondecyt\ado\plus\t\tabout.ado
+c:\ado\plus\t\tabout.ado
 *! 2.0.8 Ian Watson 15mar2019
 *! tabout version 3 (beta) available at: http://tabout.net.au
 
@@ -28,7 +76,7 @@ C:\Users\CISS Fondecyt\ado\plus\t\tabout.ado
 .         }
 
 . cap noi which pathutil
-C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+c:\ado\plus\p\pathutil.ado
 *! version 2.2.0 19nov2020 daniel klein
 
 . if _rc==111 {
@@ -36,7 +84,7 @@ C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
 .         }
 
 . cap noi which pathutil
-C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+c:\ado\plus\p\pathutil.ado
 *! version 2.2.0 19nov2020 daniel klein
 
 . if _rc==111 {
@@ -44,7 +92,7 @@ C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
 .         }
 
 . cap noi which project
-C:\Users\CISS Fondecyt\ado\plus\p\project.ado
+c:\ado\plus\p\project.ado
 *! version 1.3.1  22dec2013  picard@netbox.com
 
 . if _rc==111 {   
@@ -52,7 +100,7 @@ C:\Users\CISS Fondecyt\ado\plus\p\project.ado
 .         }
 
 . cap noi which stipw
-C:\Users\CISS Fondecyt\ado\plus\s\stipw.ado
+c:\ado\plus\s\stipw.ado
 *! Version 1.0.0 17Jan2022
 
 . if _rc==111 {   
@@ -60,7 +108,7 @@ C:\Users\CISS Fondecyt\ado\plus\s\stipw.ado
 .         }
 
 . cap noi which stpm2
-C:\Users\CISS Fondecyt\ado\plus\s\stpm2.ado
+c:\ado\plus\s\stpm2.ado
 *! version 1.7.5 May2021
 
 . if _rc==111 {   
@@ -68,7 +116,7 @@ C:\Users\CISS Fondecyt\ado\plus\s\stpm2.ado
 .         }       
 
 . cap noi which rcsgen
-C:\Users\CISS Fondecyt\ado\plus\r\rcsgen.ado
+c:\ado\plus\r\rcsgen.ado
 *! version 1.5.9 13FEB2022
 
 . if _rc==111 {   
@@ -76,7 +124,7 @@ C:\Users\CISS Fondecyt\ado\plus\r\rcsgen.ado
 .         }       
 
 . cap noi which matselrc
-C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
+c:\ado\plus\m\matselrc.ado
 *! NJC 1.1.0 20 Apr 2000  (STB-56: dm79)
 
 . if _rc==111 {           
@@ -84,7 +132,7 @@ C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
 .         }
 
 . cap noi which pbalchk
-C:\Users\CISS Fondecyt\ado\plus\p\pbalchk.ado
+c:\ado\plus\p\pbalchk.ado
 *! Version: 3.0.0
 *! Author:  Mark Lunt
 *! Date:    October 2, 2017 @ 12:47:35
@@ -95,27 +143,51 @@ C:\Users\CISS Fondecyt\ado\plus\p\pbalchk.ado
 
 </code></pre>
 <h1><a href="#exercise" id="exercise">Exercise</a></h1>
-<p>Date created: 18:21:54 11 Jan 2023.</p>
+<p>Date created: 11:31:24 30 Mar 2023.</p>
 <p>Get the folder</p>
 <pre><code>
-C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
+E:\Mi unidad\Alvacast\SISTRAT 2022 (github)
 
 
-Fecha: 11 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
+Fecha: 30 Mar 2023, considerando un SO Windows para el usuario: andre
 
 </code></pre>
 <head>
-  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
 </head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <p>Path data= ;</p>
-<p>Tiempo: 11 Jan 2023, considerando un SO Windows</p>
-<p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA_pris.dta</p>
+<p>Tiempo: 30 Mar 2023, considerando un SO Windows</p>
+<p>The file is located and named as: E:\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA_pris.dta</p>
 <p>=============================================================================</p>
 <h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
 <p>=============================================================================</p>
@@ -292,8 +364,8 @@ Fecha: 11 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
 . order id hash_key edad_al_ing_1 edad_al_egres_imp age_offending_imp age_at_censor_date diff1 diff2 comp contact_js
 
 . /*
-&gt; global covs_2_mod &quot;i.policonsumo i.sus_prin_mod i.fr_sus_prin edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 n_off_vio n_off_acq n_off_sud i.clas porc_pobr i.macr
-&gt; ozone&quot;
+&gt; global covs_2_mod &quot;i.policonsumo i.sus_prin_mod i.fr_sus_prin edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 n_off_vio n_off_acq n_off_sud i.clas porc_pobr i.macrozo
+&gt; ne&quot;
 &gt; global covs_3_mod &quot;policonsumo sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc_pobr macrozone&quot;
 &gt; */
 . 
@@ -432,8 +504,8 @@ Polysubs |  228,136.504   .0564267         52420   2.405592         .         .
 <pre><code>. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1600895-survival-model-stpm2-using-previously-estimated-weights
 . *pweights are Stata’s sampling weights—the inverse of the probability that the subject was chosen from the population.
 . 
-. stipw (logit poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc_pobr macrozone), distribution(weibull) ipwtype(stabilised) vc
-&gt; e(robust) genweight(ipw_wgt) //*edad_al_ing_1 df(10)  ten_viv colinealidad
+. stipw (logit poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc_pobr macrozone), distribution(weibull) ipwtype(stabilised) vce(r
+&gt; obust) genweight(ipw_wgt) //*edad_al_ing_1 df(10)  ten_viv colinealidad
 9882 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -770,8 +842,8 @@ Polysubs |  205,771.586   .0907414         52420   2.495617         .         .
 <pre><code>. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1600895-survival-model-stpm2-using-previously-estimated-weights
 . *pweights are Stata’s sampling weights—the inverse of the probability that the subject was chosen from the population.
 . 
-. stipw (logit poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc_pobr macrozone), distribution(weibull) ipwtype(stabilised) vc
-&gt; e(robust) genweight(ipw_wgt2) //*edad_al_ing_1 df(10)  ten_viv
+. stipw (logit poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc_pobr macrozone), distribution(weibull) ipwtype(stabilised) vce(r
+&gt; obust) genweight(ipw_wgt2) //*edad_al_ing_1 df(10)  ten_viv
 9882 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -843,6 +915,7 @@ Note: _cons estimates baseline hazard.
 . cap gen _start= 0
 
 . 
+. *The stset command is used for survival analysis to set the time variable and specify the structure of the dataset, while the [pw] option specifies the weights for each observation in the analysis.
 . stset diff2 [pw=ipw_wgt2], enter(_start) failure(contact_js==1) //*scale(12) 
 
      failure event:  contact_js == 1
@@ -1455,7 +1528,7 @@ Mahalonobis Distance between mean vectors:
 
 
 . graph save &quot;Graph&quot; &quot;`c(pwd)'\_figs\pbal2.gph&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2.gph saved)
 
 . 
 . mat smd_before = r(usmeandiff)
@@ -1584,23 +1657,23 @@ Mahalonobis Distance between mean vectors:
 &gt; */
 . 
 . graph export &quot;`c(pwd)'\_figs\pbal2_mod.jpg&quot;, as(jpg) replace width(2000) height(1333)
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.jpg written in JPEG format)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.jpg written in JPEG format)
 
 . graph export &quot;`c(pwd)'\_figs\pbal2_mod.png&quot;, as(png) replace width(1800) height(1000)
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.png written in PNG format)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.png written in PNG format)
 
 . graph export &quot;`c(pwd)'\_figs\pbal2_mod.eps&quot;, as(eps) replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.eps written in EPS format)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.eps written in EPS format)
 
 . graph export &quot;`c(pwd)'\_figs\pbal2_mod.pdf&quot;, as(pdf) replace //*width(2000) height(2000) orientation(landscape)
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.pdf written in PDF format)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.pdf written in PDF format)
 
 . *graph export &quot;_Appendix2_Graph_Mean_SE_g32.svg&quot;, as(svg) replace height(20000) fontface (Helvetica)
 . graph save &quot;`c(pwd)'\_figs\pbal2_mod&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.gph saved)
 
 . graph save &quot;Graph&quot; &quot;`c(pwd)'\_figs\pbal2_mod.gph&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod.gph saved)
 
 . //graph use &quot;pbal2_mod&quot;
 . 
@@ -1661,15 +1734,15 @@ Mahalonobis Distance between mean vectors:
 
 
 
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.png written in PNG format)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.png written in PNG format)
 
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.eps written in EPS format)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.eps written in EPS format)
 
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.pdf written in PDF format)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.pdf written in PDF format)
 
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.gph saved)
 
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23_2.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23_2.gph saved)
 
 
 
@@ -1702,8 +1775,8 @@ obs. time interval:  (0, _stop]
 &gt; ## IPW example
 &gt; =======================================
 &gt; *https://www.esmoopen.com/cms/10.1016/j.esmoop.2021.100363/attachment/276cb642-3654-4d16-ad04-7bf83cb6fb15/mmc1.pdf
-&gt; logistic  motivodeegreso_mod_imp_rec2_inv edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.policonsumo i.n_off_vio i.n_
-&gt; off_acq i.n_off_sud i.clas porc_pobr, nolog 
+&gt; logistic  motivodeegreso_mod_imp_rec2_inv edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.policonsumo i.n_off_vio i.n_off
+&gt; _acq i.n_off_sud i.clas porc_pobr, nolog 
 &gt; predict double ps //ps = propensity score
 &gt; gen double HAW = ((motivodeegreso_mod_imp_rec2_inv == 1) / ps) + ((motivodeegreso_mod_imp_rec2_inv == 0) / (1 - ps)) // 
 &gt; Compute the inverse probability Treatment weights (IPTW)
@@ -1741,13 +1814,13 @@ obs. time interval:  (0, _stop]
 <p>(ranges: 1892 changes made)</p>
 <p>(ranges: 133591 changes made)</p>
 <p>frame example1 not found</p>
-<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)_figs\msaj_12_23.gph saved)</p>
+<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)_figs\msaj_12_23.gph saved)</p>
 <p><img src="_figs/msaj_12_23.svg" width="800" ></p>
 <p>frame example2 not found</p>
-<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)_figs\msaj_13_23.gph saved)</p>
+<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)_figs\msaj_13_23.gph saved)</p>
 <p><img src="_figs/msaj_13_23.svg" width="800" ></p>
 <p>frame example3 not found</p>
-<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)_figs\msaj_23_23.gph saved)</p>
+<p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)_figs\msaj_23_23.gph saved)</p>
 <p><img src="_figs/msaj_23_23.svg" width="800" ></p>
 <h2><a href="#aalen-johanssen-probability-tables" id="aalen-johanssen-probability-tables">Aalen-Johanssen, Probability Tables</a></h2>
 <p><strong>Transition Probabilities from Admission to Treatment completion</strong></p>
@@ -1948,7 +2021,7 @@ obs. time interval:  (0, _stop]
 <tr><td>5_yrs       </td><td>         2.8</td><td>         2.8</td><td>         4.1</td><td>         3.8</td></tr>
 <tr><td colspan=5><hr></td></tr>
 </table>
-<p>Saved at= 18:44:30 11 Jan 2023</p>
+<p>Saved at= 11:51:30 30 Mar 2023</p>
 <pre><code>
 
 
