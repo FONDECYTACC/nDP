@@ -49,7 +49,17 @@ cap noi which mkspline2
 if _rc==111 {		
 	ssc install postrcspline
 	}
+cap noi which estwrite 
+if _rc==111 {		
+	ssc install estwrite
+	}
 
+cap noi ssc install moremata 
+
+cap noi which esttab
+if _rc==111 {		
+	ssc install estout
+	}
 <</dd_do>>
 ~~~~
 
@@ -207,9 +217,7 @@ We show a table of missing values
 ~~~~
 <<dd_do>>
 /*
-
 vars_cov<-c("motivodeegreso_mod_imp_rec", "tr_modality", "edad_al_ing_1", "sex", "edad_ini_cons", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "condicion_ocupacional_corr", "policonsumo", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "macrozona", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "dg_cie_10_rec", "dg_trs_cons_sus_or", "clas_r", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", "fis_comorbidity_icd_10")
-
 */
 
 misstable sum motivodeegreso_mod_imp_rec tr_modality edad_al_ing_1 sex_enc edad_ini_cons escolaridad_rec sus_principal_mod freq_cons_sus_prin condicion_ocupacional_cor policonsumo num_hijos_mod_joel_bin tenencia_de_la_vivienda_mod macrozona n_off_vio n_off_acq n_off_sud n_off_oth dg_cie_10_rec dg_trs_cons_sus_or clas_r porc_pobr sus_ini_mod_mvv ano_nac_corr con_quien_vive_joel fis_comorbidity_icd_10
@@ -433,11 +441,41 @@ In view of nonproportional hazards, we explored different shapes of time-depende
 vars_cov<-c("motivodeegreso_mod_imp_rec", "tr_modality", "edad_al_ing_1", "sex", "edad_ini_cons", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "condicion_ocupacional_corr", "policonsumo", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "macrozona", "n_off_vio", "n_off_acq",  "n_off_sud", "n_off_oth", "dg_cie_10_rec", "dg_trs_cons_sus_or", "clas_r", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", "fis_comorbidity_icd_10")
 */
 
+cap noi tab tr_modality, gen(tr_mod)
+cap noi tab sex_enc, gen(sex_dum)
+cap noi tab escolaridad_rec, gen(esc)
+cap noi tab sus_principal_mod, gen(sus_prin)
+cap noi tab freq_cons_sus_prin, gen(fr_cons_sus_prin)
+cap noi tab condicion_ocupacional_cor, gen(cond_ocu)
+cap noi tab num_hijos_mod_joel_bin, gen(num_hij)
+cap noi tab tenencia_de_la_vivienda_mod, gen(tenviv)
+cap noi tab macrozona, gen(mzone)
+cap noi tab clas_r, gen(rural)
+cap noi tab sus_ini_mod_mvv, gen(susini)
+cap noi tab con_quien_vive_joel, gen(cohab)
+cap noi tab fis_comorbidity_icd_10, gen(fis_com)
+cap noi tab dg_cie_10_rec, gen(psy_com)
+cap noi tab dg_trs_cons_sus_or, gen(dep)
+
+/*
+*NO LONGER USEFUL
+local varslab "dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
+forvalues i = 1/14 {
+	local v : word `i' of `varslab'
+	di "`v'"
+	gen `v'2= 0
+	replace `v'2 =1 if `v'==2
+}
+*/
+
+*REALLY NEEDS DUMMY VARS
+global covs_3b_dum_pre "mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3"
+
 global covs_3b "mot_egr_early mot_egr_late i.tr_modality i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.num_hijos_mod_joel_bin i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.dg_cie_10_rec i.dg_trs_cons_sus_or i.clas_r porc_pobr i.sus_ini_mod_mvv ano_nac_corr i.con_quien_vive_joel i.fis_comorbidity_icd_10 rc_x1 rc_x2 rc_x3"
 
 forvalues i=1/10 {
 	forvalues j=1/7 {
-qui noi stpm2 $covs_3b , scale(hazard) df(`i') eform tvc(mot_egr_early mot_egr_late) dftvc(`j') 
+qui noi stpm2 $covs_3b_dum_pre , scale(hazard) df(`i') eform tvc(mot_egr_early mot_egr_late) dftvc(`j') 
 estimates  store m_nostag_rp`i'_tvc_`j'
 	}
 }
@@ -611,35 +649,8 @@ stpm2_standsurv, at1(male 0 stage2m 0 stage3m 0) ///
 ~~~~
 <<dd_do>>
 
-cap noi tab tr_modality, gen(tr_mod)
-cap noi tab sex_enc, gen(sex_dum)
-cap noi tab escolaridad_rec, gen(esc)
-cap noi tab sus_principal_mod, gen(sus_prin)
-cap noi tab freq_cons_sus_prin, gen(fr_cons_sus_prin)
-cap noi tab condicion_ocupacional_cor, gen(cond_ocu)
-cap noi tab num_hijos_mod_joel_bin, gen(num_hij)
-cap noi tab tenencia_de_la_vivienda_mod, gen(tenviv)
-cap noi tab macrozona, gen(mzone)
-cap noi tab clas_r, gen(rural)
-cap noi tab sus_ini_mod_mvv, gen(susini)
-cap noi tab con_quien_vive_joel, gen(cohab)
-cap noi tab fis_comorbidity_icd_10, gen(fis_com)
-cap noi tab dg_cie_10_rec, gen(psy_com)
-cap noi tab dg_trs_cons_sus_or, gen(dep)
-
-/*
-*NO LONGER USEFUL
-local varslab "dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec"
-forvalues i = 1/14 {
-	local v : word `i' of `varslab'
-	di "`v'"
-	gen `v'2= 0
-	replace `v'2 =1 if `v'==2
-}
-*/
-
 *REALLY NEEDS DUMMY VARS
-global covs_3b_dum "mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3"
+global covs_3b_dum "mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3"
 
 
 qui noi stpm2 $covs_3b_dum , scale(hazard) df(6) eform tvc(mot_egr_early mot_egr_late) dftvc(1)
@@ -772,7 +783,7 @@ recode motivodeegreso_mod_imp_rec (1=0 "Tr. Completion") (2/3=1 "Late dropout"),
 *______________________________________________
 * NO STAGGERED ENTRY, BINARY TREATMENT (1-LATE VS. 0-COMPLETION)
 
-global covs_4_dum "motivodeegreso_mod_imp_rec2 tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3"
+global covs_4_dum "motivodeegreso_mod_imp_rec2 tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3"
 
 *  tvar must be a binary variable with 1 = treatment/exposure and 0 = control.
 
@@ -780,7 +791,7 @@ global covs_4_dum "motivodeegreso_mod_imp_rec2 tr_mod2 sex_dum2 edad_ini_cons es
 *10481 observations have missing treatment and/or missing confounder values and/or _st = 0.
 forvalues i=1/10 {
 	forvalues j=1/7 {
-qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
+qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
 estimates  store m_stipw_nostag_rp`i'_tvcdf`j'
 	}
 }
@@ -796,7 +807,7 @@ forvalues i = 1/5 {
  local v : word `i' of `vars'
  local v2 : word `i' of `varslab'
 
-qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m2_nostag) ipwtype(stabilised) vce(mestimation)
+qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m2_nostag) ipwtype(stabilised) vce(mestimation)
 estimates  store m_stipw_nostag_`v2'
 	}
 *}
@@ -819,8 +830,8 @@ esttab matrix(stats_2) using "testreg_aic_bic_mrl_23_2.html", replace
 
 ~~~~
 <<dd_do>>
-estimates replay m_stipw_nostag_rp5_tvcdf1, eform
-estimates restore m_stipw_nostag_rp5_tvcdf1 
+estimates replay m_stipw_nostag_rp4_tvcdf1, eform
+estimates restore m_stipw_nostag_rp4_tvcdf1 
 
 stpm2_standsurv, at1(tr_outcome 0 ) at2(tr_outcome 1 ) timevar(tt) ci contrast(difference) ///
      atvar(s_comp_a s_late_a) contrastvar(sdiff_comp_vs_late)
@@ -901,7 +912,7 @@ recode motivodeegreso_mod_imp_rec (1=0 "Tr. Completion") (2/3=1 "Early dropout")
 
 forvalues i=1/10 {
 	forvalues j=1/7 {
-qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m2_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
+qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m2_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
 estimates  store m2_stipw_nostag_rp`i'_tvcdf`j'
 	}
 }
@@ -916,7 +927,7 @@ local varslab "exp wei gom logn llog"
 forvalues i = 1/5 {
  local v : word `i' of `vars'
  local v2 : word `i' of `varslab'
-qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m2_nostag) ipwtype(stabilised) vce(mestimation)
+qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m2_nostag) ipwtype(stabilised) vce(mestimation)
 estimates  store m2_stipw_nostag_`v2'
 	}
 *}
@@ -943,8 +954,8 @@ esttab matrix(stats_3) using "testreg_aic_bic_mrl_23_3.html", replace
 
 ~~~~
 <<dd_do>>
-estimates replay m2_stipw_nostag_rp3_tvcdf1, eform
-estimates restore m2_stipw_nostag_rp3_tvcdf1
+estimates replay m2_stipw_nostag_rp10_tvcdf6, eform
+estimates restore m2_stipw_nostag_rp10_tvcdf6
 
 sts gen km_b=s, by(tr_outcome)
 
@@ -978,7 +989,6 @@ graph save "`c(pwd)'\_figs\h_m_ns_rp5_22_b.gph", replace
 
 ~~~~
 <<dd_do>>
-estimates restore m2_stipw_nostag_rp3_tvcdf1
 
 twoway  (rarea rmst_comp_b_lci rmst_comp_b_uci tt, color(gs7%35)) ///             
                  (rarea rmst_early_b_lci rmst_early_b_uci tt, color(gs2%35)) ///
@@ -1029,7 +1039,7 @@ recode motivodeegreso_mod_imp_rec (3=0 "Late dropout") (2=1 "Early dropout"), ge
 
 forvalues i=1/10 {
 	forvalues j=1/7 {
-qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m3_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
+qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m3_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
 estimates  store m3_stipw_nostag_rp`i'_tvcdf`j'
 	}
 }
@@ -1044,7 +1054,7 @@ local varslab "exp wei gom logn llog"
 forvalues i = 1/5 {
  local v : word `i' of `vars'
  local v2 : word `i' of `varslab'
-qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m3_nostag) ipwtype(stabilised) vce(mestimation)
+qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m3_nostag) ipwtype(stabilised) vce(mestimation)
 estimates  store m3_stipw_nostag_`v2'
 	}
 *}
@@ -1070,13 +1080,16 @@ esttab matrix(stats_4) using "testreg_aic_bic_mrl_23_4.html", replace
 ~~~~
 <<dd_do>>
 
-estimates replay m3_stipw_nostag_rp4_tvcdf1, eform
-estimates restore m3_stipw_nostag_rp4_tvcdf1 // m3_stipw_nostag_rp5_tvcdf1
+estimates replay m3_stipw_nostag_rp5_tvcdf1, eform
+estimates restore m3_stipw_nostag_rp5_tvcdf1 // m3_stipw_nostag_rp5_tvcdf1
 
 sts gen km_c=s, by(tr_outcome)
 
 stpm2_standsurv, at1(tr_outcome 0 ) at2(tr_outcome 1 ) timevar(tt) ci contrast(difference) ///
      atvar(s_late_c s_early_c) contrastvar(sdiff_late_vs_early)
+	 
+stpm2_standsurv, at1(tr_outcome 0 ) at2(tr_outcome 1 ) timevar(tt) rmst ci contrast(difference) ///
+     atvar(rmst_late_c rmst_early_c) contrastvar(rmstdiff_late_vs_early)
 
 * s_tr_comp_early_b s_tr_comp_early_b_lci s_tr_comp_early_b_uci s_late_drop_b s_late_drop_b_lci s_late_drop_b_uci sdiff_tr_comp_early_vs_late sdiff_tr_comp_early_vs_late_lci sdiff_tr_comp_early_vs_late_uci	 
 
@@ -1101,10 +1114,6 @@ graph save "`c(pwd)'\_figs\h_m_ns_rp5_22_c.gph", replace
 
 ~~~~
 <<dd_do>>
-estimates restore m3_stipw_nostag_rp4_tvcdf1
-
-stpm2_standsurv, at1(tr_outcome 0 ) at2(tr_outcome 1 ) timevar(tt) rmst ci contrast(difference) ///
-     atvar(rmst_late_c rmst_early_c) contrastvar(rmstdiff_late_vs_early)
 
 twoway  (rarea rmst_late_c_lci rmst_late_c_uci tt, color(gs7%35)) ///             
                  (rarea rmst_early_c_lci rmst_early_c_uci tt, color(gs2%35)) ///
@@ -1216,7 +1225,6 @@ graph save "`c(pwd)'\_figs\h_m_ns_rp5_stdif_rmst_abc.gph", replace
 <</dd_do>>
 ~~~~
 
-
    
 <<dd_do: nocommand>>
 /*
@@ -1225,6 +1233,11 @@ FORMA DE EXPORTAR LOS DATOS Y EL MARKDOWN
 cap rm "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_feb_2023_stata.html"
 dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags_b.do", saving("E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata.html") replace nostop 
 copy "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata.html" "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_feb_2023_stata.html", replace
+
+cap rm "H:/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_feb_2023_stata.html"
+dyndoc "H:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags_b.do", saving("E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata.html") replace nostop 
+copy "H:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata.html" "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_feb_2023_stata.html", replace
+
 
 cap rm "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_feb_2023_stata.html"
 dyndoc "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags_b.do", saving("C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata.html") replace nostop 

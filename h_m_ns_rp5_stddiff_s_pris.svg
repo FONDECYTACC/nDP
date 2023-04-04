@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- This is a Stata 16.1 generated SVG file (http://www.stata.com) -->
+
+<svg version="1.1" width="5.50in" height="4.00in" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>Stata Graph - surv_diffs</desc>
+	<rect x="0" y="0" width="3960" height="2880" style="fill:#FFFFFF;stroke:none"/>
+	<rect x="0.00" y="0.00" width="3959.88" height="2880.00" style="fill:#FFFFFF"/>
+	<rect x="2.88" y="2.88" width="3954.12" height="2874.24" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
+	<rect x="390.80" y="636.34" width="3468.22" height="1852.84" style="fill:#FFFFFF"/>
+	<rect x="393.68" y="639.22" width="3462.46" height="1847.08" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
+	<line x1="390.80" y1="2425.82" x2="3859.02" y2="2425.82" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="2080.67" x2="3859.02" y2="2080.67" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="1735.40" x2="3859.02" y2="1735.40" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="1390.13" x2="3859.02" y2="1390.13" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="1044.85" x2="3859.02" y2="1044.85" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="699.70" x2="3859.02" y2="699.70" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<defs>
+		<path id="path_erDmAGro" d="M454.16 1735.40 L454.16 1735.40 L562.44 1671.91 L670.73 1624.27 L887.29 1551.25 L995.57 1523.04 L1103.85 1498.66 L1212.13 1477.00 L1320.54 1457.45 L1753.66 1395.57 L1861.94 1384.19 L1970.22 1374.41 L2078.51 1366.00 L2186.79 1358.82 L2295.07 1352.51 L2403.35 1347.06 L2511.63 1342.48 L2620.03 1338.40 L2836.60 1331.96 L2944.88 1329.36 L3053.16 1327.14 L3269.72 1323.80 L3378.00 1322.43 L3378.00 883.11 L3269.72 891.52 L3053.16 909.59 L2944.88 919.24 L2836.60 929.39 L2620.03 951.67 L2511.63 963.80 L2403.35 976.91 L2295.07 991.02 L2186.79 1006.49 L2078.51 1023.20 L1970.22 1041.76 L1861.94 1062.30 L1753.66 1085.07 L1320.54 1199.92 L1212.13 1234.44 L1103.85 1271.82 L995.57 1313.40 L887.29 1361.54 L670.73 1490.24 L562.44 1580.83 L454.16 1735.40 L454.16 1735.40 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_WdtKhRjS">
+			<use xlink:href="#path_erDmAGro"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_erDmAGro" style="stroke:none;fill:#8D8D8D;fill-opacity:0.35"/>
+	<use xlink:href="#path_erDmAGro" style="fill:none;stroke:#707070;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_WdtKhRjS)"/>
+	<path d=" M454.04 1735.40 L562.32 1626.50 L670.60 1557.32 L887.29 1456.46 L995.57 1418.34 L1103.85 1385.30 L1212.13 1355.85 L1320.41 1328.75 L1753.54 1240.39 L1861.82 1223.31 L1970.22 1208.21 L2078.51 1194.72 L2186.79 1182.72 L2295.07 1171.83 L2403.35 1162.05 L2511.63 1153.14 L2619.91 1145.09 L2836.47 1130.74 L2944.76 1124.43 L3053.04 1118.49 L3269.72 1107.72 L3378.00 1102.89" stroke-linejoin="round" style="fill:none;stroke:#707070;stroke-width:23.04"/>
+	<defs>
+		<path id="path_PAszoAoJ" d="M454.16 1735.40 L454.16 1735.40 L670.73 1758.17 L779.01 1757.43 L995.57 1752.48 L1428.82 1741.71 L1537.10 1739.48 L1645.38 1737.50 L1753.66 1735.90 L2186.79 1732.18 L2295.07 1731.94 L3053.16 1735.28 L3161.44 1736.39 L3161.44 1409.06 L3053.16 1414.26 L2295.07 1456.46 L2186.79 1463.76 L1753.66 1498.41 L1645.38 1508.81 L1537.10 1519.94 L1428.82 1531.83 L995.57 1586.03 L779.01 1623.53 L670.73 1648.28 L454.16 1735.40 L454.16 1735.40 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_JWdiwvJh">
+			<use xlink:href="#path_PAszoAoJ"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_PAszoAoJ" style="stroke:none;fill:#4D4D4D;fill-opacity:0.35"/>
+	<use xlink:href="#path_PAszoAoJ" style="fill:none;stroke:#202020;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_JWdiwvJh)"/>
+	<path d=" M454.04 1735.40 L670.60 1703.22 L779.01 1690.48 L995.57 1669.32 L1428.69 1636.77 L1536.97 1629.84 L1645.26 1623.28 L1753.54 1617.22 L2186.79 1598.03 L2295.07 1594.20 L3053.04 1574.89 L3161.32 1572.79" stroke-linejoin="round" style="fill:none;stroke:#202020;stroke-width:23.04"/>
+	<defs>
+		<path id="path_edDlIVvJ" d="M454.16 1735.40 L454.16 1735.40 L670.73 1927.47 L779.01 1979.32 L995.57 2054.81 L1428.82 2156.66 L1537.10 2177.45 L1645.38 2196.75 L1753.66 2214.33 L2186.79 2269.65 L2295.07 2280.66 L3053.16 2340.56 L3161.44 2347.49 L3161.44 1904.70 L3053.16 1905.44 L2295.07 1903.83 L2186.79 1902.22 L1753.66 1889.47 L1645.38 1884.28 L1537.10 1878.09 L1428.82 1871.03 L995.57 1831.43 L779.01 1801.11 L670.73 1781.81 L454.16 1735.40 L454.16 1735.40 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_WvGmPsNw">
+			<use xlink:href="#path_edDlIVvJ"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_edDlIVvJ" style="stroke:none;fill:#B3B3B3;fill-opacity:0.25"/>
+	<use xlink:href="#path_edDlIVvJ" style="fill:none;stroke:#A0A0A0;stroke-opacity:0.25;stroke-width:17.28" clip-path="url(#clipPath_WvGmPsNw)"/>
+	<path d=" M454.04 1735.40 L670.60 1854.70 L779.01 1890.34 L995.57 1943.18 L1428.69 2013.85 L1536.97 2027.83 L1645.26 2040.58 L1753.54 2051.96 L2186.79 2086.00 L2295.07 2092.31 L3053.04 2123.00 L3161.32 2126.09" stroke-linejoin="round" style="fill:none;stroke:#A0A0A0;stroke-width:23.04"/>
+	<path d=" M454.04 1735.40 L562.32 1735.40 L670.60 1735.40 L779.01 1735.40 L887.29 1735.40 L995.57 1735.40 L1103.85 1735.40 L1212.13 1735.40 L1320.41 1735.40 L1428.69 1735.40 L1536.97 1735.40 L1645.26 1735.40 L1753.54 1735.40 L1861.82 1735.40 L1970.22 1735.40 L2078.51 1735.40 L2186.79 1735.40 L2295.07 1735.40 L2403.35 1735.40 L2511.63 1735.40 L2619.91 1735.40 L2728.19 1735.40 L2836.47 1735.40 L2944.76 1735.40 L3053.04 1735.40 L3161.32 1735.40 L3269.72 1735.40 L3378.00 1735.40" stroke-linejoin="round" style="fill:none;stroke:#000000;stroke-opacity:0.20;stroke-width:23.04"/>
+	<line x1="390.80" y1="2489.19" x2="390.80" y2="636.34" style="stroke:#000000;stroke-width:5.76"/>
+	<line x1="390.80" y1="2425.82" x2="350.83" y2="2425.82" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="2425.82" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,2425.82)" text-anchor="middle">-.02</text>
+	<line x1="390.80" y1="2080.67" x2="350.83" y2="2080.67" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="2080.67" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,2080.67)" text-anchor="middle">-.01</text>
+	<line x1="390.80" y1="1735.40" x2="350.83" y2="1735.40" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="1735.40" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,1735.40)" text-anchor="middle">0</text>
+	<line x1="390.80" y1="1390.13" x2="350.83" y2="1390.13" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="1390.13" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,1390.13)" text-anchor="middle">.01</text>
+	<line x1="390.80" y1="1044.85" x2="350.83" y2="1044.85" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="1044.85" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,1044.85)" text-anchor="middle">.02</text>
+	<line x1="390.80" y1="699.70" x2="350.83" y2="699.70" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="699.70" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,699.70)" text-anchor="middle">.03</text>
+	<text x="190.71" y="1562.76" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 190.71,1562.76)" text-anchor="middle">Differences  of avoiding sentence (standardized)</text>
+	<line x1="390.80" y1="2489.19" x2="3859.02" y2="2489.19" style="stroke:#000000;stroke-width:5.76"/>
+	<line x1="454.16" y1="2489.19" x2="454.16" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="454.16" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">0</text>
+	<line x1="1289.47" y1="2489.19" x2="1289.47" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="1289.47" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">2</text>
+	<line x1="2124.91" y1="2489.19" x2="2124.91" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="2124.91" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">4</text>
+	<line x1="2960.35" y1="2489.19" x2="2960.35" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="2960.35" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">6</text>
+	<line x1="3795.66" y1="2489.19" x2="3795.66" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="3795.66" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">8</text>
+	<text x="2124.91" y="2729.16" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">Years from treatment outcome</text>
+	<line x1="1946.96" y1="228.57" x2="2321.43" y2="228.57" style="stroke:#707070;stroke-width:23.04"/>
+	<line x1="1946.96" y1="368.54" x2="2321.43" y2="368.54" style="stroke:#202020;stroke-width:23.04"/>
+	<line x1="1946.96" y1="508.50" x2="2321.43" y2="508.50" style="stroke:#A0A0A0;stroke-width:23.04"/>
+	<text x="2381.32" y="263.60" style="font-family:'Helvetica';font-size:99.99px;fill:#000000">Early vs. tr. completion</text>
+	<text x="2381.32" y="403.57" style="font-family:'Helvetica';font-size:99.99px;fill:#000000">Late dropout vs. tr. completion</text>
+	<text x="2381.32" y="543.53" style="font-family:'Helvetica';font-size:99.99px;fill:#000000">Late vs. early dropout</text>
+</svg>

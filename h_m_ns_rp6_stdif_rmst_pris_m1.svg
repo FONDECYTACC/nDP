@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- This is a Stata 16.1 generated SVG file (http://www.stata.com) -->
+
+<svg version="1.1" width="5.50in" height="4.00in" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>Stata Graph - RMSTdiff</desc>
+	<rect x="0" y="0" width="3960" height="2880" style="fill:#FFFFFF;stroke:none"/>
+	<rect x="0.00" y="0.00" width="3959.88" height="2880.00" style="fill:#FFFFFF"/>
+	<rect x="2.88" y="2.88" width="3954.12" height="2874.24" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
+	<rect x="390.80" y="100.86" width="3468.22" height="2388.33" style="fill:#FFFFFF"/>
+	<rect x="393.68" y="103.74" width="3462.46" height="2382.57" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
+	<line x1="390.80" y1="2425.82" x2="3859.02" y2="2425.82" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="1864.97" x2="3859.02" y2="1864.97" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="1303.99" x2="3859.02" y2="1303.99" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="743.14" x2="3859.02" y2="743.14" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="182.17" x2="3859.02" y2="182.17" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<defs>
+		<path id="path_kNtEQbJw" d="M562.44 750.57 L562.44 750.57 L670.73 767.52 L779.01 791.16 L887.29 820.36 L995.57 854.27 L1103.85 892.14 L1212.13 933.48 L1320.54 977.66 L1428.82 1024.43 L1537.10 1073.69 L1645.38 1125.29 L1753.66 1179.13 L1861.94 1235.06 L1970.22 1292.98 L2078.51 1352.63 L2186.79 1414.01 L2295.07 1476.75 L2403.35 1540.74 L2511.63 1605.83 L2620.03 1672.04 L2728.32 1739.11 L2836.60 1807.18 L2944.88 1875.86 L3053.16 1945.29 L3161.44 2015.46 L3269.72 2086.24 L3378.00 2157.52 L3378.00 1787.01 L3269.72 1735.03 L3161.44 1683.30 L3053.16 1631.94 L2944.88 1580.96 L2836.60 1530.22 L2728.32 1480.10 L2620.03 1430.47 L2511.63 1381.34 L2403.35 1332.83 L2295.07 1285.18 L2186.79 1238.40 L2078.51 1192.62 L1970.22 1147.94 L1861.94 1104.63 L1753.66 1062.80 L1645.38 1022.58 L1537.10 984.09 L1428.82 947.34 L1320.54 912.56 L1212.13 879.77 L1103.85 849.32 L995.57 821.60 L887.29 796.97 L779.01 776.06 L670.73 759.48 L562.44 747.84 L562.44 750.57 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_dxEVWuyl">
+			<use xlink:href="#path_kNtEQbJw"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_kNtEQbJw" style="stroke:none;fill:#4D4D4D;fill-opacity:0.35"/>
+	<use xlink:href="#path_kNtEQbJw" style="fill:none;stroke:#202020;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_dxEVWuyl)"/>
+	<path d=" M454.04 743.14 L562.32 749.33 L670.60 763.56 L779.01 783.73 L887.29 808.73 L995.57 837.94 L1103.85 870.86 L1212.13 906.74 L1320.41 945.11 L1428.69 985.95 L1536.97 1028.89 L1645.26 1074.06 L1753.54 1121.09 L1861.82 1169.97 L1970.22 1220.58 L2078.51 1272.68 L2186.79 1326.27 L2295.07 1381.09 L2403.35 1436.91 L2511.63 1493.71 L2619.91 1551.25 L2728.19 1609.67 L2836.47 1668.82 L2944.76 1728.47 L3053.04 1788.74 L3161.32 1849.50 L3269.72 1910.64 L3378.00 1972.27" stroke-linejoin="round" style="fill:none;stroke:#202020;stroke-width:8.64"/>
+	<defs>
+		<path id="path_ufUaZbDY" d="M562.44 747.97 L562.44 747.97 L670.73 759.23 L779.01 774.95 L887.29 794.50 L995.57 817.15 L1103.85 842.64 L1212.13 870.36 L1320.54 900.06 L1428.82 931.50 L1537.10 964.66 L1645.38 999.31 L1753.66 1035.57 L1861.94 1073.32 L1970.22 1112.30 L2078.51 1152.64 L2186.79 1193.98 L2295.07 1236.30 L2403.35 1279.61 L2511.63 1323.67 L2620.03 1368.47 L2728.32 1413.89 L2836.60 1459.92 L2944.88 1506.46 L3053.16 1553.61 L3161.44 1601.13 L3269.72 1649.27 L3378.00 1697.66 L3378.00 1426.51 L3269.72 1392.23 L3161.44 1358.20 L3053.16 1324.29 L2944.88 1290.63 L2836.60 1257.22 L2728.32 1224.05 L2620.03 1191.25 L2511.63 1158.83 L2403.35 1126.90 L2295.07 1095.47 L2186.79 1064.65 L2078.51 1034.46 L1970.22 1005.13 L1861.94 976.67 L1753.66 949.19 L1645.38 922.96 L1537.10 897.71 L1428.82 873.83 L1320.54 851.30 L1212.13 830.02 L1103.85 810.46 L995.57 792.64 L887.29 776.93 L779.01 763.69 L670.73 753.17 L562.44 745.99 L562.44 747.97 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_XYmOsBoM">
+			<use xlink:href="#path_ufUaZbDY"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_ufUaZbDY" style="stroke:none;fill:#808080;fill-opacity:0.35"/>
+	<use xlink:href="#path_ufUaZbDY" style="fill:none;stroke:#606060;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_XYmOsBoM)"/>
+	<path d=" M454.04 743.14 L562.32 747.10 L670.60 756.26 L779.01 769.38 L887.29 785.71 L995.57 805.02 L1103.85 826.55 L1212.13 850.31 L1320.41 875.68 L1428.69 902.78 L1536.97 931.25 L1645.26 961.20 L1753.54 992.51 L1861.82 1025.05 L1970.22 1058.84 L2078.51 1093.61 L2186.79 1129.38 L2295.07 1166.01 L2403.35 1203.26 L2511.63 1241.25 L2619.91 1279.86 L2728.19 1318.97 L2836.47 1358.57 L2944.76 1398.54 L3053.04 1439.01 L3161.32 1479.72 L3269.72 1520.81 L3378.00 1562.15" stroke-linejoin="round" style="fill:none;stroke:#606060;stroke-width:8.64"/>
+	<defs>
+		<path id="path_jiKbcEom" d="M562.44 742.15 L562.44 742.15 L670.73 739.68 L779.01 735.96 L887.29 731.26 L995.57 725.57 L1103.85 719.01 L1212.13 711.83 L1320.54 704.16 L1428.82 695.87 L1537.10 687.21 L1645.38 678.05 L1753.66 668.52 L1861.94 658.74 L1970.22 648.47 L2078.51 637.95 L2186.79 627.31 L2295.07 616.29 L2403.35 605.28 L2511.63 594.02 L2620.03 582.76 L2728.32 571.25 L2836.60 559.74 L2944.88 548.23 L3053.16 536.60 L3161.44 524.96 L3269.72 513.33 L3378.00 501.70 L3378.00 164.22 L3269.72 193.06 L3161.44 221.77 L3053.16 250.11 L2944.88 278.20 L2836.60 306.04 L2728.32 333.52 L2620.03 360.62 L2511.63 387.47 L2403.35 413.83 L2295.07 439.70 L2186.79 465.07 L2078.51 489.94 L1970.22 514.20 L1861.94 537.71 L1753.66 560.48 L1645.38 582.51 L1537.10 603.55 L1428.82 623.84 L1320.54 643.15 L1212.13 661.46 L1103.85 678.67 L995.57 694.63 L887.29 708.99 L779.01 721.61 L670.73 731.88 L562.44 739.55 L562.44 742.15 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_wKlfybIt">
+			<use xlink:href="#path_jiKbcEom"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_jiKbcEom" style="stroke:none;fill:#B3B3B3;fill-opacity:0.35"/>
+	<use xlink:href="#path_jiKbcEom" style="fill:none;stroke:#A0A0A0;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_wKlfybIt)"/>
+	<path d=" M454.04 743.14 L562.32 740.91 L670.60 735.84 L779.01 728.79 L887.29 720.12 L995.57 710.10 L1103.85 698.96 L1212.13 686.71 L1320.41 673.72 L1428.69 659.98 L1536.97 645.50 L1645.26 630.28 L1753.54 614.56 L1861.82 598.23 L1970.22 581.40 L2078.51 564.07 L2186.79 546.25 L2295.07 528.06 L2403.35 509.62 L2511.63 490.81 L2619.91 471.75 L2728.19 452.44 L2836.47 433.01 L2944.76 413.34 L3053.04 393.41 L3161.32 373.49 L3269.72 353.32 L3378.00 333.02" stroke-linejoin="round" style="fill:none;stroke:#A0A0A0;stroke-width:8.64"/>
+	<path d=" M454.04 743.14 L562.32 743.14 L670.60 743.14 L779.01 743.14 L887.29 743.14 L995.57 743.14 L1103.85 743.14 L1212.13 743.14 L1320.41 743.14 L1428.69 743.14 L1536.97 743.14 L1645.26 743.14 L1753.54 743.14 L1861.82 743.14 L1970.22 743.14 L2078.51 743.14 L2186.79 743.14 L2295.07 743.14 L2403.35 743.14 L2511.63 743.14 L2619.91 743.14 L2728.19 743.14 L2836.47 743.14 L2944.76 743.14 L3053.04 743.14 L3161.32 743.14 L3269.72 743.14 L3378.00 743.14" stroke-linejoin="round" style="fill:none;stroke:#000000;stroke-opacity:0.20;stroke-width:23.04"/>
+	<line x1="390.80" y1="2489.19" x2="390.80" y2="100.86" style="stroke:#000000;stroke-width:5.76"/>
+	<line x1="390.80" y1="2425.82" x2="350.83" y2="2425.82" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="2425.82" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,2425.82)" text-anchor="middle">-0.3</text>
+	<line x1="390.80" y1="1864.97" x2="350.83" y2="1864.97" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="1864.97" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,1864.97)" text-anchor="middle">-0.2</text>
+	<line x1="390.80" y1="1303.99" x2="350.83" y2="1303.99" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="1303.99" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,1303.99)" text-anchor="middle">-0.1</text>
+	<line x1="390.80" y1="743.14" x2="350.83" y2="743.14" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="743.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,743.14)" text-anchor="middle">0.0</text>
+	<line x1="390.80" y1="182.17" x2="350.83" y2="182.17" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="182.17" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,182.17)" text-anchor="middle">0.1</text>
+	<text x="190.71" y="1294.96" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 190.71,1294.96)" text-anchor="middle">Difference in RMST (years)</text>
+	<line x1="390.80" y1="2489.19" x2="3859.02" y2="2489.19" style="stroke:#000000;stroke-width:5.76"/>
+	<line x1="454.16" y1="2489.19" x2="454.16" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="454.16" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">0</text>
+	<line x1="1289.47" y1="2489.19" x2="1289.47" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="1289.47" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">2</text>
+	<line x1="2124.91" y1="2489.19" x2="2124.91" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="2124.91" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">4</text>
+	<line x1="2960.35" y1="2489.19" x2="2960.35" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="2960.35" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">6</text>
+	<line x1="3795.66" y1="2489.19" x2="3795.66" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="3795.66" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">8</text>
+	<text x="2124.91" y="2729.16" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">Years from baseline treatment outcome</text>
+	<rect x="468.52" y="2031.42" width="374.47" height="99.99" style="fill:#4D4D4D;fill-opacity:0.35"/>
+	<rect x="472.84" y="2035.74" width="365.83" height="91.35" style="fill:none;stroke:#202020;stroke-opacity:0.35;stroke-width:8.64"/>
+	<rect x="468.52" y="2171.51" width="374.47" height="99.99" style="fill:#808080;fill-opacity:0.35"/>
+	<rect x="472.84" y="2175.83" width="365.83" height="91.35" style="fill:none;stroke:#606060;stroke-opacity:0.35;stroke-width:8.64"/>
+	<rect x="468.52" y="2311.47" width="374.47" height="99.99" style="fill:#B3B3B3;fill-opacity:0.35"/>
+	<rect x="472.84" y="2315.79" width="365.83" height="91.35" style="fill:none;stroke:#A0A0A0;stroke-opacity:0.35;stroke-width:8.64"/>
+	<text x="902.88" y="2116.44" style="font-family:'Helvetica';font-size:99.99px;fill:#000000">Early vs. Tr. completion</text>
+	<text x="902.88" y="2256.53" style="font-family:'Helvetica';font-size:99.99px;fill:#000000">Late vs. Tr. completion</text>
+	<text x="902.88" y="2396.50" style="font-family:'Helvetica';font-size:99.99px;fill:#000000">Late vs. Early dropout</text>
+</svg>

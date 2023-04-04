@@ -51,10 +51,6 @@ output:
 
 - [Main analyses (Imprisonment only)](analisis_mariel_feb_2023_stata_pris.html)
 
-- [Main analyses](analisis_mariel_feb_2023_stata.html)
-
-- [Main analyses (Imprisonment only)](analisis_mariel_feb_2023_stata_pris.html)
-
 - [Main analyses of Imputed Data](analisis_mariel_feb_2023_stata_m1.html)
 
 - [Main analyses of Imputed Data (Imprisonment only)](analisis_mariel_feb_2023_stata_pris_m1.html)
@@ -62,6 +58,8 @@ output:
 - [Main analyses of Imputed Data (including diagnoses in-study)](analisis_mariel_feb_2023_stata_m2.html)
 
 - [Main analyses of Imputed Data (Imprisonment only, including diagnoses in-study)](analisis_mariel_feb_2023_stata_pris_m2.html)
+
+- [Summary tables & Sensitivity Analyses](res_intram_feb_2023_stata.html)
 
 - [Poster (idea)](pres_dic_22.html)
 
@@ -76,3 +74,5 @@ output:
 **Short commentary: Self-reported offending vs. official records: estimating the gap in the Chilean context**
 
 - [step 1](top_vs_po.html)
+
+- [Poster (idea)](pres_2023mar.html)
