@@ -74,6 +74,42 @@ copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_m
 
 
 
+
+*#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+*IMPUTED DATA- CONDEMNATORY SENTENCE (3)
+*#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+cap rm "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_feb_2023_stata_m3.html"
+dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags_b_m3.do", saving("E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_m3.html") replace nostop 
+copy "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_m3.html" "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_feb_2023_stata_m3.html", replace
+
+cap rm "H:/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_feb_2023_stata_m3.html"
+dyndoc "H:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags_b_m3.do", saving("H:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_m3.html") replace nostop 
+copy "H:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_m3.html" "H:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_feb_2023_stata_m3.html", replace
+
+cap rm "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_feb_2023_stata_m3.html"
+dyndoc "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags_b_m3.do", saving("C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_m3.html") replace nostop 
+copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_m3.html" "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_feb_2023_stata_m3.html", replace
+
+*#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+*IMPUTED DATA- IMPRISONMENT (3)
+*#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+cap rm "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_feb_2023_stata_pris_m3.html"
+dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags2_b_m3.do", saving("E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_pris_m3.html") replace nostop 
+copy "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_pris_m3.html" "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_feb_2023_stata_pris_m3.html", replace
+
+cap rm "H:/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_feb_2023_stata_pris_m3.html"
+dyndoc "H:\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags2_b_m3.do", saving("H:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_pris_m3.html") replace nostop 
+copy "H:\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_pris_m3.html" "H:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_feb_2023_stata_pris_m3.html", replace
+
+
+cap rm "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/analisis_mariel_feb_2023_stata_pris_m3.html"
+dyndoc "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\mariel_ags2_b_m3.do", saving("C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_pris_m3.html") replace nostop 
+copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\analisis_mariel_feb_2023_stata_pris_m3.html" "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\analisis_mariel_feb_2023_stata_pris_m3.html", replace
+
+
+
 *#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 *SUMMARY
 *#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_

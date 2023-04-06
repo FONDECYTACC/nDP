@@ -13,25 +13,25 @@
 	<line x1="390.80" y1="988.30" x2="3859.02" y2="988.30" style="stroke:#EAF2F3;stroke-width:8.64"/>
 	<line x1="390.80" y1="269.54" x2="3859.02" y2="269.54" style="stroke:#EAF2F3;stroke-width:8.64"/>
 	<defs>
-		<path id="path_dsMxLIND" d="M721.46 2242.42 L721.46 2242.42 L855.11 2151.46 L1122.41 1970.66 L1657.14 1612.64 L1790.79 1524.03 L1924.44 1435.79 L2058.09 1347.93 L2592.81 999.56 L2726.46 913.06 L3261.06 568.40 L3662.01 311.12 L3795.66 225.48 L3795.66 164.22 L3662.01 252.83 L3261.06 519.15 L2726.46 875.56 L2592.81 964.91 L2058.09 1324.17 L1924.44 1414.38 L1790.79 1504.97 L1657.14 1595.93 L1122.41 1962.24 L855.11 2146.88 L721.46 2239.57 L721.46 2242.42 Z" stroke-linejoin="round"/>
+		<path id="path_koaeEmKI" d="M721.46 2242.42 L721.46 2242.42 L855.11 2151.46 L1122.41 1970.66 L1657.14 1612.64 L1790.79 1524.03 L1924.44 1435.79 L2058.09 1347.93 L2592.81 999.56 L2726.46 913.06 L3261.06 568.40 L3662.01 311.12 L3795.66 225.48 L3795.66 164.22 L3662.01 252.83 L3261.06 519.15 L2726.46 875.56 L2592.81 964.91 L2058.09 1324.17 L1924.44 1414.38 L1790.79 1504.97 L1657.14 1595.93 L1122.41 1962.24 L855.11 2146.88 L721.46 2239.57 L721.46 2242.42 Z" stroke-linejoin="round"/>
 	</defs>
 	<defs>
-		<clipPath id="clipPath_uAlIxiSr">
-			<use xlink:href="#path_dsMxLIND"/>
+		<clipPath id="clipPath_GFRCUpNe">
+			<use xlink:href="#path_koaeEmKI"/>
 		</clipPath>
 	</defs>
-	<use xlink:href="#path_dsMxLIND" style="stroke:none;fill:#8D8D8D;fill-opacity:0.35"/>
-	<use xlink:href="#path_dsMxLIND" style="fill:none;stroke:#707070;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_uAlIxiSr)"/>
+	<use xlink:href="#path_koaeEmKI" style="stroke:none;fill:#8D8D8D;fill-opacity:0.35"/>
+	<use xlink:href="#path_koaeEmKI" style="fill:none;stroke:#707070;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_GFRCUpNe)"/>
 	<defs>
-		<path id="path_yhlmhzMj" d="M721.46 2241.68 L721.46 2241.68 L855.11 2150.97 L1122.41 1970.90 L1657.14 1616.35 L1790.79 1528.61 L1924.44 1441.36 L2058.09 1354.36 L2592.81 1010.08 L2726.46 924.81 L3261.06 586.47 L3662.01 335.50 L3795.66 252.33 L3795.66 232.78 L3662.01 317.06 L3261.06 571.25 L2726.46 913.55 L2592.81 999.81 L2058.09 1347.31 L1924.44 1435.05 L1790.79 1523.04 L1657.14 1611.52 L1122.41 1968.80 L855.11 2149.85 L721.46 2241.18 L721.46 2241.68 Z" stroke-linejoin="round"/>
+		<path id="path_EOCryovy" d="M721.46 2241.68 L721.46 2241.68 L855.11 2150.97 L1122.41 1970.90 L1657.14 1616.35 L1790.79 1528.61 L1924.44 1441.36 L2058.09 1354.36 L2592.81 1010.08 L2726.46 924.81 L3261.06 586.47 L3662.01 335.50 L3795.66 252.33 L3795.66 232.78 L3662.01 317.06 L3261.06 571.25 L2726.46 913.55 L2592.81 999.81 L2058.09 1347.31 L1924.44 1435.05 L1790.79 1523.04 L1657.14 1611.52 L1122.41 1968.80 L855.11 2149.85 L721.46 2241.18 L721.46 2241.68 Z" stroke-linejoin="round"/>
 	</defs>
 	<defs>
-		<clipPath id="clipPath_yZPpMQMu">
-			<use xlink:href="#path_yhlmhzMj"/>
+		<clipPath id="clipPath_lcRsoBqX">
+			<use xlink:href="#path_EOCryovy"/>
 		</clipPath>
 	</defs>
-	<use xlink:href="#path_yhlmhzMj" style="stroke:none;fill:#4D4D4D;fill-opacity:0.35"/>
-	<use xlink:href="#path_yhlmhzMj" style="fill:none;stroke:#202020;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_yZPpMQMu)"/>
+	<use xlink:href="#path_EOCryovy" style="stroke:none;fill:#4D4D4D;fill-opacity:0.35"/>
+	<use xlink:href="#path_EOCryovy" style="fill:none;stroke:#202020;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_lcRsoBqX)"/>
 	<path d=" M454.04 2425.95 L721.46 2241.06 L855.11 2149.23 L1122.41 1966.57 L1657.01 1604.35 L1790.66 1514.62 L1924.31 1425.15 L2058.09 1336.17 L2592.69 982.36 L2726.34 894.49 L3261.06 544.02 L3662.01 282.16 L3795.66 195.16" stroke-linejoin="round" style="fill:none;stroke:#707070;stroke-width:23.04"/>
 	<path d=" M454.04 2425.95 L721.46 2241.43 L855.11 2150.47 L1122.41 1969.91 L1657.01 1614.00 L1790.66 1525.89 L1924.31 1438.27 L2058.09 1350.90 L2592.69 1005.01 L2726.34 919.24 L3261.06 578.92 L3662.01 326.34 L3795.66 242.68" stroke-linejoin="round" style="fill:none;stroke:#202020;stroke-width:23.04"/>
 	<line x1="390.80" y1="2489.19" x2="390.80" y2="100.86" style="stroke:#000000;stroke-width:5.76"/>

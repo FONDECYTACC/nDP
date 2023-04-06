@@ -473,9 +473,9 @@ c('rut_enc_saf' = 'id',
 'sex_imp' = 'sex_imp',
 'nat_imp2' = 'country_b',
 'nat_imp' = 'country_a')) %>% 
-#FILTER IF THE PATIENT IS CONSIDERED AS AN OFFENDER
+#KEY STEP: FILTER IF THE PATIENT IS CONSIDERED AS AN OFFENDER
   dplyr::filter(grepl("SI",offender_d)) %>% 
-#FILTER IF THE PATIENT RECIEVES FOR THE RELATIONSHIP
+#KEY STEP: FILTER IF THE PATIENT RECIEVES FOR THE RELATIONSHIP
   #end_type agrupa end_type_2 gls_mottermino
   dplyr::mutate(filter=dplyr::case_when(
   grepl("REPARATORIO|CONDICIONAL",end_type) & is.na(end_type_2)~1,
@@ -751,6 +751,8 @@ Once the standardization was complete, we **joined** the databases `CONS_C1_df_d
 #join
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #WHERE rn_id = 1
+
+
 Base_fiscalia_v10<-
 sqldf("SELECT *
   FROM CONS_C1_df_dup_SEP_2020_22_d AS x  
@@ -780,7 +782,7 @@ Base_fiscalia_v10 %>%
   dplyr::mutate(age_offending_imp= dplyr::case_when(is.na(age_offending_imp)~
 lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years"), T~ age_offending_imp)) %>% 
   dplyr::group_by(hash_key) %>% 
-  #select the first and without ties (only one)
+  #KEY STEP: select the first and without ties (only one)
   dplyr::slice_min(age_offending_imp, n = 1, with_ties = T) %>% 
   dplyr::ungroup() %>% 
   purrr::when(nrow(dplyr::filter(.,age_offending_imp-edad_al_ing_1<0))>0 ~ stop("Cases with negative time after admission to commission of crime"), ~.) %>% 
@@ -805,6 +807,15 @@ dplyr::filter(hash_key=="1951c4d080cda8b68759d638a840d82f") %>%
   knitr::kable("markdown", caption="Example of database")
 #b24908c527faa1b7bd5a267d5dcabd45
 #23d88c2b8c6da2d8abf3f88b7ce8a4c0 anomalus case
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+# FROM PATIENTS (p=85,048), WE JOINED THE PO DATA (n= 174,961, p=49,970) by HASHs and where offense date is equal or lower to the age at discharge from treatment, and restricted the first treatment from SENDA in v10
+#v11: erased missing cases in date of birth; thus, missing age at discharge, filtered the first offense by each HASH (going from n= 132,530 to n=87,770) (n=87,770 p= 85,041)
+#length(unique(Base_fiscalia_v11$hash_key))
+#v12: discarded patients where the first treatment corresponded to ongoing treatments (p & n=5,521), external referral (p & n=8,948) == 14,469 users were discarded.
+
+
 ```
 
 :::

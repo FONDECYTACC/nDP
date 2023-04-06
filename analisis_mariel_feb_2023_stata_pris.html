@@ -64,10 +64,43 @@ $(document).ready(function() {
 </script>
 </head>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <pre><code>. clear all
 
 . cap noi which tabout
-C:\Users\CISS Fondecyt\ado\plus\t\tabout.ado
+c:\ado\plus\t\tabout.ado
 *! 2.0.8 Ian Watson 15mar2019
 *! tabout version 3 (beta) available at: http://tabout.net.au
 
@@ -76,7 +109,7 @@ C:\Users\CISS Fondecyt\ado\plus\t\tabout.ado
 .         }
 
 . cap noi which pathutil
-C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+c:\ado\plus\p\pathutil.ado
 *! version 2.2.0 19nov2020 daniel klein
 
 . if _rc==111 {
@@ -84,7 +117,7 @@ C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
 .         }
 
 . cap noi which pathutil
-C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+c:\ado\plus\p\pathutil.ado
 *! version 2.2.0 19nov2020 daniel klein
 
 . if _rc==111 {
@@ -92,7 +125,7 @@ C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
 .         }
 
 . cap noi which project
-C:\Users\CISS Fondecyt\ado\plus\p\project.ado
+c:\ado\plus\p\project.ado
 *! version 1.3.1  22dec2013  picard@netbox.com
 
 . if _rc==111 {   
@@ -100,7 +133,7 @@ C:\Users\CISS Fondecyt\ado\plus\p\project.ado
 .         }
 
 . cap noi which stipw
-C:\Users\CISS Fondecyt\ado\plus\s\stipw.ado
+c:\ado\plus\s\stipw.ado
 *! Version 1.0.0 17Jan2022
 
 . if _rc==111 {   
@@ -108,7 +141,7 @@ C:\Users\CISS Fondecyt\ado\plus\s\stipw.ado
 .         }
 
 . cap noi which stpm2
-C:\Users\CISS Fondecyt\ado\plus\s\stpm2.ado
+c:\ado\plus\s\stpm2.ado
 *! version 1.7.5 May2021
 
 . if _rc==111 {   
@@ -116,7 +149,7 @@ C:\Users\CISS Fondecyt\ado\plus\s\stpm2.ado
 .         }       
 
 . cap noi which rcsgen
-C:\Users\CISS Fondecyt\ado\plus\r\rcsgen.ado
+c:\ado\plus\r\rcsgen.ado
 *! version 1.5.9 13FEB2022
 
 . if _rc==111 {   
@@ -124,7 +157,7 @@ C:\Users\CISS Fondecyt\ado\plus\r\rcsgen.ado
 .         }       
 
 . cap noi which matselrc
-C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
+c:\ado\plus\m\matselrc.ado
 *! NJC 1.1.0 20 Apr 2000  (STB-56: dm79)
 
 . if _rc==111 {           
@@ -132,7 +165,7 @@ C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
 .         }
 
 . cap noi which stpm2_standsurv
-C:\Users\CISS Fondecyt\ado\plus\s\stpm2_standsurv.ado
+c:\ado\plus\s\stpm2_standsurv.ado
 *! version 1.1.2 12Jun2018 
 
 . if _rc==111 {           
@@ -140,7 +173,7 @@ C:\Users\CISS Fondecyt\ado\plus\s\stpm2_standsurv.ado
 .         }
 
 . cap noi which fs
-C:\Users\CISS Fondecyt\ado\plus\f\fs.ado
+c:\ado\plus\f\fs.ado
 *! NJC 1.0.5 23 November 2006 
 
 . if _rc==111 {           
@@ -148,7 +181,7 @@ C:\Users\CISS Fondecyt\ado\plus\f\fs.ado
 .         }
 
 . cap noi which mkspline2
-C:\Users\CISS Fondecyt\ado\plus\m\mkspline2.ado
+c:\ado\plus\m\mkspline2.ado
 *! version 1.0.0 MLB 04Apr2009
 
 . if _rc==111 {           
@@ -156,15 +189,39 @@ C:\Users\CISS Fondecyt\ado\plus\m\mkspline2.ado
 .         }
 
 . 
+. cap noi ssc install moremata
+checking moremata consistency and verifying not already installed...
+
+the following files already exist and are different:
+    c:\ado\plus\l\lmoremata.mlib
+    c:\ado\plus\l\lmoremata10.mlib
+    c:\ado\plus\l\lmoremata11.mlib
+    c:\ado\plus\l\lmoremata14.mlib
+    c:\ado\plus\m\moremata.hlp
+    c:\ado\plus\m\moremata_source.hlp
+    c:\ado\plus\m\moremata11_source.hlp
+    c:\ado\plus\m\mf_mm_quantile.hlp
+    c:\ado\plus\m\mf_mm_ipolate.hlp
+    c:\ado\plus\m\mf_mm_collapse.hlp
+    c:\ado\plus\m\mf_mm_ebal.sthlp
+    c:\ado\plus\m\mf_mm_density.sthlp
+    c:\ado\plus\m\mf_mm_hl.hlp
+    c:\ado\plus\m\mf_mm_mloc.hlp
+    c:\ado\plus\m\mf_mm_ls.hlp
+    c:\ado\plus\m\mf_mm_qr.sthlp
+
+no files installed or copied
+(no action taken)
+
 </code></pre>
 <h1><a href="#exercise" id="exercise">Exercise</a></h1>
-<p>Date created: 08:56:18  2 Apr 2023.</p>
+<p>Date created: 16:30:41  5 Apr 2023.</p>
 <p>Get the folder</p>
 <pre><code>
-C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
+E:\Mi unidad\Alvacast\SISTRAT 2022 (github)
 
 
-Fecha:  2 Apr 2023, considerando un SO Windows para el usuario: CISS Fondecyt
+Fecha:  5 Apr 2023, considerando un SO Windows para el usuario: andre
 
 </code></pre>
 <head>
@@ -201,8 +258,8 @@ $(document).ready(function() {
 </head>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <p>Path data= ;</p>
-<p>Tiempo:  2 Apr 2023, considerando un SO Windows</p>
-<p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA.dta</p>
+<p>Tiempo:  5 Apr 2023, considerando un SO Windows</p>
+<p>The file is located and named as: E:\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA.dta</p>
 <p>=============================================================================</p>
 <h2><a href="#structure-database" id="structure-database">Structure database</a></h2>
 <p>=============================================================================</p>
@@ -218,7 +275,7 @@ $(document).ready(function() {
 . 
 . 
 . fs mariel_ags_*.do
-mariel_ags_b.do     mariel_ags_b_m1.do  mariel_ags_b_m2.do
+mariel_ags_b.do     mariel_ags_b_m2.do  mariel_ags_b_m1.do  mariel_ags_b_m3.do
 
 . di &quot;`r(dofile)'&quot;
 
@@ -368,23 +425,20 @@ edad_al_in~1 |  21.18685   29.99178   38.92615   56.32477
 . *mkspline xspline = edad_al_ing_1, cubic nknots(4)
 . *gen rcs_x = xspline1*xspline2 xspline3 xspline4
 . 
-. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1638622-comparing-cox-proportional-hazard-linear-and-non-linear-restricted-
-&gt; cubic-spline-models-using-likelihood-ratio-test
+. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1638622-comparing-cox-proportional-hazard-linear-and-non-linear-restricted-cubic-spline-models-using-likelihood-ratio-test
 . 
 </code></pre>
 <p>We show a table of missing values</p>
 <pre><code>. /*
 &gt; 
-&gt; vars_cov&lt;-c(&quot;motivodeegreso_mod_imp_rec&quot;, &quot;tr_modality&quot;, &quot;edad_al_ing_1&quot;, &quot;sex&quot;, &quot;edad_ini_cons&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons
-&gt; _sus_prin&quot;, &quot;condicion_ocupacional_corr&quot;, &quot;policonsumo&quot;, &quot;num_hijos_mod_joel_bin&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;macrozona&quot;, &quot;n_off_vio&quot;, &quot;n_off_a
-&gt; cq&quot;, &quot;n_off_sud&quot;, &quot;n_off_oth&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;clas_r&quot;, &quot;porc_pobr&quot;, &quot;sus_ini_mod_mvv&quot;, &quot;ano_nac_corr&quot;, &quot;con_quien_vive_joel
-&gt; &quot;, &quot;fis_comorbidity_icd_10&quot;)
+&gt; vars_cov&lt;-c(&quot;motivodeegreso_mod_imp_rec&quot;, &quot;tr_modality&quot;, &quot;edad_al_ing_1&quot;, &quot;sex&quot;, &quot;edad_ini_cons&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;, &quot;condicion_ocupacional_corr&quot;, &quot;policonsumo&quot;, &quot;num_hij
+&gt; os_mod_joel_bin&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;macrozona&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;, &quot;n_off_sud&quot;, &quot;n_off_oth&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;clas_r&quot;, &quot;porc_pobr&quot;, &quot;sus_ini_mod_mvv&quot;, &quot;ano_nac_corr&quot;, &quot;c
+&gt; on_quien_vive_joel&quot;, &quot;fis_comorbidity_icd_10&quot;)
 &gt; 
 &gt; */
 . 
-. misstable sum motivodeegreso_mod_imp_rec tr_modality edad_al_ing_1 sex_enc edad_ini_cons escolaridad_rec sus_principal_mod freq_cons_sus_prin condic
-&gt; ion_ocupacional_cor policonsumo num_hijos_mod_joel_bin tenencia_de_la_vivienda_mod macrozona n_off_vio n_off_acq n_off_sud n_off_oth dg_cie_10_rec d
-&gt; g_trs_cons_sus_or clas_r porc_pobr sus_ini_mod_mvv ano_nac_corr con_quien_vive_joel fis_comorbidity_icd_10
+. misstable sum motivodeegreso_mod_imp_rec tr_modality edad_al_ing_1 sex_enc edad_ini_cons escolaridad_rec sus_principal_mod freq_cons_sus_prin condicion_ocupacional_cor policonsumo num_hijos_mod_joel_bin tenencia_d
+&gt; e_la_vivienda_mod macrozona n_off_vio n_off_acq n_off_sud n_off_oth dg_cie_10_rec dg_trs_cons_sus_or clas_r porc_pobr sus_ini_mod_mvv ano_nac_corr con_quien_vive_joel fis_comorbidity_icd_10
                                                                Obs&lt;.
                                                 +------------------------------
                |                                | Unique
@@ -409,9 +463,8 @@ edad_al_in~1 |  21.18685   29.99178   38.92615   56.32477
 
 </code></pre>
 <p>And missing patterns</p>
-<pre><code>. misstable pat motivodeegreso_mod_imp_rec tr_modality edad_al_ing_1 sex_enc edad_ini_cons escolaridad_rec sus_principal_mod freq_cons_sus_prin condic
-&gt; ion_ocupacional_cor policonsumo num_hijos_mod_joel_bin tenencia_de_la_vivienda_mod macrozona n_off_vio n_off_acq n_off_sud n_off_oth dg_cie_10_rec d
-&gt; g_trs_cons_sus_or clas_r porc_pobr sus_ini_mod_mvv ano_nac_corr con_quien_vive_joel fis_comorbidity_icd_10
+<pre><code>. misstable pat motivodeegreso_mod_imp_rec tr_modality edad_al_ing_1 sex_enc edad_ini_cons escolaridad_rec sus_principal_mod freq_cons_sus_prin condicion_ocupacional_cor policonsumo num_hijos_mod_joel_bin tenencia_d
+&gt; e_la_vivienda_mod macrozona n_off_vio n_off_acq n_off_sud n_off_oth dg_cie_10_rec dg_trs_cons_sus_or clas_r porc_pobr sus_ini_mod_mvv ano_nac_corr con_quien_vive_joel fis_comorbidity_icd_10
 
                        Missing-value patterns
                          (1 means complete)
@@ -473,9 +526,8 @@ edad_al_in~1 |  21.18685   29.99178   38.92615   56.32477
   ------------+----------------------------------------------------
       100%    |
 
-  Variables are  (1) con_quien_vive_joel  (2) condicion_ocupacional_corr  (3) dg_trs_cons_sus_or  (4) sus_principal_mod  (5) clas_r  (6) porc_pobr
-                 (7) motivodeegreso_mod_imp_rec  (8) macrozona  (9) tr_modality  (10) escolaridad_rec  (11) freq_cons_sus_prin
-                 (12) num_hijos_mod_joel_bin  (13) tenencia_de_la_vivienda_mod  (14) sus_ini_mod_mvv  (15) edad_ini_cons
+  Variables are  (1) con_quien_vive_joel  (2) condicion_ocupacional_corr  (3) dg_trs_cons_sus_or  (4) sus_principal_mod  (5) clas_r  (6) porc_pobr  (7) motivodeegreso_mod_imp_rec  (8) macrozona  (9) tr_modality
+                 (10) escolaridad_rec  (11) freq_cons_sus_prin  (12) num_hijos_mod_joel_bin  (13) tenencia_de_la_vivienda_mod  (14) sus_ini_mod_mvv  (15) edad_ini_cons
 
 </code></pre>
 <p>=============================================================================</p>
@@ -563,8 +615,7 @@ Treatmen |  160,259.189   .0172595         35781          .         .         .
    Total |  302,769.735   .0169799         70854          .         .         .
 
 </code></pre>
-<pre><code>. *Micki Hill &amp; Paul C Lambert &amp; Michael J Crowther, 2021. &quot;Introducing stipw: inverse probability weighted parametric survival models,&quot; London Stata 
-&gt; Conference 2021 15, Stata Users Group.
+<pre><code>. *Micki Hill &amp; Paul C Lambert &amp; Michael J Crowther, 2021. &quot;Introducing stipw: inverse probability weighted parametric survival models,&quot; London Stata Conference 2021 15, Stata Users Group.
 . *https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&amp;wdOrigin=BROWSELINK
 . 
 . *Treatment variable should be a binary variable with values 0 and 1.
@@ -646,8 +697,7 @@ Treatmen |  160,259.189   .0172595         35781          .         .         .
 &gt; legend(cols(4)) ///
 &gt; graphregion(color(white) lwidth(large)) bgcolor(white) ///
 &gt; plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001&quot;) ///
-&gt; legend(order(1 &quot;95CI Tr Completion&quot; 2 &quot;Tr Completion&quot; 3 &quot;95CI Early Tr Disch&quot; 4 &quot;Early Tr Disch &quot; 5 &quot;95CI Late Tr Disch&quot; 6 &quot;Late Tr Disch&quot; )size(*.5
-&gt; )region(lstyle(none)) region(c(none)) nobox)
+&gt; legend(order(1 &quot;95CI Tr Completion&quot; 2 &quot;Tr Completion&quot; 3 &quot;95CI Early Tr Disch&quot; 4 &quot;Early Tr Disch &quot; 5 &quot;95CI Late Tr Disch&quot; 6 &quot;Late Tr Disch&quot; )size(*.5)region(lstyle(none)) region(c(none)) nobox)
 
          failure _d:  event == 1
    analysis time _t:  diff
@@ -657,7 +707,7 @@ Treatmen |  160,259.189   .0172595         35781          .         .         .
 (note:  linewidth not found in scheme, default attributes used)
 
 . graph save &quot;`c(pwd)'\_figs\tto_2023_pris.gph&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\tto_2023_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\tto_2023_pris.gph saved)
 
 </code></pre>
 <p><img src="tto_2023_pris.svg" width="800" ></p>
@@ -665,15 +715,14 @@ Treatmen |  160,259.189   .0172595         35781          .         .         .
 <h2><a href="#survival-analyses" id="survival-analyses">Survival Analyses</a></h2>
 <p>=============================================================================</p>
 <pre><code>. /*
-&gt; vars_cov&lt;-c(&quot;motivodeegreso_mod_imp_rec&quot;, &quot;tr_modality&quot;, &quot;edad_al_ing_1&quot;, &quot;sex&quot;, &quot;edad_ini_cons&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons
-&gt; _sus_prin&quot;, &quot;condicion_ocupacional_corr&quot;, &quot;policonsumo&quot;, &quot;num_hijos_mod_joel_bin&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;macrozona&quot;, &quot;n_off_vio&quot;, &quot;n_off_a
-&gt; cq&quot;,  &quot;n_off_sud&quot;, &quot;n_off_oth&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;clas_r&quot;, &quot;porc_pobr&quot;, &quot;sus_ini_mod_mvv&quot;, &quot;ano_nac_corr&quot;, &quot;con_quien_vive_joe
-&gt; l&quot;, &quot;fis_comorbidity_icd_10&quot;)
+&gt; vars_cov&lt;-c(&quot;motivodeegreso_mod_imp_rec&quot;, &quot;tr_modality&quot;, &quot;edad_al_ing_1&quot;, &quot;sex&quot;, &quot;edad_ini_cons&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;, &quot;condicion_ocupacional_corr&quot;, &quot;policonsumo&quot;, &quot;num_hij
+&gt; os_mod_joel_bin&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;macrozona&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;,  &quot;n_off_sud&quot;, &quot;n_off_oth&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;clas_r&quot;, &quot;porc_pobr&quot;, &quot;sus_ini_mod_mvv&quot;, &quot;ano_nac_corr&quot;, &quot;
+&gt; con_quien_vive_joel&quot;, &quot;fis_comorbidity_icd_10&quot;)
 &gt; */
 . 
-. global covs &quot;i.motivodeegreso_mod_imp_rec i.tr_modality i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condici
-&gt; on_ocupacional_cor i.policonsumo i.num_hijos_mod_joel_bin i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth 
-&gt; i.dg_cie_10_rec i.dg_trs_cons_sus_or i.clas_r porc_pobr i.sus_ini_mod_mvv ano_nac_corr i.con_quien_vive_joel i.fis_comorbidity_icd_10&quot;
+. global covs &quot;i.motivodeegreso_mod_imp_rec i.tr_modality i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.num_hijos_mod_joel_bin i.tenen
+&gt; cia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.dg_cie_10_rec i.dg_trs_cons_sus_or i.clas_r porc_pobr i.sus_ini_mod_mvv ano_nac_corr i.con_quien_vive_joel i.fis_comorbidity_icd
+&gt; _10&quot;
 
 . 
 . 
@@ -1248,15 +1297,13 @@ Likelihood-ratio test                                 LR chi2(2)  =     31.00
 Log-likelihood difference (spline - linear): 15.5
 
 . 
-. * the presence of censored observations makes it difficult to decide further among them. (This is partly due to the fact that both the Cox model and
-&gt;  the parametric survival models assume that censoring is orthogonal to survival time, a mathematically handy assumption that is often demonstrably a
-&gt; nd seriously in error, and the actual data generation process for survival is often too unknown or too messy to simulate.) So in this context, relia
-&gt; nce on LR tests or IC statistics is a fallback position.
+. * the presence of censored observations makes it difficult to decide further among them. (This is partly due to the fact that both the Cox model and the parametric survival models assume that censoring is orthogon
+&gt; al to survival time, a mathematically handy assumption that is often demonstrably and seriously in error, and the actual data generation process for survival is often too unknown or too messy to simulate.) So in t
+&gt; his context, reliance on LR tests or IC statistics is a fallback position.
 </code></pre>
 <p>Log-likelihood difference (spline - linear): 15.5</p>
 <p>Nevetheless, we chose the model with spline terms due to linearity over a better fit.</p>
-<pre><code>. *Micki Hill &amp; Paul C Lambert &amp; Michael J Crowther, 2021. &quot;Introducing stipw: inverse probability weighted parametric survival models,&quot; London Stata 
-&gt; Conference 2021 15, Stata Users Group.
+<pre><code>. *Micki Hill &amp; Paul C Lambert &amp; Michael J Crowther, 2021. &quot;Introducing stipw: inverse probability weighted parametric survival models,&quot; London Stata Conference 2021 15, Stata Users Group.
 . *https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ffmwww.bc.edu%2Frepec%2Fusug2021%2Fusug21_hill.pptx&amp;wdOrigin=BROWSELINK
 . 
 . *Treatment variable should be a binary variable with values 0 and 1.
@@ -1564,10 +1611,9 @@ note: robust variance-covariance matrix used.
 . * ADJUSTED ROYSTON PARMAR - NO STAGGERED ENTRY, BINARY TREATMENT (1-DROPOUT VS. 0-COMPLETION)
 . 
 . /*
-&gt; vars_cov&lt;-c(&quot;motivodeegreso_mod_imp_rec&quot;, &quot;tr_modality&quot;, &quot;edad_al_ing_1&quot;, &quot;sex&quot;, &quot;edad_ini_cons&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons
-&gt; _sus_prin&quot;, &quot;condicion_ocupacional_corr&quot;, &quot;policonsumo&quot;, &quot;num_hijos_mod_joel_bin&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;macrozona&quot;, &quot;n_off_vio&quot;, &quot;n_off_a
-&gt; cq&quot;,  &quot;n_off_sud&quot;, &quot;n_off_oth&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;clas_r&quot;, &quot;porc_pobr&quot;, &quot;sus_ini_mod_mvv&quot;, &quot;ano_nac_corr&quot;, &quot;con_quien_vive_joe
-&gt; l&quot;, &quot;fis_comorbidity_icd_10&quot;)
+&gt; vars_cov&lt;-c(&quot;motivodeegreso_mod_imp_rec&quot;, &quot;tr_modality&quot;, &quot;edad_al_ing_1&quot;, &quot;sex&quot;, &quot;edad_ini_cons&quot;, &quot;escolaridad_rec&quot;, &quot;sus_principal_mod&quot;, &quot;freq_cons_sus_prin&quot;, &quot;condicion_ocupacional_corr&quot;, &quot;policonsumo&quot;, &quot;num_hij
+&gt; os_mod_joel_bin&quot;, &quot;tenencia_de_la_vivienda_mod&quot;, &quot;macrozona&quot;, &quot;n_off_vio&quot;, &quot;n_off_acq&quot;,  &quot;n_off_sud&quot;, &quot;n_off_oth&quot;, &quot;dg_cie_10_rec&quot;, &quot;dg_trs_cons_sus_or&quot;, &quot;clas_r&quot;, &quot;porc_pobr&quot;, &quot;sus_ini_mod_mvv&quot;, &quot;ano_nac_corr&quot;, &quot;
+&gt; con_quien_vive_joel&quot;, &quot;fis_comorbidity_icd_10&quot;)
 &gt; */
 . 
 . cap noi tab tr_modality, gen(tr_mod)
@@ -1749,8 +1795,8 @@ Hazardous consumption |     19,696       27.79       27.79
 . 
 . /*
 &gt; *NO LONGER USEFUL
-&gt; local varslab &quot;dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_
-&gt; cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_ges_intrau dg_fis_trau_sec&quot;
+&gt; local varslab &quot;dg_fis_anemia dg_fis_card dg_fis_in_study dg_fis_enf_som dg_fis_ets dg_fis_hep_alc dg_fis_hep_b dg_fis_hep_cro dg_fis_inf dg_fis_otr_cond_fis_ries_vit dg_fis_otr_cond_fis dg_fis_pat_buc dg_fis_pat_g
+&gt; es_intrau dg_fis_trau_sec&quot;
 &gt; forvalues i = 1/14 {
 &gt;         local v : word `i' of `varslab'
 &gt;         di &quot;`v'&quot;
@@ -1759,17 +1805,15 @@ Hazardous consumption |     19,696       27.79       27.79
 &gt; }
 &gt; */
 . 
-. global covs_3b &quot;mot_egr_early mot_egr_late i.tr_modality i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condic
-&gt; ion_ocupacional_cor i.policonsumo i.num_hijos_mod_joel_bin i.tenencia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth
-&gt;  i.dg_cie_10_rec i.dg_trs_cons_sus_or i.clas_r porc_pobr i.sus_ini_mod_mvv ano_nac_corr i.con_quien_vive_joel i.fis_comorbidity_icd_10 rc_x1 rc_x2 r
-&gt; c_x3&quot;
+. global covs_3b &quot;mot_egr_early mot_egr_late i.tr_modality i.sex_enc edad_ini_cons i.escolaridad_rec i.sus_principal_mod i.freq_cons_sus_prin i.condicion_ocupacional_cor i.policonsumo i.num_hijos_mod_joel_bin i.tene
+&gt; ncia_de_la_vivienda_mod i.macrozona i.n_off_vio i.n_off_acq i.n_off_sud i.n_off_oth i.dg_cie_10_rec i.dg_trs_cons_sus_or i.clas_r porc_pobr i.sus_ini_mod_mvv ano_nac_corr i.con_quien_vive_joel i.fis_comorbidity_ic
+&gt; d_10 rc_x1 rc_x2 rc_x3&quot;
 
 . 
 . *REALLY NEEDS DUMMY VARS
-. global covs_3b_dum_pre &quot;mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin
-&gt; 2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenvi
-&gt; v4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_
-&gt; nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3&quot;
+. global covs_3b_dum_pre &quot;mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2
+&gt;  cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 su
+&gt; sini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3&quot;
 
 . 
 . forvalues i=1/10 {
@@ -7440,7 +7484,7 @@ m_nostag_r~7 |      5,144          .  -16972.84      76   34097.68   34595.15
 . ** to order AICs
 . *https://www.statalist.org/forums/forum/general-stata-discussion/general/1665263-sorting-matrix-including-rownames
 . mata :
-------------------------------------------------- mata (type end to exit) ----------------------------------------------------------------------------
+------------------------------------------------- mata (type end to exit) ---------------------------------------------------------------------------------------------------------------------------------------------
 : 
 : void st_sort_matrix(
 &gt; //argumento de la matriz
@@ -7463,7 +7507,7 @@ m_nostag_r~7 |      5,144          .  -16972.84      76   34097.68   34595.15
 
 : 
 : end
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 . //mata: mata drop st_sort_matrix()
 . 
@@ -7488,8 +7532,7 @@ m_nostag_r~7 |      5,144          .  -16972.84      76   34097.68   34595.15
 . *Stable estimates on the log cumulative hazard scale.
 . *ln⁡𝐻(𝑡)=𝑠(ln⁡〖𝑡)−〖k ln〗⁡𝜆 〗
 . 
-. *corey979 (https://stats.stackexchange.com/users/72352/corey979), How to compare models on the basis of AIC?, URL (version: 2016-08-30): https://sta
-&gt; ts.stackexchange.com/q/232494
+. *corey979 (https://stats.stackexchange.com/users/72352/corey979), How to compare models on the basis of AIC?, URL (version: 2016-08-30): https://stats.stackexchange.com/q/232494
 </code></pre>
 <table border="0" width="*">
 <tr><td colspan=7><hr></td></tr>
@@ -7569,7 +7612,6 @@ m_nostag_r~7 |      5,144          .  -16972.84      76   34097.68   34595.15
 <tr><td colspan=7><hr></td></tr>
 </table>
 <p>In the case of the more flexible parametric models (non-standard), we selected the models that showed the best trade-off between lower complexity and better fit. This is why we also considered the BIC. If a model with fewer parameters had greater or equal AIC (or differences lower than 4) but also had better BIC (&lt;=3), we favoured the model with fewer parameters.</p>
-<p>The baseline hazard function was fitted using restricted cubic splines with 6 degrees of freedom, generating 4 interior knots placed at equally-spaced percentiles (17, 33, 50, 67 &amp; 83). To allow for non-proportional hazards, the time-dependent effect of treatment outcome was fitted using restricted cubic splines with 1 degrees of freedom.</p>
 <pre><code>. 
 . *The per(1000) option multiplies the hazard rate by 1000 as it is easier to interpret the rate per 1000 years than per person per year.
 . 
@@ -7579,9 +7621,9 @@ m_nostag_r~7 |      5,144          .  -16972.84      76   34097.68   34595.15
 . 
 . estimates replay m_nostag_rp5_tvc_1, eform
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Model m_nostag_rp5_tvc_1
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Log likelihood = -16979.103                     Number of obs     =     60,253
 
@@ -7674,9 +7716,9 @@ Note: Estimates are transformed only in the first equation.
 . 
 . estimates replay m_nostag_rp5_tvc_1, eform
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Model m_nostag_rp5_tvc_1
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Log likelihood = -16979.103                     Number of obs     =     60,253
 
@@ -7763,19 +7805,15 @@ Note: Estimates are transformed only in the first equation.
 . twoway  (rarea ms0_lci ms0_uci tt, color(gs2%35)) ///             
 &gt;                  (rarea ms1_lci ms1_uci tt, color(gs6%35)) ///
 &gt;                                  (rarea ms2_lci ms2_uci tt, color(gs10%25)) ///
-&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==1 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs2%5
-&gt; 0)) ///
-&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==2 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs6%5
-&gt; 0)) ///
-&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==3 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs10%
-&gt; 50)) ///
+&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==1 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs2%50)) ///
+&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==2 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs6%50)) ///
+&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==3 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs10%50)) ///
 &gt;                  (line ms0 tt, lcolor(gs2) lwidth(thick)) ///
 &gt;                  (line ms1 tt, lcolor(gs6) lwidth(thick)) ///
 &gt;                                  (line ms2 tt, lcolor(gs10) lwidth(thick)) ///
 &gt;                  ,xtitle(&quot;Years from treatment outcome&quot;) ///
 &gt;                  ytitle(&quot;Probibability of avoiding sentence (standardized)&quot;) ///
-&gt;                  legend(order( 4 &quot;Tr. completion&quot; 5 &quot;Early dropout&quot; 6 &quot;Late dropout&quot;) ring(0) pos(1) cols(1) region(lstyle(none)) region(c(none)) no
-&gt; box) ///
+&gt;                  legend(order( 4 &quot;Tr. completion&quot; 5 &quot;Early dropout&quot; 6 &quot;Late dropout&quot;) ring(0) pos(1) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
 &gt;                                  graphregion(color(white) lwidth(large)) bgcolor(white) ///
 &gt;                                  plotregion(fcolor(white)) graphregion(fcolor(white) )  /// //text(.5 1 &quot;IR = &lt;0.001&quot;) ///
 &gt;                  name(km_vs_standsurv_pre, replace)
@@ -7783,8 +7821,7 @@ Note: Estimates are transformed only in the first equation.
 (note:  linewidth not found in scheme, default attributes used)
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5tvc2_pris.gph&quot;, replace
-(note: file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5tvc2_pris.gph not found)
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5tvc2_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5tvc2_pris.gph saved)
 
 . 
 </code></pre>
@@ -7826,8 +7863,7 @@ note: confidence intervals calculated using Z critical values
 &gt;                                   (line zero tt, lcolor(black%20) lwidth(thick)) ///
 &gt;                                    ,xtitle(&quot;Years from treatment outcome&quot;) ///
 &gt;                  ytitle(&quot;Differences  of avoiding sentence (standardized)&quot;) ///
-&gt;                  legend(order( 2 &quot;Early vs. tr. completion&quot; 4 &quot;Late dropout vs. tr. completion&quot; 6 &quot;Late vs. early dropout&quot;) ring(2) pos(1) cols(1) r
-&gt; egion(lstyle(none)) region(c(none)) nobox) ///
+&gt;                  legend(order( 2 &quot;Early vs. tr. completion&quot; 4 &quot;Late dropout vs. tr. completion&quot; 6 &quot;Late vs. early dropout&quot;) ring(2) pos(1) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
 &gt;                                  graphregion(color(white) lwidth(large)) bgcolor(white) ///
 &gt;                                  plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001&quot;) ///
 &gt;                  name(surv_diffs, replace)
@@ -7835,8 +7871,7 @@ note: confidence intervals calculated using Z critical values
 (note:  linewidth not found in scheme, default attributes used)
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_stddif_s_pris.gph&quot;, replace
-(note: file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stddif_s_pris.gph not found)
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stddif_s_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stddif_s_pris.gph saved)
 
 .                                   /*
 &gt; *https://pclambert.net/software/stpm2_standsurv/standardized_survival/
@@ -7848,17 +7883,16 @@ note: confidence intervals calculated using Z critical values
 <p><img src="h_m_ns_rp5_stddiff_s_pris.svg" width="800" ></p>
 <pre><code>. 
 . *REALLY NEEDS DUMMY VARS
-. global covs_3b_dum &quot;mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr
-&gt; _cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 t
-&gt; enviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_
-&gt; corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3&quot;
+. global covs_3b_dum &quot;mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 con
+&gt; d_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini
+&gt; 4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3&quot;
 
 . 
 . estimates replay m_nostag_rp5_tvc_1, eform
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Model m_nostag_rp5_tvc_1
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Log likelihood = -16979.103                     Number of obs     =     60,253
 
@@ -7949,19 +7983,15 @@ Note: Estimates are transformed only in the first equation.
 . twoway  (rarea s_tr_comp_lci s_tr_comp_uci tt, color(gs2%35)) ///             
 &gt;                  (rarea s_early_drop_lci s_early_drop_uci tt, color(gs6%35)) ///
 &gt;                                  (rarea s_late_drop_lci s_late_drop_uci tt, color(gs10%35)) ///
-&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==1 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs2%3
-&gt; 5)) ///
-&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==2 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs6%3
-&gt; 5)) ///
-&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==3 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs10%
-&gt; 50)) ///
+&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==1 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs2%35)) ///
+&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==2 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs6%35)) ///
+&gt;                                  (line km _t if motivodeegreso_mod_imp_rec==3 , sort connect(stairstep) lpattern(dash) lwidth(medthick) lcolor(gs10%50)) ///
 &gt;                  (line s_tr_comp tt, lcolor(gs2) lwidth(thick)) ///
 &gt;                  (line s_early_drop tt, lcolor(gs6) lwidth(thick)) ///
 &gt;                                  (line s_late_drop tt, lcolor(gs10) lwidth(thick)) ///
 &gt;                  ,xtitle(&quot;Years from treatment outcome&quot;) ///
 &gt;                  ytitle(&quot;Probibability of avoiding sentence (standardized)&quot;) ///
-&gt;                  legend(order( 4 &quot;Tr. completion&quot; 5 &quot;Early dropout&quot; 6 &quot;Late dropout&quot;) ring(0) pos(1) cols(1) region(lstyle(none)) region(c(none)) no
-&gt; box) ///
+&gt;                  legend(order( 4 &quot;Tr. completion&quot; 5 &quot;Early dropout&quot; 6 &quot;Late dropout&quot;) ring(0) pos(1) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
 &gt;                                  graphregion(color(white) lwidth(large)) bgcolor(white) ///
 &gt;                                  plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001&quot;) ///
 &gt;                  name(km_vs_standsurv, replace)
@@ -7969,8 +7999,7 @@ Note: Estimates are transformed only in the first equation.
 (note:  linewidth not found in scheme, default attributes used)
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_s_pris.gph&quot;, replace
-(note: file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_s_pris.gph not found)
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_s_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_s_pris.gph saved)
 
 . 
 </code></pre>
@@ -7986,8 +8015,7 @@ Note: Estimates are transformed only in the first equation.
 &gt;          , ylabel(, format(%3.1f)) ///
 &gt;          ytitle(&quot;Difference in Survival (years)&quot;) ///
 &gt;          xtitle(&quot;Years from baseline treatment outcome&quot;) ///
-&gt;                  legend(order( 1 &quot;Early vs. Tr. completion&quot; 3 &quot;Late vs. Tr. completion&quot; 5 &quot;Late vs. Early dropout&quot;) ring(0) pos(7) cols(1) region(ls
-&gt; tyle(none)) region(c(none)) nobox) ///
+&gt;                  legend(order( 1 &quot;Early vs. Tr. completion&quot; 3 &quot;Late vs. Tr. completion&quot; 5 &quot;Late vs. Early dropout&quot;) ring(0) pos(7) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
 &gt;                                  graphregion(color(white) lwidth(large)) bgcolor(white) ///
 &gt;                                  plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001&quot;) ///
 &gt;                  name(s_diff, replace)
@@ -7998,17 +8026,16 @@ Note: Estimates are transformed only in the first equation.
 
 . 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_stdif_s2_pris.gph&quot;, replace
-(note: file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_s2_pris.gph not found)
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_s2_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_s2_pris.gph saved)
 
 </code></pre>
 <p><img src="h_m_ns_rp5_stdif_s2_pris.svg" width="800" ></p>
 <pre><code>. 
 . estimates replay m_nostag_rp5_tvc_1, eform
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Model m_nostag_rp5_tvc_1
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Log likelihood = -16979.103                     Number of obs     =     60,253
 
@@ -8106,8 +8133,7 @@ Note: Estimates are transformed only in the first equation.
 &gt;          , ylabel(, format(%3.1f)) ///
 &gt;          ytitle(&quot;Difference in RMST (years)&quot;) ///
 &gt;          xtitle(&quot;Years from baseline treatment outcome&quot;) ///
-&gt;                  legend(order( 1 &quot;Early vs. Tr. completion&quot; 3 &quot;Late vs. Tr. completion&quot; 5 &quot;Late vs. Early dropout&quot;) ring(0) pos(7) cols(1) region(ls
-&gt; tyle(none)) region(c(none)) nobox) ///
+&gt;                  legend(order( 1 &quot;Early vs. Tr. completion&quot; 3 &quot;Late vs. Tr. completion&quot; 5 &quot;Late vs. Early dropout&quot;) ring(0) pos(7) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
 &gt;                                  graphregion(color(white) lwidth(large)) bgcolor(white) ///
 &gt;                                  plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001&quot;) ///
 &gt;                  name(RMSTdiff, replace)
@@ -8115,8 +8141,7 @@ Note: Estimates are transformed only in the first equation.
 (note:  linewidth not found in scheme, default attributes used)
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_stdif_rmst_pris.gph&quot;, replace
-(note: file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_rmst_pris.gph not found)
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_rmst_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_rmst_pris.gph saved)
 
 </code></pre>
 <p><img src="h_m_ns_rp5_stdif_rmst_pris.svg" width="800" ></p>
@@ -8149,10 +8174,9 @@ frame late not found
 . *______________________________________________
 . * NO STAGGERED ENTRY, BINARY TREATMENT (1-LATE VS. 0-COMPLETION)
 . 
-. global covs_4_dum &quot;motivodeegreso_mod_imp_rec2 tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr
-&gt; _cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 t
-&gt; enviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_
-&gt; corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3&quot;
+. global covs_4_dum &quot;motivodeegreso_mod_imp_rec2 tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 con
+&gt; d_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini
+&gt; 4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3&quot;
 
 . 
 . *  tvar must be a binary variable with 1 = treatment/exposure and 0 = control.
@@ -8161,11 +8185,9 @@ frame late not found
 . *10481 observations have missing treatment and/or missing confounder values and/or _st = 0.
 . forvalues i=1/10 {
   2.         forvalues j=1/7 {
-  3. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_pr
-&gt; in3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone
-&gt; 2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 
-&gt; cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m_nostag_tvcdf`j') ipwtype(stabilised) vce(mest
-&gt; imation) eform
+  3. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_
+&gt; ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 an
+&gt; o_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
   4. estimates  store m_stipw_nostag_rp`i'_tvcdf`j'
   5.         }
   6. }
@@ -11299,10 +11321,9 @@ Note: Estimates are transformed only in the first equation.
   2.  local v : word `i' of `vars'
   3.  local v2 : word `i' of `varslab'
   4. 
-. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3
-&gt;  fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 m
-&gt; zone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 coh
-&gt; ab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m2_nostag) ipwtype(stabilised) vce(mestimation)
+. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu
+&gt; 4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_n
+&gt; ac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m2_nostag) ipwtype(stabilised) vce(mestimation)
   5. estimates  store m_stipw_nostag_`v2'
   6.         }
 8202 observations have missing treatment and/or missing confounder values and/or _st = 0.
@@ -11754,9 +11775,9 @@ m_stipw_no~g |      3,433   -13022.4  -12979.75       3   25965.49   25983.91
 </table>
 <pre><code>. estimates replay m_stipw_nostag_rp4_tvcdf4, eform
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Model m_stipw_nostag_rp4_tvcdf4
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Log pseudolikelihood = -12954.808               Number of obs     =     46,864
 
@@ -11809,7 +11830,7 @@ Note: Estimates are transformed only in the first equation.
 (note:  linewidth not found in scheme, default attributes used)
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_a_pris.gph&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_a_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_a_pris.gph saved)
 
 . 
 </code></pre>
@@ -11829,7 +11850,7 @@ Note: Estimates are transformed only in the first equation.
 (note:  linewidth not found in scheme, default attributes used)
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_stdiff_rmst_a_pris.gph&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdiff_rmst_a_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdiff_rmst_a_pris.gph saved)
 
 </code></pre>
 <p><img src="h_m_ns_rp5_stdiff_rmst_a_pris.svg" width="800" ></p>
@@ -11862,11 +11883,9 @@ frame early not found
 . 
 . forvalues i=1/10 {
   2.         forvalues j=1/7 {
-  3. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_pr
-&gt; in3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone
-&gt; 2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 
-&gt; cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m2_nostag_tvcdf`j') ipwtype(stabilised) vce(mes
-&gt; timation) eform
+  3. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_
+&gt; ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 an
+&gt; o_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m2_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
   4. estimates  store m2_stipw_nostag_rp`i'_tvcdf`j'
   5.         }
   6. }
@@ -15114,10 +15133,9 @@ Note: Estimates are transformed only in the first equation.
 . forvalues i = 1/5 {
   2.  local v : word `i' of `vars'
   3.  local v2 : word `i' of `varslab'
-  4. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_pr
-&gt; in3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone
-&gt; 2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 
-&gt; cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m2_nostag) ipwtype(stabilised) vce(mestimation)
+  4. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_
+&gt; ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 an
+&gt; o_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m2_nostag) ipwtype(stabilised) vce(mestimation)
   5. estimates  store m2_stipw_nostag_`v2'
   6.         }
 5234 observations have missing treatment and/or missing confounder values and/or _st = 0.
@@ -15388,8 +15406,8 @@ Note: _cons estimates baseline hazard.
 
 . *}
 . *
-. *Just a workaround: I dropped the colinear variables from the regressions manually. I know this sounds like a solution, but it was an issue because 
-&gt; I was looping over subsamples, so I didn't know what would be colinear before running.
+. *Just a workaround: I dropped the colinear variables from the regressions manually. I know this sounds like a solution, but it was an issue because I was looping over subsamples, so I didn't know what would be col
+&gt; inear before running.
 . 
 . 
 . qui count if _d == 1
@@ -15579,9 +15597,9 @@ m2_stipw_n~g |      2,378  -8987.247  -8945.367       3   17896.73   17914.06
 </table>
 <pre><code>. estimates replay m2_stipw_nostag_rp8_tvcdf7, eform
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Model m2_stipw_nostag_rp8_tvcdf7
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Log pseudolikelihood = -8872.4539               Number of obs     =     29,848
 
@@ -15626,8 +15644,7 @@ Note: Estimates are transformed only in the first equation.
 &gt;      atvar(rmst_comp_b rmst_early_b) contrastvar(rmstdiff_comp_vs_early)
 
 . 
-. * s_tr_comp_early_b s_tr_comp_early_b_lci s_tr_comp_early_b_uci s_late_drop_b s_late_drop_b_lci s_late_drop_b_uci sdiff_tr_comp_early_vs_late sdiff_
-&gt; tr_comp_early_vs_late_lci sdiff_tr_comp_early_vs_late_uci    
+. * s_tr_comp_early_b s_tr_comp_early_b_lci s_tr_comp_early_b_uci s_late_drop_b s_late_drop_b_lci s_late_drop_b_uci sdiff_tr_comp_early_vs_late sdiff_tr_comp_early_vs_late_lci sdiff_tr_comp_early_vs_late_uci    
 . 
 . twoway  (rarea s_comp_b_lci s_comp_b_uci tt, color(gs7%35)) ///             
 &gt;                  (rarea s_early_b_lci s_early_b_uci tt, color(gs2%35)) ///
@@ -15645,7 +15662,7 @@ Note: Estimates are transformed only in the first equation.
 (note:  linewidth not found in scheme, default attributes used)
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_22_b_pris.gph&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_22_b_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_22_b_pris.gph saved)
 
 . 
 </code></pre>
@@ -15668,7 +15685,7 @@ Note: Estimates are transformed only in the first equation.
 (note:  linewidth not found in scheme, default attributes used)
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_stdif_rmst_b_pris.gph&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_rmst_b_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_rmst_b_pris.gph saved)
 
 </code></pre>
 <p><img src="h_m_ns_rp5_stdif_rmst_b_pris.svg" width="800" ></p>
@@ -15702,11 +15719,9 @@ frame early_late not found
 . 
 . forvalues i=1/10 {
   2.         forvalues j=1/7 {
-  3. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_pr
-&gt; in3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone
-&gt; 2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 
-&gt; cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m3_nostag_tvcdf`j') ipwtype(stabilised) vce(mes
-&gt; timation) eform
+  3. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_
+&gt; ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 an
+&gt; o_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(rp) df(`i') dftvc(`j') genw(rpdf`i'_m3_nostag_tvcdf`j') ipwtype(stabilised) vce(mestimation) eform
   4. estimates  store m3_stipw_nostag_rp`i'_tvcdf`j'
   5.         }
   6. }
@@ -18839,10 +18854,9 @@ Note: Estimates are transformed only in the first equation.
 . forvalues i = 1/5 {
   2.  local v : word `i' of `vars'
   3.  local v2 : word `i' of `varslab'
-  4. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_pr
-&gt; in3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone
-&gt; 2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 
-&gt; cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m3_nostag) ipwtype(stabilised) vce(mestimation)
+  4. qui noi stipw (logit tr_outcome tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_
+&gt; ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 an
+&gt; o_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3), distribution(`v') genw(`v2'_m3_nostag) ipwtype(stabilised) vce(mestimation)
   5. estimates  store m3_stipw_nostag_`v2'
   6.         }
 7805 observations have missing treatment and/or missing confounder values and/or _st = 0.
@@ -19106,8 +19120,8 @@ Note: _cons estimates baseline hazard.
 
 . *}
 . *
-. *Just a workaround: I dropped the colinear variables from the regressions manually. I know this sounds like a solution, but it was an issue because 
-&gt; I was looping over subsamples, so I didn't know what would be colinear before running.
+. *Just a workaround: I dropped the colinear variables from the regressions manually. I know this sounds like a solution, but it was an issue because I was looping over subsamples, so I didn't know what would be col
+&gt; inear before running.
 . 
 . 
 . qui count if _d == 1
@@ -19296,9 +19310,9 @@ m3_stipw_n~g |      4,480  -16442.95  -16434.58       3   32875.16   32894.39
 <pre><code>. 
 . estimates replay m3_stipw_nostag_rp2_tvcdf1, eform
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Model m3_stipw_nostag_rp2_tvcdf1
-------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Log pseudolikelihood = -16405.024               Number of obs     =     43,782
 
@@ -19326,8 +19340,7 @@ Note: Estimates are transformed only in the first equation.
 &gt;      atvar(s_late_c s_early_c) contrastvar(sdiff_late_vs_early)
 
 . 
-. * s_tr_comp_early_b s_tr_comp_early_b_lci s_tr_comp_early_b_uci s_late_drop_b s_late_drop_b_lci s_late_drop_b_uci sdiff_tr_comp_early_vs_late sdiff_
-&gt; tr_comp_early_vs_late_lci sdiff_tr_comp_early_vs_late_uci    
+. * s_tr_comp_early_b s_tr_comp_early_b_lci s_tr_comp_early_b_uci s_late_drop_b s_late_drop_b_lci s_late_drop_b_uci sdiff_tr_comp_early_vs_late sdiff_tr_comp_early_vs_late_lci sdiff_tr_comp_early_vs_late_uci    
 . 
 . twoway  (rarea s_late_c_lci s_late_c_uci tt, color(gs7%35)) ///             
 &gt;                  (rarea s_early_c_lci s_early_c_uci tt, color(gs2%35)) ///
@@ -19345,7 +19358,7 @@ Note: Estimates are transformed only in the first equation.
 (note:  linewidth not found in scheme, default attributes used)
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_22_c_pris.gph&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_22_c_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_22_c_pris.gph saved)
 
 . 
 </code></pre>
@@ -19372,7 +19385,7 @@ Note: Estimates are transformed only in the first equation.
 (note:  linewidth not found in scheme, default attributes used)
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_stdif_rmst_c_pris.gph&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_rmst_c_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_rmst_c_pris.gph saved)
 
 </code></pre>
 <p><img src="h_m_ns_rp5_stdif_rmst_c_pris.svg" width="800" ></p>
@@ -19387,8 +19400,7 @@ Note: Estimates are transformed only in the first equation.
 . frame late: drop if missing(tt)
 (55,043 observations deleted)
 
-. *ERROR: invalid match variables for 1:1 match The variable tt does not uniquely identify the observations in frame default.  Perhaps you meant to sp
-&gt; ecify m:1 instead of 1:1.
+. *ERROR: invalid match variables for 1:1 match The variable tt does not uniquely identify the observations in frame default.  Perhaps you meant to specify m:1 instead of 1:1.
 . frlink m:1 tt2, frame(late)
   (70,840 observations in frame default unmatched)
 
@@ -19451,8 +19463,7 @@ Note: Estimates are transformed only in the first equation.
 &gt;          , ylabel(, format(%3.1f)) ///
 &gt;          ytitle(&quot;Difference in Survival (years)&quot;) ///
 &gt;          xtitle(&quot;Years from baseline treatment outcome&quot;) ///
-&gt;                  legend(order( 1 &quot;Late dropout vs. Tr. completion&quot; 3 &quot;Early dropout vs. Tr. completion&quot; 5 &quot;Early vs. late dropout&quot;) ring(0) pos(7) c
-&gt; ols(1) region(lstyle(none)) region(c(none)) nobox) ///
+&gt;                  legend(order( 1 &quot;Late dropout vs. Tr. completion&quot; 3 &quot;Early dropout vs. Tr. completion&quot; 5 &quot;Early vs. late dropout&quot;) ring(0) pos(7) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
 &gt;                                  graphregion(color(white) lwidth(large)) bgcolor(white) ///
 &gt;                                  plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001&quot;) ///
 &gt;                  name(s_diff_fin_abc, replace)
@@ -19462,7 +19473,7 @@ Note: Estimates are transformed only in the first equation.
 .                 gr_edit yaxis1.major.label_format = `&quot;%9.2f&quot;'
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_stdif_s_abc_pris.gph&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_s_abc_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_s_abc_pris.gph saved)
 
 </code></pre>
 <p><img src="h_m_ns_rp5_stdif_s_abc_pris.svg" width="800" ></p>
@@ -19477,8 +19488,7 @@ Note: Estimates are transformed only in the first equation.
 &gt;          , ylabel(, format(%3.1f)) ///
 &gt;          ytitle(&quot;Difference in RMST (years)&quot;) ///
 &gt;          xtitle(&quot;Years from baseline treatment outcome&quot;) ///
-&gt;                  legend(order( 1 &quot;Late dropout vs. Tr. completion&quot; 3 &quot;Early dropout vs. Tr. completion&quot; 5 &quot;Early vs. late dropout&quot;) ring(0) pos(7) c
-&gt; ols(1) region(lstyle(none)) region(c(none)) nobox) ///
+&gt;                  legend(order( 1 &quot;Late dropout vs. Tr. completion&quot; 3 &quot;Early dropout vs. Tr. completion&quot; 5 &quot;Early vs. late dropout&quot;) ring(0) pos(7) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
 &gt;                                  graphregion(color(white) lwidth(large)) bgcolor(white) ///
 &gt;                                  plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001&quot;) ///
 &gt;                  name(RMSTdiff_fin_abc, replace)
@@ -19488,11 +19498,11 @@ Note: Estimates are transformed only in the first equation.
 .                 gr_edit yaxis1.major.label_format = `&quot;%9.2f&quot;'
 
 . graph save &quot;`c(pwd)'\_figs\h_m_ns_rp5_stdif_rmst_abc_pris.gph&quot;, replace
-(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_rmst_abc_pris.gph saved)
+(file E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp5_stdif_rmst_abc_pris.gph saved)
 
 </code></pre>
 <p><img src="h_m_ns_rp5_stdif_rmst_abc_pris.svg" width="800" ></p>
-<p>Saved at= 17:44:21  2 Apr 2023</p>
+<p>Saved at= 22:10:53  5 Apr 2023</p>
 <pre><code>.         frame late: cap qui save &quot;mariel_feb_23_2_late.dta&quot;, all replace emptyok
 
 .         frame early: cap qui save &quot;mariel_feb_23_2_early.dta&quot;, all replace emptyok
