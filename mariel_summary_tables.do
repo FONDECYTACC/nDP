@@ -350,12 +350,12 @@ foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_earl
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 	}	
 
-matrix est_as11 = (ests_s_tr_comp , ests_s_tr_comp_lci, ests_s_tr_comp_uci ,  ///
+matrix est_as11m1 = (ests_s_tr_comp , ests_s_tr_comp_lci, ests_s_tr_comp_uci ,  ///
 	ests_s_early_drop , ests_s_early_drop_lci, ests_s_early_drop_uci , ///
 	ests_s_late_drop , ests_s_late_drop_lci , ests_s_late_drop_uci )
-matrix colnames est_as11 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
+matrix colnames est_as11m1 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
 
-esttab matrix(est_as11) using "${pathdata2}prob_condsent_m1_main.html", replace 
+esttab matrix(est_as11m1) using "${pathdata2}prob_condsent_m1_main.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -389,12 +389,12 @@ foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 	}	
 
-matrix est_as12 = (ests_rmst_h0 , ests_rmst_h0_lci , ests_rmst_h0_uci ,  ///
+matrix est_as12m1 = (ests_rmst_h0 , ests_rmst_h0_lci , ests_rmst_h0_uci ,  ///
 	ests_rmst_h1 , ests_rmst_h1_lci , ests_rmst_h1_uci ,  ///
 	ests_rmst_h2 , ests_rmst_h2_lci , ests_rmst_h2_uci )
-matrix colnames est_as12 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
+matrix colnames est_as12m1 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
 
-esttab matrix(est_as12) using "${pathdata2}rmst_condsent_m1_main.html", replace 
+esttab matrix(est_as12m1) using "${pathdata2}rmst_condsent_m1_main.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -430,12 +430,12 @@ foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 		}
 	
-matrix est_as13 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+matrix est_as13m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
 	ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 	ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
-matrix colnames est_as13 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+matrix colnames est_as13m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
 
-esttab matrix(est_as13) using "${pathdata2}prob_condsent_m1_main_diff.html", replace 
+esttab matrix(est_as13m1) using "${pathdata2}prob_condsent_m1_main_diff.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -457,9 +457,9 @@ foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_l
 
 foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp_late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
 	scalar variable = "`var'"
-					qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
+					qui summarize `var' if inrange(tt, .10, .30) // tolerance of .02
 					scalar e3m_`var' = round(round(r(mean),.0001),.001)
-					qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
+					qui summarize `var' if inrange(tt, .35, .65) // tolerance of .10
 					scalar e6m_`var' = round(round(r(mean),.0001),.001)					
 					qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
 					scalar e1y_`var' = round(round(r(mean),.0001),.001)
@@ -472,16 +472,104 @@ foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 		}
 	
-matrix est_as14 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+matrix est_as14m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
 	ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 	ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
-matrix colnames est_as14 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+matrix colnames est_as14m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
 
-esttab matrix(est_as14) using "${pathdata2}rmst_condsent_m1_main_diff.html", replace 
+esttab matrix(est_as14m1) using "${pathdata2}rmst_condsent_m1_main_diff.html", replace 
 <</dd_do>>
 ~~~~
 
 <<dd_include: "${pathdata2}rmst_condsent_m1_main_diff.html" >>
+
+
+#### Condemnatory_Sentence_Imputed_IPW
+
+**Difference Survival**
+
+~~~~
+<<dd_do>>
+cap qui noi use "mariel_feb_23_m1.dta", clear
+*estread using "mariel_feb_23.sters", replace
+
+keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt2
+
+foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci {
+    local newname = substr("`var'", 2, 50)
+    rename `var' `newname'
+}
+
+foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+	scalar variable = "`var'"
+					qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .06
+					scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
+					qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
+					scalar e6m_`var' = round(round(r(mean),.001)*100,.1)					
+					qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .16
+					scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
+					qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .40
+					scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
+					qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .40
+					scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
+	 cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+	 matrix colnames ests_`var' = `var'
+	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
+		}
+	
+matrix est_as15m1 = (ests_diff_comp_vs_late , ests_diff_comp_vs_late_lci , ests_diff_comp_vs_late_uci ,  ///
+	ests_diff_comp_vs_early , ests_diff_comp_vs_early_lci, ests_diff_comp_vs_early_uci , ///
+	ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
+matrix colnames est_as15m1 = Comp_Late Comp_Late_lci Comp_Late_uci Comp_Early Comp_Early_lci Comp_Early_uci Early_Late Early_Late_lci Early_Late_uci 
+
+esttab matrix(est_as15m1) using "${pathdata2}prob_condsent_m1_IPW_diff.html", replace 
+<</dd_do>>
+~~~~
+
+<<dd_include: "${pathdata2}prob_condsent_m1_IPW_diff.html" >>
+
+
+**Difference RMST**
+
+~~~~
+<<dd_do>>
+cap qui noi use "mariel_feb_23_m1.dta", clear
+*estread using "mariel_feb_23.sters", replace
+
+keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci tt2
+
+foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci {
+    local newname = substr("`var'", 5, 50)
+    rename `var' `newname'
+}
+
+foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+	scalar variable = "`var'"
+					qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .02
+					scalar e3m_`var' = round(round(r(mean),.0001),.001)
+					qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
+					scalar e6m_`var' = round(round(r(mean),.0001),.001)					
+					qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .10
+					scalar e1y_`var' = round(round(r(mean),.0001),.001)
+					qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .30
+					scalar e3y_`var' = round(round(r(mean),.0001),.001)
+					qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .30
+					scalar e5y_`var' = round(round(r(mean),.0001),.001)
+	 cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+	 matrix colnames ests_`var' = `var'
+	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
+		}
+	
+matrix est_as16m1 = (ests_diff_comp_vs_early , ests_diff_comp_vs_early_lci, ests_diff_comp_vs_early_uci ,  ///
+	ests_diff_comp_vs_late , ests_diff_comp_vs_late_lci , ests_diff_comp_vs_late_uci , ///
+	ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
+matrix colnames est_as16m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+
+esttab matrix(est_as16m1) using "${pathdata2}rmst_condsent_m1_main_IPW_diff.html", replace 
+<</dd_do>>
+~~~~
+
+<<dd_include: "${pathdata2}rmst_condsent_m1_main_IPW_diff.html" >>
 
 
 #### #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -516,12 +604,12 @@ foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_earl
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 	}	
 
-matrix est_as11 = (ests_s_tr_comp , ests_s_tr_comp_lci, ests_s_tr_comp_uci ,  ///
+matrix est_as11m2 = (ests_s_tr_comp , ests_s_tr_comp_lci, ests_s_tr_comp_uci ,  ///
 	ests_s_early_drop , ests_s_early_drop_lci, ests_s_early_drop_uci , ///
 	ests_s_late_drop , ests_s_late_drop_lci , ests_s_late_drop_uci )
-matrix colnames est_as11 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
+matrix colnames est_as11m2 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
 
-esttab matrix(est_as11) using "${pathdata2}prob_condsent_m2_main.html", replace 
+esttab matrix(est_as11m2) using "${pathdata2}prob_condsent_m2_main.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -555,12 +643,12 @@ foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 	}	
 
-matrix est_as12 = (ests_rmst_h0 , ests_rmst_h0_lci , ests_rmst_h0_uci ,  ///
+matrix est_as12m2 = (ests_rmst_h0 , ests_rmst_h0_lci , ests_rmst_h0_uci ,  ///
 	ests_rmst_h1 , ests_rmst_h1_lci , ests_rmst_h1_uci ,  ///
 	ests_rmst_h2 , ests_rmst_h2_lci , ests_rmst_h2_uci )
-matrix colnames est_as12 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
+matrix colnames est_as12m2 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
 
-esttab matrix(est_as12) using "${pathdata2}rmst_condsent_m2_main.html", replace 
+esttab matrix(est_as12m2) using "${pathdata2}rmst_condsent_m2_main.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -596,12 +684,12 @@ foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 		}
 	
-matrix est_as13 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+matrix est_as13m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
 	ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 	ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
-matrix colnames est_as13 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+matrix colnames est_as13m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
 
-esttab matrix(est_as13) using "${pathdata2}prob_condsent_m2_main_diff.html", replace 
+esttab matrix(est_as13m2) using "${pathdata2}prob_condsent_m2_main_diff.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -639,12 +727,12 @@ foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 		}
 	
-matrix est_as14 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+matrix est_as14m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
 	ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 	ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
-matrix colnames est_as14 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+matrix colnames est_as14m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
 
-esttab matrix(est_as14) using "${pathdata2}rmst_condsent_m2_main_diff.html", replace 
+esttab matrix(est_as14m2) using "${pathdata2}rmst_condsent_m2_main_diff.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -728,7 +816,7 @@ foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_
 matrix est_as22 = (ests_rmst_h0 , ests_rmst_h0_lci , ests_rmst_h0_uci ,  ///
 	ests_rmst_h1 , ests_rmst_h1_lci , ests_rmst_h1_uci ,  ///
 	ests_rmst_h2 , ests_rmst_h2_lci , ests_rmst_h2_uci )
-matrix colnames est_as12 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
+matrix colnames est_as22 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
 
 esttab matrix(est_as22) using "${pathdata2}rmst_prison_m0_main.html", replace 
 <</dd_do>>
@@ -823,6 +911,7 @@ esttab matrix(est_as24) using "${pathdata2}rmst_prison_m0_main_diff.html", repla
 <<dd_include: "${pathdata2}rmst_prison_m0_main_diff.html" >>
 
 
+
 #### Imprisonment, Listwise, IPW
 
 **Difference Survival**
@@ -833,7 +922,7 @@ cap qui noi use "mariel_feb_23_2.dta", clear
 
 *estread using "mariel_feb_23_2.sters", replace
 
-keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt
+keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt2
 
 foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci {
     local newname = substr("`var'", 2, 50)
@@ -842,15 +931,15 @@ foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_l
 
 foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
 	scalar variable = "`var'"
-					qui summarize `var' if inrange(tt, .20, .30) // tolerance of .06
+					qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .06
 					scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
-					qui summarize `var' if inrange(tt, .40, .60) // tolerance of .10
+					qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
 					scalar e6m_`var' = round(round(r(mean),.001)*100,.1)					
-					qui summarize `var' if inrange(tt, .75, 1.25) // tolerance of .16
+					qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .16
 					scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
-					qui summarize `var' if inrange(tt, 2.80, 3.20) // tolerance of .40
+					qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .40
 					scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
-					qui summarize `var' if inrange(tt,  4.50, 5.50) // tolerance of .40
+					qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .40
 					scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
 	 cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames ests_`var' = `var'
@@ -886,7 +975,7 @@ esttab matrix(est_as25) using "${pathdata2}prob_prison_m0_IPW_diff.html", replac
 cap qui noi use "mariel_feb_23_2.dta", clear
 *estread using "mariel_feb_23_2.sters", replace
 
-keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci tt
+keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci tt2
 
 foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci {
     local newname = substr("`var'", 5, 50)
@@ -895,15 +984,15 @@ foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_
 
 foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
 	scalar variable = "`var'"
-					qui summarize `var' if inrange(tt, .20, .30) // tolerance of .02
+					qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .02
 					scalar e3m_`var' = round(round(r(mean),.0001),.001)
-					qui summarize `var' if inrange(tt, .40, .60) // tolerance of .10
+					qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
 					scalar e6m_`var' = round(round(r(mean),.0001),.001)					
-					qui summarize `var' if inrange(tt, .75, 1.25) // tolerance of .10
+					qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .10
 					scalar e1y_`var' = round(round(r(mean),.0001),.001)
-					qui summarize `var' if inrange(tt, 2.80, 3.20) // tolerance of .30
+					qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .30
 					scalar e3y_`var' = round(round(r(mean),.0001),.001)
-					qui summarize `var' if inrange(tt,  4.50, 5.50) // tolerance of .30
+					qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .30
 					scalar e5y_`var' = round(round(r(mean),.0001),.001)
 	 cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames ests_`var' = `var'
@@ -953,12 +1042,12 @@ foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_earl
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 	}	
 
-matrix est_as21 = (ests_s_tr_comp , ests_s_tr_comp_lci, ests_s_tr_comp_uci ,  ///
+matrix est_as21m1 = (ests_s_tr_comp , ests_s_tr_comp_lci, ests_s_tr_comp_uci ,  ///
 	ests_s_early_drop , ests_s_early_drop_lci, ests_s_early_drop_uci , ///
 	ests_s_late_drop , ests_s_late_drop_lci , ests_s_late_drop_uci )
-matrix colnames est_as21 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
+matrix colnames est_as21m1 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
 
-esttab matrix(est_as21) using "${pathdata2}prob_prison_m1_main.html", replace 
+esttab matrix(est_as21m1) using "${pathdata2}prob_prison_m1_main.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -992,12 +1081,12 @@ foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 	}	
 
-matrix est_as22 = (ests_rmst_h0 , ests_rmst_h0_lci , ests_rmst_h0_uci ,  ///
+matrix est_as22m1 = (ests_rmst_h0 , ests_rmst_h0_lci , ests_rmst_h0_uci ,  ///
 	ests_rmst_h1 , ests_rmst_h1_lci , ests_rmst_h1_uci ,  ///
 	ests_rmst_h2 , ests_rmst_h2_lci , ests_rmst_h2_uci )
-matrix colnames est_as12 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
+matrix colnames est_as22m1 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
 
-esttab matrix(est_as22) using "${pathdata2}rmst_prison_m1_main.html", replace 
+esttab matrix(est_as22m1) using "${pathdata2}rmst_prison_m1_main.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -1034,12 +1123,12 @@ foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 		}
 	
-matrix est_as23 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+matrix est_as23m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
 	ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 	ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
-matrix colnames est_as23 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+matrix colnames est_as23m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
 
-esttab matrix(est_as23) using "${pathdata2}prob_prison_m1_main_diff.html", replace 
+esttab matrix(est_as23m1) using "${pathdata2}prob_prison_m1_main_diff.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -1076,18 +1165,116 @@ foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 		}
 	
-matrix est_as24 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+matrix est_as24m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
 	ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 	ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
-matrix colnames est_as24 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+matrix colnames est_as24m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
 
-esttab matrix(est_as24) using "${pathdata2}rmst_prison_m1_main_diff.html", replace 
+esttab matrix(est_as24m1) using "${pathdata2}rmst_prison_m1_main_diff.html", replace 
 <</dd_do>>
 ~~~~
 
 <<dd_include: "${pathdata2}rmst_prison_m1_main_diff.html" >>
 
 
+
+#### Imprisonment, Imputed, IPW
+
+**Difference Survival**
+
+~~~~
+<<dd_do>>
+cap qui noi use "mariel_feb_23_2_m1.dta", clear
+
+*estread using "mariel_feb_23_2.sters", replace
+
+keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt2
+
+foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci {
+    local newname = substr("`var'", 2, 50)
+    rename `var' `newname'
+}
+
+foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+	scalar variable = "`var'"
+					qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .06
+					scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
+					qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
+					scalar e6m_`var' = round(round(r(mean),.001)*100,.1)					
+					qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .16
+					scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
+					qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .40
+					scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
+					qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .40
+					scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
+	 cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+	 matrix colnames ests_`var' = `var'
+	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
+		}
+	
+matrix est_as25m1 = (ests_diff_comp_vs_late , ests_diff_comp_vs_late_lci , ests_diff_comp_vs_late_uci ,  ///
+	ests_diff_comp_vs_early , ests_diff_comp_vs_early_lci, ests_diff_comp_vs_early_uci , ///
+	ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
+matrix colnames est_as25m1 = Comp_Late Comp_Late_lci Comp_Late_uci Comp_Early Comp_Early_lci Comp_Early_uci Early_Late Early_Late_lci Early_Late_uci 
+
+*cap qui noi use "mariel_feb_23_2_early.dta", clear
+*qui ds
+*di word("`r(varlist)'", `c(k)')
+*browse 
+*NO EXTRAPOLA, REEMPLAZAR CON CERO EN UNA DE ESAS. NO EXTRAPOLA PORQUE LA PROBABILIDAD ES 1.
+
+*cap qui noi use "mariel_feb_23_2_early_late.dta", clear
+*browse
+*NO HAY 6 MESES EN EARLY-LATE, SON SÓLO .78, que termina siendo absorvido por el año
+
+esttab matrix(est_as25m1) using "${pathdata2}prob_prison_m1_IPW_diff.html", replace 
+<</dd_do>>
+~~~~
+
+<<dd_include: "${pathdata2}prob_prison_m1_IPW_diff.html" >>
+
+
+**Difference RMST**
+
+~~~~
+<<dd_do>>
+cap qui noi use "mariel_feb_23_2_m1.dta", clear
+*estread using "mariel_feb_23_2.sters", replace
+
+keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci tt2
+
+foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci {
+    local newname = substr("`var'", 5, 50)
+    rename `var' `newname'
+}
+
+foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+	scalar variable = "`var'"
+					qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .02
+					scalar e3m_`var' = round(round(r(mean),.0001),.001)
+					qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
+					scalar e6m_`var' = round(round(r(mean),.0001),.001)					
+					qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .10
+					scalar e1y_`var' = round(round(r(mean),.0001),.001)
+					qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .30
+					scalar e3y_`var' = round(round(r(mean),.0001),.001)
+					qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .30
+					scalar e5y_`var' = round(round(r(mean),.0001),.001)
+	 cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+	 matrix colnames ests_`var' = `var'
+	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
+		}
+	
+matrix est_as26m1 = (ests_diff_comp_vs_early , ests_diff_comp_vs_early_lci, ests_diff_comp_vs_early_uci ,  ///
+	ests_diff_comp_vs_late , ests_diff_comp_vs_late_lci , ests_diff_comp_vs_late_uci , ///
+	ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
+matrix colnames est_as26m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+
+esttab matrix(est_as26m1) using "${pathdata2}rmst_prison_m1_main_IPW_diff.html", replace 
+<</dd_do>>
+~~~~
+
+<<dd_include: "${pathdata2}rmst_prison_m1_main_IPW_diff.html" >>
 
 #### #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #### #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -1120,12 +1307,12 @@ foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_earl
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 	}	
 
-matrix est_as21 = (ests_s_tr_comp , ests_s_tr_comp_lci, ests_s_tr_comp_uci ,  ///
+matrix est_as21m2 = (ests_s_tr_comp , ests_s_tr_comp_lci, ests_s_tr_comp_uci ,  ///
 	ests_s_early_drop , ests_s_early_drop_lci, ests_s_early_drop_uci , ///
 	ests_s_late_drop , ests_s_late_drop_lci , ests_s_late_drop_uci )
-matrix colnames est_as21 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
+matrix colnames est_as21m2 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
 
-esttab matrix(est_as21) using "${pathdata2}prob_prison_m2_main.html", replace 
+esttab matrix(est_as21m2) using "${pathdata2}prob_prison_m2_main.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -1159,12 +1346,12 @@ foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 	}	
 
-matrix est_as22 = (ests_rmst_h0 , ests_rmst_h0_lci , ests_rmst_h0_uci ,  ///
+matrix est_as22m2 = (ests_rmst_h0 , ests_rmst_h0_lci , ests_rmst_h0_uci ,  ///
 	ests_rmst_h1 , ests_rmst_h1_lci , ests_rmst_h1_uci ,  ///
 	ests_rmst_h2 , ests_rmst_h2_lci , ests_rmst_h2_uci )
-matrix colnames est_as12 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
+matrix colnames est_as22m2 = Comp Comp_lci Comp_uci Early Early_lci Early_uci Late Late_lci Late_uci 
 
-esttab matrix(est_as22) using "${pathdata2}rmst_prison_m2_main.html", replace 
+esttab matrix(est_as22m2) using "${pathdata2}rmst_prison_m2_main.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -1201,12 +1388,12 @@ foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 		}
 	
-matrix est_as23 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+matrix est_as23m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
 	ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 	ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
-matrix colnames est_as23 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+matrix colnames est_as23m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
 
-esttab matrix(est_as23) using "${pathdata2}prob_prison_m2_main_diff.html", replace 
+esttab matrix(est_as23m2) using "${pathdata2}prob_prison_m2_main_diff.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -1243,12 +1430,12 @@ foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_
 	 matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
 		}
 	
-matrix est_as24 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+matrix est_as24m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
 	ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 	ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
-matrix colnames est_as24 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+matrix colnames est_as24m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
 
-esttab matrix(est_as24) using "${pathdata2}rmst_prison_m2_main_diff.html", replace 
+esttab matrix(est_as24m2) using "${pathdata2}rmst_prison_m2_main_diff.html", replace 
 <</dd_do>>
 ~~~~
 
@@ -1266,7 +1453,7 @@ esttab matrix(est_as24) using "${pathdata2}rmst_prison_m2_main_diff.html", repla
 #### #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
 
-### Condemnatory Sentence
+### Condemnatory Sentence, Listwise
 
 
 ~~~~
@@ -1300,7 +1487,7 @@ evalue hr `=scalar(HR_late)' , lcl(`=scalar(HR_late_lo)') ucl(`=scalar(HR_late_u
 <<dd_graph: saving("eval_late.svg") width(800) replace>>
 
 
-### Imprisonment
+### Imprisonment, Listwise
 
 
 ~~~~
@@ -1333,6 +1520,76 @@ evalue hr `=scalar(HR_late2)' , lcl(`=scalar(HR_late_lo2)') ucl(`=scalar(HR_late
 ~~~~
 
 <<dd_graph: saving("eval_late_pris.svg") width(800) replace>>
+
+
+
+### Condemnatory Sentence, Imputed
+
+
+~~~~
+<<dd_do>>
+cap qui noi clear all
+qui estread using "mariel_feb_23_m1.sters"
+
+estimates replay m_nostag_rp8_tvc_1, eform
+scalar HR_earlym1 = r(table)["b",1]
+scalar HR_early_lom1 = r(table)["ll",1]
+scalar HR_early_upm1 = r(table)["ul",1]
+scalar HR_latem1 = r(table)["b",2]
+scalar HR_late_lom1 = r(table)["ll",2]
+scalar HR_late_upm1 = r(table)["ul",2]
+
+set scheme s1mono
+
+evalue hr `=scalar(HR_earlym1)' , lcl(`=scalar(HR_early_lom1)') ucl(`=scalar(HR_early_upm1)') true(1) common figure
+
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("eval_early_m1.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
+evalue hr `=scalar(HR_latem1)' , lcl(`=scalar(HR_late_lom1)') ucl(`=scalar(HR_late_upm1)') true(1) common figure
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("eval_late_m1.svg") width(800) replace>>
+
+
+### Imprisonment, Imputed
+
+
+~~~~
+<<dd_do>>
+cap qui noi clear all
+qui estread using "mariel_feb_23_2_m1.sters"
+
+estimates replay m_nostag_rp6_tvc_1, eform
+scalar HR_early2m1 = r(table)["b",1]
+scalar HR_early_lo2m1 = r(table)["ll",1]
+scalar HR_early_up2m1 = r(table)["ul",1]
+scalar HR_late2m1 = r(table)["b",2]
+scalar HR_late_lo2m1 = r(table)["ll",2]
+scalar HR_late_up2m1 = r(table)["ul",2]
+
+set scheme s1mono
+
+evalue hr `=scalar(HR_early2m1)' , lcl(`=scalar(HR_early_lo2m1)') ucl(`=scalar(HR_early_up2m1)') true(1) common figure
+
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("eval_early_pris_m1.svg") width(800) replace>>
+
+
+~~~~
+<<dd_do>>
+evalue hr `=scalar(HR_late2m1)' , lcl(`=scalar(HR_late_lo2m1)') ucl(`=scalar(HR_late_up2m1)') true(1) common figure
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("eval_late_pris_m1.svg") width(800) replace>>
 
 
 <<dd_display: "Ended at= `c(current_time)' `c(current_date)'">>

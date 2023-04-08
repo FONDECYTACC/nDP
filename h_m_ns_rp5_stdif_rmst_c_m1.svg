@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- This is a Stata 16.1 generated SVG file (http://www.stata.com) -->
+
+<svg version="1.1" width="5.50in" height="4.00in" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>Stata Graph - rmst_std_fin_c</desc>
+	<rect x="0" y="0" width="3960" height="2880" style="fill:#FFFFFF;stroke:none"/>
+	<rect x="0.00" y="0.00" width="3959.88" height="2880.00" style="fill:#FFFFFF"/>
+	<rect x="2.88" y="2.88" width="3954.12" height="2874.24" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
+	<rect x="390.80" y="100.86" width="3468.22" height="2388.33" style="fill:#FFFFFF"/>
+	<rect x="393.68" y="103.74" width="3462.46" height="2382.57" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
+	<line x1="390.80" y1="2425.82" x2="3859.02" y2="2425.82" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="1973.50" x2="3859.02" y2="1973.50" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="1521.18" x2="3859.02" y2="1521.18" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="1068.86" x2="3859.02" y2="1068.86" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="616.54" x2="3859.02" y2="616.54" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="164.22" x2="3859.02" y2="164.22" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<defs>
+		<path id="path_ALfyBLzX" d="M507.25 2369.27 L507.25 2369.27 L613.68 2260.74 L666.76 2208.51 L773.07 2107.53 L826.28 2058.52 L879.49 2010.26 L932.58 1962.98 L985.79 1916.33 L1038.88 1870.54 L1145.18 1780.82 L1198.39 1736.89 L1251.61 1693.70 L1411.00 1567.10 L1464.21 1526.01 L1517.42 1485.42 L1570.51 1445.20 L1623.72 1405.47 L1676.81 1366.12 L1783.24 1288.77 L1836.33 1250.66 L1889.54 1212.79 L2155.35 1028.89 L2208.44 993.00 L2314.74 922.09 L2367.96 887.07 L2421.17 852.29 L2580.56 749.45 L2633.77 715.54 L2686.98 682.01 L2793.28 615.43 L2846.37 582.51 L2899.59 549.71 L2952.68 517.17 L3005.89 484.87 L3059.10 452.69 L3112.19 420.76 L3165.40 388.96 L3218.49 357.40 L3271.70 325.97 L3324.91 294.78 L3378.00 263.72 L3378.00 231.79 L3324.91 263.60 L3271.70 295.52 L3218.49 327.58 L3165.40 359.88 L3112.19 392.42 L3059.10 425.09 L3005.89 457.89 L2952.68 490.93 L2899.59 524.10 L2846.37 557.63 L2793.28 591.17 L2686.98 659.11 L2633.77 693.39 L2580.56 727.80 L2421.17 832.74 L2367.96 868.13 L2314.74 903.90 L2208.44 976.05 L2155.35 1012.55 L1889.54 1199.55 L1836.33 1237.91 L1783.24 1276.64 L1676.81 1355.35 L1623.72 1395.20 L1570.51 1435.54 L1517.42 1476.26 L1464.21 1517.47 L1411.00 1559.17 L1251.61 1687.38 L1198.39 1731.19 L1145.18 1775.62 L1038.88 1866.33 L985.79 1912.74 L932.58 1959.77 L879.49 2007.54 L826.28 2056.17 L773.07 2105.67 L666.76 2207.52 L613.68 2260.12 L507.25 2369.14 L507.25 2369.27 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_hZkqqspP">
+			<use xlink:href="#path_ALfyBLzX"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_ALfyBLzX" style="stroke:none;fill:#8D8D8D;fill-opacity:0.35"/>
+	<use xlink:href="#path_ALfyBLzX" style="fill:none;stroke:#707070;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_hZkqqspP)"/>
+	<defs>
+		<path id="path_PFcDLDHv" d="M507.25 2369.52 L507.25 2369.52 L613.68 2262.59 L666.76 2211.36 L773.07 2112.60 L826.28 2064.71 L879.49 2017.93 L932.58 1971.89 L985.79 1926.72 L1038.88 1882.17 L1145.18 1795.42 L1198.39 1752.85 L1251.61 1711.02 L1411.00 1588.88 L1464.21 1549.15 L1517.42 1509.92 L1570.51 1471.19 L1623.72 1432.95 L1676.81 1394.95 L1783.24 1320.45 L1836.33 1283.70 L1889.54 1247.32 L2155.35 1070.10 L2208.44 1035.57 L2314.74 967.26 L2367.96 933.48 L2421.17 900.06 L2580.56 800.94 L2633.77 768.26 L2686.98 735.96 L2793.28 671.74 L2846.37 640.06 L2899.59 608.37 L2952.68 577.06 L3005.89 545.88 L3059.10 514.82 L3112.19 484.00 L3165.40 453.43 L3218.49 422.87 L3271.70 392.55 L3324.91 362.48 L3378.00 332.53 L3378.00 278.20 L3324.91 309.38 L3271.70 340.82 L3218.49 372.38 L3165.40 404.18 L3112.19 435.98 L3059.10 468.04 L3005.89 500.34 L2952.68 532.76 L2899.59 565.31 L2846.37 598.10 L2793.28 631.02 L2686.98 697.48 L2633.77 731.01 L2580.56 764.80 L2421.17 867.27 L2367.96 901.92 L2314.74 936.82 L2208.44 1007.23 L2155.35 1042.87 L1889.54 1225.16 L1836.33 1262.66 L1783.24 1300.41 L1676.81 1376.89 L1623.72 1415.74 L1570.51 1455.10 L1517.42 1494.70 L1464.21 1534.92 L1411.00 1575.51 L1251.61 1700.38 L1198.39 1743.20 L1145.18 1786.51 L1038.88 1875.12 L985.79 1920.41 L932.58 1966.45 L879.49 2013.23 L826.28 2060.87 L773.07 2109.38 L666.76 2209.50 L613.68 2261.35 L507.25 2369.27 L507.25 2369.52 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_KmUQlgZc">
+			<use xlink:href="#path_PFcDLDHv"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_PFcDLDHv" style="stroke:none;fill:#4D4D4D;fill-opacity:0.35"/>
+	<use xlink:href="#path_PFcDLDHv" style="fill:none;stroke:#202020;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_KmUQlgZc)"/>
+	<path d=" M507.25 2369.27 L613.55 2260.49 L666.76 2208.14 L773.07 2106.66 L826.15 2057.41 L879.37 2009.02 L932.58 1961.38 L985.67 1914.60 L1038.88 1868.56 L1145.18 1778.34 L1198.39 1734.16 L1251.48 1690.60 L1411.00 1563.26 L1464.09 1521.80 L1517.30 1480.84 L1570.51 1440.37 L1623.60 1400.40 L1676.81 1360.80 L1783.11 1282.83 L1836.33 1244.35 L1889.41 1206.23 L2155.23 1020.85 L2208.44 984.59 L2314.74 913.06 L2367.83 877.66 L2421.05 842.64 L2580.56 738.69 L2633.65 704.53 L2686.86 670.62 L2793.16 603.42 L2846.37 570.13 L2899.46 537.09 L2952.68 504.17 L3005.89 471.50 L3058.98 438.95 L3112.19 406.66 L3165.28 374.60 L3218.49 342.67 L3271.58 310.87 L3324.79 279.31 L3378.00 247.88" stroke-linejoin="round" style="fill:none;stroke:#707070;stroke-width:23.04"/>
+	<path d=" M507.25 2369.52 L613.55 2261.97 L666.76 2210.49 L773.07 2110.99 L826.15 2062.85 L879.37 2015.70 L932.58 1969.30 L985.67 1923.63 L1038.88 1878.71 L1145.18 1790.97 L1198.39 1748.15 L1251.48 1705.82 L1411.00 1582.32 L1464.09 1542.10 L1517.30 1502.50 L1570.51 1463.27 L1623.60 1424.41 L1676.81 1386.04 L1783.11 1310.43 L1836.33 1273.30 L1889.41 1236.30 L2155.23 1056.61 L2208.44 1021.59 L2314.74 952.16 L2367.83 917.88 L2421.05 883.85 L2580.56 782.99 L2633.65 749.82 L2686.86 716.91 L2793.16 651.56 L2846.37 619.26 L2899.46 587.09 L2952.68 555.04 L3005.89 523.23 L3058.98 491.67 L3112.19 460.24 L3165.28 428.93 L3218.49 397.87 L3271.58 366.93 L3324.79 336.12 L3378.00 305.55" stroke-linejoin="round" style="fill:none;stroke:#202020;stroke-width:23.04"/>
+	<line x1="390.80" y1="2489.19" x2="390.80" y2="100.86" style="stroke:#000000;stroke-width:5.76"/>
+	<line x1="390.80" y1="2425.82" x2="350.83" y2="2425.82" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="2425.82" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,2425.82)" text-anchor="middle">0</text>
+	<line x1="390.80" y1="1973.50" x2="350.83" y2="1973.50" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="1973.50" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,1973.50)" text-anchor="middle">1</text>
+	<line x1="390.80" y1="1521.18" x2="350.83" y2="1521.18" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="1521.18" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,1521.18)" text-anchor="middle">2</text>
+	<line x1="390.80" y1="1068.86" x2="350.83" y2="1068.86" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="1068.86" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,1068.86)" text-anchor="middle">3</text>
+	<line x1="390.80" y1="616.54" x2="350.83" y2="616.54" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="616.54" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,616.54)" text-anchor="middle">4</text>
+	<line x1="390.80" y1="164.22" x2="350.83" y2="164.22" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="164.22" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,164.22)" text-anchor="middle">5</text>
+	<text x="190.71" y="1294.96" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 190.71,1294.96)" text-anchor="middle">Restricted Mean Survival Times (standardized)</text>
+	<line x1="390.80" y1="2489.19" x2="3859.02" y2="2489.19" style="stroke:#000000;stroke-width:5.76"/>
+	<line x1="454.16" y1="2489.19" x2="454.16" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="454.16" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">0</text>
+	<line x1="1289.47" y1="2489.19" x2="1289.47" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="1289.47" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">2</text>
+	<line x1="2124.91" y1="2489.19" x2="2124.91" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="2124.91" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">4</text>
+	<line x1="2960.35" y1="2489.19" x2="2960.35" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="2960.35" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">6</text>
+	<line x1="3795.66" y1="2489.19" x2="3795.66" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="3795.66" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">8</text>
+	<text x="2124.91" y="2729.16" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">Years from treatment outcome</text>
+	<line x1="2731.53" y1="2221.51" x2="3105.88" y2="2221.51" style="stroke:#707070;stroke-width:23.04"/>
+	<line x1="2731.53" y1="2361.47" x2="3105.88" y2="2361.47" style="stroke:#202020;stroke-width:23.04"/>
+	<text x="3165.90" y="2256.53" style="font-family:'Helvetica';font-size:99.99px;fill:#000000">Late dropout</text>
+	<text x="3165.90" y="2396.50" style="font-family:'Helvetica';font-size:99.99px;fill:#000000">Early dropout</text>
+</svg>

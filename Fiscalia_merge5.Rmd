@@ -1537,6 +1537,49 @@ subset(Base_fiscalia_v14_pris, select= c("hash_key", vars_cov, "fech_ing_num_1",
 
 <br>
 
+# Characteristics
+
+::: controlly 
+```{r desc, echo=T, fig.align='center', message=T, error=T, eval=T}
+# Treatment status (Early dropout/Late dropout/Treatment completion) 
+
+tbone_desc_merge5<-
+CreateTableOne(vars=c(setdiff(vars_cov, "motivodeegreso_mod_imp_rec"), "offender_d"), data=  subset(Base_fiscalia_v14, select=c(vars_cov, "offender_d")), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr")), smd=T, strata="motivodeegreso_mod_imp_rec", addOverall = T, includeNA=T, test=T)
+
+as.data.frame.TableOne(tbone_desc_merge5, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, Condemnatory sentence(1), Found as an imputed (YES), by Baseline Treatment Status", escape=T)
+#kable(size=10, format="html",caption= "Summary descriptives, by Baseline Treatment Status") %>%     kableExtra::kable_classic()
+```
+:::
+
+
+::: controlly 
+```{r desc-pris, echo=T, fig.align='center', message=T, error=T, eval=T}
+# Treatment status (Early dropout/Late dropout/Treatment completion) 
+
+tbone_desc_merge52<-
+CreateTableOne(vars=c(setdiff(vars_cov, "motivodeegreso_mod_imp_rec"), "offender_d"), data=  subset(Base_fiscalia_v14_pris, select=c(vars_cov, "offender_d")), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr")), smd=T, strata="motivodeegreso_mod_imp_rec", addOverall = T, includeNA=T, test=T)
+
+as.data.frame.TableOne(tbone_desc_merge52, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, Imprisonment(1), Found as an imputed (YES), by Baseline Treatment Status", escape=T)
+#kable(size=10, format="html",caption= "Summary descriptives, by Baseline Treatment Status") %>%     kableExtra::kable_classic()
+```
+:::
+
 # Session Info
 
 ```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE}

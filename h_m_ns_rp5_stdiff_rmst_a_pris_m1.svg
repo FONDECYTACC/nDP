@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- This is a Stata 16.1 generated SVG file (http://www.stata.com) -->
+
+<svg version="1.1" width="5.50in" height="4.00in" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>Stata Graph - rmst_std_fin_a</desc>
+	<rect x="0" y="0" width="3960" height="2880" style="fill:#FFFFFF;stroke:none"/>
+	<rect x="0.00" y="0.00" width="3959.88" height="2880.00" style="fill:#FFFFFF"/>
+	<rect x="2.88" y="2.88" width="3954.12" height="2874.24" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
+	<rect x="390.80" y="100.86" width="3468.22" height="2388.33" style="fill:#FFFFFF"/>
+	<rect x="393.68" y="103.74" width="3462.46" height="2382.57" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
+	<line x1="390.80" y1="2425.82" x2="3859.02" y2="2425.82" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="1860.39" x2="3859.02" y2="1860.39" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="1294.96" x2="3859.02" y2="1294.96" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="729.53" x2="3859.02" y2="729.53" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<defs>
+		<path id="path_GHderQfM" d="M507.25 2389.93 L507.25 2389.93 L560.46 2354.17 L666.76 2282.76 L719.98 2247.25 L773.07 2211.73 L826.28 2176.34 L879.49 2140.94 L1092.09 2000.11 L1145.18 1965.09 L1198.39 1930.07 L1251.61 1895.17 L1304.70 1860.27 L1357.91 1825.37 L1411.00 1790.59 L1464.21 1755.94 L1517.42 1721.17 L1570.51 1686.52 L1623.72 1651.99 L1676.81 1617.46 L1730.03 1583.06 L1836.33 1514.25 L1889.54 1479.97 L1942.63 1445.69 L1995.84 1411.41 L2048.93 1377.26 L2102.14 1343.10 L2261.66 1241.00 L2367.96 1173.19 L2421.17 1139.28 L2474.26 1105.49 L2527.47 1071.58 L2580.56 1037.92 L2633.77 1004.14 L2686.98 970.48 L2740.07 936.82 L2793.28 903.16 L2846.37 869.62 L2899.59 836.08 L2952.68 802.54 L3059.10 735.59 L3112.19 702.06 L3165.40 668.77 L3218.49 635.35 L3271.70 601.94 L3324.91 568.65 L3378.00 535.36 L3378.00 519.15 L3324.91 552.81 L3271.70 586.59 L3218.49 620.38 L3165.40 654.29 L3112.19 688.07 L3059.10 721.98 L2952.68 789.67 L2899.59 823.71 L2846.37 857.61 L2793.28 891.65 L2740.07 925.68 L2686.98 959.71 L2633.77 993.74 L2580.56 1027.90 L2527.47 1062.06 L2474.26 1096.21 L2421.17 1130.37 L2367.96 1164.65 L2261.66 1233.21 L2102.14 1336.29 L2048.93 1370.70 L1995.84 1405.23 L1942.63 1439.75 L1889.54 1474.28 L1836.33 1508.93 L1730.03 1578.36 L1676.81 1613.01 L1623.72 1647.78 L1570.51 1682.68 L1517.42 1717.58 L1464.21 1752.48 L1411.00 1787.50 L1357.91 1822.52 L1304.70 1857.55 L1251.61 1892.69 L1198.39 1927.84 L1145.18 1963.11 L1092.09 1998.38 L879.49 2139.95 L826.28 2175.47 L773.07 2211.11 L719.98 2246.75 L666.76 2282.39 L560.46 2354.05 L507.25 2389.93 L507.25 2389.93 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_GekESVvH">
+			<use xlink:href="#path_GHderQfM"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_GHderQfM" style="stroke:none;fill:#8D8D8D;fill-opacity:0.35"/>
+	<use xlink:href="#path_GHderQfM" style="fill:none;stroke:#707070;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_GekESVvH)"/>
+	<defs>
+		<path id="path_IRYpviJT" d="M507.25 2389.93 L507.25 2389.93 L560.46 2354.29 L666.76 2283.26 L719.98 2247.87 L773.07 2212.60 L826.28 2177.45 L879.49 2142.43 L1092.09 2003.08 L1145.18 1968.43 L1198.39 1933.90 L1251.61 1899.37 L1304.70 1864.97 L1357.91 1830.69 L1411.00 1796.41 L1464.21 1762.13 L1517.42 1727.98 L1570.51 1693.94 L1623.72 1659.91 L1676.81 1626.00 L1730.03 1592.09 L1836.33 1524.52 L1889.54 1490.86 L1942.63 1457.20 L1995.84 1423.66 L2048.93 1390.13 L2102.14 1356.71 L2261.66 1256.72 L2367.96 1190.26 L2421.17 1157.10 L2474.26 1123.93 L2527.47 1090.89 L2580.56 1057.85 L2633.77 1024.93 L2686.98 992.01 L2740.07 959.09 L2793.28 926.17 L2846.37 893.38 L2899.59 860.58 L2952.68 827.91 L3059.10 762.45 L3112.19 729.78 L3165.40 697.23 L3218.49 664.56 L3271.70 632.01 L3324.91 599.59 L3378.00 567.04 L3378.00 558.38 L3324.91 591.05 L3271.70 623.84 L3218.49 656.64 L3165.40 689.43 L3112.19 722.23 L3059.10 755.15 L2952.68 820.86 L2899.59 853.90 L2846.37 886.82 L2793.28 919.86 L2740.07 952.90 L2686.98 986.07 L2633.77 1019.24 L2580.56 1052.40 L2527.47 1085.57 L2474.26 1118.86 L2421.17 1152.15 L2367.96 1185.44 L2261.66 1252.27 L2102.14 1352.88 L2048.93 1386.41 L1995.84 1420.08 L1942.63 1453.86 L1889.54 1487.65 L1836.33 1521.43 L1730.03 1589.37 L1676.81 1623.40 L1623.72 1657.44 L1570.51 1691.59 L1517.42 1725.87 L1464.21 1760.15 L1411.00 1794.55 L1357.91 1828.96 L1304.70 1863.49 L1251.61 1898.01 L1198.39 1932.66 L1145.18 1967.32 L1092.09 2002.09 L879.49 2141.93 L826.28 2177.08 L773.07 2212.22 L719.98 2247.62 L666.76 2283.01 L560.46 2354.17 L507.25 2389.93 L507.25 2389.93 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_dkopJTDr">
+			<use xlink:href="#path_IRYpviJT"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_IRYpviJT" style="stroke:none;fill:#4D4D4D;fill-opacity:0.35"/>
+	<use xlink:href="#path_IRYpviJT" style="fill:none;stroke:#202020;stroke-opacity:0.35;stroke-width:17.28" clip-path="url(#clipPath_dkopJTDr)"/>
+	<path d=" M454.04 2425.95 L507.25 2389.93 L560.34 2354.17 L666.76 2282.64 L719.85 2247.00 L773.07 2211.48 L826.15 2175.96 L879.37 2140.57 L1091.97 1999.37 L1145.18 1964.22 L1198.39 1929.08 L1251.48 1894.05 L1304.70 1859.03 L1357.79 1824.01 L1411.00 1789.11 L1464.09 1754.21 L1517.30 1719.44 L1570.51 1684.66 L1623.60 1650.01 L1676.81 1615.36 L1729.90 1580.71 L1836.33 1511.65 L1889.41 1477.25 L1942.63 1442.72 L1995.72 1408.44 L2048.93 1374.04 L2102.14 1339.76 L2261.53 1237.17 L2367.83 1168.98 L2421.05 1134.95 L2474.26 1100.91 L2527.35 1066.88 L2580.56 1032.97 L2633.65 999.06 L2686.86 965.16 L2740.07 931.25 L2793.16 897.46 L2846.37 863.68 L2899.46 829.89 L2952.68 796.23 L3058.98 728.79 L3112.19 695.13 L3165.28 661.59 L3218.49 627.93 L3271.58 594.39 L3324.79 560.85 L3378.00 527.32" stroke-linejoin="round" style="fill:none;stroke:#707070;stroke-width:23.04"/>
+	<path d=" M454.04 2425.95 L507.25 2390.06 L560.34 2354.29 L666.76 2283.14 L719.85 2247.74 L773.07 2212.47 L826.15 2177.33 L879.37 2142.18 L1091.97 2002.71 L1145.18 1967.93 L1198.39 1933.28 L1251.48 1898.76 L1304.70 1864.23 L1357.79 1829.82 L1411.00 1795.54 L1464.09 1761.27 L1517.30 1726.99 L1570.51 1692.83 L1623.60 1658.80 L1676.81 1624.76 L1729.90 1590.73 L1836.33 1523.04 L1889.41 1489.25 L1942.63 1455.59 L1995.72 1421.93 L2048.93 1388.39 L2102.14 1354.86 L2261.53 1254.49 L2367.83 1187.91 L2421.05 1154.62 L2474.26 1121.46 L2527.35 1088.29 L2580.56 1055.25 L2633.65 1022.08 L2686.86 989.04 L2740.07 956.12 L2793.16 923.08 L2846.37 890.16 L2899.46 857.24 L2952.68 824.45 L3058.98 758.86 L3112.19 726.06 L3165.28 693.39 L3218.49 660.72 L3271.58 628.05 L3324.79 595.38 L3378.00 562.83" stroke-linejoin="round" style="fill:none;stroke:#202020;stroke-width:23.04"/>
+	<line x1="390.80" y1="2489.19" x2="390.80" y2="100.86" style="stroke:#000000;stroke-width:5.76"/>
+	<line x1="390.80" y1="2425.82" x2="350.83" y2="2425.82" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="2425.82" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,2425.82)" text-anchor="middle">0</text>
+	<line x1="390.80" y1="1860.39" x2="350.83" y2="1860.39" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="1860.39" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,1860.39)" text-anchor="middle">2</text>
+	<line x1="390.80" y1="1294.96" x2="350.83" y2="1294.96" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="1294.96" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,1294.96)" text-anchor="middle">4</text>
+	<line x1="390.80" y1="729.53" x2="350.83" y2="729.53" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="729.53" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,729.53)" text-anchor="middle">6</text>
+	<line x1="390.80" y1="164.22" x2="350.83" y2="164.22" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="164.22" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,164.22)" text-anchor="middle">8</text>
+	<text x="190.71" y="1294.96" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 190.71,1294.96)" text-anchor="middle">Restricted Mean Survival Times (standardized)</text>
+	<line x1="390.80" y1="2489.19" x2="3859.02" y2="2489.19" style="stroke:#000000;stroke-width:5.76"/>
+	<line x1="454.16" y1="2489.19" x2="454.16" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="454.16" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">0</text>
+	<line x1="1289.47" y1="2489.19" x2="1289.47" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="1289.47" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">2</text>
+	<line x1="2124.91" y1="2489.19" x2="2124.91" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="2124.91" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">4</text>
+	<line x1="2960.35" y1="2489.19" x2="2960.35" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="2960.35" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">6</text>
+	<line x1="3795.66" y1="2489.19" x2="3795.66" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="3795.66" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">8</text>
+	<text x="2124.91" y="2729.16" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">Years from treatment outcome</text>
+	<rect x="2690.70" y="2171.51" width="374.34" height="99.99" style="fill:#8D8D8D;fill-opacity:0.35"/>
+	<rect x="2695.02" y="2175.83" width="365.70" height="91.35" style="fill:none;stroke:#707070;stroke-opacity:0.35;stroke-width:8.64"/>
+	<rect x="2690.70" y="2311.47" width="374.34" height="99.99" style="fill:#4D4D4D;fill-opacity:0.35"/>
+	<rect x="2695.02" y="2315.79" width="365.70" height="91.35" style="fill:none;stroke:#202020;stroke-opacity:0.35;stroke-width:8.64"/>
+	<text x="3125.06" y="2256.53" style="font-family:'Helvetica';font-size:99.99px;fill:#000000">Tr. completion</text>
+	<text x="3125.06" y="2396.50" style="font-family:'Helvetica';font-size:99.99px;fill:#000000">Late dropout</text>
+</svg>
