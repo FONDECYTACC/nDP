@@ -1,0 +1,484 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<pre><code>. clear all
+
+. cap noi which tabout
+C:\Users\CISS Fondecyt\ado\plus\t\tabout.ado
+*! 2.0.8 Ian Watson 15mar2019
+*! tabout version 3 (beta) available at: http://tabout.net.au
+
+. if _rc==111 {
+.         cap noi ssc install tabout
+.         }
+
+. cap noi which pathutil
+C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+*! version 2.2.0 19nov2020 daniel klein
+
+. if _rc==111 {
+.         cap noi net install pathutil, from(&quot;http://fmwww.bc.edu/repec/bocode/p/&quot;) 
+.         }
+
+. cap noi which pathutil
+C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+*! version 2.2.0 19nov2020 daniel klein
+
+. if _rc==111 {
+.         ssc install dirtools    
+.         }
+
+. cap noi which project
+C:\Users\CISS Fondecyt\ado\plus\p\project.ado
+*! version 1.3.1  22dec2013  picard@netbox.com
+
+. if _rc==111 {   
+.         ssc install project
+.         }
+
+. cap noi which stipw
+C:\Users\CISS Fondecyt\ado\plus\s\stipw.ado
+*! Version 1.0.0 17Jan2022
+
+. if _rc==111 {   
+.         ssc install stipw
+.         }
+
+. cap noi which stpm2
+C:\Users\CISS Fondecyt\ado\plus\s\stpm2.ado
+*! version 1.7.5 May2021
+
+. if _rc==111 {   
+.         ssc install stpm2
+.         }       
+
+. cap noi which rcsgen
+C:\Users\CISS Fondecyt\ado\plus\r\rcsgen.ado
+*! version 1.5.9 13FEB2022
+
+. if _rc==111 {   
+.         ssc install rcsgen
+.         }       
+
+. cap noi which matselrc
+C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
+*! NJC 1.1.0 20 Apr 2000  (STB-56: dm79)
+
+. if _rc==111 {           
+. cap noi net install dm79, from(http://www.stata.com/stb/stb56)
+.         }
+
+. cap noi which pbalchk
+C:\Users\CISS Fondecyt\ado\plus\p\pbalchk.ado
+*! Version: 3.0.0
+*! Author:  Mark Lunt
+*! Date:    October 2, 2017 @ 12:47:35
+
+. if _rc==111 {
+.         cap noi net install pbalchk.pkg
+.         }
+
+</code></pre>
+<h1><a href="#exercise" id="exercise">Exercise</a></h1>
+<p>Date created: 18:20:15 21 Apr 2023.</p>
+<p>Get the folder</p>
+<pre><code>
+C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
+
+
+Fecha: 21 Apr 2023, considerando un SO Windows para el usuario: CISS Fondecyt
+
+</code></pre>
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<p>Path data= ;</p>
+<p>Tiempo: 21 Apr 2023, considerando un SO Windows</p>
+<p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)ser_2023_0.dta</p>
+<p>=============================================================================</p>
+<h2><a href="#database" id="database">database</a></h2>
+<p>=============================================================================</p>
+<p>We open the files</p>
+<pre><code>. use &quot;ser_2023_1.dta&quot;, clear
+
+</code></pre>
+<p>=============================================================================</p>
+<h2><a href="#transition-probabilities-lengths-of-stay-parametric-models" id="transition-probabilities-lengths-of-stay-parametric-models">Transition probabilities &amp; Lengths of Stay, Parametric Models</a></h2>
+<p>=============================================================================</p>
+<h1><a href="#tables-of-prs-los-at-3-years" id="tables-of-prs-los-at-3-years">Tables of PRs &amp; LOS at 3 years</a></h1>
+<h2><a href="#probabilities" id="probabilities">Probabilities</a></h2>
+<h3><a href="#probabilities-first-patient" id="probabilities-first-patient">Probabilities_First patient</a></h3>
+<h4><a href="#probabilities-first-patient-first-transition" id="probabilities-first-patient-first-transition">Probabilities_First patient_First transition</a></h4>
+<pre><code>. foreach var of varlist fprob_from1a_2_2m fprob_from1a_2_lci_2m fprob_from1a_2_uci_2m fprob_from1b_2_2m fprob_from1b_2_lci_2m fprob_from1b_2_uci_2m {
+  2.                                 scalar variable = &quot;`var'&quot;
+  3.                                         qui summarize `var' if inrange(timevar0, .30, .40)
+  4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
+  5.                                         qui summarize `var' if inrange(timevar0, .98, 1.02)
+  6.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
+  7.                                         qui summarize `var' if inrange(timevar0, 2.98, 3.02)
+  8.                                         scalar e2m_`var' = round(round(r(mean),.001)*100,.1)
+  9.                                         qui summarize `var' if inrange(timevar0,  4.98, 5.02)
+ 10.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
+ 11.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e2m_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 12.          matrix colnames ests_`var' = `var'
+ 13.          matrix rownames ests_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 14.  }
+
+. 
+. matrix est_bs12 = (ests_fprob_from1a_2_2m, ests_fprob_from1a_2_lci_2m, ests_fprob_from1a_2_uci_2m, ests_fprob_from1b_2_2m, ests_fprob_from1b_2_lci_2
+&gt; m, ests_fprob_from1b_2_uci_2m)
+
+. matrix colnames est_bs12 = NoPoly NoPoly_lci NoPoly_uci Poly Poly_lci Poly_uci
+
+. 
+. esttab matrix(est_bs12) using &quot;${pathdata2}pr_1st_trans_ser23.html&quot;, replace 
+(output written to pr_1st_trans_ser23.html)
+
+</code></pre>
+<p>The transition probabilities are presented here:</p>
+<table border="0" width="*">
+<tr><td colspan=7><hr></td></tr>
+<tr><td>            </td><td>    est_bs12</td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>      NoPoly</td><td>  NoPoly_lci</td><td>  NoPoly_uci</td><td>        Poly</td><td>    Poly_lci</td><td>    Poly_uci</td></tr>
+<tr><td colspan=7><hr></td></tr>
+<tr><td>3_mths      </td><td>          .2</td><td>          .2</td><td>          .2</td><td>          .3</td><td>          .2</td><td>          .3</td></tr>
+<tr><td>1_yr        </td><td>         1.5</td><td>         1.3</td><td>         1.7</td><td>           2</td><td>         1.9</td><td>         2.2</td></tr>
+<tr><td>3_yrs       </td><td>         2.1</td><td>         1.9</td><td>         2.3</td><td>         2.7</td><td>         2.5</td><td>         2.9</td></tr>
+<tr><td>5_yrs       </td><td>         1.9</td><td>         1.7</td><td>         2.1</td><td>         2.5</td><td>         2.3</td><td>         2.7</td></tr>
+<tr><td colspan=7><hr></td></tr>
+</table>
+<h4><a href="#probabilities-first-patient-second-and-third-transition" id="probabilities-first-patient-second-and-third-transition">Probabilities_First patient_Second_and_Third transition</a></h4>
+<pre><code>. foreach var of varlist fprob_from1a_3_2m fprob_from1a_3_lci_2m fprob_from1a_3_uci_2m fprob_from1b_3_2m fprob_from1b_3_lci_2m fprob_from1b_3_uci_2m f
+&gt; prob_from2a_3_2m fprob_from2a_3_lci_2m fprob_from2a_3_uci_2m fprob_from2b_3_2m fprob_from2b_3_lci_2m fprob_from2b_3_uci_2m {
+  2.                                 scalar variable = &quot;`var'&quot;
+  3.                                         qui summarize `var' if inrange(timevar0, .30, .40)
+  4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
+  5.                                         qui summarize `var' if inrange(timevar0, .98, 1.02)
+  6.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
+  7.                                         qui summarize `var' if inrange(timevar0, 2.98, 3.02)
+  8.                                         scalar e2m_`var' = round(round(r(mean),.001)*100,.1)
+  9.                                         qui summarize `var' if inrange(timevar0,  4.98, 5.02)
+ 10.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
+ 11.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e2m_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 12.          matrix colnames ests_`var' = `var'
+ 13.          matrix rownames ests_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 14.  }
+
+. 
+. matrix est_bs32 = (ests_fprob_from1a_3_2m, ests_fprob_from1a_3_lci_2m, ests_fprob_from1a_3_uci_2m, ests_fprob_from1b_3_2m, ests_fprob_from1b_3_lci_2
+&gt; m, ests_fprob_from1b_3_uci_2m, ests_fprob_from2a_3_2m, ests_fprob_from2a_3_lci_2m, ests_fprob_from2a_3_uci_2m, ests_fprob_from2b_3_2m, ests_fprob_fr
+&gt; om2b_3_lci_2m, ests_fprob_from2b_3_uci_2m)
+
+. matrix colnames est_bs32 = NoPoly13 NoPoly13_lci NoPoly13_uci Poly13 Poly13_lci Poly13_uci NoPoly23 NoPoly23_lci NoPoly23_uci Poly23 Poly23_lci Poly
+&gt; 23_uci
+
+. 
+. esttab matrix(est_bs32) using &quot;${pathdata2}pr_3rd_trans_ser23.html&quot;, replace 
+(output written to pr_3rd_trans_ser23.html)
+
+</code></pre>
+<p>The transition probabilities are presented here:</p>
+<table border="0" width="*">
+<tr><td colspan=13><hr></td></tr>
+<tr><td>            </td><td>    est_bs32</td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>    NoPoly13</td><td>NoPoly13_lci</td><td>NoPoly13_uci</td><td>      Poly13</td><td>  Poly13_lci</td><td>  Poly13_uci</td><td>    NoPoly23</td><td>NoPoly23_lci</td><td>NoPoly23_uci</td><td>      Poly23</td><td>  Poly23_lci</td><td>  Poly23_uci</td></tr>
+<tr><td colspan=13><hr></td></tr>
+<tr><td>3_mths      </td><td>        35.8</td><td>          35</td><td>        36.7</td><td>        23.8</td><td>        23.2</td><td>        24.4</td><td>         2.4</td><td>         2.2</td><td>         2.7</td><td>         4.4</td><td>         4.1</td><td>         4.8</td></tr>
+<tr><td>1_yr        </td><td>        39.9</td><td>        39.1</td><td>        40.7</td><td>        31.8</td><td>        31.2</td><td>        32.3</td><td>         6.2</td><td>         5.6</td><td>         6.9</td><td>        11.6</td><td>        10.8</td><td>        12.4</td></tr>
+<tr><td>3_yrs       </td><td>          48</td><td>        47.2</td><td>        48.9</td><td>        46.9</td><td>        46.3</td><td>        47.4</td><td>        14.7</td><td>        13.4</td><td>          16</td><td>        26.5</td><td>          25</td><td>        27.9</td></tr>
+<tr><td>5_yrs       </td><td>        52.7</td><td>        51.8</td><td>        53.6</td><td>        54.3</td><td>        53.7</td><td>        54.9</td><td>        20.1</td><td>        18.4</td><td>        21.9</td><td>        35.1</td><td>        33.4</td><td>        36.9</td></tr>
+<tr><td colspan=13><hr></td></tr>
+</table>
+<h2><a href="#lengths-of-stay" id="lengths-of-stay">Lengths of Stay</a></h2>
+<h3><a href="#lengths-of-stay-first-patient" id="lengths-of-stay-first-patient">Lengths of Stay_First patient</a></h3>
+<h4><a href="#length-of-stay-first-patient-time-in-admission" id="length-of-stay-first-patient-time-in-admission">Length_of_stay_First patient_Time_in_admission</a></h4>
+<pre><code>. foreach var of varlist flos_from1a_1_2m flos_from1a_1_lci_2m flos_from1a_1_uci_2m flos_from1b_1_2m flos_from1b_1_lci_2m flos_from1b_1_uci_2m {
+  2.         scalar variable = &quot;`var'&quot;
+  3.                                         qui summarize `var' if inrange(timevar0, .30, .40)
+  4.                                         scalar e3m_`var' = round(round(r(mean),.001),.01)
+  5.                                         qui summarize `var' if inrange(timevar0, .98, 1.02)
+  6.                                         scalar e1y_`var' = round(round(r(mean),.001),.01)
+  7.                                         qui summarize `var' if inrange(timevar0, 2.98, 3.02)
+  8.                                         scalar e2m_`var' = round(round(r(mean),.001),.01)
+  9.                                         qui summarize `var' if inrange(timevar0,  4.98, 5.02)
+ 10.                                         scalar e5y_`var' = round(round(r(mean),.001),.01)
+ 11.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e2m_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 12.          matrix colnames ests_`var' = `var'
+ 13.          matrix rownames ests_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 14.                 }
+
+. 
+. matrix est_cs12 = (ests_flos_from1a_1_2m, ests_flos_from1a_1_lci_2m, ests_flos_from1a_1_uci_2m, ests_flos_from1b_1_2m, ests_flos_from1b_1_lci_2m, es
+&gt; ts_flos_from1b_1_uci_2m)
+
+. matrix colnames est_cs12 = NoPoly NoPoly_lci NoPoly_uci Poly Poly_lci Poly_uci
+
+. 
+. esttab matrix(est_cs12) using &quot;${pathdata2}los_1st_trans_ser23.html&quot;, replace 
+(output written to los_1st_trans_ser23.html)
+
+</code></pre>
+<p>The lengths of stay are presented here:</p>
+<table border="0" width="*">
+<tr><td colspan=7><hr></td></tr>
+<tr><td>            </td><td>    est_cs12</td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>      NoPoly</td><td>  NoPoly_lci</td><td>  NoPoly_uci</td><td>        Poly</td><td>    Poly_lci</td><td>    Poly_uci</td></tr>
+<tr><td colspan=7><hr></td></tr>
+<tr><td>3_mths      </td><td>         .34</td><td>         .34</td><td>         .34</td><td>         .34</td><td>         .34</td><td>         .34</td></tr>
+<tr><td>1_yr        </td><td>         .91</td><td>         .91</td><td>         .91</td><td>         .92</td><td>         .91</td><td>         .92</td></tr>
+<tr><td>3_yrs       </td><td>        2.07</td><td>        2.05</td><td>        2.08</td><td>        2.11</td><td>         2.1</td><td>        2.12</td></tr>
+<tr><td>5_yrs       </td><td>        3.02</td><td>        2.98</td><td>        3.05</td><td>        3.04</td><td>        3.02</td><td>        3.06</td></tr>
+<tr><td colspan=7><hr></td></tr>
+</table>
+<h4><a href="#length-of-stay-first-patient-time-in-completion" id="length-of-stay-first-patient-time-in-completion">Length_of_stay_First patient_Time_in_completion</a></h4>
+<pre><code>. foreach var of varlist flos_from2a_2_2m flos_from2a_2_lci_2m flos_from2a_2_uci_2m flos_from2b_2_2m flos_from2b_2_lci_2m flos_from2b_2_uci_2m {
+  2.         scalar variable = &quot;`var'&quot;
+  3.                                         qui summarize `var' if inrange(timevar0, .30, .40)
+  4.                                         scalar e3m_`var' = round(round(r(mean),.001),.01)
+  5.                                         qui summarize `var' if inrange(timevar0, .98, 1.02)
+  6.                                         scalar e1y_`var' = round(round(r(mean),.001),.01)
+  7.                                         qui summarize `var' if inrange(timevar0, 2.98, 3.02)
+  8.                                         scalar e2m_`var' = round(round(r(mean),.001),.01)
+  9.                                         qui summarize `var' if inrange(timevar0,  4.98, 5.02)
+ 10.                                         scalar e5y_`var' = round(round(r(mean),.001),.01)
+ 11.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e2m_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 12.          matrix colnames ests_`var' = `var'
+ 13.          matrix rownames ests_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 14.                 }
+
+. 
+. matrix est_cs22 = (ests_flos_from2a_2_2m, ests_flos_from2a_2_lci_2m, ests_flos_from2a_2_uci_2m, ests_flos_from2b_2_2m, ests_flos_from2b_2_lci_2m, es
+&gt; ts_flos_from2b_2_uci_2m)
+
+. matrix colnames est_cs22 = &quot;NoPoly2&quot; &quot;NoPoly2_lci&quot; &quot;NoPoly2_uci&quot; &quot;Poly2&quot; &quot;Poly2_lci&quot; &quot;Poly2_uci&quot;
+
+. 
+. esttab matrix(est_cs22) using &quot;${pathdata2}los_2nd_trans_ser23.html&quot;, replace 
+(output written to los_2nd_trans_ser23.html)
+
+</code></pre>
+<p>The lengths of stay are presented here:</p>
+<table border="0" width="*">
+<tr><td colspan=7><hr></td></tr>
+<tr><td>            </td><td>    est_cs22</td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>     NoPoly2</td><td> NoPoly2_lci</td><td> NoPoly2_uci</td><td>       Poly2</td><td>   Poly2_lci</td><td>   Poly2_uci</td></tr>
+<tr><td colspan=7><hr></td></tr>
+<tr><td>3_mths      </td><td>         .34</td><td>         .34</td><td>         .34</td><td>         .34</td><td>         .34</td><td>         .34</td></tr>
+<tr><td>1_yr        </td><td>         .97</td><td>         .97</td><td>         .98</td><td>         .94</td><td>         .94</td><td>         .95</td></tr>
+<tr><td>3_yrs       </td><td>        2.75</td><td>        2.73</td><td>        2.78</td><td>        2.55</td><td>        2.52</td><td>        2.57</td></tr>
+<tr><td>5_yrs       </td><td>         4.4</td><td>        4.34</td><td>        4.46</td><td>        3.92</td><td>        3.86</td><td>        3.98</td></tr>
+<tr><td colspan=7><hr></td></tr>
+</table>
+<h3><a href="#difference-probabilities" id="difference-probabilities">Difference_Probabilities</a></h3>
+<pre><code>. *list fdiff_prob_from1_2_2m fdiff_prob_from1_2_lci_2m fdiff_prob_from1_2_uci_2m if inrange(timevar0 , .32, .34)|inrange(timevar0 , .999,  1.02)|inra
+&gt; nge(timevar0 , 2.99, 3.02)|inrange(timevar0 , 4.999, 5.02)
+. 
+. foreach var of varlist fdiff_prob_from1_2_2m  fdiff_prob_from1_2_lci_2m  fdiff_prob_from1_2_uci_2m fdiff_prob_from1_3_2m  fdiff_prob_from1_3_lci_2m 
+&gt;  fdiff_prob_from1_3_uci_2m fdiff_prob_from2_3_2m fdiff_prob_from2_3_lci_2m fdiff_prob_from2_3_uci_2m {
+  2.                                 scalar variable = &quot;`var'&quot;
+  3.                                         qui summarize `var' if inrange(timevar0, .30, .40)
+  4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.01)
+  5.                                         qui summarize `var' if inrange(timevar0, .98, 1.02)
+  6.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.01)
+  7.                                         qui summarize `var' if inrange(timevar0, 2.98, 3.02)
+  8.                                         scalar e2m_`var' = round(round(r(mean),.001)*100,.01)
+  9.                                         qui summarize `var' if inrange(timevar0,  4.98, 5.02)
+ 10.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.01)
+ 11.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e2m_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 12.          matrix colnames ests_`var' = `var'
+ 13.          matrix rownames ests_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 14.  }
+
+. 
+. matrix est_diff11 = (ests_fdiff_prob_from1_2_2m, ests_fdiff_prob_from1_2_lci_2m, ests_fdiff_prob_from1_2_uci_2m, ests_fdiff_prob_from1_3_2m, ests_fd
+&gt; iff_prob_from1_3_lci_2m, ests_fdiff_prob_from1_3_uci_2m, ests_fdiff_prob_from2_3_2m, ests_fdiff_prob_from2_3_lci_2m, ests_fdiff_prob_from2_3_uci_2m)
+
+. matrix colnames est_diff11 =  &quot;to Completion&quot; &quot;to Completion_lo&quot; &quot;to Completion_hi&quot; &quot;to Non-completion&quot; &quot;to Non-completion_lo&quot; &quot;to Non-completion_hi
+&gt; &quot; &quot;from Completion&quot; &quot;from Completion_lo&quot; &quot;from Completion_hi&quot;
+
+. 
+. esttab matrix(est_diff11) using &quot;${pathdata2}diff_probs_res_out_mod_t1_2m_22_corr3.html&quot;, replace 
+(output written to diff_probs_res_out_mod_t1_2m_22_corr3.html)
+
+</code></pre>
+<p>The transition probabilities are presented here:</p>
+<table border="0" width="*">
+<tr><td colspan=10><hr></td></tr>
+<tr><td>            </td><td>  est_diff11</td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>to Completion</td><td>to Completion_lo</td><td>to Completion_hi</td><td>to Non-completion</td><td>to Non-completion_lo</td><td>to Non-completion_hi</td><td>from Completion</td><td>from Completion_lo</td><td>from Completion_hi</td></tr>
+<tr><td colspan=10><hr></td></tr>
+<tr><td>3_mths      </td><td>          .1</td><td>           0</td><td>          .1</td><td>         -12</td><td>         -13</td><td>       -11.1</td><td>           2</td><td>         1.7</td><td>         2.4</td></tr>
+<tr><td>1_yr        </td><td>          .5</td><td>          .3</td><td>          .7</td><td>        -8.1</td><td>        -9.1</td><td>        -7.1</td><td>         5.4</td><td>         4.6</td><td>         6.1</td></tr>
+<tr><td>3_yrs       </td><td>          .6</td><td>          .4</td><td>          .9</td><td>        -1.2</td><td>        -2.2</td><td>         -.1</td><td>        11.8</td><td>        10.3</td><td>        13.4</td></tr>
+<tr><td>5_yrs       </td><td>          .6</td><td>          .4</td><td>          .8</td><td>         1.6</td><td>          .5</td><td>         2.7</td><td>        15.1</td><td>        13.1</td><td>          17</td></tr>
+<tr><td colspan=10><hr></td></tr>
+</table>
+<h3><a href="#difference-length-of-stay" id="difference-length-of-stay">Difference_Length_of_Stay</a></h3>
+<h4><a href="#difference-length-of-stay-from-admission-to-completion-to-non-completion" id="difference-length-of-stay-from-admission-to-completion-to-non-completion">Difference_Length_of_Stay_from_Admission_to_Completion_to_Non-completion</a></h4>
+<pre><code>. foreach var of varlist fdiff_los_from1_1_2m fdiff_los_from1_1_lci_2m fdiff_los_from1_1_uci_2m {
+  2.                 scalar variable = &quot;`var'&quot;
+  3.                                         qui summarize `var' if inrange(timevar0, .30, .40)
+  4.                                         scalar e3m_`var' = round(round(r(mean),.001)*1,.01)
+  5.                                         qui summarize `var' if inrange(timevar0, .98, 1.02)
+  6.                                         scalar e1y_`var' = round(round(r(mean),.001)*1,.01)
+  7.                                         qui summarize `var' if inrange(timevar0, 2.98, 3.02)
+  8.                                         scalar e2m_`var' = round(round(r(mean),.001)*1,.01)
+  9.                                         qui summarize `var' if inrange(timevar0,  4.98, 5.02)
+ 10.                                         scalar e5y_`var' = round(round(r(mean),.001)*1,.01)
+ 11.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e2m_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 12.          matrix colnames ests_`var' = `var'
+ 13.          matrix rownames ests_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 14.                 }
+
+. matrix est_diff12_l = (ests_fdiff_los_from1_1_2m, ests_fdiff_los_from1_1_lci_2m, ests_fdiff_los_from1_1_uci_2m)
+
+. matrix colnames est_diff12_l =  &quot;in_Admission&quot; &quot;in_Admission_lo&quot; &quot;in_Admission_hi&quot;
+
+. 
+. esttab matrix(est_diff12_l) using &quot;${pathdata2}diff_los_res_out_mod_t1_2m_22_corr3.html&quot;, replace 
+(output written to diff_los_res_out_mod_t1_2m_22_corr3.html)
+
+</code></pre>
+<p>The lengths of stay are presented here:</p>
+<table border="0" width="*">
+<tr><td colspan=4><hr></td></tr>
+<tr><td>            </td><td>est_diff12_l</td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>in_Admission</td><td>in_Admission_lo</td><td>in_Admission_hi</td></tr>
+<tr><td colspan=4><hr></td></tr>
+<tr><td>3_mths      </td><td>           0</td><td>           0</td><td>           0</td></tr>
+<tr><td>1_yr        </td><td>         .01</td><td>           0</td><td>         .01</td></tr>
+<tr><td>3_yrs       </td><td>         .04</td><td>         .02</td><td>         .06</td></tr>
+<tr><td>5_yrs       </td><td>         .02</td><td>        -.02</td><td>         .06</td></tr>
+<tr><td colspan=4><hr></td></tr>
+</table>
+<h4><a href="#difference-length-of-stay-from-second-and-third-state" id="difference-length-of-stay-from-second-and-third-state">Difference_Length_of_Stay_from_Second_and_third_state</a></h4>
+<pre><code>. foreach var of varlist fdiff_los_from2_2_2m fdiff_los_from2_2_lci_2m fdiff_los_from2_2_uci_2m {
+  2.                 scalar variable = &quot;`var'&quot;
+  3.                                         qui summarize `var' if inrange(timevar0, .30, .40)
+  4.                                         scalar e3m_`var' = round(round(r(mean),.001)*1,.01)
+  5.                                         qui summarize `var' if inrange(timevar0, .98, 1.02)
+  6.                                         scalar e1y_`var' = round(round(r(mean),.001)*1,.01)
+  7.                                         qui summarize `var' if inrange(timevar0, 2.98, 3.02)
+  8.                                         scalar e2m_`var' = round(round(r(mean),.001)*1,.01)
+  9.                                         qui summarize `var' if inrange(timevar0,  4.98, 5.02)
+ 10.                                         scalar e5y_`var' = round(round(r(mean),.001)*1,.01)
+ 11.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e2m_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 12.          matrix colnames ests_`var' = `var'
+ 13.          matrix rownames ests_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 14.                 }
+
+. matrix est_diff22_l = (ests_fdiff_los_from2_2_2m, ests_fdiff_los_from2_2_lci_2m, ests_fdiff_los_from2_2_uci_2m)
+
+. matrix colnames est_diff22_l =  &quot;in Completion&quot; &quot;in Completion_lo&quot; &quot;in Completion_hi&quot;
+
+. 
+. esttab matrix(est_diff22_l) using &quot;${pathdata2}diff_los_res_out_mod_t2_2m_22_corr3.html&quot;, replace 
+(output written to diff_los_res_out_mod_t2_2m_22_corr3.html)
+
+</code></pre>
+<p>The lengths of stay are presented here:</p>
+<table border="0" width="*">
+<tr><td colspan=4><hr></td></tr>
+<tr><td>            </td><td>est_diff22_l</td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>in Completion</td><td>in Completion_lo</td><td>in Completion_hi</td></tr>
+<tr><td colspan=4><hr></td></tr>
+<tr><td>3_mths      </td><td>           0</td><td>           0</td><td>           0</td></tr>
+<tr><td>1_yr        </td><td>        -.03</td><td>        -.03</td><td>        -.02</td></tr>
+<tr><td>3_yrs       </td><td>        -.21</td><td>        -.24</td><td>        -.18</td></tr>
+<tr><td>5_yrs       </td><td>        -.48</td><td>        -.54</td><td>        -.42</td></tr>
+<tr><td colspan=4><hr></td></tr>
+</table>
+<p>Ended (not saved) at= 18:20:20 21 Apr 2023</p>

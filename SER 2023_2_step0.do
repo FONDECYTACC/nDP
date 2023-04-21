@@ -704,7 +704,7 @@ Cocaine paste base and cocaine hydrochloride were the only variables that were n
 and transform the database in a long format	according to the specifications and the transition matrix.									
 										
 ~~~~										
-<<dd_do:nocommand>>	
+<<dd_do>>	
 cap drop  _st
 cap drop _d
 cap drop _t
@@ -725,7 +725,10 @@ msset, id(id) states(comp contact_js) transm(tmat) ///
 mat mat_obs_states = r(transmatrix)										
 mat freq_trans = r(freqmatrix)   										
 mat next_states = r(Nnextstates) 										
-
+<</dd_do>>										
+~~~~
+~~~~										
+<<dd_do>>	
 msboxes, transmatrix(tmat) id(id)                  ///
           xvalues(0.2 0.7 0.2)                   ///
           yvalues(0.7 0.7 0.2)                   ///
@@ -790,7 +793,13 @@ graph export "`c(pwd)'\_figs\transmat_ser23.pdf", as(pdf) replace //*width(2000)
 *graph export "_Appendix2_Graph_Mean_SE_g32.svg", as(svg) replace height(20000) fontface (Helvetica)
 graph save "`c(pwd)'\_figs\transmat_ser23", replace
 graph save "`c(pwd)'\_figs\transmat_ser23_2", replace
+<</dd_do>>										
+~~~~
 
+<<dd_graph: saving("transmat_ser23_2.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
 *mat li freq_trans
 *file:///G:/Mi%20unidad/Alvacast/SISTRAT%202019%20(github)/_supp_mstates/stata/crowther2017%20(1).pdf										
 gen _time = _stop - _start
@@ -811,9 +820,11 @@ stset _stop [pw=HAW], enter(_start) failure(_status==1) //*scale(12)
 cap gen _time = _t	
 
 *replace event=1 if !missing(sex)
-range timevar0 0.3 5 90
+range timevar0 0.2 5 180
 <</dd_do>>										
 ~~~~
+
+
 
 ~~~~
 <<dd_do>>

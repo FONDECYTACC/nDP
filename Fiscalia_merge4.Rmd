@@ -782,11 +782,14 @@ Base_fiscalia_v10 %>%
   dplyr::mutate(age_offending_imp= dplyr::case_when(is.na(age_offending_imp)~
 lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years"), T~ age_offending_imp)) %>% 
   dplyr::group_by(hash_key) %>% 
-  #KEY STEP: select the first and without ties (only one)
+  #KEY STEP: select the first and with ties (more than  one) --> 2023-04-14, was discussed, but did not had consecquences (See https://docs.google.com/document/d/1UvtQFM3ToazUyA6G9C7pBYMgk98n31zQSY2-M9d1nEo/edit#)
   dplyr::slice_min(age_offending_imp, n = 1, with_ties = T) %>% 
   dplyr::ungroup() %>% 
   purrr::when(nrow(dplyr::filter(.,age_offending_imp-edad_al_ing_1<0))>0 ~ stop("Cases with negative time after admission to commission of crime"), ~.) %>% 
    dplyr::mutate(motivodeegreso_mod_imp_rec= dplyr::case_when(grepl("Therapeutic",motivodeegreso_mod_imp)~ "Treatment completion", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 <90) ~  "Treatment non-completion (Early)", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 >=90) ~ "Treatment non-completion (Late)", grepl("Referral|Death|Ongoing", motivodeegreso_mod_imp)~ "Censored", T~NA_character_))
+
+warning(paste0("There are ",nrow(dplyr::group_by(Base_fiscalia_v11, hash_key) %>% dplyr::mutate(rn_hash=row_number()) %>% dplyr::filter(rn_hash>1))," cases with more than one offense commited at the youngest age (p= ",dplyr::group_by(Base_fiscalia_v11, hash_key) %>% dplyr::mutate(rn_hash=row_number()) %>% dplyr::filter(rn_hash>1) %>% dplyr::distinct(hash_key) %>% nrow(),")"))
+
 
 warning(paste0("There are ",nrow(dplyr::filter(Base_fiscalia_v11,is.na(fech_nac_rec)))," missing cases in date of birth (were ",nrow(dplyr::filter(janitor::clean_names(Base_fiscalia_v10),is.na(fech_nac_rec)))," in Base_fiscalia_v10)"))
 

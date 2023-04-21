@@ -1,21 +1,69 @@
 <head>
-  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
 </head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <head>
-  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
 </head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <pre><code>. clear all
 
 . cap noi which tabout
@@ -95,32 +143,56 @@ C:\Users\CISS Fondecyt\ado\plus\p\pbalchk.ado
 
 </code></pre>
 <h1><a href="#exercise" id="exercise">Exercise</a></h1>
-<p>Date created: 01:51:56 10 Jan 2023.</p>
+<p>Date created: 17:17:38 19 Apr 2023.</p>
 <p>Get the folder</p>
 <pre><code>
 C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
 
 
-Fecha: 10 Jan 2023, considerando un SO Windows para el usuario: CISS Fondecyt
+Fecha: 19 Apr 2023, considerando un SO Windows para el usuario: CISS Fondecyt
 
 </code></pre>
 <head>
-  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
 </head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <p>Path data= ;</p>
-<p>Tiempo: 10 Jan 2023, considerando un SO Windows</p>
+<p>Tiempo: 19 Apr 2023, considerando un SO Windows</p>
 <p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)ser_2023_0.dta</p>
 <p>=============================================================================</p>
 <h2><a href="#database" id="database">database</a></h2>
 <p>=============================================================================</p>
 <p>We open the files</p>
-<pre><code>. use &quot;ser_2023_1.dta&quot;, clear
+<pre><code>. use &quot;ser_2023_0.dta&quot;, clear
 
 </code></pre>
 <p>=============================================================================</p>
@@ -952,7 +1024,7 @@ Akaike's information criterion and Bayesian information criterion
 st_sort_matrix() not found
 
 . mata :
-------------------------------------------------- mata (type end to exit) ------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------- mata (type end to exit) ----------------------------------------------------------------------------
 : 
 : void st_sort_matrix(
 &gt; //argumento de la matriz
@@ -975,7 +1047,7 @@ st_sort_matrix() not found
 
 : 
 : end
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
 
 . //mata: mata drop st_sort_matrix()
 . 
@@ -1023,14 +1095,14 @@ st_sort_matrix() not found
 <tr><td>m2_weib     </td><td>       14331</td><td>           .</td><td>   -49573.17</td><td>           2</td><td>    99150.35</td><td>    99165.49</td></tr>
 <tr><td>m2_exp      </td><td>       14331</td><td>           .</td><td>    -49581.9</td><td>           1</td><td>     99165.8</td><td>    99173.38</td></tr>
 <tr><td>m3_gom      </td><td>        2936</td><td>           .</td><td>    -11102.6</td><td>           2</td><td>     22209.2</td><td>    22221.17</td></tr>
+<tr><td>m3_rp4      </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
+<tr><td>m3_ggam     </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
 <tr><td>m3_rp5      </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
 <tr><td>m3_rp3      </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
-<tr><td>m3_rp1      </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
-<tr><td>m3_ggam     </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
-<tr><td>m3_rp2      </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
 <tr><td>m3_logl     </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
-<tr><td>m3_rp4      </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
+<tr><td>m3_rp2      </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
 <tr><td>m3_logn     </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
+<tr><td>m3_rp1      </td><td>        2936</td><td>           .</td><td>    -11108.5</td><td>           2</td><td>       22221</td><td>    22232.97</td></tr>
 <tr><td>m3_weib     </td><td>        2936</td><td>           .</td><td>   -11238.67</td><td>           1</td><td>    22479.34</td><td>    22485.33</td></tr>
 <tr><td>m3_exp      </td><td>        2936</td><td>           .</td><td>   -11238.67</td><td>           1</td><td>    22479.34</td><td>    22485.33</td></tr>
 <tr><td colspan=7><hr></td></tr>
@@ -1039,9 +1111,11 @@ st_sort_matrix() not found
 <p>In case of the more flexible parametric models (non-standard), we selected the models that showed the best trade-off between lower complexity and better fit, and this is why we also considered the BIC. If a model with less parameters had greater or equal AIC (or differences lower than 2) but also had better BIC (&lt;=2), we favoured the model with less parameters.</p>
 <h3><a href="#with-covariates" id="with-covariates">With covariates</a></h3>
 <p>Posteriorly, we compared models by adding polysubstance use. Equally, we added the time of arrival as a covariate to each transition (excluding the first). We saved the estimates in `parmodels_m_illness_death_23_2&rsquo;.</p>
-<pre><code>. global covs_2 &quot;i.poly i.sus_prin_mod i.fr_sus_prin edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 n_off_vio n_off_acq n_off_sud i.clas porc_pobr i.macrozone&quot;
+<pre><code>. global covs_2 &quot;i.poly i.sus_prin_mod i.fr_sus_prin edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 n_
+&gt; off_vio n_off_acq n_off_sud i.clas porc_pobr i.macrozone&quot;
 
-. global covs_3 &quot;poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc_pobr macrozone&quot;
+. global covs_3 &quot;poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas po
+&gt; rc_pobr macrozone&quot;
 
 . 
 . local stname `&quot; &quot;poly &quot; &quot;poly &quot; &quot;poly _start&quot; &quot;' 
@@ -4690,157 +4764,57 @@ Calculating CIs via parametric bootstrap for at2() (1000)
 . 
 </code></pre>
 <pre><code>. rename (_prob_at1_1_*lci) (fprob_from1a_*lci_2m)
-3 variables already exist
-    For instance, you requested that variable _prob_at1_1_1_lci be renamed fprob_from1a_1_lci_2m.  fprob_from1a_1_lci_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fprob_from1a_1_lci_2m, fprob_from1a_2_lci_2m, and fprob_from1a_3_lci_2m.
-r(110);
 
 . rename (_prob_at1_1_*uci) (fprob_from1a_*uci_2m)
-3 variables already exist
-    For instance, you requested that variable _prob_at1_1_1_uci be renamed fprob_from1a_1_uci_2m.  fprob_from1a_1_uci_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fprob_from1a_1_uci_2m, fprob_from1a_2_uci_2m, and fprob_from1a_3_uci_2m.
-r(110);
 
 . rename (_prob_at1_1_*) (fprob_from1a_*_2m)
-9 variables already exist
-    For instance, you requested that variable _prob_at1_1_1 be renamed fprob_from1a_1_2m.  fprob_from1a_1_2m is already an existing variable in the data.  The variables you specified that already exist are
-    fprob_from1a_1_2m, fprob_from1a_2_2m, fprob_from1a_3_2m, fprob_from1a_1_lci_2m, fprob_from1a_1_uci_2m, fprob_from1a_2_lci_2m, fprob_from1a_2_uci_2m, fprob_from1a_3_lci_2m, and fprob_from1a_3_uci_2m.
-r(110);
 
 . 
 . rename (_los_at1_1_*lci) (flos_from1a_*lci_2m)
-3 variables already exist
-    For instance, you requested that variable _los_at1_1_1_lci be renamed flos_from1a_1_lci_2m.  flos_from1a_1_lci_2m is already an existing variable in the data.  The variables you specified that already exist
-    are flos_from1a_1_lci_2m, flos_from1a_2_lci_2m, and flos_from1a_3_lci_2m.
-r(110);
 
 . rename (_los_at1_1_*uci) (flos_from1a_*uci_2m)
-3 variables already exist
-    For instance, you requested that variable _los_at1_1_1_uci be renamed flos_from1a_1_uci_2m.  flos_from1a_1_uci_2m is already an existing variable in the data.  The variables you specified that already exist
-    are flos_from1a_1_uci_2m, flos_from1a_2_uci_2m, and flos_from1a_3_uci_2m.
-r(110);
 
 . rename (_los_at1_1_*) (flos_from1a_*_2m)
-9 variables already exist
-    For instance, you requested that variable _los_at1_1_1 be renamed flos_from1a_1_2m.  flos_from1a_1_2m is already an existing variable in the data.  The variables you specified that already exist are
-    flos_from1a_1_2m, flos_from1a_2_2m, flos_from1a_3_2m, flos_from1a_1_lci_2m, flos_from1a_1_uci_2m, flos_from1a_2_lci_2m, flos_from1a_2_uci_2m, flos_from1a_3_lci_2m, and flos_from1a_3_uci_2m.
-r(110);
 
 . 
 . rename (_prob_at2_1_*lci) (fprob_from1b_*lci_2m)
-3 variables already exist
-    For instance, you requested that variable _prob_at2_1_1_lci be renamed fprob_from1b_1_lci_2m.  fprob_from1b_1_lci_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fprob_from1b_1_lci_2m, fprob_from1b_2_lci_2m, and fprob_from1b_3_lci_2m.
-r(110);
 
 . rename (_prob_at2_1_*uci) (fprob_from1b_*uci_2m)
-3 variables already exist
-    For instance, you requested that variable _prob_at2_1_1_uci be renamed fprob_from1b_1_uci_2m.  fprob_from1b_1_uci_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fprob_from1b_1_uci_2m, fprob_from1b_2_uci_2m, and fprob_from1b_3_uci_2m.
-r(110);
 
 . rename (_prob_at2_1_*) (fprob_from1b_*_2m)
-9 variables already exist
-    For instance, you requested that variable _prob_at2_1_1 be renamed fprob_from1b_1_2m.  fprob_from1b_1_2m is already an existing variable in the data.  The variables you specified that already exist are
-    fprob_from1b_1_2m, fprob_from1b_2_2m, fprob_from1b_3_2m, fprob_from1b_1_lci_2m, fprob_from1b_1_uci_2m, fprob_from1b_2_lci_2m, fprob_from1b_2_uci_2m, fprob_from1b_3_lci_2m, and fprob_from1b_3_uci_2m.
-r(110);
 
 . 
 . rename (_los_at2_1_*lci) (flos_from1b_*lci_2m)
-3 variables already exist
-    For instance, you requested that variable _los_at2_1_1_lci be renamed flos_from1b_1_lci_2m.  flos_from1b_1_lci_2m is already an existing variable in the data.  The variables you specified that already exist
-    are flos_from1b_1_lci_2m, flos_from1b_2_lci_2m, and flos_from1b_3_lci_2m.
-r(110);
 
 . rename (_los_at2_1_*uci) (flos_from1b_*uci_2m)
-3 variables already exist
-    For instance, you requested that variable _los_at2_1_1_uci be renamed flos_from1b_1_uci_2m.  flos_from1b_1_uci_2m is already an existing variable in the data.  The variables you specified that already exist
-    are flos_from1b_1_uci_2m, flos_from1b_2_uci_2m, and flos_from1b_3_uci_2m.
-r(110);
 
 . rename (_los_at2_1_*) (flos_from1b_*_2m)
-9 variables already exist
-    For instance, you requested that variable _los_at2_1_1 be renamed flos_from1b_1_2m.  flos_from1b_1_2m is already an existing variable in the data.  The variables you specified that already exist are
-    flos_from1b_1_2m, flos_from1b_2_2m, flos_from1b_3_2m, flos_from1b_1_lci_2m, flos_from1b_1_uci_2m, flos_from1b_2_lci_2m, flos_from1b_2_uci_2m, flos_from1b_3_lci_2m, and flos_from1b_3_uci_2m.
-r(110);
 
 . 
 . rename (_ratio_prob_at2_1_*_lci) (fratio_prob_from1_*_lci_2m)
-3 variables already exist
-    For instance, you requested that variable _ratio_prob_at2_1_1_lci be renamed fratio_prob_from1_1_lci_2m.  fratio_prob_from1_1_lci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fratio_prob_from1_1_lci_2m, fratio_prob_from1_2_lci_2m, and fratio_prob_from1_3_lci_2m.
-r(110);
 
 . rename (_ratio_prob_at2_1_*_uci) (fratio_prob_from1_*_uci_2m)
-3 variables already exist
-    For instance, you requested that variable _ratio_prob_at2_1_1_uci be renamed fratio_prob_from1_1_uci_2m.  fratio_prob_from1_1_uci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fratio_prob_from1_1_uci_2m, fratio_prob_from1_2_uci_2m, and fratio_prob_from1_3_uci_2m.
-r(110);
 
 . rename (_ratio_prob_at2_1_*) (fratio_prob_from1_*_2m)
-9 variables already exist
-    For instance, you requested that variable _ratio_prob_at2_1_1 be renamed fratio_prob_from1_1_2m.  fratio_prob_from1_1_2m is already an existing variable in the data.  The variables you specified that
-    already exist are fratio_prob_from1_1_2m, fratio_prob_from1_2_2m, fratio_prob_from1_3_2m, fratio_prob_from1_1_lci_2m, fratio_prob_from1_1_uci_2m, fratio_prob_from1_2_lci_2m, fratio_prob_from1_2_uci_2m,
-    fratio_prob_from1_3_lci_2m, and fratio_prob_from1_3_uci_2m.
-r(110);
 
 . rename (_diff_prob_at2_1_*_lci) (fdiff_prob_from1_*_lci_2m)
-3 variables already exist
-    For instance, you requested that variable _diff_prob_at2_1_1_lci be renamed fdiff_prob_from1_1_lci_2m.  fdiff_prob_from1_1_lci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fdiff_prob_from1_1_lci_2m, fdiff_prob_from1_2_lci_2m, and fdiff_prob_from1_3_lci_2m.
-r(110);
 
 . rename (_diff_prob_at2_1_*_uci) (fdiff_prob_from1_*_uci_2m)
-3 variables already exist
-    For instance, you requested that variable _diff_prob_at2_1_1_uci be renamed fdiff_prob_from1_1_uci_2m.  fdiff_prob_from1_1_uci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fdiff_prob_from1_1_uci_2m, fdiff_prob_from1_2_uci_2m, and fdiff_prob_from1_3_uci_2m.
-r(110);
 
 . rename (_diff_prob_at2_1_*) (fdiff_prob_from1_*_2m)  
-9 variables already exist
-    For instance, you requested that variable _diff_prob_at2_1_1 be renamed fdiff_prob_from1_1_2m.  fdiff_prob_from1_1_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fdiff_prob_from1_1_2m, fdiff_prob_from1_2_2m, fdiff_prob_from1_3_2m, fdiff_prob_from1_1_lci_2m, fdiff_prob_from1_1_uci_2m, fdiff_prob_from1_2_lci_2m, fdiff_prob_from1_2_uci_2m,
-    fdiff_prob_from1_3_lci_2m, and fdiff_prob_from1_3_uci_2m.
-r(110);
 
 . 
 . rename (_ratio_los_at2_1_*_lci) (fratio_los_from1_*_lci_2m)
-3 variables already exist
-    For instance, you requested that variable _ratio_los_at2_1_1_lci be renamed fratio_los_from1_1_lci_2m.  fratio_los_from1_1_lci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fratio_los_from1_1_lci_2m, fratio_los_from1_2_lci_2m, and fratio_los_from1_3_lci_2m.
-r(110);
 
 . rename (_ratio_los_at2_1_*_uci) (fratio_los_from1_*_uci_2m)
-3 variables already exist
-    For instance, you requested that variable _ratio_los_at2_1_1_uci be renamed fratio_los_from1_1_uci_2m.  fratio_los_from1_1_uci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fratio_los_from1_1_uci_2m, fratio_los_from1_2_uci_2m, and fratio_los_from1_3_uci_2m.
-r(110);
 
 . rename (_ratio_los_at2_1_*) (fratio_los_from1_*_2m)
-9 variables already exist
-    For instance, you requested that variable _ratio_los_at2_1_1 be renamed fratio_los_from1_1_2m.  fratio_los_from1_1_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fratio_los_from1_1_2m, fratio_los_from1_2_2m, fratio_los_from1_3_2m, fratio_los_from1_1_lci_2m, fratio_los_from1_1_uci_2m, fratio_los_from1_2_lci_2m, fratio_los_from1_2_uci_2m,
-    fratio_los_from1_3_lci_2m, and fratio_los_from1_3_uci_2m.
-r(110);
 
 . rename (_diff_los_at2_1_*_lci) (fdiff_los_from1_*_lci_2m)
-3 variables already exist
-    For instance, you requested that variable _diff_los_at2_1_1_lci be renamed fdiff_los_from1_1_lci_2m.  fdiff_los_from1_1_lci_2m is already an existing variable in the data.  The variables you specified that
-    already exist are fdiff_los_from1_1_lci_2m, fdiff_los_from1_2_lci_2m, and fdiff_los_from1_3_lci_2m.
-r(110);
 
 . rename (_diff_los_at2_1_*_uci) (fdiff_los_from1_*_uci_2m)
-3 variables already exist
-    For instance, you requested that variable _diff_los_at2_1_1_uci be renamed fdiff_los_from1_1_uci_2m.  fdiff_los_from1_1_uci_2m is already an existing variable in the data.  The variables you specified that
-    already exist are fdiff_los_from1_1_uci_2m, fdiff_los_from1_2_uci_2m, and fdiff_los_from1_3_uci_2m.
-r(110);
 
 . rename (_diff_los_at2_1_*) (fdiff_los_from1_*_2m)  
-9 variables already exist
-    For instance, you requested that variable _diff_los_at2_1_1 be renamed fdiff_los_from1_1_2m.  fdiff_los_from1_1_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fdiff_los_from1_1_2m, fdiff_los_from1_2_2m, fdiff_los_from1_3_2m, fdiff_los_from1_1_lci_2m, fdiff_los_from1_1_uci_2m, fdiff_los_from1_2_lci_2m, fdiff_los_from1_2_uci_2m, fdiff_los_from1_3_lci_2m,
-    and fdiff_los_from1_3_uci_2m.
-r(110);
 
 . 
 . qui estread &quot;${pathdata2}parmodels_m_illness_death_23_2.sters&quot;
@@ -4899,160 +4873,60 @@ Calculating CIs via parametric bootstrap for at2() (1000)
 
 </code></pre>
 <pre><code>. rename (_prob_at1_2_*lci) (fprob_from2a_*lci_2m)
-3 variables already exist
-    For instance, you requested that variable _prob_at1_2_1_lci be renamed fprob_from2a_1_lci_2m.  fprob_from2a_1_lci_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fprob_from2a_1_lci_2m, fprob_from2a_2_lci_2m, and fprob_from2a_3_lci_2m.
-r(110);
 
 . rename (_prob_at1_2_*uci) (fprob_from2a_*uci_2m)
-3 variables already exist
-    For instance, you requested that variable _prob_at1_2_1_uci be renamed fprob_from2a_1_uci_2m.  fprob_from2a_1_uci_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fprob_from2a_1_uci_2m, fprob_from2a_2_uci_2m, and fprob_from2a_3_uci_2m.
-r(110);
 
 . rename (_prob_at1_2_*) (fprob_from2a_*_2m)
-9 variables already exist
-    For instance, you requested that variable _prob_at1_2_1 be renamed fprob_from2a_1_2m.  fprob_from2a_1_2m is already an existing variable in the data.  The variables you specified that already exist are
-    fprob_from2a_1_2m, fprob_from2a_2_2m, fprob_from2a_3_2m, fprob_from2a_1_lci_2m, fprob_from2a_1_uci_2m, fprob_from2a_2_lci_2m, fprob_from2a_2_uci_2m, fprob_from2a_3_lci_2m, and fprob_from2a_3_uci_2m.
-r(110);
 
 . 
 . rename (_los_at1_2_*lci) (flos_from2a_*lci_2m)
-3 variables already exist
-    For instance, you requested that variable _los_at1_2_1_lci be renamed flos_from2a_1_lci_2m.  flos_from2a_1_lci_2m is already an existing variable in the data.  The variables you specified that already exist
-    are flos_from2a_1_lci_2m, flos_from2a_2_lci_2m, and flos_from2a_3_lci_2m.
-r(110);
 
 . rename (_los_at1_2_*uci) (flos_from2a_*uci_2m)
-3 variables already exist
-    For instance, you requested that variable _los_at1_2_1_uci be renamed flos_from2a_1_uci_2m.  flos_from2a_1_uci_2m is already an existing variable in the data.  The variables you specified that already exist
-    are flos_from2a_1_uci_2m, flos_from2a_2_uci_2m, and flos_from2a_3_uci_2m.
-r(110);
 
 . rename (_los_at1_2_*) (flos_from2a_*_2m)
-9 variables already exist
-    For instance, you requested that variable _los_at1_2_1 be renamed flos_from2a_1_2m.  flos_from2a_1_2m is already an existing variable in the data.  The variables you specified that already exist are
-    flos_from2a_1_2m, flos_from2a_2_2m, flos_from2a_3_2m, flos_from2a_1_lci_2m, flos_from2a_1_uci_2m, flos_from2a_2_lci_2m, flos_from2a_2_uci_2m, flos_from2a_3_lci_2m, and flos_from2a_3_uci_2m.
-r(110);
 
 . 
 . rename (_prob_at2_2_*lci) (fprob_from2b_*lci_2m)
-3 variables already exist
-    For instance, you requested that variable _prob_at2_2_1_lci be renamed fprob_from2b_1_lci_2m.  fprob_from2b_1_lci_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fprob_from2b_1_lci_2m, fprob_from2b_2_lci_2m, and fprob_from2b_3_lci_2m.
-r(110);
 
 . rename (_prob_at2_2_*uci) (fprob_from2b_*uci_2m)
-3 variables already exist
-    For instance, you requested that variable _prob_at2_2_1_uci be renamed fprob_from2b_1_uci_2m.  fprob_from2b_1_uci_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fprob_from2b_1_uci_2m, fprob_from2b_2_uci_2m, and fprob_from2b_3_uci_2m.
-r(110);
 
 . rename (_prob_at2_2_*) (fprob_from2b_*_2m)
-9 variables already exist
-    For instance, you requested that variable _prob_at2_2_1 be renamed fprob_from2b_1_2m.  fprob_from2b_1_2m is already an existing variable in the data.  The variables you specified that already exist are
-    fprob_from2b_1_2m, fprob_from2b_2_2m, fprob_from2b_3_2m, fprob_from2b_1_lci_2m, fprob_from2b_1_uci_2m, fprob_from2b_2_lci_2m, fprob_from2b_2_uci_2m, fprob_from2b_3_lci_2m, and fprob_from2b_3_uci_2m.
-r(110);
 
 . 
 . rename (_los_at2_2_*lci) (flos_from2b_*lci_2m)
-3 variables already exist
-    For instance, you requested that variable _los_at2_2_1_lci be renamed flos_from2b_1_lci_2m.  flos_from2b_1_lci_2m is already an existing variable in the data.  The variables you specified that already exist
-    are flos_from2b_1_lci_2m, flos_from2b_2_lci_2m, and flos_from2b_3_lci_2m.
-r(110);
 
 . rename (_los_at2_2_*uci) (flos_from2b_*uci_2m)
-3 variables already exist
-    For instance, you requested that variable _los_at2_2_1_uci be renamed flos_from2b_1_uci_2m.  flos_from2b_1_uci_2m is already an existing variable in the data.  The variables you specified that already exist
-    are flos_from2b_1_uci_2m, flos_from2b_2_uci_2m, and flos_from2b_3_uci_2m.
-r(110);
 
 . rename (_los_at2_2_*) (flos_from2b_*_2m)
-9 variables already exist
-    For instance, you requested that variable _los_at2_2_1 be renamed flos_from2b_1_2m.  flos_from2b_1_2m is already an existing variable in the data.  The variables you specified that already exist are
-    flos_from2b_1_2m, flos_from2b_2_2m, flos_from2b_3_2m, flos_from2b_1_lci_2m, flos_from2b_1_uci_2m, flos_from2b_2_lci_2m, flos_from2b_2_uci_2m, flos_from2b_3_lci_2m, and flos_from2b_3_uci_2m.
-r(110);
 
 . 
 . rename (_ratio_prob_at2_2_*_lci) (fratio_prob_from2_*_lci_2m)
-3 variables already exist
-    For instance, you requested that variable _ratio_prob_at2_2_1_lci be renamed fratio_prob_from2_1_lci_2m.  fratio_prob_from2_1_lci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fratio_prob_from2_1_lci_2m, fratio_prob_from2_2_lci_2m, and fratio_prob_from2_3_lci_2m.
-r(110);
 
 . rename (_ratio_prob_at2_2_*_uci) (fratio_prob_from2_*_uci_2m)
-3 variables already exist
-    For instance, you requested that variable _ratio_prob_at2_2_1_uci be renamed fratio_prob_from2_1_uci_2m.  fratio_prob_from2_1_uci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fratio_prob_from2_1_uci_2m, fratio_prob_from2_2_uci_2m, and fratio_prob_from2_3_uci_2m.
-r(110);
 
 . rename (_ratio_prob_at2_2_*) (fratio_prob_from2_*_2m)
-9 variables already exist
-    For instance, you requested that variable _ratio_prob_at2_2_1 be renamed fratio_prob_from2_1_2m.  fratio_prob_from2_1_2m is already an existing variable in the data.  The variables you specified that
-    already exist are fratio_prob_from2_1_2m, fratio_prob_from2_2_2m, fratio_prob_from2_3_2m, fratio_prob_from2_1_lci_2m, fratio_prob_from2_1_uci_2m, fratio_prob_from2_2_lci_2m, fratio_prob_from2_2_uci_2m,
-    fratio_prob_from2_3_lci_2m, and fratio_prob_from2_3_uci_2m.
-r(110);
 
 . rename (_diff_prob_at2_2_*_lci) (fdiff_prob_from2_*_lci_2m)
-3 variables already exist
-    For instance, you requested that variable _diff_prob_at2_2_1_lci be renamed fdiff_prob_from2_1_lci_2m.  fdiff_prob_from2_1_lci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fdiff_prob_from2_1_lci_2m, fdiff_prob_from2_2_lci_2m, and fdiff_prob_from2_3_lci_2m.
-r(110);
 
 . rename (_diff_prob_at2_2_*_uci) (fdiff_prob_from2_*_uci_2m)
-3 variables already exist
-    For instance, you requested that variable _diff_prob_at2_2_1_uci be renamed fdiff_prob_from2_1_uci_2m.  fdiff_prob_from2_1_uci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fdiff_prob_from2_1_uci_2m, fdiff_prob_from2_2_uci_2m, and fdiff_prob_from2_3_uci_2m.
-r(110);
 
 . rename (_diff_prob_at2_2_*) (fdiff_prob_from2_*_2m)  
-9 variables already exist
-    For instance, you requested that variable _diff_prob_at2_2_1 be renamed fdiff_prob_from2_1_2m.  fdiff_prob_from2_1_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fdiff_prob_from2_1_2m, fdiff_prob_from2_2_2m, fdiff_prob_from2_3_2m, fdiff_prob_from2_1_lci_2m, fdiff_prob_from2_1_uci_2m, fdiff_prob_from2_2_lci_2m, fdiff_prob_from2_2_uci_2m,
-    fdiff_prob_from2_3_lci_2m, and fdiff_prob_from2_3_uci_2m.
-r(110);
 
 . 
 . rename (_ratio_los_at2_2_*_lci) (fratio_los_from2_*_lci_2m)
-3 variables already exist
-    For instance, you requested that variable _ratio_los_at2_2_1_lci be renamed fratio_los_from2_1_lci_2m.  fratio_los_from2_1_lci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fratio_los_from2_1_lci_2m, fratio_los_from2_2_lci_2m, and fratio_los_from2_3_lci_2m.
-r(110);
 
 . rename (_ratio_los_at2_2_*_uci) (fratio_los_from2_*_uci_2m)
-3 variables already exist
-    For instance, you requested that variable _ratio_los_at2_2_1_uci be renamed fratio_los_from2_1_uci_2m.  fratio_los_from2_1_uci_2m is already an existing variable in the data.  The variables you specified
-    that already exist are fratio_los_from2_1_uci_2m, fratio_los_from2_2_uci_2m, and fratio_los_from2_3_uci_2m.
-r(110);
 
 . rename (_ratio_los_at2_2_*) (fratio_los_from2_*_2m)
-9 variables already exist
-    For instance, you requested that variable _ratio_los_at2_2_1 be renamed fratio_los_from2_1_2m.  fratio_los_from2_1_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fratio_los_from2_1_2m, fratio_los_from2_2_2m, fratio_los_from2_3_2m, fratio_los_from2_1_lci_2m, fratio_los_from2_1_uci_2m, fratio_los_from2_2_lci_2m, fratio_los_from2_2_uci_2m,
-    fratio_los_from2_3_lci_2m, and fratio_los_from2_3_uci_2m.
-r(110);
 
 . rename (_diff_los_at2_2_*_lci) (fdiff_los_from2_*_lci_2m)
-3 variables already exist
-    For instance, you requested that variable _diff_los_at2_2_1_lci be renamed fdiff_los_from2_1_lci_2m.  fdiff_los_from2_1_lci_2m is already an existing variable in the data.  The variables you specified that
-    already exist are fdiff_los_from2_1_lci_2m, fdiff_los_from2_2_lci_2m, and fdiff_los_from2_3_lci_2m.
-r(110);
 
 . rename (_diff_los_at2_2_*_uci) (fdiff_los_from2_*_uci_2m)
-3 variables already exist
-    For instance, you requested that variable _diff_los_at2_2_1_uci be renamed fdiff_los_from2_1_uci_2m.  fdiff_los_from2_1_uci_2m is already an existing variable in the data.  The variables you specified that
-    already exist are fdiff_los_from2_1_uci_2m, fdiff_los_from2_2_uci_2m, and fdiff_los_from2_3_uci_2m.
-r(110);
 
 . rename (_diff_los_at2_2_*) (fdiff_los_from2_*_2m) 
-9 variables already exist
-    For instance, you requested that variable _diff_los_at2_2_1 be renamed fdiff_los_from2_1_2m.  fdiff_los_from2_1_2m is already an existing variable in the data.  The variables you specified that already
-    exist are fdiff_los_from2_1_2m, fdiff_los_from2_2_2m, fdiff_los_from2_3_2m, fdiff_los_from2_1_lci_2m, fdiff_los_from2_1_uci_2m, fdiff_los_from2_2_lci_2m, fdiff_los_from2_2_uci_2m, fdiff_los_from2_3_lci_2m,
-    and fdiff_los_from2_3_uci_2m.
-r(110);
 
 . 
 </code></pre>
-<p>Saved at= 06:10:57 10 Jan 2023</p>
+<p>Saved at= 22:54:46 19 Apr 2023</p>
 <pre><code>
 </code></pre>

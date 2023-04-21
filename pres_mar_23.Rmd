@@ -4,21 +4,22 @@ main_bottomsize: 0 #https://github.com/brentthorne/posterdown/wiki/posterdown_ht
 main_width: 1
 main_fontfamily: xaringanthemer::google_font('Baloo Bhai 2')
 font_family: "Roboto"
-titlebox_height: "3%"
-title_textsize: "60pt" #poster title fontsize
+titlebox_height: "5%" #https://github.com/brentthorne/posterdown/issues/113  The default is "15%"
+title_textsize: "50pt" #poster title fontsize
 primary_colour:  "#21177A60" #mas 2 digitos para la trasparencia
 secondary_colour: "#ff7f50"
-author_textcol: "#bf846f" #Colour of author text.
+author_textcol:  "#ed4a11" # "#bf846f" #Colour of author text.
 author_textsize: "40pt"
 poster_height: "40in"
 poster_width: "42in"
 accent_colour: "#aaaaaa"
 affiliation_textcol: "#bf846f" # "#591F0A"
 affiliation_textsize: "35pt"
+font_size: 90%
 #ESSENTIALS
-sectitle_textsize: "55pt"
+sectitle_textsize: "45pt"
 sectitle2_textsize: "35pt"
-sectitle_boxshape: "3.5mm 0mm" #Changes the shape of the section title box.
+sectitle_boxshape: "3mm 0mm" #Changes the shape of the section title box.
 title: '**Assessing the impact of substance use treatment for preventing criminal justice system contact in Chile**'
 author:
   - name: '**M. Mateo Piñones**'
@@ -26,12 +27,12 @@ author:
     main: true
     orcid: '0000-0002-9607-7541'
     email: mariel.mateopinones@griffithuni.edu.au
-  - name: 'A. González-Santa Cruz'
+  - name: '**A. González-Santa Cruz**'
     affil: 1, 3
     main: true
     orcid: '0000-0002-5166-9121'    
     email: gonzalez.santacruz.andres@gmail.com
-  - name: 'A. Castillo-Carniglia'
+  - name: '**A. Castillo-Carniglia**'
     affil: 4, 5
     main: true
     orcid: '0000-0002-3016-890X'    
@@ -75,14 +76,14 @@ https://github.com/brentthorne/posterdown/wiki/posterdown_html
 
 ```{css, echo=FALSE}
 div.title_container{
-   background-image: linear-gradient(#ff7f50 25%, #21177A); /* background-color: #21177A;*/
+   background-image: linear-gradient(#ff7f50 10%, #21177A); /* background-color: #21177A;*/
 }
 
 div.logo_left{
-  background-image: linear-gradient(#ff7f50 25%, #21177A);/* background-color: #ff7f50; */
+  background-image: linear-gradient(#ff7f50 10%, #21177A);/* background-color: #ff7f50; */
 }
 div.logo_right{
-  background-image: linear-gradient(#ff7f50 25%, #21177A); /*background-color: #ff7f50; */
+  background-image: linear-gradient(#ff7f50 10%, #21177A); /*background-color: #ff7f50; */
 }
 
 :root {
@@ -149,6 +150,10 @@ pre:not(.sourceCode) {
 
 .text_40 { /* Important gives precedence  */
   font-size: 40% !important;
+}
+
+.text_45 { /* Important gives precedence  */
+  font-size: 45% !important;
 }
 
 .text_50 { /* Important gives precedence  */
@@ -231,8 +236,19 @@ padding: 0px;
     overflow-x: scroll; 
 }
 
+ule {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
 </style>
 
+<style>
+p.caption {
+ margin-top: 0;
+ margin-bottom: 0;
+}
+</style>
 
 <style>
 .showopt {
@@ -346,7 +362,7 @@ pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando pa
 if(!require(pacman)){install.packages("pacman")}
 if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
 
-pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf,  adjustedCurves, ggpmisc, rms, rateratio.test, XML, RCurl, rlist, install=T)
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, survival, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, googleVis, tidylog, magick, dlookr, easystats, tidylog, sqldf,  adjustedCurves, ggpmisc, rms, rateratio.test, XML, RCurl, rlist, install=T)
 
 
 #Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
@@ -495,76 +511,59 @@ myBib <- ReadBib("_bibs/libreria_generica.txt", check = F,  .Encoding="latin1")
 
 # Background
 
-Research has shown that reducing SUDs through effective treatment leads to a reduction in criminal activity$`r Cite(myBib, c("prendergast2006"))`$. However, most of this evidence comes from developed countries, and results from the Latin American context are largely unknown$`r Cite(myBib, c("klingemann2020"))`$. The structural, economic, epidemiological context and substance use treatment (SUT) policy response are different in this region, making the question about SUT effectiveness through locally based data relevant$`r Cite(myBib, c("Mateo_Pinones2022"))`$. 
+Research has shown that reducing SUDs through effective treatment leads to a reduction in criminal activity$`r Cite(myBib, c("prendergast2006"))`$. However, most evidence comes from developed countries, and results from the Latin American context are largely unknown$`r Cite(myBib, c("klingemann2020"))`$. The structural, economic, epidemiological context and substance use treatment (SUT) policy response are different in this region, making the question about SUT effectiveness through locally based data relevant$`r Cite(myBib, c("Mateo_Pinones2022"))`$. 
 
 ## Objectives
 
-We analyse Chile as a case study and examine the impact of SUT on the prevention of contact with the criminal justice system in the short (3 and 6 months), middle (1 year), and long term (3 years). 
+We analyze Chile as a case study and examine the impact of SUT on the prevention of contact with the criminal justice system (CJS) in the short (3 and 6 months), middle (1 year), and long term (3 years). 
+**Hypothesis:** Patients who complete treatment have lower probabilities of being in contact with CJS compared to patients who do not complete, although this effect may decrease as observation time passes.
 
 # Methods
 
-This research relies on a population-based record-linkage retrospective cohort design. We used a deterministic linkage process (using encryption of the Chilean Unique National ID) to merge electronic records of individuals in publicly funded Chilean SUT programs with the Prosecutor’s Office data at the national level between 2010 and 2019.
+This research relies on a population-based record-linkage retrospective cohort design. We used a deterministic linkage process (using encryption of the Chilean Unique National ID) to merge electronic records of individuals in publicly funded Chilean SUT programs with the Prosecutor’s Office data at the national level between 2010 and 2019. This research is approved by the Griffith University Human Research Ethics Committee (GUHREC) (GU Ref No: 2022/919).
 
-We described the cumulative incidence rate and incidence rate ratio of offenses that ended with a condemnatory sentence and of offenses that ended with imprisonment after baseline treatment outcome, and its variation by baseline treatment outcome: Treatment completion, Late (>= 3months) & Early Discharge (within the first 3 months of treatment). 
-Posteriorly, we aim to calculate the association between Baseline treatment outcome and Contact with justice system through Royston-Parmar models while adjusting for several covariates, and using 2-step inverse probability weigthing Royston-Parmar survival regression and adjusting for covariates$`r Cite(myBib, c("s457128"))`$.
+We described the cumulative incidence rate and incidence rate ratio (IRR) of contact with the CJS (offenses that ended with a condemnatory sentence and of offenses that ended with imprisonment after baseline treatment outcome), and its variation by baseline treatment outcome: Treatment completion, Late (>= 3months) & Early Discharge (within the first 3 months of treatment). 
+We calculated the association between Baseline treatment outcome and Contact with CJS through Royston-Parmar models while adjusting for several covariates and obtained standardized survival curves and restricted mean survival times (RMST) through the `stpm2` command in Stata$`r Cite(myBib, c("s457128"))`$. Missing data was imputed using multiple imputation with regression trees from `missRanger` R package$`r Cite(myBib, c("missranger"))`$. Secondary analyses included e-values of the strength of confounding needed to take away the associations between treatment outcome and contact with CJS. Codes are available at [bit.ly/40cMATs](bit.ly/40cMATs). Covariates are listed below:
 
-Analyses are depicted in the following equations:
-
-::: text_35
-$$
-\begin{eqnarray*}
-ln(H(t)|x_i)_{offense\,judged\,with\,condemnatory\,sentence}=s(ln(t)|\eta,k_0)+ Bx_i \\
-\\
-\end{eqnarray*}
-$$
-
-$$
-\begin{eqnarray*}
-ln(H(t)|x_i)_{offense\,judged\,with\,prison\,sentence}=s(ln(t)|\eta,k_0)+ Bx_i \\
-where\ x\hat{\beta}_i= \\
-& & \mathrm{Treatment\ non-completion\ (Early)} \\
-& & \mathrm{Treatment\ non-completion\ (Late)} \\
-& & \mathrm{Treatment\ setting} \\
-& & \mathrm{Sex} \\
-& & \mathrm{Substance\ use\ onset\ age} \\
-& & \mathrm{Educational\ attainment} \\
-& & \mathrm{Primary\ substance\ At\ sdmission} \\
-& & \mathrm{Primary\ substance\ at\ sdmission\ usage\ frequency} \\
-& & \mathrm{Occupational\ status} \\
-& & \mathrm{Poly-substance\ use} \\
-& & \mathrm{Number\ of\ children\ (binary)} \\
-& & \mathrm{Tenure\ status\ of\ households} \\
-& & \mathrm{Macrozone} \\
-& & \mathrm{Number\ of\ previous\ offenses\ (violent)} \\
-& & \mathrm{Number\ of\ previous\ offenses\ (acquisitive)} \\
-& & \mathrm{Number\ of\ previous\ offenses\ (SUD)} \\
-& & \mathrm{Number\ of\ previous\ offenses\ (other)} \\
-& & \mathrm{Psychiatric\ comorbidity} \\
-& & \mathrm{Substance\ use\ severity} \\
-& & \mathrm{Urban/rural\ municipallity\ of\ residence} \\
-& & \mathrm{Percetage\ of\ proverty\ of\ the\ municipallity\ of\ residence} \\
-& & \mathrm{Substance\ use\ onset} \\
-& & \mathrm{Treatment\ admission\ year} \\
-& & \mathrm{Cohabitation\ Status} \\
-& & \mathrm{Physical\ comorbidity} \\
-& & \mathrm{Age\ at\ admission\ to\ treatment(RCS)} \\
-\end{eqnarray*}
-$$
+::: text_50
+<ule>
+  <li>Treatment setting</li>
+  <li>Sex</li>
+  <li>Substance use onset age</li>
+  <li>Educational attainment</li>
+  <li>Primary substance at admission</li>
+  <li>Primary substance at admission usage frequency</li>
+  <li>Occupational status</li>
+  <li>Poly-substance use</li>
+  <li>Number of children (binary)</li>
+  <li>Tenure status of households</li>
+  <li>Macrozone</li>
+  <li>Number of previous offenses (violent)</li>
+  <li>Number of previous offenses (acquisitive)</li>
+  <li>Number of previous offenses (SUD)</li>
+  <li>Number of previous offenses (other)</li>
+  <li>Psychiatric comorbidity</li>
+  <li>Substance use severity</li>
+  <li>Urban/rural municipality of residence</li>
+  <li>Percentage of poverty of the municipality of residence</li>
+  <li>Initial substance</li>
+  <li>Treatment admission year</li>
+  <li>Cohabitation status</li>
+  <li>Physical comorbidity</li>
+  <li>Admission Age</li>
+</ule>
 :::
-<!----
-# https://diagnprognres.biomedcentral.com/articles/10.1186/s41512-018-0026-5
----->
+<!---- # https://diagnprognres.biomedcentral.com/articles/10.1186/s41512-018-0026-5 ---->
 
 # Preliminary Results
 
-Of the `r format(nrow(CONS_C1_df_dup_SEP_2020), big.mark=",")` SENDA patients,  `r format(nrow(Base_fiscalia_v13), big.mark=",")` (`r scales::percent(nrow(Base_fiscalia_v13)/nrow(CONS_C1_df_dup_SEP_2020))`) were eligible to be matched with the Prossecutor's Office database. Of the sample, `r format(nrow(dplyr::filter(Base_fiscalia_v13, !is.na(dateofbirth_imp))), big.mark=",")` (`r scales::percent(nrow(dplyr::filter(Base_fiscalia_v13, !is.na(dateofbirth_imp)))/nrow(Base_fiscalia_v13))`) had at least an offense that ended with a condemnatory sentence after baseline treatment. Those that had at least an offense that ended with imprisonment after baseline treatment were `r format(nrow(dplyr::filter(Base_fiscalia_v13_pris, !is.na(dateofbirth_imp))), big.mark=",")` (`r scales::percent(nrow(dplyr::filter(Base_fiscalia_v13_pris, !is.na(dateofbirth_imp)))/nrow(Base_fiscalia_v13_pris))`).
-
+Of the `r format(nrow(CONS_C1_df_dup_SEP_2020), big.mark=",")`(p= `r format(length(unique(CONS_C1_df_dup_SEP_2020$hash_key)), big.mark=",")`) SENDA records of admissions,  `r format(nrow(Base_fiscalia_v14), big.mark=",")`(`r scales::percent(nrow(Base_fiscalia_v13)/length(unique(CONS_C1_df_dup_SEP_2020$hash_key)))`) were eligible to be matched with the Prossecutor's Office database (discarded ongoing treatments or treatments that ended in referrals). `r format(nrow(dplyr::filter(Base_fiscalia_v14, !is.na(dateofbirth_imp))), big.mark=",")`(`r scales::percent(nrow(dplyr::filter(Base_fiscalia_v14, !is.na(dateofbirth_imp)))/nrow(Base_fiscalia_v14))`) had at least an offense that ended with a condemnatory sentence after baseline treatment. Those that had at least an offense that ended with imprisonment were `r format(nrow(dplyr::filter(Base_fiscalia_v14_pris, !is.na(dateofbirth_imp))), big.mark=",")`(`r scales::percent(nrow(dplyr::filter(Base_fiscalia_v14_pris, !is.na(dateofbirth_imp)))/nrow(Base_fiscalia_v14_pris))`).
 <div class="fold s o">
-```{r exp-surv1, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
+```{r exp-surv1, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE, results='hide'}
 library(tidyverse)
 dplyr::bind_rows(
-data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec, data= dplyr::filter(Base_fiscalia_v13,age_offending_imp- edad_al_egres_imp>=0))  %>% select(-1) %>%  dplyr::mutate_at(c("rate", "lower", "upper"),~round(.*1000,0)), keep.rownames=T),
-data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ 1, data= dplyr::filter(Base_fiscalia_v13,age_offending_imp- edad_al_egres_imp>=0))  %>% dplyr::mutate_at(c("rate", "lower", "upper"),~round(.*1000,0)), keep.rownames = T) %>% dplyr::mutate(rn="Total"))%>% 
+data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec, data= dplyr::filter(Base_fiscalia_v14,age_offending_imp- edad_al_egres_imp>=0))  %>% select(-1) %>%  dplyr::mutate_at(c("rate", "lower", "upper"),~round(.*1000,0)), keep.rownames=T),
+data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ 1, data= dplyr::filter(Base_fiscalia_v14,age_offending_imp- edad_al_egres_imp>=0))  %>% dplyr::mutate_at(c("rate", "lower", "upper"),~round(.*1000,0)), keep.rownames = T) %>% dplyr::mutate(rn="Total"))%>% 
   as.data.frame() %>% 
   dplyr::mutate(rn= dplyr::case_when(grepl("Treatment completion",rn)~"Tr. Comp",grepl("Early",rn)~"Early Dis",grepl("Late",rn)~"Late Dis", T~"Total")) %>% 
   dplyr::mutate(tstop= round(tstop, 0)) %>% 
@@ -574,8 +573,8 @@ data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres
 </div>
 
 ```{r exp-surv2, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
-Base_fiscalia_v13_comp<-
-Base_fiscalia_v13 %>% 
+Base_fiscalia_v14_comp<-
+Base_fiscalia_v14 %>% 
   dplyr::mutate(mot_egres_latewdl=dplyr::case_when(grepl("Late",motivodeegreso_mod_imp)~"1.Late WDRL",
                                                         grepl("Therap",motivodeegreso_mod_imp)~"0.Therapeutic Disch.",TRUE~NA_character_)) %>% 
   dplyr::mutate(mot_egres_latewdl= factor(mot_egres_latewdl)) %>% 
@@ -588,8 +587,8 @@ Base_fiscalia_v13 %>%
   dplyr::mutate(event= ifelse(!is.na(dateofbirth_imp),1,0)) %>% 
   dplyr::mutate(timetoevent= age_offending_imp- edad_al_egres_imp) %>% 
   ungroup()
-Base_fiscalia_v13_pris_comp<-
-Base_fiscalia_v13_pris %>% 
+Base_fiscalia_v14_pris_comp<-
+Base_fiscalia_v14_pris %>% 
   dplyr::mutate(mot_egres_latewdl=dplyr::case_when(grepl("Late",motivodeegreso_mod_imp)~"1.Late WDRL",
                                                         grepl("Therap",motivodeegreso_mod_imp)~"0.Therapeutic Disch.",TRUE~NA_character_)) %>% 
   dplyr::mutate(mot_egres_latewdl= factor(mot_egres_latewdl)) %>% 
@@ -603,21 +602,18 @@ Base_fiscalia_v13_pris %>%
   dplyr::mutate(timetoevent= age_offending_imp- edad_al_egres_imp) %>% 
   ungroup()
 
-irrs_early_drop<-irrs(x="mot_egres_earlywdl", z="timetoevent", y="event", db="Base_fiscalia_v13_comp")
-irrs_early_drop_pris<-irrs(x="mot_egres_earlywdl", z="timetoevent", y="event", db="Base_fiscalia_v13_pris_comp")
-irrs_early_late_drop<-irrs(x="mot_egres_earlywdl_late", z="timetoevent", y="event", db="Base_fiscalia_v13_comp")
-irrs_early_late_drop_pris<-irrs(x="mot_egres_earlywdl_late", z="timetoevent", y="event", db="Base_fiscalia_v13_pris_comp")
-irrs_late_drop<-irrs(x="mot_egres_latewdl", z="timetoevent", y="event", db="Base_fiscalia_v13_comp")
-irrs_late_drop_pris<-irrs(x="mot_egres_latewdl", z="timetoevent", y="event", db="Base_fiscalia_v13_pris_comp")
+irrs_early_drop<-irrs(x="mot_egres_earlywdl", z="timetoevent", y="event", db="Base_fiscalia_v14_comp")
+irrs_early_drop_pris<-irrs(x="mot_egres_earlywdl", z="timetoevent", y="event", db="Base_fiscalia_v14_pris_comp")
+irrs_early_late_drop<-irrs(x="mot_egres_earlywdl_late", z="timetoevent", y="event", db="Base_fiscalia_v14_comp")
+irrs_early_late_drop_pris<-irrs(x="mot_egres_earlywdl_late", z="timetoevent", y="event", db="Base_fiscalia_v14_pris_comp")
+irrs_late_drop<-irrs(x="mot_egres_latewdl", z="timetoevent", y="event", db="Base_fiscalia_v14_comp")
+irrs_late_drop_pris<-irrs(x="mot_egres_latewdl", z="timetoevent", y="event", db="Base_fiscalia_v14_pris_comp")
 ```
-
-<br> 
-
 <div class="fold s o">
-```{r exp-surv2-2, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
+```{r exp-surv2-2, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE, results='hide'}
 dplyr::bind_rows(
-data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec, data= dplyr::filter(Base_fiscalia_v13_pris,age_offending_imp- edad_al_egres_imp>=0))  %>% select(-1) %>%  dplyr::mutate_at(c("rate", "lower", "upper"),~round(.*1000,0)), keep.rownames=T),
-data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ 1, data= dplyr::filter(Base_fiscalia_v13_pris,age_offending_imp- edad_al_egres_imp>=0))  %>% dplyr::mutate_at(c("rate", "lower", "upper"),~round(.*1000,0)), keep.rownames = T) %>% dplyr::mutate(rn="Total"))%>% 
+data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ motivodeegreso_mod_imp_rec, data= dplyr::filter(Base_fiscalia_v14_pris,age_offending_imp- edad_al_egres_imp>=0))  %>% select(-1) %>%  dplyr::mutate_at(c("rate", "lower", "upper"),~round(.*1000,0)), keep.rownames=T),
+data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres_imp), !is.na(dateofbirth_imp)) ~ 1, data= dplyr::filter(Base_fiscalia_v14_pris,age_offending_imp- edad_al_egres_imp>=0))  %>% dplyr::mutate_at(c("rate", "lower", "upper"),~round(.*1000,0)), keep.rownames = T) %>% dplyr::mutate(rn="Total"))%>% 
   as.data.frame() %>% 
   dplyr::mutate(rn= dplyr::case_when(grepl("Treatment completion",rn)~"Tr. Comp",grepl("Early",rn)~"Early Dis",grepl("Late",rn)~"Late Dis", T~"Total")) %>% 
   dplyr::mutate(tstop= round(tstop, 0)) %>% 
@@ -625,118 +621,131 @@ data.table::data.table(biostat3::survRate(Surv((age_offending_imp- edad_al_egres
   knitr::kable("markdown", size=3, col.names= c("Outcome", "Person-time","Event", "Rate", "LoCI95%", "UpCI95%"), caption= "Offending with imprisonment from Baseline Treatment Outcome (x1000 person-years)")
 ```
 </div>
+<div class="fold s o">
+```{r exp-surv23-1, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
+require(XML); require(RCurl); require(rlist)
+prob_imp<-rvest::read_html("prob_condsent_m1_main.html") %>% rvest::html_table()
+rmst_imp<-rvest::read_html("rmst_condsent_m1_main.html") %>% rvest::html_table()
+prob_imp_diff<-rvest::read_html("prob_condsent_m1_main_diff.html") %>% rvest::html_table()
+rmst_imp_diff<-rvest::read_html("rmst_condsent_m1_main_diff.html") %>% rvest::html_table()
 
--	Compared to those receiving no treatment (early drop-out), those completing SUT took longer to contact the criminal justice system (IRR [Incidence rate ratio]= `r sprintf("%1.2f", irrs_early_drop$estimate[1])` 95% IC `r sprintf("%1.2f", irrs_early_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_early_drop$conf.int[2])`) and to commit an offence leading to imprisonment `r sprintf("%1.2f", irrs_early_drop_pris$estimate[1])` (95% IC `r sprintf("%1.2f", irrs_early_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_early_drop_pris$conf.int[2])`).
+prob_imp_tab<-
+prob_imp %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
+  dplyr::select(Time, Comp_ci, Late_ci, Early_ci)
 
--	Compared to receiving some treatment (late drop-out), those completing SUT took longer (IRR= `r sprintf("%1.2f", irrs_late_drop$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop$conf.int[2])`) to contact the criminal justice system and to imprisonment (IRR= `r sprintf("%1.2f", irrs_late_drop_pris$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop_pris$conf.int[2])`). 
+prob_imp_diff_tab<-
+prob_imp_diff %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) 
 
--	However, the difference was lower when we compared those who received some treatment with those who no SUT for some period (late drop-out) regarding the time to contact the criminal justice system (IRR= `r sprintf("%1.2f", irrs_early_late_drop$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_early_late_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_early_late_drop$conf.int[2])`) and imprisonment (IRR= `r sprintf("%1.2f", irrs_early_late_drop_pris$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_early_late_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_early_late_drop_pris$conf.int[2])`).
+rmst_imp_tab<-
+rmst_imp %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci= paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci= paste0(Late," (", Late_lci,",",Late_uci,")")) %>%
+  dplyr::select(Time, Comp_ci, Late_ci, Early_ci)
 
-```{r exp-surv3-pris, eval=T, include=F, eval=FALSE}
-#str(knitr::opts_chunk$get()) 
+rmst_imp_diff_tab<-
+rmst_imp_diff %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) 
 
+rbindlist(list(list(c("Probs.",rep("",6))),cbind.data.frame(prob_imp_tab,prob_imp_diff_tab[,-1]),
+               list(c("RMST",rep("",6))), cbind.data.frame(rmst_imp_tab,rmst_imp_diff_tab[,-1])), fill=T) %>% 
+    dplyr::slice(-2,-3,-4,-5,-6,-7,-14,-15,-16,-17,-18,-19) %>%        
+  #knitr::kable("markdown", size=3, col.names= c("Time", "Complete Tr.","Late Disch.", "Early Disch.", "Comp. vs Late", "Comp. vs Early", "Early vs Late"), caption= "Offending with Condemnatory Sentence")
+kbl(format = 'html',
+        escape = FALSE,
+        col.names= c("Time", "Complete Tr.","Late Disch.", "Early Disch.", "Comp. vs Late", "Comp. vs Early", "Early vs Late"), 
+    caption= "Offending with Condemnatory Sentence") %>% 
+    kable_styling(font_size = 24) %>%
+    gsub("font-size: initial !important;", 
+         "font-size: 30pt !important;", 
+         .)
+```
+</div>
+<br>
+<div class="fold s o">
+```{r exp-surv23-2, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
+prob_imp_pris<-rvest::read_html("prob_prison_m1_main.html") %>% rvest::html_table()
+rmst_imp_pris<-rvest::read_html("rmst_prison_m1_main.html") %>% rvest::html_table()
+prob_imp_diff_pris<-rvest::read_html("prob_prison_m1_main_diff.html") %>% rvest::html_table()
+rmst_imp_diff_pris<-rvest::read_html("rmst_prison_m1_main_diff.html") %>% rvest::html_table()
+
+prob_imp_pris_tab<-
+prob_imp_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
+  dplyr::select(Time, Comp_ci, Late_ci, Early_ci)
+
+prob_imp_diff_pris_tab<-
+prob_imp_diff_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) 
+
+rmst_imp_pris_tab<-
+rmst_imp_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci= paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci= paste0(Late," (", Late_lci,",",Late_uci,")")) %>%
+  dplyr::select(Time, Comp_ci, Late_ci, Early_ci)
+
+rmst_imp_diff_pris_tab<-
+rmst_imp_diff_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) 
+
+
+rbindlist(list(list(c("Probs.",rep("",6))),cbind.data.frame(prob_imp_pris_tab,prob_imp_diff_pris_tab[,-1]), list(c("RMST",rep("",6))), cbind.data.frame(rmst_imp_pris_tab,rmst_imp_diff_pris_tab[,-1])), fill=T) %>% 
+    dplyr::slice(-2,-3,-4,-5,-6,-7,-14,-15,-16,-17,-18,-19) %>%        
+kbl(format = 'html',
+        escape = FALSE,
+        col.names= c("Time", "Complete Tr.","Late Disch.", "Early Disch.", "Comp. vs Late", "Comp. vs Early", "Early vs Late"), 
+    caption= "Offending with imprisonment") %>% 
+    kable_styling(font_size = 24) %>%
+    gsub("font-size: initial !important;", 
+         "font-size: 30pt !important;", 
+         .)
+```
+</div>
+
+-	Compared to those receiving almost no treatment (early drop-out), those completing SUT took longer to contact the criminal justice system (IRR [Incidence rate ratio]= `r sprintf("%1.2f", irrs_early_drop$estimate[1])` 95% CI `r sprintf("%1.2f", irrs_early_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_early_drop$conf.int[2])`; aHR[adjusted hazard ratio]: 1.74  95%CI 1.66, 1.83) and to commit an offence leading to imprisonment `r sprintf("%1.2f", irrs_early_drop_pris$estimate[1])` (95% CI `r sprintf("%1.2f", irrs_early_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_early_drop_pris$conf.int[2])`; aHR= 1.99 95%CI 1.79, 2.22).
+-	Compared to receiving some treatment (late drop-out), those completing SUT took longer (IRR= `r sprintf("%1.2f", irrs_late_drop$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop$conf.int[2])`; aHR=1.58 95%CI 1.52, 1.65) to contact the criminal justice system and to imprisonment (IRR= `r sprintf("%1.2f", irrs_late_drop_pris$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop_pris$conf.int[2])`; aHR=1.65 95%CI 1.51, 1.81). 
+-	However, the difference was lower when we compared those who received some treatment with those with less SUT for some period (late drop-out) regarding the time to contact the criminal justice system (IRR= `r sprintf("%1.2f", irrs_early_late_drop$estimate[1])` 95% CI `r sprintf("%1.2f", irrs_early_late_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_early_late_drop$conf.int[2])`) and imprisonment (IRR= `r sprintf("%1.2f", irrs_early_late_drop_pris$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_early_late_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_early_late_drop_pris$conf.int[2])`). Differences between Early vs Late did not overlap the null in Tables 1 & 2.
+```{r exp-surv3-pris, echo=F, include=F, eval=T}
 library(cowplot)
 library(gridExtra)
 library(coin)
-
-#https://stat.ethz.ch/pipermail/r-help/2009-August/399999.html
-#http://archive.bio.ed.ac.uk/jdeacon/statistics/tress9.html
-#https://towardsdatascience.com/survival-analysis-in-clinical-trials-log-rank-test-8f1229e7f0f0
-
-model <- coxph(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=Base_fiscalia_v13) 
-model2 <- coxph(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~motivodeegreso_mod_imp_rec, data=Base_fiscalia_v13_pris) 
-
-# define pairwise comparison
-glht_rx <- multcomp::glht(model, linfct=multcomp::mcp(motivodeegreso_mod_imp_rec="Tukey"))
-smry_rx <- summary(glht_rx)
-glht_rx2 <- multcomp::glht(model2, linfct=multcomp::mcp(motivodeegreso_mod_imp_rec="Tukey"))
-smry_rx2 <- summary(glht_rx2)
-# 
-# xx <- survobrien(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~factor(motivodeegreso_mod_imp_rec), data=Base_fiscalia_v13) 
-# xx <- survobrien(Surv(time2=age_offending_imp, time=edad_al_egres_imp,  !is.na(dateofbirth_imp)) ~factor(motivodeegreso_mod_imp_rec), data=Base_fiscalia_v13) 
-
-no_at_risk$risk.factor<- c("Tr. comp.", "Tr. non-comp(Early)", "Tr. non-comp(Late)")
-plot_cond_sent<-
-fortify(mot_egreso_fit2, fun = "cumhaz") %>% 
-  data.frame() %>% 
-  ggplot(aes(x=time, y=surv, fill=strata, color=strata, group=strata))+
-  geom_step(size=.8)+
-  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .2) +
-  theme_classic2(base_size=18)+
-  annotate(geom = "table",
-           x = 3,
-           y = 8,
-           label = list(no_at_risk),
-           table.theme = ttheme_gtminimal(base_size=13))+ #10 default
-  annotate("text", y = 1.5, x = 65, label = "Cox, Post Hoc Tukey HSD test Late-Early= -0.15, p<0.001",
-  parse = F)+
-  ylab("Cumulative hazards")+ xlab("Age (in years)")+
-    scale_fill_manual(values=c("gray60", "#21177A", "#FE4A17"))+
-    scale_color_manual(values=c("gray60", "#21177A", "#FE4A17"))+
-  theme(legend.position="bottom")+
-  theme(legend.key.size = unit(.2, "cm"))+ 
-  guides(fill=guide_legend(
-                 keywidth=0.1,
-                 keyheight=0.1,
-                 default.unit="inch"))+
-  theme(text = element_text(size=18))+
-  ggtitle("Cond. Sent.")+ guides(color = guide_legend(ncol = 2),
-                                 fill = guide_legend(ncol = 2))
-
-no_at_risk_pris$risk.factor<- c("Tr. comp.", "Tr. non-comp(Early)", "Tr. non-comp(Late)")
-plot_pris<-
-fortify(mot_egreso_fit2_pris, fun = "cumhaz") %>% 
-    data.frame() %>% 
-    ggplot(aes(x=time, y=surv, fill=strata, color=strata, group=strata))+
-    geom_step(size=.8)+
-    geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .2) +
-      theme_classic2(base_size=18)+
-    annotate(geom = "table",
-             x = 3,
-             y = 1.75,
-             label = list(no_at_risk),
-             table.theme = ttheme_gtminimal(base_size=13))+ #10 default
-    annotate("text", y = .25, x = 65, label = "Cox, Post Hoc Tukey HSD test Late-Early= -0.30, p<0.001",
-    parse = F)+  
-    ylab(NULL)+ xlab("Age (in years)")+
-    scale_fill_manual(values=c("gray60", "#21177A", "#FE4A17"))+
-    scale_color_manual(values=c("gray60", "#21177A", "#FE4A17"))+
-  theme(legend.position="bottom")+
-  theme(text = element_text(size=18))+
-  ggtitle("Prison Sent.")
-
-g_legend<-function(a.gplot){
-  tmp <- ggplot_gtable(ggplot_build(a.gplot))
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  legend <- tmp$grobs[[leg]]
-  return(legend)}
-
-mylegend<-g_legend(plot_cond_sent)
-
-p3 <- grid.arrange(arrangeGrob(plot_cond_sent + theme(legend.position="none"),
-                         plot_pris + theme(legend.position="none"),
-                         nrow=1),
-             mylegend, nrow=2,heights=c(10, 1))
-
-ggsave(plot= p3,filename= "./_figs/test.png",dpi=740)#, width= 4.4, height= 3.12
-p4 <- grid.arrange(arrangeGrob(plot_cond_sent + theme(legend.position="none"),
-                         plot_pris + theme(legend.position="none"),
-                         nrow=1),
-                   top = textGrob("Figure 1: Nelson-Aalen Cumulative Hazards of Offense from baseline treatment outcome (Staggered entry)", gp=gpar(fontsize=15,font=8)),
-             mylegend, nrow=2,heights=c(10, 1))
-
-ggsave(plot= p4,filename= "./_figs/SER2023_test.jpg", dpi=740, height = 16*0.7, width =20*0.7)
-
+library(magick)
+fig1 <- image_read_svg('h_m_ns_rp6_stdif_s2_m1.svg')
+fig2 <- image_read_svg('h_m_ns_rp6_stdif_rmst_m1.svg')
+fig3 <- image_read_svg('h_m_ns_rp6_stdif_s2_pris_m1.svg')
+fig4 <- image_read_svg('h_m_ns_rp6_stdif_rmst_pris_m1.svg')
+#https://fondecytacc.github.io/nDP/analisis_mariel_feb_2023_stata_m1.html
+#https://fondecytacc.github.io/nDP/analisis_mariel_feb_2023_stata_pris_m1.html
+#ggsave(plot= p4,filename= "./_figs/SER2023_test.jpg", dpi=740, height = 16*0.7, width =20*0.7)
+```
+```{r exp-surv3-plot, eval=T, fig.align='center', message=F, echo=F, error=T, fig.align='center', fig.cap="", fig.retina=2, fig.cap="Differences in survival probabilities (up) and RMSTs (down) for time-to-condemnatory sentence(left) & imprisonment(right)"}
+image_montage(c(fig1, fig3, fig2, fig4), tile = '2x2', geometry = 'x300+10+10')
 ```
 
-```{r exp-surv3-plot, eval=T, echo=F, error=T, fig.align='center', fig.cap="Cumulative Hazards of Offense from baseline treatment outcome (Staggered entry)", fig.retina=2}
-knitr::include_graphics("./_figs/test.png")
-```
+- **Condemnatory Sentence**: E-value of at least 2.19 for Early and  2.01 for Late discharge vs. treatment completion.
+- **Imprisonment**: E-value of at least 2.36 for Early and  1.99 for Late discharge vs. treatment completion.
+
+# Discussion
+
+-
+
+-
+
+-
 
 # References
-::: text_70
+::: text_55
 ```{r refs1, echo=FALSE, results="asis", warning=F}
 suppressWarnings(PrintBibliography(myBib))
 #https://github.com/ropensci/RefManageR/blob/master/R/rmdCite.R
 ```
+:::
+
+# Funding sources
+::: text_60
+- This work was funded by ANID - Millennium Science Initiative Program - N° NCS2021_003 (Castillo-Carniglia) and N° NCS2021_013 (Calvo); Authors have no conflict of interest to declare
+- **Correspondence to**: Andrés González-Santa Cruz, gonzalez.santacruz.andres@gmail.com
 :::

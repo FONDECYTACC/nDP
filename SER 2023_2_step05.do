@@ -322,12 +322,6 @@ gr_edit .plotregion1.plot2.style.editstyle marker(fillcolor(gs3%60)) editcopy
 gr_edit .plotregion1.plot2.style.editstyle marker(linestyle(color(gs3%60))) editcopy
 
 
-
-
-
-
 stipw (logit poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc_pobr macrozone), distribution(rp) df(5)  dft() ipwtype(stabilised) vce(robust) //*edad_al_ing_1 df(10)  ten_viv
 <</dd_do>>
 ~~~~
-
-m2_1_rp5_tvc5 m2_2_rp4_tvc1 m2_3_gom

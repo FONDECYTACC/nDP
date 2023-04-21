@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- This is a Stata 16.1 generated SVG file (http://www.stata.com) -->
+
+<svg version="1.1" width="5.50in" height="3.00in" viewBox="0 0 3960 2160" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>Stata Graph - Graph</desc>
+	<rect x="0" y="0" width="3960" height="2160" style="fill:#FFFFFF;stroke:none"/>
+	<rect x="0.00" y="0.00" width="3959.88" height="2160.00" style="fill:#FFFFFF"/>
+	<rect x="2.16" y="2.16" width="3955.56" height="2155.68" style="fill:none;stroke:#FFFFFF;stroke-width:4.32"/>
+	<rect x="0.00" y="0.00" width="3959.88" height="2160.00" style="fill:#FFFFFF"/>
+	<rect x="2.16" y="2.16" width="3955.56" height="2155.68" style="fill:none;stroke:#FFFFFF;stroke-width:4.32"/>
+	<line x1="396.00" y1="630.03" x2="1188.00" y2="630.03" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="396.00" y1="630.03" x2="396.00" y2="29.95" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="396.00" y1="29.95" x2="1188.00" y2="29.95" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="1188.00" y1="29.95" x2="1188.00" y2="630.03" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="2375.88" y1="630.03" x2="3167.88" y2="630.03" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="2375.88" y1="630.03" x2="2375.88" y2="29.95" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="2375.88" y1="29.95" x2="3167.88" y2="29.95" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="3167.88" y1="29.95" x2="3167.88" y2="630.03" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="396.00" y1="2130.05" x2="1188.00" y2="2130.05" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="396.00" y1="2130.05" x2="396.00" y2="1529.97" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="396.00" y1="1529.97" x2="1188.00" y2="1529.97" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="1188.00" y1="1529.97" x2="1188.00" y2="2130.05" style="stroke:#000000;stroke-width:6.48"/>
+	<line x1="1188.00" y1="330.05" x2="2375.88" y2="330.05" style="stroke:#000000;stroke-width:6.48"/>
+	<defs>
+		<path id="path_necRTnZv" d="M2375.88 330.05 L2338.01 350.72 L2356.94 330.05 L2338.01 309.38 L2375.88 330.05 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_nqrCRfLm">
+			<use xlink:href="#path_necRTnZv"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_necRTnZv" style="stroke:none;fill:#000000"/>
+	<use xlink:href="#path_necRTnZv" style="fill:none;stroke:#000000;stroke-width:12.96" clip-path="url(#clipPath_nqrCRfLm)"/>
+	<line x1="792.00" y1="630.03" x2="792.00" y2="1529.97" style="stroke:#000000;stroke-width:6.48"/>
+	<defs>
+		<path id="path_iKUdmjUR" d="M792.00 1529.97 L771.33 1492.10 L792.00 1511.03 L812.67 1492.10 L792.00 1529.97 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_SYkNrVXI">
+			<use xlink:href="#path_iKUdmjUR"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_iKUdmjUR" style="stroke:none;fill:#000000"/>
+	<use xlink:href="#path_iKUdmjUR" style="fill:none;stroke:#000000;stroke-width:12.96" clip-path="url(#clipPath_SYkNrVXI)"/>
+	<line x1="2771.88" y1="630.03" x2="792.00" y2="1529.97" style="stroke:#000000;stroke-width:6.48"/>
+	<defs>
+		<path id="path_VJZqbuPk" d="M792.00 1529.97 L817.99 1495.44 L809.33 1522.17 L835.19 1533.19 L792.00 1529.97 Z" stroke-linejoin="round"/>
+	</defs>
+	<defs>
+		<clipPath id="clipPath_RphipfmT">
+			<use xlink:href="#path_VJZqbuPk"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#path_VJZqbuPk" style="stroke:none;fill:#000000"/>
+	<use xlink:href="#path_VJZqbuPk" style="fill:none;stroke:#000000;stroke-width:12.96" clip-path="url(#clipPath_RphipfmT)"/>
+	<text x="792.00" y="171.77" style="font-family:'Helvetica';font-size:60.02px;fill:#000000" text-anchor="middle">Admission to</text>
+	<text x="792.00" y="231.79" style="font-family:'Helvetica';font-size:60.02px;fill:#000000" text-anchor="middle">baseline treatment</text>
+	<text x="2771.88" y="171.77" style="font-family:'Helvetica';font-size:60.02px;fill:#000000" text-anchor="middle">Treatment</text>
+	<text x="2771.88" y="231.79" style="font-family:'Helvetica';font-size:60.02px;fill:#000000" text-anchor="middle">Completion</text>
+	<text x="792.00" y="1699.39" style="font-family:'Helvetica';font-size:60.02px;fill:#000000" text-anchor="middle">Contact with</text>
+	<text x="792.00" y="1759.41" style="font-family:'Helvetica';font-size:60.02px;fill:#000000" text-anchor="middle">the justice system</text>
+	<text x="792.00" y="1819.43" style="font-family:'Helvetica';font-size:60.02px;fill:#000000" text-anchor="middle">after baseline tr.</text>
+	<text x="555.88" y="556.32" style="font-family:'Helvetica';font-size:74.99px;fill:#000000" text-anchor="middle">59,763</text>
+	<text x="2535.76" y="556.32" style="font-family:'Helvetica';font-size:74.99px;fill:#000000" text-anchor="middle">16,475</text>
+	<text x="457.50" y="2056.34" style="font-family:'Helvetica';font-size:74.99px;fill:#000000" text-anchor="middle">0</text>
+	<text x="1028.12" y="556.32" style="font-family:'Helvetica';font-size:74.99px;fill:#000000" text-anchor="middle">28,957</text>
+	<text x="3007.99" y="556.32" style="font-family:'Helvetica';font-size:74.99px;fill:#000000" text-anchor="middle">13,539</text>
+	<text x="1028.12" y="2056.34" style="font-family:'Helvetica';font-size:74.99px;fill:#000000" text-anchor="middle">17,267</text>
+	<text x="1782.00" y="288.76" style="font-family:'Helvetica';font-size:74.99px;fill:#000000" text-anchor="middle">16475</text>
+	<text x="643.00" y="1106.28" style="font-family:'Helvetica';font-size:74.99px;fill:#000000" text-anchor="middle">14331</text>
+	<text x="1615.31" y="1106.28" style="font-family:'Helvetica';font-size:74.99px;fill:#000000" text-anchor="middle">2936</text>
+	<text x="1782.00" y="423.78" style="fill:#000000" text-anchor="middle">
+		<tspan style="font-family:'Helvetica';font-style:italic;font-size:74.99px">h(1)</tspan>
+		<tspan dy="10.71px" style="font-family:'Helvetica';font-size:43.72px">12</tspan>
+	</text>
+	<text x="925.65" y="1106.28" style="fill:#000000" text-anchor="middle">
+		<tspan style="font-family:'Helvetica';font-style:italic;font-size:74.99px">h(2)</tspan>
+		<tspan dy="10.71px" style="font-family:'Helvetica';font-size:43.72px">13</tspan>
+	</text>
+	<text x="1955.25" y="1106.28" style="fill:#000000" text-anchor="middle">
+		<tspan style="font-family:'Helvetica';font-style:italic;font-size:74.99px">h(3)</tspan>
+		<tspan dy="10.71px" style="font-family:'Helvetica';font-size:43.72px">23</tspan>
+	</text>
+</svg>

@@ -278,9 +278,9 @@ try(webshot::install_phantomjs())
 
 if(!require(bpmn)){try(devtools::install_github("bergant/bpmn",upgrade ="never"))}
 
-if (!requireNamespace("BiocManager", quietly = TRUE)){install.packages("BiocManager")}
-
-if(!require(fmrs)){BiocManager::install("fmrs")}
+if (!requireNamespace("BiocManager", quietly = TRUE)){renv::install('BiocManager')}
+ 
+if(!require(fmrs)){renv::install("bioc::fmrs")}
 #http://www.bioconductor.org/packages/release/bioc/manuals/fmrs/man/fmrs.pdf
 
 #if(!require(Statamarkdown)){try(devtools::install_github("Hemken/Statamarkdown",upgrade ="never"))}
@@ -1543,6 +1543,16 @@ subset(Base_fiscalia_v14_pris, select= c("hash_key", vars_cov, "fech_ing_num_1",
 ```{r desc, echo=T, fig.align='center', message=T, error=T, eval=T}
 # Treatment status (Early dropout/Late dropout/Treatment completion) 
 
+as.data.frame.TableOne <- function(x, ...) {capture.output(print(x,
+                          showAllLevels = TRUE, ...) -> x)
+  y <- as.data.frame(x)
+  y$characteristic <- dplyr::na_if(rownames(x), "")
+  y <- y %>%
+  fill(characteristic, .direction = "down") %>%
+  select(characteristic, everything())
+  rownames(y) <- NULL
+  y}
+
 tbone_desc_merge5<-
 CreateTableOne(vars=c(setdiff(vars_cov, "motivodeegreso_mod_imp_rec"), "offender_d"), data=  subset(Base_fiscalia_v14, select=c(vars_cov, "offender_d")), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr")), smd=T, strata="motivodeegreso_mod_imp_rec", addOverall = T, includeNA=T, test=T)
 
@@ -1568,7 +1578,7 @@ tbone_desc_merge52<-
 CreateTableOne(vars=c(setdiff(vars_cov, "motivodeegreso_mod_imp_rec"), "offender_d"), data=  subset(Base_fiscalia_v14_pris, select=c(vars_cov, "offender_d")), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr")), smd=T, strata="motivodeegreso_mod_imp_rec", addOverall = T, includeNA=T, test=T)
 
 as.data.frame.TableOne(tbone_desc_merge52, smd=T, nonnormal= T)%>% 
-  dplyr::mutate(char2=characteristic) %>% 
+  dplyr::mutate(char2=`characteristic`) %>% 
   tidyr::fill(char2) %>% 
   dplyr::select(char2,everything()) %>% 
   dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
@@ -1586,6 +1596,7 @@ as.data.frame.TableOne(tbone_desc_merge52, smd=T, nonnormal= T)%>%
 message(Sys.getenv("R_LIBS_USER"))
 Sys.Date()
 message(paste0("Editor context: ", path))
+#load(paste0(dirname(rstudioapi::getSourceEditorContext()$path),"/15.RData"))
 
 if (grepl("CISS Fondecyt",rstudioapi::getSourceEditorContext()$path)==T){
     save.image("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/15.RData")

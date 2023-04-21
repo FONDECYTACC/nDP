@@ -1471,8 +1471,9 @@ scalar HR_late_up = r(table)["ul",2]
 
 set scheme s1mono
 
-evalue hr `=scalar(HR_early)' , lcl(`=scalar(HR_early_lo)') ucl(`=scalar(HR_early_up)') true(1) common figure
+di  "`=scalar(round(HR_early,.01))'  (95%CI `=scalar(round(HR_early_lo),.01)', `=round(scalar(HR_early_up),.01)')"
 
+evalue hr `=scalar(HR_early)' , lcl(`=scalar(HR_early_lo)') ucl(`=scalar(HR_early_up)') true(1) common figure
 <</dd_do>>
 ~~~~
 
@@ -1480,6 +1481,8 @@ evalue hr `=scalar(HR_early)' , lcl(`=scalar(HR_early_lo)') ucl(`=scalar(HR_earl
 
 ~~~~
 <<dd_do>>
+di  "`=scalar(round(HR_late,.01))'  (95%CI `=scalar(round(HR_late_lo),.01)', `=round(scalar(HR_late_up),.01)')"
+
 evalue hr `=scalar(HR_late)' , lcl(`=scalar(HR_late_lo)') ucl(`=scalar(HR_late_up)') true(1) common figure
 <</dd_do>>
 ~~~~
@@ -1505,8 +1508,9 @@ scalar HR_late_up2 = r(table)["ul",2]
 
 set scheme s1mono
 
-evalue hr `=scalar(HR_early2)' , lcl(`=scalar(HR_early_lo2)') ucl(`=scalar(HR_early_up2)') true(1) common figure
+di  "`=scalar(round(HR_early2,.01))'  (95%CI `=scalar(round(HR_early_lo2),.01)', `=round(scalar(HR_early_up2),.01)')"
 
+evalue hr `=scalar(HR_early2)' , lcl(`=scalar(HR_early_lo2)') ucl(`=scalar(HR_early_up2)') true(1) common figure
 <</dd_do>>
 ~~~~
 
@@ -1515,6 +1519,8 @@ evalue hr `=scalar(HR_early2)' , lcl(`=scalar(HR_early_lo2)') ucl(`=scalar(HR_ea
 
 ~~~~
 <<dd_do>>
+di  "`=scalar(round(HR_late2,.01))'  (95%CI `=scalar(round(HR_late_lo2),.01)', `=round(scalar(HR_late_up2),.01)')"
+
 evalue hr `=scalar(HR_late2)' , lcl(`=scalar(HR_late_lo2)') ucl(`=scalar(HR_late_up2)') true(1) common figure
 <</dd_do>>
 ~~~~
@@ -1541,6 +1547,8 @@ scalar HR_late_upm1 = r(table)["ul",2]
 
 set scheme s1mono
 
+di  "`=scalar(round(HR_earlym1,.01))'  (95%CI `=scalar(round(HR_early_lom1),.01)', `=round(scalar(HR_early_upm1),.01)')"
+
 evalue hr `=scalar(HR_earlym1)' , lcl(`=scalar(HR_early_lom1)') ucl(`=scalar(HR_early_upm1)') true(1) common figure
 
 <</dd_do>>
@@ -1550,6 +1558,8 @@ evalue hr `=scalar(HR_earlym1)' , lcl(`=scalar(HR_early_lom1)') ucl(`=scalar(HR_
 
 ~~~~
 <<dd_do>>
+di  "`=scalar(round(HR_latem1,.01))'  (95%CI `=scalar(round(HR_late_lom1),.01)', `=round(scalar(HR_late_upm1),.01)')"
+
 evalue hr `=scalar(HR_latem1)' , lcl(`=scalar(HR_late_lom1)') ucl(`=scalar(HR_late_upm1)') true(1) common figure
 <</dd_do>>
 ~~~~
@@ -1575,6 +1585,8 @@ scalar HR_late_up2m1 = r(table)["ul",2]
 
 set scheme s1mono
 
+di  "`=scalar(round(HR_early2m1,.01))'  (95%CI `=scalar(round(HR_early_lo2m1),.01)', `=round(scalar(HR_early_up2m1),.01)')"
+
 evalue hr `=scalar(HR_early2m1)' , lcl(`=scalar(HR_early_lo2m1)') ucl(`=scalar(HR_early_up2m1)') true(1) common figure
 
 <</dd_do>>
@@ -1585,9 +1597,13 @@ evalue hr `=scalar(HR_early2m1)' , lcl(`=scalar(HR_early_lo2m1)') ucl(`=scalar(H
 
 ~~~~
 <<dd_do>>
+di  "`=scalar(round(HR_late2m1,.01))'  (95%CI `=scalar(round(HR_late_lo2m1),.01)', `=round(scalar(HR_late_up2m1),.01)')"
+
 evalue hr `=scalar(HR_late2m1)' , lcl(`=scalar(HR_late_lo2m1)') ucl(`=scalar(HR_late_up2m1)') true(1) common figure
 <</dd_do>>
 ~~~~
+
+
 
 <<dd_graph: saving("eval_late_pris_m1.svg") width(800) replace>>
 
