@@ -50,7 +50,11 @@ cap noi which mkspline2
 if _rc==111 {		
 	ssc install postrcspline
 	}
-
+cap noi which starjas
+if _rc==111 {		
+	ssc install starjas
+	}
+	
 cap noi ssc install moremata
 <</dd_do>>
 ~~~~
@@ -481,6 +485,17 @@ estimates  store m_nostag_rp`i'_tvc_`j'
 
 <</dd_do>>
 ~~~~
+
+
+~~~~
+<<dd_do>>
+starjas motivodeegreso_mod_imp_rec, adjust(tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 psy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis_com3 rc_x1 rc_x2 rc_x3) legend(pos(5) ring(0)) lc(green navy red brown)
+
+starjas motivodeegreso_mod_imp_rec, adjust( tr_modality sex_enc edad_ini_cons escolaridad_rec sus_principal_mod freq_cons_sus_prin condicion_ocupacional_cor policonsumo num_hijos_mod_joel_bin tenencia_de_la_vivienda_mod macrozona n_off_vio n_off_acq n_off_sud n_off_oth dg_cie_10_rec dg_trs_cons_sus_or clas_r porc_pobr sus_ini_mod_mvv ano_nac_corr con_quien_vive_joel fis_comorbidity_icd_10 rc_x1 rc_x2 rc_x3)
+<</dd_do>>
+~~~~
+
+
 
 We obtained a summary of distributions by AICs and BICs.
 

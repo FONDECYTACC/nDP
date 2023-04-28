@@ -616,7 +616,8 @@ gr_edit .title.style.editstyle box_alignment(nwest) editcopy
 gr_edit .title.style.editstyle horizontal(left) editcopy
 gr_edit .title.xoffset = -45
 gr_edit .title.DragBy 2 0
-
+//eliminate title 2023-04-23
+gr_edit .title.draw_view.setstyle, style(no)
 
 /*
 gr_edit .yaxis1.major.num_rule_ticks = 26
