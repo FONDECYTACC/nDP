@@ -544,7 +544,8 @@ This research design is a retrospective cohort based on the administrative data'
 **Exposure**: baseline PSU (using more than one main substance among alcohol and illicit drugs at admission to SUD treatment, whether sequential or concurrent); **Mediator**: SUD treatment outcome (complete vs. dropout or spelled by misconduct); **Outcome**: contact with CJS (offense that led to a condemnatory sentence).
 
 ## Analytical Plan
-The study controlled for various confounding variables related to substance use, demographics, and social factors through weights generated through the inverse probability of PSU. Patients were weighted by the inverse probability of polysubstance use based on several predictors; Weights were truncated at the 1st and 99th percentiles$`r Cite(myBib, c("Cole2008"))`$. 
+The study controlled for various confounding variables related to substance use, demographics, and social factors through weights generated through the inverse probability of PSU. Patients were weighted by the inverse probability of polysubstance use based on several predictors; Weights were truncated at the 1st and 99th percentiles$`r Cite(myBib, c("Cole2008"))`$.
+
 ```{r exp-surv4-plot, eval=T, echo=F, error=T, fig.align='center', fig.cap="Covariate balance", fig.retina=2}
 knitr::include_graphics("pbal2_mod.svg")
 ```
@@ -555,6 +556,87 @@ knitr::include_graphics("transmat_ser23_2.svg")
 We calculated the Aalen-Johansen estimator for transition probabilities at 6 months, 1 and 3 years using the `multistate` Stata command$`r Cite(myBib, c("Crowther2023"))`$. Secondary analyses focused on mediation, estimating the effects of PSU given treatment outcome at 6 months, 1 and 3 years using a standard time-to-first-event approach. Proportions mediated were estimated using the bootstrap method or m-estimation of standard errors on standardized survival curves and restricted mean survival times (RMST) through the `stpm2` and `stipw` Stata commands$`r Cite(myBib, c("Stefanski2002","VanderWeele2011a","s457128", "hill2022development"))`$. We also plan to run separate analyses on patients admitted to different treatment settings. Preliminary markdowns are available on: https://fondecytacc.github.io/nDP/an_ser_2023_step_0.html.
 
 # Preliminary Results
+
+```{r exp-rates1, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
+invisible("Complete treatments, no weights, IRR")
+irr_tr_comp_nowgt<-rvest::read_html("irrs_t0_nowgt_tr_comp.html") %>% rvest::html_table() %>% 
+  data.frame() %>% dplyr::filter(nchar(X1)>2)
+irr_tr_comp_nowgt<-cbind.data.frame(measure= irr_tr_comp_nowgt[seq(1,nrow(irr_tr_comp_nowgt),by=2),1],value=irr_tr_comp_nowgt[seq(2,nrow(irr_tr_comp_nowgt),by=2),1])
+irr_tr_comp_nowgt$value<- stringr::str_replace_all(irr_tr_comp_nowgt$value, pattern = "(\\d)\\1{3,}", replacement = "\\1")
+
+invisible("Complete treatments, weight(1), IRR")
+irr_tr_comp_wgt<-rvest::read_html("irrs_t0_wgt_tr_comp.html") %>% rvest::html_table() %>%  data.frame() %>% dplyr::filter(nchar(X1)>2)
+irr_tr_comp_wgt<-cbind.data.frame(measure= irr_tr_comp_wgt[seq(1,nrow(irr_tr_comp_wgt),by=2),1],value=irr_tr_comp_wgt[seq(2,nrow(irr_tr_comp_wgt),by=2),1])
+irr_tr_comp_wgt$value<- stringr::str_replace_all(irr_tr_comp_wgt$value, pattern = "(\\d)\\1{3,}", replacement = "\\1")
+
+invisible("Complete treatments, weight(2), IRR")
+irr_tr_comp_wgt2<-rvest::read_html("irrs_t0_wgt_tr_comp2.html") %>% rvest::html_table() %>%  data.frame() %>% dplyr::filter(nchar(X1)>2)
+irr_tr_comp_wgt2<-cbind.data.frame(measure= irr_tr_comp_wgt2[seq(1,nrow(irr_tr_comp_wgt2),by=2),1],value=irr_tr_comp_wgt2[seq(2,nrow(irr_tr_comp_wgt2),by=2),1])
+irr_tr_comp_wgt2$value<- stringr::str_replace_all(irr_tr_comp_wgt2$value,"\'","")
+
+invisible("Contact with the justice system, no weight, IRR")
+irr_cont_js_nowgt<-rvest::read_html("irrs_t0_nowgt_contact_js.html") %>% rvest::html_table() %>%  data.frame() %>% dplyr::filter(nchar(X1)>2)
+irr_cont_js_nowgt<-cbind.data.frame(measure= irr_cont_js_nowgt[seq(1,nrow(irr_cont_js_nowgt),by=2),1],value=irr_cont_js_nowgt[seq(2,nrow(irr_cont_js_nowgt),by=2),1])
+irr_cont_js_nowgt$value<- stringr::str_replace_all(irr_cont_js_nowgt$value, pattern = "(\\d)\\1{3,}", replacement = "\\1")
+
+invisible("Contact with the justice system, weight(1), IRR")
+irr_cont_js_wgt<-rvest::read_html("irrs_t0_wgt_contact_js.html") %>% rvest::html_table() %>%  data.frame() %>% dplyr::filter(nchar(X1)>2)
+irr_cont_js_wgt<-cbind.data.frame(measure= irr_cont_js_wgt[seq(1,nrow(irr_cont_js_wgt),by=2),1],value=irr_cont_js_wgt[seq(2,nrow(irr_cont_js_wgt),by=2),1])
+irr_cont_js_wgt$value<- stringr::str_replace_all(irr_cont_js_wgt$value, pattern = "(\\d)\\1{3,}", replacement = "\\1")
+
+invisible("Contact with the justice system, weight(2), IRR")
+irr_cont_js_wgt2<-rvest::read_html("irrs_t0_wgt_contact_js2.html") %>% rvest::html_table() %>%  data.frame() %>% dplyr::filter(nchar(X1)>2)
+irr_cont_js_wgt2<-cbind.data.frame(measure= irr_cont_js_wgt2[seq(1,nrow(irr_cont_js_wgt2),by=2),1],value=irr_cont_js_wgt2[seq(2,nrow(irr_cont_js_wgt2),by=2),1])
+irr_cont_js_wgt2$value<- stringr::str_replace_all(irr_cont_js_wgt2$value,"\'","")
+#irr_cont_js_wgt2$value<- stringr::str_replace_all(irr_cont_js_wgt2$value,":","")
+
+```
+
+
+<br>
+<div class="fold s o">
+```{r exp-surv23-2, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
+prob_direct<-rvest::read_html("pr_msaj13_23.html") %>% rvest::html_table()
+prob_indirect1<-rvest::read_html("pr_msaj12_23.html") %>% rvest::html_table()
+prob_indirect2<-rvest::read_html("pr_msaj23_23.html") %>% rvest::html_table()
+
+prob_imp_pris_tab<-
+prob_imp_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
+  dplyr::select(Time, Comp_ci, Late_ci, Early_ci)
+
+prob_imp_diff_pris_tab<-
+prob_imp_diff_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) 
+
+rmst_imp_pris_tab<-
+rmst_imp_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci= paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci= paste0(Late," (", Late_lci,",",Late_uci,")")) %>%
+  dplyr::select(Time, Comp_ci, Late_ci, Early_ci)
+
+rmst_imp_diff_pris_tab<-
+rmst_imp_diff_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) 
+
+
+rbindlist(list(list(c("Probs.",rep("",6))),cbind.data.frame(prob_imp_pris_tab,prob_imp_diff_pris_tab[,-1]), list(c("RMST",rep("",6))), cbind.data.frame(rmst_imp_pris_tab,rmst_imp_diff_pris_tab[,-1])), fill=T) %>% 
+    dplyr::slice(-2,-3,-4,-5,-6,-7,-14,-15,-16,-17,-18,-19) %>%        
+kbl(format = 'html',
+        escape = FALSE,
+        col.names= c("Time", "Complete Tr.","Late Disch.", "Early Disch.", "Comp. vs Late", "Comp. vs Early", "Early vs Late"), 
+    caption= "Offending with imprisonment") %>% 
+    kable_styling(font_size = 24) %>%
+    gsub("font-size: initial !important;", 
+         "font-size: 30pt !important;", 
+         .)
+```
+</div>
+
+-	Compared to those receiving almost no treatment (early drop-out), those completing SUT took longer to contact the criminal justice system (IRR [Incidence rate ratio]= `r sprintf("%1.2f", irrs_early_drop$estimate[1])` 95% CI `r sprintf("%1.2f", irrs_early_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_early_drop$conf.int[2])`; aHR[adjusted hazard ratio]: 1.74  95%CI 1.66, 1.83) and to commit an offence leading to imprisonment `r sprintf("%1.2f", irrs_early_drop_pris$estimate[1])` (95% CI `r sprintf("%1.2f", irrs_early_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_early_drop_pris$conf.int[2])`; aHR= 1.99 95%CI 1.79, 2.22).
+-	Compared to receiving some treatment (late drop-out), those completing SUT took longer (IRR= `r sprintf("%1.2f", irrs_late_drop$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop$conf.int[2])`; aHR=1.58 95%CI 1.52, 1.65) to contact the criminal justice system and to imprisonment (IRR= `r sprintf("%1.2f", irrs_late_drop_pris$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop_pris$conf.int[2])`; aHR=1.65 95%CI 1.51, 1.81). 
+-	However, the difference was lower when we compared those who received some treatment with those with less SUT for some period (late drop-out) regarding the time to contact the criminal justice system (IRR= `r sprintf("%1.2f", irrs_early_late_drop$estimate[1])` 95% CI `r sprintf("%1.2f", irrs_early_late_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_early_late_drop$conf.int[2])`) and imprisonment (IRR= `r sprintf("%1.2f", irrs_early_late_drop_pris$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_early_late_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_early_late_drop_pris$conf.int[2])`). Differences between Early vs Late did not overlap the null in Tables 1 & 2.
 
 -
  

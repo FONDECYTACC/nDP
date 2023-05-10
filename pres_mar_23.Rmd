@@ -728,7 +728,9 @@ kbl(format = 'html',
 - **Condemnatory Sentence**: E-value of at least 2.19 for Early and  2.01 for Late dropout vs. treatment completion.
 - **Imprisonment**: E-value of at least 2.36 for Early and  1.99 for Late dropout vs. treatment completion.
 
-```{r exp-surv3-prob-plot, eval=T, fig.align='center', message=F, echo=F, error=T, fig.align='center', fig.cap="", fig.retina=2, fig.cap="Differences in survival probabilities(up) and RMSTs(bottom) for time-to-condemnatory sentence(left) & imprisonment(right)"}
+The following figure depicts the predicted differences in survival probabilities and RMSTs for committing an offense that results in a condemnatory sentence and imprisonment.
+
+```{r exp-surv3-prob-plot, eval=T, fig.align='center', message=F, echo=F, error=T, fig.align='center', fig.cap="", fig.retina=2, fig.cap="Differences in survival probabilities(left) and RMSTs(right) for time-to-condemnatory sentence(up) & imprisonment(bottom)"}
 require(cowplot)
 require(gridExtra)
 require(coin)
@@ -748,7 +750,7 @@ image_montage(c(fig2, fig4), tile = '2x1', geometry = 'x300+10+10',gravity = "Ce
 
 # Discussion
 
-The greater the exposure of participants to Chilean treatment programs, the greater the effect on contacting the criminal justice system. Furthermore, the effect is consistent for any offense leading to a condemnatory sentence, including imprisonment, and remains significant after five years post-treatment. These findings are particularly relevant given the integrated approach to substance use treatment in Chile and other Latin American countries, where the effectiveness of such programs is unclear in a literature that typically focuses on specific approaches or substances and in short time periods$`r Cite(myBib, c("babor2021"))`$. This research acknowledges the constraints related to administrative data, such as inmortal time and omitted variables bias (e.g., adolescent treatments). Regarding the generalizability of results, we recognize that the economic and social reality of Latin American countries can vary, even though findings might be more pertinent to these contexts than current evidence from developing countries.
+The greater the exposure of participants to Chilean treatment programs, the greater the effect on contacting the criminal justice system. Furthermore, the effect is consistent for any offense leading to a condemnatory sentence, including imprisonment, and remains significant after five years post-treatment. These findings are particularly relevant given the integrated approach to substance use treatment in Chile and other Latin American countries, where the effectiveness of such programs is unclear in a literature that typically focuses on specific approaches or substances and in short time periods$`r Cite(myBib, c("babor2021"))`$. This research acknowledges the constraints related to administrative data, such as hidden competing events and omitted variables bias (e.g., adolescent treatments). Regarding the generalizability of results, we recognize that the economic and social reality of Latin American countries can vary, even though findings might be more pertinent to these contexts than current evidence from developing countries.
 
 # References
 

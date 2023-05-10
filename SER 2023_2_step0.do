@@ -41,6 +41,11 @@ cap noi which pbalchk
 if _rc==111 {
 	cap noi net install pbalchk from("http://personalpages.manchester.ac.uk/staff/mark.lunt/")
 	}
+cap noi which matselrc
+if _rc==111 {
+	ssc install matselrc
+	}
+
 <</dd_do>>
 ~~~~
 
@@ -249,9 +254,61 @@ cap gen _start= 0
 stset diff1, enter(_start) failure(comp==1) //*scale(12) 
 
 stsum, by (poly)
+*https://www.statalist.org/forums/forum/general-stata-discussion/general/1635683-stata-stir-command-with-pweights
+<</dd_do>>
+~~~~
+
+~~~~
+<<dd_do>>
+poisson _d i.poly , irr exposure(_t) vce(rob)
+matrix pois_irr_t0_nowgt= r(table)
+*matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/1) r(1, 5/6)
+
+margins i.poly, predict(ir)
+matrix pois_ir_t0_nowgt= r(table)
+*matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/2) r(1, 5/6)
+local ir_poly_0 : di %6.2f pois_ir_t0_nowgt[1,1]
+local ir_poly_0_lo : di %6.2f pois_ir_t0_nowgt[2,1]
+local ir_poly_0_up : di %6.2f pois_ir_t0_nowgt[3,1]
+*"`=scalar(round(pois_ir_t0_nowgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[2,1]*1000,.01))',`=scalar(round(pois_ir_t0_nowgt[3,1]*1000,.01))')"
+scalar ir_poly_00 = "`=scalar(round(pois_ir_t0_nowgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[5,1]*1000,.01))',`=scalar(round(pois_ir_t0_nowgt[6,1]*1000,.01))')"
+local ir_poly_1 : di %6.2f pois_ir_t0_nowgt[1,2]
+local ir_poly_1_lo : di %6.2f pois_ir_t0_nowgt[2,2]
+local ir_poly_1_up : di %6.2f pois_ir_t0_nowgt[3,2]
+*"`=scalar(round(pois_ir_t0_nowgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[2,2]*1000,.01))',`=scalar(round(pois_ir_t0_nowgt[3,2]*1000,.01))')"
+scalar ir_poly_11 = "`=scalar(round(pois_ir_t0_nowgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[5,2]*1000,.01))',`=scalar(round(pois_ir_t0_nowgt[6,2]*1000,.01))')"
+
+local irr_poly_1 : di %6.2f pois_irr_t0_nowgt[1,2]
+local irr_poly_1_lo : di %6.2f pois_irr_t0_nowgt[2,2]
+local irr_poly_1_up : di %6.2f pois_irr_t0_nowgt[3,2]
+**"`=scalar(round(pois_irr_t0_nowgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_irr_t0_nowgt[2,1]*1000,.01))',`=scalar(round(pois_irr_t0_nowgt[3,1]*1000,.01))')"
+scalar irr_poly01 = "`=scalar(round(pois_irr_t0_nowgt[1,2],.01))' (95%CI: `=scalar(round(pois_irr_t0_nowgt[5,2],.01))',`=scalar(round(pois_irr_t0_nowgt[6,2],.01))')"
 
 <</dd_do>>
 ~~~~
+
+~~~~
+<<dd_do>>
+*set trace on
+cap noi qui sts test poly, logrank
+scalar logrank_chi= round(r(chi2),.01)
+scalar logrank_df= r(df)
+scalar logrank_p= round(chiprob(r(df),r(chi2)),.001)
+local lr1: di %3.2f logrank_chi
+local lr2: di %1.0f logrank_df
+local lr3: di %5.4f logrank_p
+scalar logrank_nowgt= " Chi^2(`lr2')=`lr1',p=`lr3'"
+*di logrank_nowgt
+
+matrix comb_irs = (0 \ 0 \ 0 \ 0)
+matrix colnames comb_irs = "Tr.comp-no weight"
+matrix rownames comb_irs = "No poly: `=scalar(ir_poly_00)'" "Poly: `=scalar(ir_poly_11)'" "IRR: `=scalar(irr_poly01)'" "Logrank: `=scalar(logrank_nowgt)'"
+esttab matrix(comb_irs) using "irrs_t0_nowgt_tr_comp.html", replace
+*set trace off
+<</dd_do>>
+~~~~
+
+<<dd_include: "irrs_t0_nowgt_tr_comp.html" >>
 
 We calculated the inverse probability weights
 
@@ -310,9 +367,65 @@ frame example_a: stsum, by (poly)
 <</dd_do>>
 ~~~~
 
+
+~~~~
+<<dd_do>>
+frame change example_a
+poisson _d i.poly [pw=HAW], irr exposure(_t) vce(rob)
+matrix pois_irr_t0_wgt= r(table)
+*matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/1) r(1, 5/6)
+
+margins i.poly, predict(ir)
+matrix pois_ir_t0_wgt= r(table)
+*matselrc pois_ir_t0_wgt pois_ir_t0_wgt, c(1/2) r(1, 5/6)
+local ir_poly_0 : di %6.2f pois_ir_t0_wgt[1,1]
+local ir_poly_0_lo : di %6.2f pois_ir_t0_wgt[2,1]
+local ir_poly_0_up : di %6.2f pois_ir_t0_wgt[3,1]
+*"`=scalar(round(pois_ir_t0_wgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[2,1]*1000,.01))',`=scalar(round(pois_ir_t0_wgt[3,1]*1000,.01))')"
+scalar ir_poly_001 = "`=scalar(round(pois_ir_t0_wgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[5,1]*1000,.01))',`=scalar(round(pois_ir_t0_wgt[6,1]*1000,.01))')"
+local ir_poly_1 : di %6.2f pois_ir_t0_wgt[1,2]
+local ir_poly_1_lo : di %6.2f pois_ir_t0_wgt[2,2]
+local ir_poly_1_up : di %6.2f pois_ir_t0_wgt[3,2]
+*"`=scalar(round(pois_ir_t0_wgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[2,2]*1000,.01))',`=scalar(round(pois_ir_t0_wgt[3,2]*1000,.01))')"
+scalar ir_poly_111 = "`=scalar(round(pois_ir_t0_wgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[5,2]*1000,.01))',`=scalar(round(pois_ir_t0_wgt[6,2]*1000,.01))')"
+
+local irr_poly_1 : di %6.2f pois_irr_t0_wgt[1,2]
+local irr_poly_1_lo : di %6.2f pois_irr_t0_wgt[2,2]
+local irr_poly_1_up : di %6.2f pois_irr_t0_wgt[3,2]
+**"`=scalar(round(pois_irr_t0_wgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_irr_t0_wgt[2,1]*1000,.01))',`=scalar(round(pois_irr_t0_wgt[3,1]*1000,.01))')"
+scalar irr_poly011 = "`=scalar(round(pois_irr_t0_wgt[1,2],.01))' (95%CI: `=scalar(round(pois_irr_t0_wgt[5,2],.01))',`=scalar(round(pois_irr_t0_wgt[6,2],.01))')"
+
+<</dd_do>>
+~~~~
+
+~~~~
+<<dd_do>>
+*set trace on
+cap noi qui sts test poly
+scalar logrank_chi1= round(r(chi2),.01)
+scalar logrank_df1= r(df)
+scalar logrank_p1= round(chiprob(r(df),r(chi2)),.001)
+local lr10: di %3.2f logrank_chi1
+local lr20: di %1.0f logrank_df1
+local lr30: di %5.4f logrank_p1
+scalar logrank_wgt1 = "Cox regression-based test for equality of survival curves: Wald Chi^2(`lr20')=`lr10',p=`lr30'"
+*di logrank_nowgt
+
+matrix comb_irs2 = (0 \ 0 \ 0 \ 0)
+matrix colnames comb_irs2 = "Tr.comp-weight"
+matrix rownames comb_irs2 = "No poly: `=scalar(ir_poly_001)'" "Poly: `=scalar(ir_poly_111)'" "IRR: `=scalar(irr_poly011)'" "Logrank: `=scalar(logrank_wgt1)'"
+esttab matrix(comb_irs2) using "irrs_t0_wgt_tr_comp.html", replace
+*set trace off
+<</dd_do>>
+~~~~
+
+<<dd_include: "irrs_t0_wgt_tr_comp.html" >>
+
 ~~~~
 <<dd_do>>
 frame example_a: stdescribe, weight
+frame change default
+
 <</dd_do>>
 ~~~~
 
@@ -338,6 +451,58 @@ stsum, by (poly)
 
 <</dd_do>>
 ~~~~
+
+~~~~
+<<dd_do>>
+poisson _d i.poly , irr exposure(_t) vce(rob)
+matrix pois_irr_t0_nowgt2= r(table)
+*matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/1) r(1, 5/6)
+
+margins i.poly, predict(ir)
+matrix pois_ir_t0_nowgt2= r(table)
+*matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/2) r(1, 5/6)
+local ir_poly_0 : di %6.2f pois_ir_t0_nowgt2[1,1]
+local ir_poly_0_lo : di %6.2f pois_ir_t0_nowgt2[2,1]
+local ir_poly_0_up : di %6.2f pois_ir_t0_nowgt2[3,1]
+*"`=scalar(round(pois_ir_t0_nowgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[2,1]*1000,.01))',`=scalar(round(pois_ir_t0_nowgt[3,1]*1000,.01))')"
+scalar ir_poly_002 = "`=scalar(round(pois_ir_t0_nowgt2[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt2[5,1]*1000,.01))',`=scalar(round(pois_ir_t0_nowgt2[6,1]*1000,.01))')"
+local ir_poly_1 : di %6.2f pois_ir_t0_nowgt2[1,2]
+local ir_poly_1_lo : di %6.2f pois_ir_t0_nowgt2[2,2]
+local ir_poly_1_up : di %6.2f pois_ir_t0_nowgt2[3,2]
+*"`=scalar(round(pois_ir_t0_nowgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[2,2]*1000,.01))',`=scalar(round(pois_ir_t0_nowgt[3,2]*1000,.01))')"
+scalar ir_poly_112 = "`=scalar(round(pois_ir_t0_nowgt2[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt2[5,2]*1000,.01))',`=scalar(round(pois_ir_t0_nowgt2[6,2]*1000,.01))')"
+
+local irr_poly_1 : di %6.2f pois_irr_t0_nowgt2[1,2]
+local irr_poly_1_lo : di %6.2f pois_irr_t0_nowgt2[2,2]
+local irr_poly_1_up : di %6.2f pois_irr_t0_nowgt2[3,2]
+**"`=scalar(round(pois_irr_t0_nowgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_irr_t0_nowgt[2,1]*1000,.01))',`=scalar(round(pois_irr_t0_nowgt[3,1]*1000,.01))')"
+scalar irr_poly012 = "`=scalar(round(pois_irr_t0_nowgt2[1,2],.01))' (95%CI: `=scalar(round(pois_irr_t0_nowgt2[5,2],.01))',`=scalar(round(pois_irr_t0_nowgt2[6,2],.01))')"
+
+<</dd_do>>
+~~~~
+
+~~~~
+<<dd_do>>
+*set trace on
+cap noi qui sts test poly, logrank
+scalar logrank_chi2= round(r(chi2),.01)
+scalar logrank_df2= r(df)
+scalar logrank_p2= round(chiprob(r(df),r(chi2)),.001)
+local lr12: di %3.2f logrank_chi2
+local lr22: di %1.0f logrank_df2
+local lr32: di %5.4f logrank_p2
+scalar logrank_nowgt3= " Chi^2(`lr22')=`lr12',p=`lr32'"
+*di logrank_nowgt
+
+matrix comb_irs3 = (0 \ 0 \ 0 \ 0)
+matrix colnames comb_irs3 = "Contact.js-no weight"
+matrix rownames comb_irs3 = "No poly: `=scalar(ir_poly_002)'" "Poly: `=scalar(ir_poly_112)'" "IRR: `=scalar(irr_poly012)'" "Logrank: `=scalar(logrank_nowgt3)'"
+esttab matrix(comb_irs3) using "irrs_t0_nowgt_contact_js.html", replace
+*set trace off
+<</dd_do>>
+~~~~
+
+<<dd_include: "irrs_t0_nowgt_contact_js.html" >>
 
 We then computed the data with weights
 
@@ -402,7 +567,7 @@ frame example_b: cap drop _t0
 frame example_b: cap drop _start
 
 frame example_b: cap gen _start= 0
-frame example_b: stset diff2 [pw=HAW2], enter(_start) failure(contact_js==1) //*scale(12) 
+frame example_b: stset diff2 [pw=HAW2], enter(_start) failure(contact_js==1)  id(id) //*scale(12) 
 
 frame example_b: stsum, by (poly)
 <</dd_do>>
@@ -410,10 +575,125 @@ frame example_b: stsum, by (poly)
 
 ~~~~
 <<dd_do>>
+frame change example_b 
+poisson _d i.poly [pw=HAW2], irr exposure(_t) vce(rob)
+matrix pois_irr_t0_wgt3= r(table)
+*matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/1) r(1, 5/6)
+
+margins i.poly, predict(ir)
+matrix pois_ir_t0_wgt3= r(table)
+*matselrc pois_ir_t0_wgt pois_ir_t0_wgt, c(1/2) r(1, 5/6)
+local ir_poly_0 : di %6.2f pois_ir_t0_wgt3[1,1]
+local ir_poly_0_lo : di %6.2f pois_ir_t0_wgt3[2,1]
+local ir_poly_0_up : di %6.2f pois_ir_t0_wgt3[3,1]
+*"`=scalar(round(pois_ir_t0_wgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[2,1]*1000,.01))',`=scalar(round(pois_ir_t0_wgt[3,1]*1000,.01))')"
+scalar ir_poly_003 = "`=scalar(round(pois_ir_t0_wgt3[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt3[5,1]*1000,.01))',`=scalar(round(pois_ir_t0_wgt3[6,1]*1000,.01))')"
+local ir_poly_1 : di %6.2f pois_ir_t0_wgt3[1,2]
+local ir_poly_1_lo : di %6.2f pois_ir_t0_wgt3[2,2]
+local ir_poly_1_up : di %6.2f pois_ir_t0_wgt3[3,2]
+*"`=scalar(round(pois_ir_t0_wgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[2,2]*1000,.01))',`=scalar(round(pois_ir_t0_wgt[3,2]*1000,.01))')"
+scalar ir_poly_113 = "`=scalar(round(pois_ir_t0_wgt3[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt3[5,2]*1000,.01))',`=scalar(round(pois_ir_t0_wgt3[6,2]*1000,.01))')"
+
+local irr_poly_1 : di %6.2f pois_irr_t0_wgt3[1,2]
+local irr_poly_1_lo : di %6.2f pois_irr_t0_wgt3[2,2]
+local irr_poly_1_up : di %6.2f pois_irr_t0_wgt3[3,2]
+**"`=scalar(round(pois_irr_t0_wgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_irr_t0_wgt[2,1]*1000,.01))',`=scalar(round(pois_irr_t0_wgt[3,1]*1000,.01))')"
+scalar irr_poly013 = "`=scalar(round(pois_irr_t0_wgt3[1,2],.01))' (95%CI: `=scalar(round(pois_irr_t0_wgt3[5,2],.01))',`=scalar(round(pois_irr_t0_wgt3[6,2],.01))')"
+
+<</dd_do>>
+~~~~
+
+~~~~
+<<dd_do>>
+*set trace on
+cap noi qui sts test poly
+scalar logrank_chi3= round(r(chi2),.01)
+scalar logrank_df3= r(df)
+scalar logrank_p3= round(chiprob(r(df),r(chi2)),.001)
+local lr13: di %3.2f logrank_chi3
+local lr23: di %1.0f logrank_df3
+local lr33: di %5.4f logrank_p3
+scalar logrank_wgt4 = "Cox regression-based test for equality of survival curves: Wald Chi^2(`lr23')=`lr13',p=`lr33'"
+*di logrank_nowgt
+
+matrix comb_irs4 = (0 \ 0 \ 0 \ 0)
+matrix colnames comb_irs4 = "Contact.js-weight"
+matrix rownames comb_irs4 = "No poly: `=scalar(ir_poly_003)'" "Poly: `=scalar(ir_poly_113)'" "IRR: `=scalar(irr_poly013)'" "Logrank: `=scalar(logrank_wgt4)'"
+esttab matrix(comb_irs4) using "irrs_t0_wgt_contact_js.html", replace
+*set trace off
+<</dd_do>>
+~~~~
+
+<<dd_include: "irrs_t0_wgt_contact_js.html" >>
+
+~~~~
+<<dd_do>>
 frame example_b: stdescribe, weight
 <</dd_do>>
 ~~~~
 
+
+~~~~
+<<dd_do>>
+stptime, title(person-years) per(1000) by(poly)
+
+stmh poly
+scalar poly_rr= round( r(rratio), .01)
+scalar poly_rr_lb= round(r(lb),.01) 
+scalar poly_rr_ub= round(r(ub),.01) 
+local ir1= poly_rr
+local ir2= poly_rr_lb
+local ir3= poly_rr_ub
+global poly_irr " `title': IRR: `ir1' (95%IC `ir2' - `ir3') "
+<</dd_do>>
+~~~~
+
+- The weighted IRR of treatment completion was <<dd_display: "$poly_irr">> per 1,000 person-years
+
+~~~~
+<<dd_do>>
+
+*set trace on
+local stname `" "2_1" "' 
+local titl `" "Poly vs No-Poly" "' 
+foreach s of local stname {
+	gettoken title titl: titl
+cap noi qui ir _d poly _t
+scalar ir_`s' =round(r(irr),.01)
+*di ir_`s'
+scalar ir_`s'_lb =round(r(lb_irr),.01) 
+*di ir_`s'_lb
+scalar ir_`s'_ub =round(r(ub_irr),.01)
+*di ir_`s'_ub
+local ir1= ir_`s'
+local ir2= ir_`s'_lb
+local ir3= ir_`s'_ub
+*di  in gr _col(13) " `title': IRR `ir1' (IC 95% `ir2' - `ir3') "
+global irr_`s' " `title': IRR (non weighted): `ir1' (IC 95% `ir2' - `ir3') "
+global ir_`s' "`ir1' (IC 95% `ir2' - `ir3')"
+}	
+<</dd_do>>
+~~~~
+
+- <<dd_display: "$irr_2_1">>
+
+~~~~
+<<dd_do>>
+matrix comb_irs5 = (0 \ 0 )
+matrix colnames comb_irs5 = "Contact.js-weight2"
+matrix rownames comb_irs5 = "IRR weighted: '$poly_irr'" "IRR non qweighted: '$irr_2_1'" 
+esttab matrix(comb_irs5) using "irrs_t0_wgt_contact_js2.html", replace
+*set trace off
+<</dd_do>>
+~~~~
+
+<<dd_include: "irrs_t0_wgt_contact_js2.html" >>
+
+~~~~
+<<dd_do>>
+frame change default
+<</dd_do>>
+~~~~
 
 **##############################**
 
@@ -505,17 +785,18 @@ We explored the inicidence rate ratios (IRR) of polysubstance use.
 stptime, title(person-years) per(1000) by(poly)
 
 stmh poly
-scalar poly_rr= round( r(rratio), .01)
-scalar poly_rr_lb= round(r(lb),.01) 
-scalar poly_rr_ub= round(r(ub),.01) 
-local ir1= poly_rr
-local ir2= poly_rr_lb
-local ir3= poly_rr_ub
-global poly_irr " `title': IRR `ir1' (95%IC `ir2' - `ir3') "
+scalar poly_b_rr= round( r(rratio), .01)
+scalar poly_b_rr_lb= round(r(lb),.01) 
+scalar poly_b_rr_ub= round(r(ub),.01) 
+local ir1b= poly_b_rr
+local ir2b= poly_b_rr_lb
+local ir3b= poly_b_rr_ub
+global poly2_irr " `title': IRR: `ir1b' (95%IC `ir2b' - `ir3b') "
+scalar exp1= "`poly2_irr'"
 <</dd_do>>
 ~~~~
 
-- The weighted IRR of treatment completion was <<dd_display: "$poly_irr">> per 1,000 person-years
+- The weighted IRR of treatment completion was <<dd_display: "$poly2_irr">> per 1,000 person-years
 
 ~~~~
 <<dd_do>>
@@ -526,23 +807,35 @@ local titl `" "Poly vs No-Poly" "'
 foreach s of local stname {
 	gettoken title titl: titl
 cap noi qui ir _d poly _t
-scalar ir_`s' =round(r(irr),.01)
+scalar ir2_`s' =round(r(irr),.01)
 *di ir_`s'
-scalar ir_`s'_lb =round(r(lb_irr),.01) 
+scalar ir2_`s'_lb =round(r(lb_irr),.01) 
 *di ir_`s'_lb
-scalar ir_`s'_ub =round(r(ub_irr),.01)
+scalar ir2_`s'_ub =round(r(ub_irr),.01)
 *di ir_`s'_ub
-local ir1= ir_`s'
-local ir2= ir_`s'_lb
-local ir3= ir_`s'_ub
+local ir12a= ir2_`s'
+local ir22a= ir2_`s'_lb
+local ir32a= ir2_`s'_ub
 *di  in gr _col(13) " `title': IRR `ir1' (IC 95% `ir2' - `ir3') "
-global irr_`s' " `title': IRR (non weighted) `ir1' (IC 95% `ir2' - `ir3') "
-global ir_`s' "`ir1' (IC 95% `ir2' - `ir3')"
+global irr2_`s' " `title': IRR (non weighted): `ir12a' (IC 95% `ir22a' - `ir32a') "
+global ir2_`s' "`ir1' (IC 95% `ir2' - `ir3')"
 }	
 <</dd_do>>
 ~~~~
 
-- <<dd_display: "$irr_2_1">>, so patients with Polysubstance use had a lower incidence rate than patients with no polysubstance use
+- <<dd_display: "$irr2_2_1">>
+
+~~~~
+<<dd_do>>
+matrix comb_irs6 = (0 \ 0 )
+matrix colnames comb_irs6 = IRRs_t0
+matrix rownames comb_irs6 = "IRR weighted: '$poly2_irr'" "IRR non qweighted: '$irr2_2_1'" 
+esttab matrix(comb_irs6) using "irrs_t0_wgt_tr_comp2.html", replace
+*set trace off
+<</dd_do>>
+~~~~
+
+<<dd_include: "irrs_t0_wgt_tr_comp2.html" >>
 
 
 Get schoenfeld residuals
@@ -938,7 +1231,7 @@ cap noi drop trp_ajprob*
 cap drop P_AJ*
 cap drop LOS_AJ_*
  forvalues i = 1/2 {
-	msaj, transmat(mat_obs_states) from(`i') ltruncated(.3) exit(5) by(poly) ci los
+	msaj, transmat(mat_obs_states) from(`i') ltruncated(.25) exit(5) by(poly) ci los
 	rename (P_AJ_*) (trp_ajprob_3_5_`i'*)
 	rename (LOS_AJ_*) (trp_ajlos_3_5_`i'*)
 	cap drop P_AJ* 
@@ -960,7 +1253,7 @@ gen bar= 0
 
 cap drop ranges
 gen ranges= 0
-recode ranges 0=1 if inrange(_t, .295, .305) 
+recode ranges 0=1 if inrange(_t, .49, .51) 
 recode ranges 0=2 if _t ==1
 recode ranges 0=3 if inrange(_t, 2.99, 3.01) 
 recode ranges 0=4 if inrange(_t, 4.9, 5.1)
@@ -1085,7 +1378,7 @@ foreach var of varlist trp_ajprob_3_5_12 trp_ajprob_3_5_12_lci trp_ajprob_3_5_12
 					scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
 	 cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames e_a_`var' = `var'
-	 matrix rownames e_a_`var' = 3_mths 1_yr 3_yrs 5_yrs
+	 matrix rownames e_a_`var' = 6_mths 1_yr 3_yrs 5_yrs
 					qui summarize `var' if ranges==1  & poly==1 
 					scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
 					qui summarize `var' if ranges==2  & poly==1
@@ -1096,7 +1389,7 @@ foreach var of varlist trp_ajprob_3_5_12 trp_ajprob_3_5_12_lci trp_ajprob_3_5_12
 					scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
 	 cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames e_b_`var' = `var'
-	 matrix rownames e_b_`var' = 3_mths 1_yr 3_yrs 5_yrs
+	 matrix rownames e_b_`var' = 6_mths 1_yr 3_yrs 5_yrs
  }
 
 matrix est_msaj12 = (e_a_trp_ajprob_3_5_12, e_a_trp_ajprob_3_5_12_lci, e_a_trp_ajprob_3_5_12_uci, e_b_trp_ajprob_3_5_12, e_b_trp_ajprob_3_5_12_lci, e_b_trp_ajprob_3_5_12_uci)
@@ -1126,7 +1419,7 @@ foreach var of varlist trp_ajprob_3_5_13 trp_ajprob_3_5_13_lci trp_ajprob_3_5_13
 					scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
 	 cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames e_a_`var' = `var'
-	 matrix rownames e_a_`var' = 3_mths 1_yr 3_yrs 5_yrs
+	 matrix rownames e_a_`var' = 6_mths 1_yr 3_yrs 5_yrs
 					qui summarize `var' if ranges==1  & poly==1 
 					scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
 					qui summarize `var' if ranges==2  & poly==1
@@ -1137,7 +1430,7 @@ foreach var of varlist trp_ajprob_3_5_13 trp_ajprob_3_5_13_lci trp_ajprob_3_5_13
 					scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
 	 cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames e_b_`var' = `var'
-	 matrix rownames e_b_`var' = 3_mths 1_yr 3_yrs 5_yrs
+	 matrix rownames e_b_`var' = 6_mths 1_yr 3_yrs 5_yrs
  }
 
 matrix est_msaj13 = (e_a_trp_ajprob_3_5_13, e_a_trp_ajprob_3_5_13_lci, e_a_trp_ajprob_3_5_13_uci, e_b_trp_ajprob_3_5_13, e_b_trp_ajprob_3_5_13_lci, e_b_trp_ajprob_3_5_13_uci)
@@ -1167,7 +1460,7 @@ foreach var of varlist trp_ajprob_3_5_23 trp_ajprob_3_5_23_lci trp_ajprob_3_5_23
 					scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
 	 cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames e_a_`var' = `var'
-	 matrix rownames e_a_`var' = 3_mths 1_yr 3_yrs 5_yrs
+	 matrix rownames e_a_`var' = 6_mths 1_yr 3_yrs 5_yrs
 					qui summarize `var' if ranges==1  & poly==1 
 					scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
 					qui summarize `var' if ranges==2  & poly==1
@@ -1178,7 +1471,7 @@ foreach var of varlist trp_ajprob_3_5_23 trp_ajprob_3_5_23_lci trp_ajprob_3_5_23
 					scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
 	 cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames e_b_`var' = `var'
-	 matrix rownames e_b_`var' = 3_mths 1_yr 3_yrs 5_yrs
+	 matrix rownames e_b_`var' = 6_mths 1_yr 3_yrs 5_yrs
  }
 
 matrix est_msaj23 = (e_a_trp_ajprob_3_5_23, e_a_trp_ajprob_3_5_23_lci, e_a_trp_ajprob_3_5_23_uci, e_b_trp_ajprob_3_5_23, e_b_trp_ajprob_3_5_23_lci, e_b_trp_ajprob_3_5_23_uci)
@@ -1202,7 +1495,7 @@ The transition probabilities are presented here:
 * inrange(_t, .299, .301) | _t==1 | inrange(_t, 2.99, 3.01) | inrange(_t, 4.970, 5.001) 
 foreach var of varlist trp_ajlos_3_5_11 trp_ajlos_3_5_22 {
 				scalar variable = "`var'"
-					qui summarize `var' if inrange(_t, .299, .301) & poly==0 
+					qui summarize `var' if inrange(_t, .49, .51) & poly==0 
 					scalar e3m_`var' = round(round(r(mean),.001),.1)
 					qui summarize `var' if inrange(_t, 1, 1) & poly==0 
 					scalar e1y_`var' = round(round(r(mean),.001),.1)
@@ -1212,8 +1505,8 @@ foreach var of varlist trp_ajlos_3_5_11 trp_ajlos_3_5_22 {
 					scalar e5y_`var' = round(round(r(mean),.001),.1)
 	 cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames e_a_`var' = `var'
-	 matrix rownames e_a_`var' = 3_mths 1_yr 3_yrs 5_yrs
-					qui summarize `var' if inrange(_t, .299, .301) & poly==1 
+	 matrix rownames e_a_`var' = 6_mths 1_yr 3_yrs 5_yrs
+					qui summarize `var' if inrange(_t, .49, .51) & poly==1 
 					scalar e3m_`var' = round(round(r(mean),.001),.1)
 					qui summarize `var' if inrange(_t, 1, 1) & poly==1
 					scalar e1y_`var' = round(round(r(mean),.001),.1)
@@ -1223,7 +1516,7 @@ foreach var of varlist trp_ajlos_3_5_11 trp_ajlos_3_5_22 {
 					scalar e5y_`var' = round(round(r(mean),.001),.1)
 	 cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
 	 matrix colnames e_b_`var' = `var'
-	 matrix rownames e_b_`var' = 3_mths 1_yr 3_yrs 5_yrs
+	 matrix rownames e_b_`var' = 6_mths 1_yr 3_yrs 5_yrs
  }
 
 matrix est_msaj12los = (e_a_trp_ajlos_3_5_11, e_b_trp_ajlos_3_5_11, e_a_trp_ajlos_3_5_22, e_b_trp_ajlos_3_5_22)

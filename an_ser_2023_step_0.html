@@ -141,15 +141,24 @@ C:\Users\CISS Fondecyt\ado\plus\p\pbalchk.ado
 .         cap noi net install pbalchk from(&quot;http://personalpages.manchester.ac.uk/staff/mark.lunt/&quot;)
 .         }
 
+. cap noi which matselrc
+C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
+*! NJC 1.1.0 20 Apr 2000  (STB-56: dm79)
+
+. if _rc==111 {
+.         ssc install matselrc
+.         }
+
+. 
 </code></pre>
 <h1><a href="#exercise" id="exercise">Exercise</a></h1>
-<p>Date created: 21:20:34 18 Apr 2023.</p>
+<p>Date created: 21:08:10  9 May 2023.</p>
 <p>Get the folder</p>
 <pre><code>
 C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
 
 
-Fecha: 18 Apr 2023, considerando un SO Windows para el usuario: CISS Fondecyt
+Fecha:  9 May 2023, considerando un SO Windows para el usuario: CISS Fondecyt
 
 </code></pre>
 <head>
@@ -186,7 +195,7 @@ $(document).ready(function() {
 </head>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <p>Path data= ;</p>
-<p>Tiempo: 18 Apr 2023, considerando un SO Windows</p>
+<p>Tiempo:  9 May 2023, considerando un SO Windows</p>
 <p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA_pris.dta</p>
 <p>=============================================================================</p>
 <h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
@@ -364,10 +373,10 @@ $(document).ready(function() {
 . order id hash_key edad_al_ing_1 edad_al_egres_imp age_offending_imp age_at_censor_date diff1 diff2 comp contact_js
 
 . /*
-&gt; global covs_2_mod &quot;i.policonsumo i.sus_prin_mod i.fr_sus_prin edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.ten_viv i.dg_cie_10_rec i.sud_severi
-&gt; ty_icd10 n_off_vio n_off_acq n_off_sud i.clas porc_pobr i.macrozone&quot;
-&gt; global covs_3_mod &quot;policonsumo sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_
-&gt; sud clas porc_pobr macrozone&quot;
+&gt; global covs_2_mod &quot;i.policonsumo i.sus_prin_mod i.fr_sus_prin edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.ten
+&gt; _viv i.dg_cie_10_rec i.sud_severity_icd10 n_off_vio n_off_acq n_off_sud i.clas porc_pobr i.macrozone&quot;
+&gt; global covs_3_mod &quot;policonsumo sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_
+&gt; 10_rec n_off_vio n_off_acq n_off_sud clas porc_pobr macrozone&quot;
 &gt; */
 . 
 . //a string variable, so it is encoded
@@ -392,8 +401,8 @@ id_centro: all characters numeric; replaced as int
 
 </code></pre>
 <p>We show a table of missing values</p>
-<pre><code>. misstable sum poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas por
-&gt; c_pobr macrozone
+<pre><code>. misstable sum poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off
+&gt; _vio n_off_acq n_off_sud clas porc_pobr macrozone
                                                                Obs&lt;.
                                                 +------------------------------
                |                                | Unique
@@ -410,8 +419,8 @@ id_centro: all characters numeric; replaced as int
 
 </code></pre>
 <p>And missing patterns</p>
-<pre><code>. misstable pat poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas por
-&gt; c_pobr macrozone
+<pre><code>. misstable pat poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off
+&gt; _vio n_off_acq n_off_sud clas porc_pobr macrozone
 
          Missing-value patterns
            (1 means complete)
@@ -445,7 +454,8 @@ id_centro: all characters numeric; replaced as int
   ------------+------------------------
       100%    |
 
-  Variables are  (1) sus_prin_mod  (2) porc_pobr  (3) macrozone  (4) esc_rec  (5) fr_sus_prin  (6) ten_viv  (7) edad_ini_cons
+  Variables are  (1) sus_prin_mod  (2) porc_pobr  (3) macrozone  (4) esc_rec  (5) fr_sus_prin  (6) ten_viv
+                 (7) edad_ini_cons
 
 </code></pre>
 <p>86% of patients showed complete data, and 2% had missing data due to tenure status of the household and age of onset of substance use.</p>
@@ -501,14 +511,146 @@ Polysubs |  228,136.504   .0564267         52420   2.405592         .         .
 ---------+---------------------------------------------------------------------
    Total |  287,715.273   .0669968         70863   1.625129         .         .
 
+. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1635683-stata-stir-command-with-pweights
+</code></pre>
+<pre><code>. poisson _d i.poly , irr exposure(_t) vce(rob)
+
+Iteration 0:   log pseudolikelihood = -73839.905  
+Iteration 1:   log pseudolikelihood = -73839.905  
+
+Poisson regression                              Number of obs     =     70,863
+                                                Wald chi2(1)      =    1345.95
+                                                Prob &gt; chi2       =     0.0000
+Log pseudolikelihood = -73839.905               Pseudo R2         =     0.0109
+
+------------------------------------------------------------------------------------
+                   |               Robust
+                _d |        IRR   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------------+----------------------------------------------------------------
+              poly |
+Polysubstance use  |   .5250407   .0092205   -36.69   0.000     .5072764    .5434271
+             _cons |   .1074712   .0015603  -153.63   0.000      .104456    .1105733
+            ln(_t) |          1  (exposure)
+------------------------------------------------------------------------------------
+Note: _cons estimates baseline incidence rate.
+
+. matrix pois_irr_t0_nowgt= r(table)
+
+. *matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/1) r(1, 5/6)
+. 
+. margins i.poly, predict(ir)
+
+Adjusted predictions                            Number of obs     =     70,863
+Model VCE    : Robust
+
+Expression   : Predicted incidence rate, predict(ir)
+
+---------------------------------------------------------------------------------------
+                      |            Delta-method
+                      |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+                 poly |
+No polysubstance use  |   .1074712   .0015603    68.88   0.000     .1044129    .1105294
+   Polysubstance use  |   .0564267   .0005575   101.22   0.000     .0553341    .0575194
+---------------------------------------------------------------------------------------
+
+. matrix pois_ir_t0_nowgt= r(table)
+
+. *matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/2) r(1, 5/6)
+. local ir_poly_0 : di %6.2f pois_ir_t0_nowgt[1,1]
+
+. local ir_poly_0_lo : di %6.2f pois_ir_t0_nowgt[2,1]
+
+. local ir_poly_0_up : di %6.2f pois_ir_t0_nowgt[3,1]
+
+. *&quot;`=scalar(round(pois_ir_t0_nowgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[2,1]*1000,.01))',`=scala
+&gt; r(round(pois_ir_t0_nowgt[3,1]*1000,.01))')&quot;
+. scalar ir_poly_00 = &quot;`=scalar(round(pois_ir_t0_nowgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[5,1]*
+&gt; 1000,.01))',`=scalar(round(pois_ir_t0_nowgt[6,1]*1000,.01))')&quot;
+
+. local ir_poly_1 : di %6.2f pois_ir_t0_nowgt[1,2]
+
+. local ir_poly_1_lo : di %6.2f pois_ir_t0_nowgt[2,2]
+
+. local ir_poly_1_up : di %6.2f pois_ir_t0_nowgt[3,2]
+
+. *&quot;`=scalar(round(pois_ir_t0_nowgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[2,2]*1000,.01))',`=scala
+&gt; r(round(pois_ir_t0_nowgt[3,2]*1000,.01))')&quot;
+. scalar ir_poly_11 = &quot;`=scalar(round(pois_ir_t0_nowgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[5,2]*
+&gt; 1000,.01))',`=scalar(round(pois_ir_t0_nowgt[6,2]*1000,.01))')&quot;
+
+. 
+. local irr_poly_1 : di %6.2f pois_irr_t0_nowgt[1,2]
+
+. local irr_poly_1_lo : di %6.2f pois_irr_t0_nowgt[2,2]
+
+. local irr_poly_1_up : di %6.2f pois_irr_t0_nowgt[3,2]
+
+. **&quot;`=scalar(round(pois_irr_t0_nowgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_irr_t0_nowgt[2,1]*1000,.01))',`=sc
+&gt; alar(round(pois_irr_t0_nowgt[3,1]*1000,.01))')&quot;
+. scalar irr_poly01 = &quot;`=scalar(round(pois_irr_t0_nowgt[1,2],.01))' (95%CI: `=scalar(round(pois_irr_t0_nowgt[5,2],.01
+&gt; ))',`=scalar(round(pois_irr_t0_nowgt[6,2],.01))')&quot;
+
 . 
 </code></pre>
-<p>We calculated the inverse probability weights</p>
-<pre><code>. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1600895-survival-model-stpm2-using-previously-estimated-weights
-. *pweights are Stata’s sampling weights—the inverse of the probability that the subject was chosen from the population.
+<pre><code>. *set trace on
+. cap noi qui sts test poly, logrank
+
+. scalar logrank_chi= round(r(chi2),.01)
+
+. scalar logrank_df= r(df)
+
+. scalar logrank_p= round(chiprob(r(df),r(chi2)),.001)
+
+. local lr1: di %3.2f logrank_chi
+
+. local lr2: di %1.0f logrank_df
+
+. local lr3: di %5.4f logrank_p
+
+. scalar logrank_nowgt= &quot; Chi^2(`lr2')=`lr1',p=`lr3'&quot;
+
+. *di logrank_nowgt
 . 
-. stipw (logit poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc
-&gt; _pobr macrozone), distribution(weibull) ipwtype(stabilised) vce(robust) genweight(ipw_wgt) //*edad_al_ing_1 df(10)  ten_viv colinealidad
+. matrix comb_irs = (0 \ 0 \ 0 \ 0)
+
+. matrix colnames comb_irs = &quot;Tr.comp-no weight&quot;
+
+. matrix rownames comb_irs = &quot;No poly: `=scalar(ir_poly_00)'&quot; &quot;Poly: `=scalar(ir_poly_11)'&quot; &quot;IRR: `=scalar(irr_poly01
+&gt; )'&quot; &quot;Logrank: `=scalar(logrank_nowgt)'&quot;
+
+. esttab matrix(comb_irs) using &quot;irrs_t0_nowgt_tr_comp.html&quot;, replace
+(output written to irrs_t0_nowgt_tr_comp.html)
+
+. *set trace off
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=2><hr></td></tr>
+<tr><td>            </td><td>    comb_irs</td></tr>
+<tr><td>            </td><td>Tr.comp-no weight</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>No poly     </td><td>            </td></tr>
+<tr><td>107.47 (95%CI: 104.41,110.53)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>Poly        </td><td>            </td></tr>
+<tr><td>56.43 (95%CI: 55.33,57.52)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR         </td><td>            </td></tr>
+<tr><td>.53 (95%CI: .51,.54)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>Logrank     </td><td>            </td></tr>
+<tr><td>Chi^2(1)=768.07,p=0.0000</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+</table>
+<p>We calculated the inverse probability weights</p>
+<pre><code>. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1600895-survival-model-stpm2-using-previou
+&gt; sly-estimated-weights
+. *pweights are Stata’s sampling weights—the inverse of the probability that the subject was chosen from the populati
+&gt; on.
+. 
+. stipw (logit poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_
+&gt; vio n_off_acq n_off_sud clas porc_pobr macrozone), distribution(weibull) ipwtype(stabilised) vce(robust) genweight(
+&gt; ipw_wgt) //*edad_al_ing_1 df(10)  ten_viv colinealidad
 9882 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -623,8 +765,8 @@ frame example_a not found
 
 . frame copy default example_a
 
-. frame example_a: logistic poly i.sus_prin_mod i.fr_sus_prin edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.ten_viv i.dg_cie_10_rec i.n_off_vio i.
-&gt; n_off_acq i.n_off_sud i.clas porc_pobr i.macrozone, nolog 
+. frame example_a: logistic poly i.sus_prin_mod i.fr_sus_prin edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.ten_v
+&gt; iv i.dg_cie_10_rec i.n_off_vio i.n_off_acq i.n_off_sud i.clas porc_pobr i.macrozone, nolog 
 
 Logistic regression                             Number of obs     =     60,981
                                                 LR chi2(27)       =   13933.31
@@ -765,6 +907,137 @@ Polysubs |  234,271.937   .0674141      59753.28   1.761644         .         .
    Total |  413,959.253   .0759329        113401   1.534247         .         .
 
 </code></pre>
+<pre><code>. frame change example_a
+
+. poisson _d i.poly [pw=HAW], irr exposure(_t) vce(rob)
+
+Iteration 0:   log pseudolikelihood = -118000.86  
+Iteration 1:   log pseudolikelihood = -118000.86  
+
+Poisson regression                              Number of obs     =     59,763
+                                                Wald chi2(1)      =     113.00
+Log pseudolikelihood = -118000.86               Prob &gt; chi2       =     0.0000
+
+------------------------------------------------------------------------------------
+                   |               Robust
+                _d |        IRR   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------------+----------------------------------------------------------------
+              poly |
+Polysubstance use  |   .7745235   .0186167   -10.63   0.000     .7388815    .8118848
+             _cons |   .0870395   .0018266  -116.33   0.000      .083532    .0906943
+            ln(_t) |          1  (exposure)
+------------------------------------------------------------------------------------
+Note: _cons estimates baseline incidence rate.
+
+. matrix pois_irr_t0_wgt= r(table)
+
+. *matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/1) r(1, 5/6)
+. 
+. margins i.poly, predict(ir)
+
+Adjusted predictions                            Number of obs     =     59,763
+Model VCE    : Robust
+
+Expression   : Predicted incidence rate, predict(ir)
+
+---------------------------------------------------------------------------------------
+                      |            Delta-method
+                      |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+                 poly |
+No polysubstance use  |   .0870395   .0018266    47.65   0.000     .0834593    .0906196
+   Polysubstance use  |   .0674141     .00079    85.34   0.000     .0658658    .0689625
+---------------------------------------------------------------------------------------
+
+. matrix pois_ir_t0_wgt= r(table)
+
+. *matselrc pois_ir_t0_wgt pois_ir_t0_wgt, c(1/2) r(1, 5/6)
+. local ir_poly_0 : di %6.2f pois_ir_t0_wgt[1,1]
+
+. local ir_poly_0_lo : di %6.2f pois_ir_t0_wgt[2,1]
+
+. local ir_poly_0_up : di %6.2f pois_ir_t0_wgt[3,1]
+
+. *&quot;`=scalar(round(pois_ir_t0_wgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[2,1]*1000,.01))',`=scalar(ro
+&gt; und(pois_ir_t0_wgt[3,1]*1000,.01))')&quot;
+. scalar ir_poly_001 = &quot;`=scalar(round(pois_ir_t0_wgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[5,1]*100
+&gt; 0,.01))',`=scalar(round(pois_ir_t0_wgt[6,1]*1000,.01))')&quot;
+
+. local ir_poly_1 : di %6.2f pois_ir_t0_wgt[1,2]
+
+. local ir_poly_1_lo : di %6.2f pois_ir_t0_wgt[2,2]
+
+. local ir_poly_1_up : di %6.2f pois_ir_t0_wgt[3,2]
+
+. *&quot;`=scalar(round(pois_ir_t0_wgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[2,2]*1000,.01))',`=scalar(ro
+&gt; und(pois_ir_t0_wgt[3,2]*1000,.01))')&quot;
+. scalar ir_poly_111 = &quot;`=scalar(round(pois_ir_t0_wgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[5,2]*100
+&gt; 0,.01))',`=scalar(round(pois_ir_t0_wgt[6,2]*1000,.01))')&quot;
+
+. 
+. local irr_poly_1 : di %6.2f pois_irr_t0_wgt[1,2]
+
+. local irr_poly_1_lo : di %6.2f pois_irr_t0_wgt[2,2]
+
+. local irr_poly_1_up : di %6.2f pois_irr_t0_wgt[3,2]
+
+. **&quot;`=scalar(round(pois_irr_t0_wgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_irr_t0_wgt[2,1]*1000,.01))',`=scalar
+&gt; (round(pois_irr_t0_wgt[3,1]*1000,.01))')&quot;
+. scalar irr_poly011 = &quot;`=scalar(round(pois_irr_t0_wgt[1,2],.01))' (95%CI: `=scalar(round(pois_irr_t0_wgt[5,2],.01))'
+&gt; ,`=scalar(round(pois_irr_t0_wgt[6,2],.01))')&quot;
+
+. 
+</code></pre>
+<pre><code>. *set trace on
+. cap noi qui sts test poly
+
+. scalar logrank_chi1= round(r(chi2),.01)
+
+. scalar logrank_df1= r(df)
+
+. scalar logrank_p1= round(chiprob(r(df),r(chi2)),.001)
+
+. local lr10: di %3.2f logrank_chi1
+
+. local lr20: di %1.0f logrank_df1
+
+. local lr30: di %5.4f logrank_p1
+
+. scalar logrank_wgt1 = &quot;Cox regression-based test for equality of survival curves: Wald Chi^2(`lr20')=`lr10',p=`lr30
+&gt; '&quot;
+
+. *di logrank_nowgt
+. 
+. matrix comb_irs2 = (0 \ 0 \ 0 \ 0)
+
+. matrix colnames comb_irs2 = &quot;Tr.comp-weight&quot;
+
+. matrix rownames comb_irs2 = &quot;No poly: `=scalar(ir_poly_001)'&quot; &quot;Poly: `=scalar(ir_poly_111)'&quot; &quot;IRR: `=scalar(irr_pol
+&gt; y011)'&quot; &quot;Logrank: `=scalar(logrank_wgt1)'&quot;
+
+. esttab matrix(comb_irs2) using &quot;irrs_t0_wgt_tr_comp.html&quot;, replace
+(output written to irrs_t0_wgt_tr_comp.html)
+
+. *set trace off
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=2><hr></td></tr>
+<tr><td>            </td><td>   comb_irs2</td></tr>
+<tr><td>            </td><td>Tr.comp-weight</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>No poly     </td><td>            </td></tr>
+<tr><td>87.04000000000001 (95%CI: 83.46000000000001,90.62)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>Poly        </td><td>            </td></tr>
+<tr><td>67.41 (95%CI: 65.87,68.96000000000001)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR         </td><td>            </td></tr>
+<tr><td>.77 (95%CI: .74,.8100000000000001)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>Logrank     </td><td>            </td></tr>
+<tr><td>Cox regression-based test for equality of survival curves: Wald Chi^2(1)=41.88,p=0.0000</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+</table>
 <pre><code>. frame example_a: stdescribe, weight
 
          failure _d:  comp == 1
@@ -789,6 +1062,9 @@ time at risk           413959.25    3.650403    .0027322   3.202186   12.32557
 failures                31433.13    .2771858           0          0          1
 ------------------------------------------------------------------------------
 
+. frame change default
+
+. 
 </code></pre>
 <p>*################### <strong>Time to contact with the justice system</strong></p>
 <p>We defined the incidence rates and weights for the time to contact with the justice system</p>
@@ -842,12 +1118,144 @@ Polysubs |  205,771.586   .0907414         52420   2.495617         .         .
 
 . 
 </code></pre>
-<p>We then computed the data with weights</p>
-<pre><code>. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1600895-survival-model-stpm2-using-previously-estimated-weights
-. *pweights are Stata’s sampling weights—the inverse of the probability that the subject was chosen from the population.
+<pre><code>. poisson _d i.poly , irr exposure(_t) vce(rob)
+
+Iteration 0:   log pseudolikelihood = -66938.873  
+Iteration 1:   log pseudolikelihood = -66938.873  
+
+Poisson regression                              Number of obs     =     70,863
+                                                Wald chi2(1)      =     769.90
+                                                Prob &gt; chi2       =     0.0000
+Log pseudolikelihood = -66938.873               Pseudo R2         =     0.0067
+
+------------------------------------------------------------------------------------
+                   |               Robust
+                _d |        IRR   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------------+----------------------------------------------------------------
+              poly |
+Polysubstance use  |    1.67659   .0312249    27.75   0.000     1.616494    1.738921
+             _cons |   .0541226   .0009168  -172.17   0.000     .0523552    .0559496
+            ln(_t) |          1  (exposure)
+------------------------------------------------------------------------------------
+Note: _cons estimates baseline incidence rate.
+
+. matrix pois_irr_t0_nowgt2= r(table)
+
+. *matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/1) r(1, 5/6)
 . 
-. stipw (logit poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc
-&gt; _pobr macrozone), distribution(weibull) ipwtype(stabilised) vce(robust) genweight(ipw_wgt2) //*edad_al_ing_1 df(10)  ten_viv
+. margins i.poly, predict(ir)
+
+Adjusted predictions                            Number of obs     =     70,863
+Model VCE    : Robust
+
+Expression   : Predicted incidence rate, predict(ir)
+
+---------------------------------------------------------------------------------------
+                      |            Delta-method
+                      |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+                 poly |
+No polysubstance use  |   .0541226   .0009168    59.03   0.000     .0523257    .0559195
+   Polysubstance use  |   .0907414   .0007024   129.19   0.000     .0893647     .092118
+---------------------------------------------------------------------------------------
+
+. matrix pois_ir_t0_nowgt2= r(table)
+
+. *matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/2) r(1, 5/6)
+. local ir_poly_0 : di %6.2f pois_ir_t0_nowgt2[1,1]
+
+. local ir_poly_0_lo : di %6.2f pois_ir_t0_nowgt2[2,1]
+
+. local ir_poly_0_up : di %6.2f pois_ir_t0_nowgt2[3,1]
+
+. *&quot;`=scalar(round(pois_ir_t0_nowgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[2,1]*1000,.01))',`=scala
+&gt; r(round(pois_ir_t0_nowgt[3,1]*1000,.01))')&quot;
+. scalar ir_poly_002 = &quot;`=scalar(round(pois_ir_t0_nowgt2[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt2[5,
+&gt; 1]*1000,.01))',`=scalar(round(pois_ir_t0_nowgt2[6,1]*1000,.01))')&quot;
+
+. local ir_poly_1 : di %6.2f pois_ir_t0_nowgt2[1,2]
+
+. local ir_poly_1_lo : di %6.2f pois_ir_t0_nowgt2[2,2]
+
+. local ir_poly_1_up : di %6.2f pois_ir_t0_nowgt2[3,2]
+
+. *&quot;`=scalar(round(pois_ir_t0_nowgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt[2,2]*1000,.01))',`=scala
+&gt; r(round(pois_ir_t0_nowgt[3,2]*1000,.01))')&quot;
+. scalar ir_poly_112 = &quot;`=scalar(round(pois_ir_t0_nowgt2[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_nowgt2[5,
+&gt; 2]*1000,.01))',`=scalar(round(pois_ir_t0_nowgt2[6,2]*1000,.01))')&quot;
+
+. 
+. local irr_poly_1 : di %6.2f pois_irr_t0_nowgt2[1,2]
+
+. local irr_poly_1_lo : di %6.2f pois_irr_t0_nowgt2[2,2]
+
+. local irr_poly_1_up : di %6.2f pois_irr_t0_nowgt2[3,2]
+
+. **&quot;`=scalar(round(pois_irr_t0_nowgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_irr_t0_nowgt[2,1]*1000,.01))',`=sc
+&gt; alar(round(pois_irr_t0_nowgt[3,1]*1000,.01))')&quot;
+. scalar irr_poly012 = &quot;`=scalar(round(pois_irr_t0_nowgt2[1,2],.01))' (95%CI: `=scalar(round(pois_irr_t0_nowgt2[5,2],
+&gt; .01))',`=scalar(round(pois_irr_t0_nowgt2[6,2],.01))')&quot;
+
+. 
+</code></pre>
+<pre><code>. *set trace on
+. cap noi qui sts test poly, logrank
+
+. scalar logrank_chi2= round(r(chi2),.01)
+
+. scalar logrank_df2= r(df)
+
+. scalar logrank_p2= round(chiprob(r(df),r(chi2)),.001)
+
+. local lr12: di %3.2f logrank_chi2
+
+. local lr22: di %1.0f logrank_df2
+
+. local lr32: di %5.4f logrank_p2
+
+. scalar logrank_nowgt3= &quot; Chi^2(`lr22')=`lr12',p=`lr32'&quot;
+
+. *di logrank_nowgt
+. 
+. matrix comb_irs3 = (0 \ 0 \ 0 \ 0)
+
+. matrix colnames comb_irs3 = &quot;Contact.js-no weight&quot;
+
+. matrix rownames comb_irs3 = &quot;No poly: `=scalar(ir_poly_002)'&quot; &quot;Poly: `=scalar(ir_poly_112)'&quot; &quot;IRR: `=scalar(irr_pol
+&gt; y012)'&quot; &quot;Logrank: `=scalar(logrank_nowgt3)'&quot;
+
+. esttab matrix(comb_irs3) using &quot;irrs_t0_nowgt_contact_js.html&quot;, replace
+(output written to irrs_t0_nowgt_contact_js.html)
+
+. *set trace off
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=2><hr></td></tr>
+<tr><td>            </td><td>   comb_irs3</td></tr>
+<tr><td>            </td><td>Contact.js-no weight</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>No poly     </td><td>            </td></tr>
+<tr><td>54.12 (95%CI: 52.33,55.92)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>Poly        </td><td>            </td></tr>
+<tr><td>90.73999999999999 (95%CI: 89.36,92.12)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR         </td><td>            </td></tr>
+<tr><td>1.68 (95%CI: 1.62,1.74)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>Logrank     </td><td>            </td></tr>
+<tr><td>Chi^2(1)=1035.19,p=0.0000</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+</table>
+<p>We then computed the data with weights</p>
+<pre><code>. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1600895-survival-model-stpm2-using-previou
+&gt; sly-estimated-weights
+. *pweights are Stata’s sampling weights—the inverse of the probability that the subject was chosen from the populati
+&gt; on.
+. 
+. stipw (logit poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_
+&gt; vio n_off_acq n_off_sud clas porc_pobr macrozone), distribution(weibull) ipwtype(stabilised) vce(robust) genweight(
+&gt; ipw_wgt2) //*edad_al_ing_1 df(10)  ten_viv
 9882 observations have missing treatment and/or missing confounder values and/or _st = 0.
 These observations are excluded from the analysis, see variable _stipw_flag
 
@@ -919,8 +1327,8 @@ Note: _cons estimates baseline hazard.
 . cap gen _start= 0
 
 . 
-. *The stset command is used for survival analysis to set the time variable and specify the structure of the dataset, while the [pw] option specifies 
-&gt; the weights for each observation in the analysis.
+. *The stset command is used for survival analysis to set the time variable and specify the structure of the dataset,
+&gt;  while the [pw] option specifies the weights for each observation in the analysis.
 . stset diff2 [pw=ipw_wgt2], enter(_start) failure(contact_js==1) //*scale(12) 
 
      failure event:  contact_js == 1
@@ -995,8 +1403,8 @@ frame example_b not found
 
 . frame copy default example_b
 
-. frame example_b: logistic poly i.sus_prin_mod i.fr_sus_prin edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.ten_viv i.dg_cie_10_rec i.n_off_vio i.
-&gt; n_off_acq i.n_off_sud i.clas porc_pobr i.macrozone, nolog 
+. frame example_b: logistic poly i.sus_prin_mod i.fr_sus_prin edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.ten_v
+&gt; iv i.dg_cie_10_rec i.n_off_vio i.n_off_acq i.n_off_sud i.clas porc_pobr i.macrozone, nolog 
 
 Logistic regression                             Number of obs     =     60,981
                                                 LR chi2(27)       =   13933.31
@@ -1101,10 +1509,11 @@ Note: _cons estimates baseline odds.
 . 
 . frame example_b: cap gen _start= 0
 
-. frame example_b: stset diff2 [pw=HAW2], enter(_start) failure(contact_js==1) //*scale(12) 
+. frame example_b: stset diff2 [pw=HAW2], enter(_start) failure(contact_js==1)  id(id) //*scale(12) 
 
+                id:  id
      failure event:  contact_js == 1
-obs. time interval:  (0, diff2]
+obs. time interval:  (diff2[_n-1], diff2]
  enter on or after:  time _start
  exit on or before:  failure
             weight:  [pweight=HAW2]
@@ -1114,7 +1523,8 @@ obs. time interval:  (0, diff2]
           0  exclusions
 ------------------------------------------------------------------------------
      59,763  observations remaining, representing
-     17,267  failures in single-record/single-failure data
+     59,763  subjects
+     17,267  failures in single-failure-per-subject data
  217,349.13  total analysis time at risk and under observation
                                                 at risk from t =         0
                                      earliest observed entry t =         0
@@ -1126,6 +1536,7 @@ obs. time interval:  (0, diff2]
          failure _d:  contact_js == 1
    analysis time _t:  diff2
   enter on or after:  time _start
+                 id:  id
              weight:  [pweight=HAW2]
 
          |               Incidence     Number of   |------ Survival time -----|
@@ -1137,11 +1548,143 @@ Polysubs |  226,642.837   .0802631      59753.28   3.016474         .         .
    Total |  409,267.754    .076687        113401   3.348228         .         .
 
 </code></pre>
+<pre><code>. frame change example_b 
+
+. poisson _d i.poly [pw=HAW2], irr exposure(_t) vce(rob)
+
+Iteration 0:   log pseudolikelihood = -97335.671  
+Iteration 1:   log pseudolikelihood =  -97335.67  
+
+Poisson regression                              Number of obs     =     59,763
+                                                Wald chi2(1)      =      18.13
+Log pseudolikelihood =  -97335.67               Prob &gt; chi2       =     0.0000
+
+------------------------------------------------------------------------------------
+                   |               Robust
+                _d |        IRR   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------------+----------------------------------------------------------------
+              poly |
+Polysubstance use  |   1.110924   .0274452     4.26   0.000     1.058414     1.16604
+             _cons |    .072249   .0016506  -115.02   0.000     .0690852    .0755576
+            ln(_t) |          1  (exposure)
+------------------------------------------------------------------------------------
+Note: _cons estimates baseline incidence rate.
+
+. matrix pois_irr_t0_wgt3= r(table)
+
+. *matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/1) r(1, 5/6)
+. 
+. margins i.poly, predict(ir)
+
+Adjusted predictions                            Number of obs     =     59,763
+Model VCE    : Robust
+
+Expression   : Predicted incidence rate, predict(ir)
+
+---------------------------------------------------------------------------------------
+                      |            Delta-method
+                      |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+                 poly |
+No polysubstance use  |    .072249   .0016506    43.77   0.000     .0690139     .075484
+   Polysubstance use  |   .0802631   .0007547   106.36   0.000      .078784    .0817422
+---------------------------------------------------------------------------------------
+
+. matrix pois_ir_t0_wgt3= r(table)
+
+. *matselrc pois_ir_t0_wgt pois_ir_t0_wgt, c(1/2) r(1, 5/6)
+. local ir_poly_0 : di %6.2f pois_ir_t0_wgt3[1,1]
+
+. local ir_poly_0_lo : di %6.2f pois_ir_t0_wgt3[2,1]
+
+. local ir_poly_0_up : di %6.2f pois_ir_t0_wgt3[3,1]
+
+. *&quot;`=scalar(round(pois_ir_t0_wgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[2,1]*1000,.01))',`=scalar(ro
+&gt; und(pois_ir_t0_wgt[3,1]*1000,.01))')&quot;
+. scalar ir_poly_003 = &quot;`=scalar(round(pois_ir_t0_wgt3[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt3[5,1]*1
+&gt; 000,.01))',`=scalar(round(pois_ir_t0_wgt3[6,1]*1000,.01))')&quot;
+
+. local ir_poly_1 : di %6.2f pois_ir_t0_wgt3[1,2]
+
+. local ir_poly_1_lo : di %6.2f pois_ir_t0_wgt3[2,2]
+
+. local ir_poly_1_up : di %6.2f pois_ir_t0_wgt3[3,2]
+
+. *&quot;`=scalar(round(pois_ir_t0_wgt[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt[2,2]*1000,.01))',`=scalar(ro
+&gt; und(pois_ir_t0_wgt[3,2]*1000,.01))')&quot;
+. scalar ir_poly_113 = &quot;`=scalar(round(pois_ir_t0_wgt3[1,2]*1000,.01))' (95%CI: `=scalar(round(pois_ir_t0_wgt3[5,2]*1
+&gt; 000,.01))',`=scalar(round(pois_ir_t0_wgt3[6,2]*1000,.01))')&quot;
+
+. 
+. local irr_poly_1 : di %6.2f pois_irr_t0_wgt3[1,2]
+
+. local irr_poly_1_lo : di %6.2f pois_irr_t0_wgt3[2,2]
+
+. local irr_poly_1_up : di %6.2f pois_irr_t0_wgt3[3,2]
+
+. **&quot;`=scalar(round(pois_irr_t0_wgt[1,1]*1000,.01))' (95%CI: `=scalar(round(pois_irr_t0_wgt[2,1]*1000,.01))',`=scalar
+&gt; (round(pois_irr_t0_wgt[3,1]*1000,.01))')&quot;
+. scalar irr_poly013 = &quot;`=scalar(round(pois_irr_t0_wgt3[1,2],.01))' (95%CI: `=scalar(round(pois_irr_t0_wgt3[5,2],.01)
+&gt; )',`=scalar(round(pois_irr_t0_wgt3[6,2],.01))')&quot;
+
+. 
+</code></pre>
+<pre><code>. *set trace on
+. cap noi qui sts test poly
+
+. scalar logrank_chi3= round(r(chi2),.01)
+
+. scalar logrank_df3= r(df)
+
+. scalar logrank_p3= round(chiprob(r(df),r(chi2)),.001)
+
+. local lr13: di %3.2f logrank_chi3
+
+. local lr23: di %1.0f logrank_df3
+
+. local lr33: di %5.4f logrank_p3
+
+. scalar logrank_wgt4 = &quot;Cox regression-based test for equality of survival curves: Wald Chi^2(`lr23')=`lr13',p=`lr33
+&gt; '&quot;
+
+. *di logrank_nowgt
+. 
+. matrix comb_irs4 = (0 \ 0 \ 0 \ 0)
+
+. matrix colnames comb_irs4 = &quot;Contact.js-weight&quot;
+
+. matrix rownames comb_irs4 = &quot;No poly: `=scalar(ir_poly_003)'&quot; &quot;Poly: `=scalar(ir_poly_113)'&quot; &quot;IRR: `=scalar(irr_pol
+&gt; y013)'&quot; &quot;Logrank: `=scalar(logrank_wgt4)'&quot;
+
+. esttab matrix(comb_irs4) using &quot;irrs_t0_wgt_contact_js.html&quot;, replace
+(output written to irrs_t0_wgt_contact_js.html)
+
+. *set trace off
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=2><hr></td></tr>
+<tr><td>            </td><td>   comb_irs4</td></tr>
+<tr><td>            </td><td>Contact.js-weight</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>No poly     </td><td>            </td></tr>
+<tr><td>72.25 (95%CI: 69.01000000000001,75.48)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>Poly        </td><td>            </td></tr>
+<tr><td>80.26000000000001 (95%CI: 78.78,81.73999999999999)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR         </td><td>            </td></tr>
+<tr><td>1.11 (95%CI: 1.06,1.17)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>Logrank     </td><td>            </td></tr>
+<tr><td>Cox regression-based test for equality of survival curves: Wald Chi^2(1)=36.20,p=0.0000</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+</table>
 <pre><code>. frame example_b: stdescribe, weight
 
          failure _d:  contact_js == 1
    analysis time _t:  diff2
   enter on or after:  time _start
+                 id:  id
              weight:  [pweight=HAW2]
 
                                    |-------------- per subject --------------|
@@ -1155,11 +1698,118 @@ no. of records         113400.96           1           1          1          1
 (final) exit time                   3.609033    .0152209   3.217474   11.91507
 
 subjects with gap              0   
-time on gap if gap             0   
+time on gap if gap             0           .           .          .          .
 time at risk           409267.75    3.609033    .0152209   3.217474   11.91507
 
 failures               31385.522    .2767659           0          0          1
 ------------------------------------------------------------------------------
+
+</code></pre>
+<pre><code>. stptime, title(person-years) per(1000) by(poly)
+
+         failure _d:  contact_js == 1
+   analysis time _t:  diff2
+  enter on or after:  time _start
+                 id:  id
+             weight:  [pweight=HAW2]
+
+      poly | person-years   Failures        Rate   [95% Conf. Interval]
+-----------+-----------------------------------------------------------
+ No poly~e |    182624.92    13194.5   72.248956   69.09806    75.57342
+ Polysub~e |    226642.84    18191.1   80.263126   78.79885    81.75734
+-----------+-----------------------------------------------------------
+     Total |    409267.75    31385.5   76.687015   75.04341     78.3728
+
+Note: The jackknife was used to calculate confidence intervals.
+
+. 
+. stmh poly
+
+         failure _d:  contact_js == 1
+   analysis time _t:  diff2
+  enter on or after:  time _start
+                 id:  id
+             weight:  [pweight=HAW2]
+
+Mantel-Haenszel estimate of the rate ratio
+  comparing poly==1 vs. poly==0
+
+------------------------------------------------------------------------
+    Rate ratio         chi2         P&gt;chi2          [95% Conf. Interval]
+------------------------------------------------------------------------
+         1.111        84.70         0.0000              1.086      1.136
+------------------------------------------------------------------------
+Warning: pweights used; confidence intervals and p-values may be wrong.
+
+. scalar poly_rr= round( r(rratio), .01)
+
+. scalar poly_rr_lb= round(r(lb),.01) 
+
+. scalar poly_rr_ub= round(r(ub),.01) 
+
+. local ir1= poly_rr
+
+. local ir2= poly_rr_lb
+
+. local ir3= poly_rr_ub
+
+. global poly_irr &quot; `title': IRR: `ir1' (95%IC `ir2' - `ir3') &quot;
+
+</code></pre>
+<ul>
+<li>The weighted IRR of treatment completion was  : IRR: 1.11 (95%IC 1.09 - 1.14)  per 1,000 person-years</li>
+</ul>
+<pre><code>. 
+. *set trace on
+. local stname `&quot; &quot;2_1&quot; &quot;' 
+
+. local titl `&quot; &quot;Poly vs No-Poly&quot; &quot;' 
+
+. foreach s of local stname {
+  2.         gettoken title titl: titl
+  3. cap noi qui ir _d poly _t
+  4. scalar ir_`s' =round(r(irr),.01)
+  5. *di ir_`s'
+. scalar ir_`s'_lb =round(r(lb_irr),.01) 
+  6. *di ir_`s'_lb
+. scalar ir_`s'_ub =round(r(ub_irr),.01)
+  7. *di ir_`s'_ub
+. local ir1= ir_`s'
+  8. local ir2= ir_`s'_lb
+  9. local ir3= ir_`s'_ub
+ 10. *di  in gr _col(13) &quot; `title': IRR `ir1' (IC 95% `ir2' - `ir3') &quot;
+. global irr_`s' &quot; `title': IRR (non weighted): `ir1' (IC 95% `ir2' - `ir3') &quot;
+ 11. global ir_`s' &quot;`ir1' (IC 95% `ir2' - `ir3')&quot;
+ 12. }       
+
+</code></pre>
+<ul>
+<li>Poly vs No-Poly: IRR (non weighted): 1.82 (IC 95% 1.74 - 1.89)</li>
+</ul>
+<pre><code>. matrix comb_irs5 = (0 \ 0 )
+
+. matrix colnames comb_irs5 = &quot;Contact.js-weight2&quot;
+
+. matrix rownames comb_irs5 = &quot;IRR weighted: '$poly_irr'&quot; &quot;IRR non qweighted: '$irr_2_1'&quot; 
+
+. esttab matrix(comb_irs5) using &quot;irrs_t0_wgt_contact_js2.html&quot;, replace
+(output written to irrs_t0_wgt_contact_js2.html)
+
+. *set trace off
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=2><hr></td></tr>
+<tr><td>            </td><td>   comb_irs5</td></tr>
+<tr><td>            </td><td>Contact.js-weight2</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR weighted</td><td>            </td></tr>
+<tr><td>' : IRR: 1.11 (95%IC 1.09 - 1.14) '</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR non qweighted</td><td>            </td></tr>
+<tr><td>' Poly vs No-Poly: IRR (non weighted): 1.82 (IC 95% 1.74 - 1.89) '</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+</table>
+<pre><code>. frame change default
 
 </code></pre>
 <p><strong>##############################</strong></p>
@@ -1236,7 +1886,8 @@ failures               31385.522    .2767659           0          0          1
 . 
 .                                                                                                                 
 . logistic poly sus_prin_mod_cat1 sus_prin_mod_cat2 sus_prin_mod_cat3 sus_prin_mod_cat4 ///
-&gt;                                                         fr_sus_prin_cat1 fr_sus_prin_cat2 fr_sus_prin_cat3 fr_sus_prin_cat4 /// 
+&gt;                                                         fr_sus_prin_cat1 fr_sus_prin_cat2 fr_sus_prin_cat3 fr_sus_p
+&gt; rin_cat4 /// 
 &gt;                                                         edad_al_ing_1 edad_ini_cons ///
 &gt;                                                         sex_enc ///
 &gt;                                                         esc_rec_tab2 esc_rec_tab3 /// 
@@ -1412,23 +2063,25 @@ Mantel-Haenszel estimate of the rate ratio
 ------------------------------------------------------------------------
 Warning: pweights used; confidence intervals and p-values may be wrong.
 
-. scalar poly_rr= round( r(rratio), .01)
+. scalar poly_b_rr= round( r(rratio), .01)
 
-. scalar poly_rr_lb= round(r(lb),.01) 
+. scalar poly_b_rr_lb= round(r(lb),.01) 
 
-. scalar poly_rr_ub= round(r(ub),.01) 
+. scalar poly_b_rr_ub= round(r(ub),.01) 
 
-. local ir1= poly_rr
+. local ir1b= poly_b_rr
 
-. local ir2= poly_rr_lb
+. local ir2b= poly_b_rr_lb
 
-. local ir3= poly_rr_ub
+. local ir3b= poly_b_rr_ub
 
-. global poly_irr &quot; `title': IRR `ir1' (95%IC `ir2' - `ir3') &quot;
+. global poly2_irr &quot; `title': IRR: `ir1b' (95%IC `ir2b' - `ir3b') &quot;
+
+. scalar exp1= &quot;`poly2_irr'&quot;
 
 </code></pre>
 <ul>
-<li>The weighted IRR of treatment completion was  : IRR .77 (95%IC .76 - .79)  per 1,000 person-years</li>
+<li>The weighted IRR of treatment completion was  Poly vs No-Poly: IRR: .77 (95%IC .76 - .79)  per 1,000 person-years</li>
 </ul>
 <pre><code>. 
 . *set trace on
@@ -1439,24 +2092,47 @@ Warning: pweights used; confidence intervals and p-values may be wrong.
 . foreach s of local stname {
   2.         gettoken title titl: titl
   3. cap noi qui ir _d poly _t
-  4. scalar ir_`s' =round(r(irr),.01)
+  4. scalar ir2_`s' =round(r(irr),.01)
   5. *di ir_`s'
-. scalar ir_`s'_lb =round(r(lb_irr),.01) 
+. scalar ir2_`s'_lb =round(r(lb_irr),.01) 
   6. *di ir_`s'_lb
-. scalar ir_`s'_ub =round(r(ub_irr),.01)
+. scalar ir2_`s'_ub =round(r(ub_irr),.01)
   7. *di ir_`s'_ub
-. local ir1= ir_`s'
-  8. local ir2= ir_`s'_lb
-  9. local ir3= ir_`s'_ub
+. local ir12a= ir2_`s'
+  8. local ir22a= ir2_`s'_lb
+  9. local ir32a= ir2_`s'_ub
  10. *di  in gr _col(13) &quot; `title': IRR `ir1' (IC 95% `ir2' - `ir3') &quot;
-. global irr_`s' &quot; `title': IRR (non weighted) `ir1' (IC 95% `ir2' - `ir3') &quot;
- 11. global ir_`s' &quot;`ir1' (IC 95% `ir2' - `ir3')&quot;
+. global irr2_`s' &quot; `title': IRR (non weighted): `ir12a' (IC 95% `ir22a' - `ir32a') &quot;
+ 11. global ir2_`s' &quot;`ir1' (IC 95% `ir2' - `ir3')&quot;
  12. }       
 
 </code></pre>
 <ul>
-<li>Poly vs No-Poly: IRR (non weighted) .5 (IC 95% .49 - .52) , so patients with Polysubstance use had a lower incidence rate than patients with no polysubstance use</li>
+<li>Poly vs No-Poly: IRR (non weighted): .5 (IC 95% .49 - .52)</li>
 </ul>
+<pre><code>. matrix comb_irs6 = (0 \ 0 )
+
+. matrix colnames comb_irs6 = IRRs_t0
+
+. matrix rownames comb_irs6 = &quot;IRR weighted: '$poly2_irr'&quot; &quot;IRR non qweighted: '$irr2_2_1'&quot; 
+
+. esttab matrix(comb_irs6) using &quot;irrs_t0_wgt_tr_comp2.html&quot;, replace
+(output written to irrs_t0_wgt_tr_comp2.html)
+
+. *set trace off
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=2><hr></td></tr>
+<tr><td>            </td><td>   comb_irs6</td></tr>
+<tr><td>            </td><td>     IRRs_t0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR weighted</td><td>            </td></tr>
+<tr><td>' Poly vs No-Poly: IRR: .77 (95%IC .76 - .79) '</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR non qweighted</td><td>            </td></tr>
+<tr><td>' Poly vs No-Poly: IRR (non weighted): .5 (IC 95% .49 - .52) '</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+</table>
 <p>Get schoenfeld residuals</p>
 <pre><code>. qui stcox  poly , robust nolog schoenfeld(sch*) scaledsch(sca*)
 
@@ -1482,7 +2158,8 @@ Warning: pweights used; confidence intervals and p-values may be wrong.
 <tr><td colspan=5><hr></td></tr>
 </table>
 <pre><code>. pbalchk poly sus_prin_mod_cat1 sus_prin_mod_cat2 sus_prin_mod_cat3 sus_prin_mod_cat4 ///
-&gt;                                                         fr_sus_prin_cat1 fr_sus_prin_cat2 fr_sus_prin_cat3 fr_sus_prin_cat4 /// 
+&gt;                                                         fr_sus_prin_cat1 fr_sus_prin_cat2 fr_sus_prin_cat3 fr_sus_p
+&gt; rin_cat4 /// 
 &gt;                                                         edad_al_ing_1 edad_ini_cons sex_enc ///
 &gt;                                                         esc_rec_tab2 esc_rec_tab3 /// 
 &gt;                                                         ten_viv_tab1 ten_viv_tab3 ten_viv_tab4 ten_viv_tab5 /// 
@@ -1492,7 +2169,8 @@ Warning: pweights used; confidence intervals and p-values may be wrong.
 &gt;                                                         n_off_sud  /// 
 &gt;                                                         clas2 clas3 /// 
 &gt;                                                         porc_pobr ///
-&gt;                                                         macrozone_cat2 macrozone_cat3, wt(HAW) p mahal sqrt diag graph xline(.15 -.15)
+&gt;                                                         macrozone_cat2 macrozone_cat3, wt(HAW) p mahal sqrt diag gr
+&gt; aph xline(.15 -.15)
 
                Mean in treated   Mean in Untreated   p-value for diff.
 ----------------------------------------------------------------------
@@ -1567,7 +2245,8 @@ Mahalonobis Distance between mean vectors:
 
 . 
 . // modify label
-. gr_edit .legend.style.editstyle boxstyle(linestyle(color(none))) editcopy //.legend.Edit , style(rows(2)) style(cols(0)) keepstyles 
+. gr_edit .legend.style.editstyle boxstyle(linestyle(color(none))) editcopy //.legend.Edit , style(rows(2)) style(col
+&gt; s(0)) keepstyles 
 
 . // modify label
 . gr_edit .xaxis1.title.text = {}
@@ -1599,7 +2278,9 @@ Mahalonobis Distance between mean vectors:
 
 . gr_edit .title.DragBy 2 0
 
-. 
+. //eliminate title 2023-04-23
+. gr_edit .title.draw_view.setstyle, style(no)
+
 . 
 . /*
 &gt; gr_edit .yaxis1.major.num_rule_ticks = 26
@@ -1684,8 +2365,8 @@ Mahalonobis Distance between mean vectors:
 . //graph use &quot;pbal2_mod&quot;
 . 
 . *You cannot give both f and p as options, only one.
-. *, strata(varname) wt(varname) f p mahal metric(matrix) diag sqrt xiprefix(string) graph xline(numlist) xlabel(numlist) nostandardize nocatstandardi
-&gt; ze sigrep ]
+. *, strata(varname) wt(varname) f p mahal metric(matrix) diag sqrt xiprefix(string) graph xline(numlist) xlabel(numl
+&gt; ist) nostandardize nocatstandardize sigrep ]
 </code></pre>
 <p><img src="pbal2_mod.svg" width="800" ></p>
 <p>Cocaine paste base and cocaine hydrochloride were the only variables that were not well adjusted if resticted the sample to the 5% and 95%.</p>
@@ -1717,9 +2398,10 @@ Mahalonobis Distance between mean vectors:
 
 .                                                                                 
 . 
-. msset, id(id) states(comp contact_js) transm(tmat) ///                                                                  
-&gt;                 times(diff1 diff2)  //* saqué tipo_de_plan_res_1 para que no se empiece a subdividir                                                
-&gt;            
+. msset, id(id) states(comp contact_js) transm(tmat) ///                                                             
+&gt;      
+&gt;                 times(diff1 diff2)  //* saqué tipo_de_plan_res_1 para que no se empiece a subdividir               
+&gt;                                             
 
 . 
 . mat mat_obs_states = r(transmatrix)                                                                             
@@ -1827,7 +2509,8 @@ Mahalonobis Distance between mean vectors:
 . graph export &quot;`c(pwd)'\_figs\transmat_ser23.eps&quot;, as(eps) replace
 (file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.eps written in EPS format)
 
-. graph export &quot;`c(pwd)'\_figs\transmat_ser23.pdf&quot;, as(pdf) replace //*width(2000) height(2000) orientation(landscape)
+. graph export &quot;`c(pwd)'\_figs\transmat_ser23.pdf&quot;, as(pdf) replace //*width(2000) height(2000) orientation(landscape
+&gt; )
 (file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\transmat_ser23.pdf written in PDF format)
 
 . *graph export &quot;_Appendix2_Graph_Mean_SE_g32.svg&quot;, as(svg) replace height(20000) fontface (Helvetica)
@@ -1840,8 +2523,8 @@ Mahalonobis Distance between mean vectors:
 </code></pre>
 <p><img src="transmat_ser23_2.svg" width="800" ></p>
 <pre><code>. *mat li freq_trans
-. *file:///G:/Mi%20unidad/Alvacast/SISTRAT%202019%20(github)/_supp_mstates/stata/crowther2017%20(1).pdf                                               
-&gt;                             
+. *file:///G:/Mi%20unidad/Alvacast/SISTRAT%202019%20(github)/_supp_mstates/stata/crowther2017%20(1).pdf              
+&gt;                                                              
 . gen _time = _stop - _start
 
 . lab var _time &quot;Time to states (reset)&quot; 
@@ -1874,7 +2557,8 @@ obs. time interval:  (0, _stop]
                                      earliest observed entry t =         0
                                           last observed exit t =  11.91507
 
-. *list edad_al_ing_1 edad_al_egres_imp_rec age_offending_imp age_at_censor_date edad_al_egres_imp_rec _start _stop _stop2 if _stop2&lt;9
+. *list edad_al_ing_1 edad_al_egres_imp_rec age_offending_imp age_at_censor_date edad_al_egres_imp_rec _start _stop _
+&gt; stop2 if _stop2&lt;9
 . 
 . // days in admission of 0
 . *browse if diff1&lt;0
@@ -1892,10 +2576,12 @@ obs. time interval:  (0, _stop]
 &gt; ## IPW example
 &gt; =======================================
 &gt; *https://www.esmoopen.com/cms/10.1016/j.esmoop.2021.100363/attachment/276cb642-3654-4d16-ad04-7bf83cb6fb15/mmc1.pdf
-&gt; logistic  motivodeegreso_mod_imp_rec2_inv edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_prin i.comp_biosoc i.ten_viv i.dg_
-&gt; cie_10_rec i.sud_severity_icd10 i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud i.clas porc_pobr, nolog 
+&gt; logistic  motivodeegreso_mod_imp_rec2_inv edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.sus_prin_mod i.fr_sus_p
+&gt; rin i.comp_biosoc i.ten_viv i.dg_cie_10_rec i.sud_severity_icd10 i.policonsumo i.n_off_vio i.n_off_acq i.n_off_sud 
+&gt; i.clas porc_pobr, nolog 
 &gt; predict double ps //ps = propensity score
-&gt; gen double HAW = ((motivodeegreso_mod_imp_rec2_inv == 1) / ps) + ((motivodeegreso_mod_imp_rec2_inv == 0) / (1 - ps)) // 
+&gt; gen double HAW = ((motivodeegreso_mod_imp_rec2_inv == 1) / ps) + ((motivodeegreso_mod_imp_rec2_inv == 0) / (1 - ps)
+&gt; ) // 
 &gt; Compute the inverse probability Treatment weights (IPTW)
 &gt; summarize HAW, detail
 &gt; keep if inrange(HAW, r(p05), r(p95))
@@ -1925,11 +2611,11 @@ obs. time interval:  (0, _stop]
 <p>variable _t2 not found</p>
 <p>(98,716 real changes made)</p>
 <p>(1 missing value generated)</p>
-<p>(ranges: 186 changes made)</p>
+<p>(ranges: 898 changes made)</p>
 <p>(ranges: 95 changes made)</p>
 <p>(ranges: 237 changes made)</p>
 <p>(ranges: 1892 changes made)</p>
-<p>(ranges: 133591 changes made)</p>
+<p>(ranges: 132879 changes made)</p>
 <p>frame example1 not found</p>
 <p>(note:  named style gs4 gs7 not found in class color, default attributes used) (file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)_figs\msaj_12_23.gph saved)</p>
 <p><img src="msaj_12_23.svg" width="800" ></p>
@@ -1951,9 +2637,10 @@ obs. time interval:  (0, _stop]
   8.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if ranges==4  &amp; poly==0 
  10.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 11.          cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 11.          cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ 
+&gt; `=scalar(scalar(e5y_`var'))')
  12.          matrix colnames e_a_`var' = `var'
- 13.          matrix rownames e_a_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 13.          matrix rownames e_a_`var' = 6_mths 1_yr 3_yrs 5_yrs
  14.                                         qui summarize `var' if ranges==1  &amp; poly==1 
  15.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
  16.                                         qui summarize `var' if ranges==2  &amp; poly==1
@@ -1962,14 +2649,15 @@ obs. time interval:  (0, _stop]
  19.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  20.                                         qui summarize `var' if ranges==4  &amp; poly==1
  21.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 22.          cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 22.          cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ 
+&gt; `=scalar(scalar(e5y_`var'))')
  23.          matrix colnames e_b_`var' = `var'
- 24.          matrix rownames e_b_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 24.          matrix rownames e_b_`var' = 6_mths 1_yr 3_yrs 5_yrs
  25.  }
 
 . 
-. matrix est_msaj12 = (e_a_trp_ajprob_3_5_12, e_a_trp_ajprob_3_5_12_lci, e_a_trp_ajprob_3_5_12_uci, e_b_trp_ajprob_3_5_12, e_b_trp_ajprob_3_5_12_lci, 
-&gt; e_b_trp_ajprob_3_5_12_uci)
+. matrix est_msaj12 = (e_a_trp_ajprob_3_5_12, e_a_trp_ajprob_3_5_12_lci, e_a_trp_ajprob_3_5_12_uci, e_b_trp_ajprob_3_
+&gt; 5_12, e_b_trp_ajprob_3_5_12_lci, e_b_trp_ajprob_3_5_12_uci)
 
 . matrix colnames est_msaj12 = Est_NoPoly LCI UCI Est_Poly LCI UCI
 
@@ -1984,10 +2672,10 @@ obs. time interval:  (0, _stop]
 <tr><td>            </td><td>  est_msaj12</td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td></tr>
 <tr><td>            </td><td>  Est_NoPoly</td><td>         LCI</td><td>         UCI</td><td>    Est_Poly</td><td>         LCI</td><td>         UCI</td></tr>
 <tr><td colspan=7><hr></td></tr>
-<tr><td>3_mths      </td><td>           0</td><td>           0</td><td>           0</td><td>           0</td><td>           0</td><td>           0</td></tr>
-<tr><td>1_yr        </td><td>        17.2</td><td>        16.9</td><td>        17.6</td><td>        14.4</td><td>        14.1</td><td>        14.6</td></tr>
-<tr><td>3_yrs       </td><td>        26.7</td><td>        26.3</td><td>        27.1</td><td>        23.5</td><td>        23.1</td><td>        23.8</td></tr>
-<tr><td>5_yrs       </td><td>        24.6</td><td>        24.2</td><td>          25</td><td>        21.3</td><td>          21</td><td>        21.7</td></tr>
+<tr><td>6_mths      </td><td>           4</td><td>         3.9</td><td>         4.2</td><td>         3.1</td><td>         2.9</td><td>         3.2</td></tr>
+<tr><td>1_yr        </td><td>        17.6</td><td>        17.3</td><td>          18</td><td>        14.6</td><td>        14.3</td><td>        14.8</td></tr>
+<tr><td>3_yrs       </td><td>          27</td><td>        26.6</td><td>        27.4</td><td>        23.6</td><td>        23.2</td><td>        23.9</td></tr>
+<tr><td>5_yrs       </td><td>        24.9</td><td>        24.4</td><td>        25.3</td><td>        21.4</td><td>          21</td><td>        21.8</td></tr>
 <tr><td colspan=7><hr></td></tr>
 </table>
 <p><strong>Transition Probabilities from Admission to Contact with the justice system</strong></p>
@@ -2001,9 +2689,10 @@ obs. time interval:  (0, _stop]
   8.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if ranges==4  &amp; poly==0 
  10.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 11.          cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 11.          cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ 
+&gt; `=scalar(scalar(e5y_`var'))')
  12.          matrix colnames e_a_`var' = `var'
- 13.          matrix rownames e_a_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 13.          matrix rownames e_a_`var' = 6_mths 1_yr 3_yrs 5_yrs
  14.                                         qui summarize `var' if ranges==1  &amp; poly==1 
  15.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
  16.                                         qui summarize `var' if ranges==2  &amp; poly==1
@@ -2012,14 +2701,15 @@ obs. time interval:  (0, _stop]
  19.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  20.                                         qui summarize `var' if ranges==4  &amp; poly==1
  21.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 22.          cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 22.          cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ 
+&gt; `=scalar(scalar(e5y_`var'))')
  23.          matrix colnames e_b_`var' = `var'
- 24.          matrix rownames e_b_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 24.          matrix rownames e_b_`var' = 6_mths 1_yr 3_yrs 5_yrs
  25.  }
 
 . 
-. matrix est_msaj13 = (e_a_trp_ajprob_3_5_13, e_a_trp_ajprob_3_5_13_lci, e_a_trp_ajprob_3_5_13_uci, e_b_trp_ajprob_3_5_13, e_b_trp_ajprob_3_5_13_lci, 
-&gt; e_b_trp_ajprob_3_5_13_uci)
+. matrix est_msaj13 = (e_a_trp_ajprob_3_5_13, e_a_trp_ajprob_3_5_13_lci, e_a_trp_ajprob_3_5_13_uci, e_b_trp_ajprob_3_
+&gt; 5_13, e_b_trp_ajprob_3_5_13_lci, e_b_trp_ajprob_3_5_13_uci)
 
 . matrix colnames est_msaj13 = Est_NoPoly LCI UCI Est_Poly LCI UCI
 
@@ -2034,10 +2724,10 @@ obs. time interval:  (0, _stop]
 <tr><td>            </td><td>  est_msaj13</td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td></tr>
 <tr><td>            </td><td>  Est_NoPoly</td><td>         LCI</td><td>         UCI</td><td>    Est_Poly</td><td>         LCI</td><td>         UCI</td></tr>
 <tr><td colspan=7><hr></td></tr>
-<tr><td>3_mths      </td><td>           0</td><td>           0</td><td>           0</td><td>           0</td><td>           0</td><td>           0</td></tr>
-<tr><td>1_yr        </td><td>         6.4</td><td>         6.2</td><td>         6.6</td><td>         7.5</td><td>         7.3</td><td>         7.8</td></tr>
-<tr><td>3_yrs       </td><td>        20.6</td><td>        20.2</td><td>          21</td><td>        24.1</td><td>        23.7</td><td>        24.5</td></tr>
-<tr><td>5_yrs       </td><td>        29.4</td><td>        28.9</td><td>        29.9</td><td>          33</td><td>        32.6</td><td>        33.5</td></tr>
+<tr><td>6_mths      </td><td>         1.8</td><td>         1.7</td><td>         1.9</td><td>         2.2</td><td>         2.1</td><td>         2.3</td></tr>
+<tr><td>1_yr        </td><td>         6.6</td><td>         6.4</td><td>         6.8</td><td>         7.9</td><td>         7.6</td><td>         8.1</td></tr>
+<tr><td>3_yrs       </td><td>        20.7</td><td>        20.3</td><td>        21.1</td><td>        24.4</td><td>          24</td><td>        24.7</td></tr>
+<tr><td>5_yrs       </td><td>        29.5</td><td>          29</td><td>          30</td><td>        33.3</td><td>        32.8</td><td>        33.7</td></tr>
 <tr><td colspan=7><hr></td></tr>
 </table>
 <p><strong>Transition Probabilities from Treatment Completion to Contact with the justice system</strong></p>
@@ -2051,9 +2741,10 @@ obs. time interval:  (0, _stop]
   8.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if ranges==4  &amp; poly==0 
  10.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 11.          cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 11.          cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ 
+&gt; `=scalar(scalar(e5y_`var'))')
  12.          matrix colnames e_a_`var' = `var'
- 13.          matrix rownames e_a_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 13.          matrix rownames e_a_`var' = 6_mths 1_yr 3_yrs 5_yrs
  14.                                         qui summarize `var' if ranges==1  &amp; poly==1 
  15.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
  16.                                         qui summarize `var' if ranges==2  &amp; poly==1
@@ -2062,14 +2753,15 @@ obs. time interval:  (0, _stop]
  19.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  20.                                         qui summarize `var' if ranges==4  &amp; poly==1
  21.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 22.          cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 22.          cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ 
+&gt; `=scalar(scalar(e5y_`var'))')
  23.          matrix colnames e_b_`var' = `var'
- 24.          matrix rownames e_b_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 24.          matrix rownames e_b_`var' = 6_mths 1_yr 3_yrs 5_yrs
  25.  }
 
 . 
-. matrix est_msaj23 = (e_a_trp_ajprob_3_5_23, e_a_trp_ajprob_3_5_23_lci, e_a_trp_ajprob_3_5_23_uci, e_b_trp_ajprob_3_5_23, e_b_trp_ajprob_3_5_23_lci, 
-&gt; e_b_trp_ajprob_3_5_23_uci)
+. matrix est_msaj23 = (e_a_trp_ajprob_3_5_23, e_a_trp_ajprob_3_5_23_lci, e_a_trp_ajprob_3_5_23_uci, e_b_trp_ajprob_3_
+&gt; 5_23, e_b_trp_ajprob_3_5_23_lci, e_b_trp_ajprob_3_5_23_uci)
 
 . matrix colnames est_msaj23 = Est_NoPoly LCI UCI Est_Poly LCI UCI
 
@@ -2084,10 +2776,10 @@ obs. time interval:  (0, _stop]
 <tr><td>            </td><td>  est_msaj23</td><td>            </td><td>            </td><td>            </td><td>            </td><td>            </td></tr>
 <tr><td>            </td><td>  Est_NoPoly</td><td>         LCI</td><td>         UCI</td><td>    Est_Poly</td><td>         LCI</td><td>         UCI</td></tr>
 <tr><td colspan=7><hr></td></tr>
-<tr><td>3_mths      </td><td>           0</td><td>           0</td><td>           0</td><td>          .1</td><td>           0</td><td>          .2</td></tr>
-<tr><td>1_yr        </td><td>         4.5</td><td>         3.9</td><td>         5.2</td><td>         8.5</td><td>         7.4</td><td>         9.6</td></tr>
-<tr><td>3_yrs       </td><td>          15</td><td>        14.2</td><td>        15.8</td><td>          21</td><td>        19.8</td><td>        22.1</td></tr>
-<tr><td>5_yrs       </td><td>        21.9</td><td>        20.9</td><td>        22.8</td><td>        28.5</td><td>        27.3</td><td>        29.6</td></tr>
+<tr><td>6_mths      </td><td>         2.4</td><td>         1.3</td><td>         3.4</td><td>           3</td><td>           2</td><td>           4</td></tr>
+<tr><td>1_yr        </td><td>         5.9</td><td>         4.8</td><td>           7</td><td>         8.7</td><td>         7.5</td><td>         9.8</td></tr>
+<tr><td>3_yrs       </td><td>        16.2</td><td>        15.1</td><td>        17.3</td><td>        21.1</td><td>          20</td><td>        22.3</td></tr>
+<tr><td>5_yrs       </td><td>          23</td><td>        21.8</td><td>        24.2</td><td>        28.6</td><td>        27.4</td><td>        29.8</td></tr>
 <tr><td colspan=7><hr></td></tr>
 </table>
 <h2><a href="#aalen-johanssen-tables-of-lengths-of-stay" id="aalen-johanssen-tables-of-lengths-of-stay">Aalen-Johanssen, Tables of Lengths of stay</a></h2>
@@ -2095,7 +2787,7 @@ obs. time interval:  (0, _stop]
 <pre><code>. * inrange(_t, .299, .301) | _t==1 | inrange(_t, 2.99, 3.01) | inrange(_t, 4.970, 5.001) 
 . foreach var of varlist trp_ajlos_3_5_11 trp_ajlos_3_5_22 {
   2.                                 scalar variable = &quot;`var'&quot;
-  3.                                         qui summarize `var' if inrange(_t, .299, .301) &amp; poly==0 
+  3.                                         qui summarize `var' if inrange(_t, .49, .51) &amp; poly==0 
   4.                                         scalar e3m_`var' = round(round(r(mean),.001),.1)
   5.                                         qui summarize `var' if inrange(_t, 1, 1) &amp; poly==0 
   6.                                         scalar e1y_`var' = round(round(r(mean),.001),.1)
@@ -2103,10 +2795,11 @@ obs. time interval:  (0, _stop]
   8.                                         scalar e3y_`var' = round(round(r(mean),.001),.1)
   9.                                         qui summarize `var' if inrange(_t,  4.97, 5.001) &amp; poly==0 
  10.                                         scalar e5y_`var' = round(round(r(mean),.001),.1)
- 11.          cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 11.          cap noi matrix e_a_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ 
+&gt; `=scalar(scalar(e5y_`var'))')
  12.          matrix colnames e_a_`var' = `var'
- 13.          matrix rownames e_a_`var' = 3_mths 1_yr 3_yrs 5_yrs
- 14.                                         qui summarize `var' if inrange(_t, .299, .301) &amp; poly==1 
+ 13.          matrix rownames e_a_`var' = 6_mths 1_yr 3_yrs 5_yrs
+ 14.                                         qui summarize `var' if inrange(_t, .49, .51) &amp; poly==1 
  15.                                         scalar e3m_`var' = round(round(r(mean),.001),.1)
  16.                                         qui summarize `var' if inrange(_t, 1, 1) &amp; poly==1
  17.                                         scalar e1y_`var' = round(round(r(mean),.001),.1)
@@ -2114,9 +2807,10 @@ obs. time interval:  (0, _stop]
  19.                                         scalar e3y_`var' = round(round(r(mean),.001),.1)
  20.                                         qui summarize `var' if inrange(_t,  4.97, 5.001) &amp; poly==1
  21.                                         scalar e5y_`var' = round(round(r(mean),.001),.1)
- 22.          cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
+ 22.          cap noi matrix e_b_`var' = (`=scalar(e3m_`var')'\  `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ 
+&gt; `=scalar(scalar(e5y_`var'))')
  23.          matrix colnames e_b_`var' = `var'
- 24.          matrix rownames e_b_`var' = 3_mths 1_yr 3_yrs 5_yrs
+ 24.          matrix rownames e_b_`var' = 6_mths 1_yr 3_yrs 5_yrs
  25.  }
 
 . 
@@ -2135,13 +2829,13 @@ obs. time interval:  (0, _stop]
 <tr><td>            </td><td>est_msaj12los</td><td>            </td><td>            </td><td>            </td></tr>
 <tr><td>            </td><td> LOS1_NoPoly</td><td> LOS2_NoPoly</td><td>   LOS1_Poly</td><td>   LOS2_Poly</td></tr>
 <tr><td colspan=5><hr></td></tr>
-<tr><td>3_mths      </td><td>           0</td><td>           0</td><td>           0</td><td>           0</td></tr>
-<tr><td>1_yr        </td><td>          .6</td><td>          .6</td><td>          .7</td><td>          .7</td></tr>
-<tr><td>3_yrs       </td><td>         1.8</td><td>         1.9</td><td>         2.5</td><td>         2.4</td></tr>
-<tr><td>5_yrs       </td><td>         2.8</td><td>         2.8</td><td>         4.1</td><td>         3.8</td></tr>
+<tr><td>6_mths      </td><td>          .2</td><td>          .2</td><td>          .2</td><td>          .2</td></tr>
+<tr><td>1_yr        </td><td>          .7</td><td>          .7</td><td>          .7</td><td>          .7</td></tr>
+<tr><td>3_yrs       </td><td>         1.9</td><td>         1.9</td><td>         2.5</td><td>         2.4</td></tr>
+<tr><td>5_yrs       </td><td>         2.8</td><td>         2.9</td><td>         4.1</td><td>         3.9</td></tr>
 <tr><td colspan=5><hr></td></tr>
 </table>
-<p>Saved at= 21:42:53 18 Apr 2023</p>
+<p>Saved at= 21:29:31  9 May 2023</p>
 <pre><code>
 
 
