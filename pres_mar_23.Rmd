@@ -683,38 +683,42 @@ kbl(format = 'html',
 <br>
 
 ```{r exp-surv23-2, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
+
 prob_imp_pris<-rvest::read_html("prob_prison_m1_main.html") %>% rvest::html_table()
 rmst_imp_pris<-rvest::read_html("rmst_prison_m1_main.html") %>% rvest::html_table()
 prob_imp_diff_pris<-rvest::read_html("prob_prison_m1_main_diff.html") %>% rvest::html_table()
 rmst_imp_diff_pris<-rvest::read_html("rmst_prison_m1_main_diff.html") %>% rvest::html_table()
 
 prob_imp_pris_tab<-
-prob_imp_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+prob_imp_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
+  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.1f",readr::parse_number(.))) %>% 
   dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
   dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 prob_imp_diff_pris_tab<-
-prob_imp_diff_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+prob_imp_diff_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
+  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.1f",readr::parse_number(.))) %>%
   dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
   dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths")) 
 
 rmst_imp_pris_tab<-
-rmst_imp_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+rmst_imp_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
+  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",readr::parse_number(.))) %>% 
   dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci= paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci= paste0(Late," (", Late_lci,",",Late_uci,")")) %>%
   dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 rmst_imp_diff_pris_tab<-
-rmst_imp_diff_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% 
+rmst_imp_diff_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
+  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",readr::parse_number(.))) %>% 
   dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
   dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 rbindlist(list(list(c("Probs.",rep("",6))),cbind.data.frame(prob_imp_pris_tab,prob_imp_diff_pris_tab[,-1]), list(c("RMST",rep("",6))), cbind.data.frame(rmst_imp_pris_tab,rmst_imp_diff_pris_tab[,-1])), fill=T) %>% 
-  dplyr::filter(nchar(Time)>=2) %>% 
-    #dplyr::slice(-2,-3,-4,-5,-6,-7,-14,-15,-16,-17,-18,-19) %>%        
+    dplyr::filter(nchar(Time)>=2) # %>% rio::export("_tab_mariel_results.xlsx")
 kbl(format = 'html',
         escape = FALSE,
         col.names= c("Time", "Complete Tr.","Late Disch.", "Early Disch.", "Comp. vs Late", "Comp. vs Early", "Early vs Late"), 

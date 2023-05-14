@@ -152,13 +152,13 @@ C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
 . 
 </code></pre>
 <h1><a href="#exercise" id="exercise">Exercise</a></h1>
-<p>Date created: 21:08:10  9 May 2023.</p>
+<p>Date created: 23:31:54 11 May 2023.</p>
 <p>Get the folder</p>
 <pre><code>
 C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
 
 
-Fecha:  9 May 2023, considerando un SO Windows para el usuario: CISS Fondecyt
+Fecha: 11 May 2023, considerando un SO Windows para el usuario: CISS Fondecyt
 
 </code></pre>
 <head>
@@ -195,7 +195,7 @@ $(document).ready(function() {
 </head>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <p>Path data= ;</p>
-<p>Tiempo:  9 May 2023, considerando un SO Windows</p>
+<p>Tiempo: 11 May 2023, considerando un SO Windows</p>
 <p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_oct_2022_match_SENDA_pris.dta</p>
 <p>=============================================================================</p>
 <h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
@@ -616,8 +616,8 @@ No polysubstance use  |   .1074712   .0015603    68.88   0.000     .1044129    .
 
 . matrix colnames comb_irs = &quot;Tr.comp-no weight&quot;
 
-. matrix rownames comb_irs = &quot;No poly: `=scalar(ir_poly_00)'&quot; &quot;Poly: `=scalar(ir_poly_11)'&quot; &quot;IRR: `=scalar(irr_poly01
-&gt; )'&quot; &quot;Logrank: `=scalar(logrank_nowgt)'&quot;
+. matrix rownames comb_irs = &quot;No PSU: `=scalar(ir_poly_00)'&quot; &quot;PSU: `=scalar(ir_poly_11)'&quot; &quot;IRR: `=scalar(irr_poly01)'
+&gt; &quot; &quot;Logrank: `=scalar(logrank_nowgt)'&quot;
 
 . esttab matrix(comb_irs) using &quot;irrs_t0_nowgt_tr_comp.html&quot;, replace
 (output written to irrs_t0_nowgt_tr_comp.html)
@@ -629,10 +629,10 @@ No polysubstance use  |   .1074712   .0015603    68.88   0.000     .1044129    .
 <tr><td>            </td><td>    comb_irs</td></tr>
 <tr><td>            </td><td>Tr.comp-no weight</td></tr>
 <tr><td colspan=2><hr></td></tr>
-<tr><td>No poly     </td><td>            </td></tr>
+<tr><td>No PSU      </td><td>            </td></tr>
 <tr><td>107.47 (95%CI: 104.41,110.53)</td><td>           0</td></tr>
 <tr><td colspan=2><hr></td></tr>
-<tr><td>Poly        </td><td>            </td></tr>
+<tr><td>PSU         </td><td>            </td></tr>
 <tr><td>56.43 (95%CI: 55.33,57.52)</td><td>           0</td></tr>
 <tr><td colspan=2><hr></td></tr>
 <tr><td>IRR         </td><td>            </td></tr>
@@ -1012,8 +1012,8 @@ No polysubstance use  |   .0870395   .0018266    47.65   0.000     .0834593    .
 
 . matrix colnames comb_irs2 = &quot;Tr.comp-weight&quot;
 
-. matrix rownames comb_irs2 = &quot;No poly: `=scalar(ir_poly_001)'&quot; &quot;Poly: `=scalar(ir_poly_111)'&quot; &quot;IRR: `=scalar(irr_pol
-&gt; y011)'&quot; &quot;Logrank: `=scalar(logrank_wgt1)'&quot;
+. matrix rownames comb_irs2 = &quot;No PSU: `=scalar(ir_poly_001)'&quot; &quot;PSU: `=scalar(ir_poly_111)'&quot; &quot;IRR: `=scalar(irr_poly0
+&gt; 11)'&quot; &quot;Logrank: `=scalar(logrank_wgt1)'&quot;
 
 . esttab matrix(comb_irs2) using &quot;irrs_t0_wgt_tr_comp.html&quot;, replace
 (output written to irrs_t0_wgt_tr_comp.html)
@@ -1025,10 +1025,10 @@ No polysubstance use  |   .0870395   .0018266    47.65   0.000     .0834593    .
 <tr><td>            </td><td>   comb_irs2</td></tr>
 <tr><td>            </td><td>Tr.comp-weight</td></tr>
 <tr><td colspan=2><hr></td></tr>
-<tr><td>No poly     </td><td>            </td></tr>
+<tr><td>No PSU      </td><td>            </td></tr>
 <tr><td>87.04000000000001 (95%CI: 83.46000000000001,90.62)</td><td>           0</td></tr>
 <tr><td colspan=2><hr></td></tr>
-<tr><td>Poly        </td><td>            </td></tr>
+<tr><td>PSU         </td><td>            </td></tr>
 <tr><td>67.41 (95%CI: 65.87,68.96000000000001)</td><td>           0</td></tr>
 <tr><td colspan=2><hr></td></tr>
 <tr><td>IRR         </td><td>            </td></tr>
@@ -1221,8 +1221,8 @@ No polysubstance use  |   .0541226   .0009168    59.03   0.000     .0523257    .
 
 . matrix colnames comb_irs3 = &quot;Contact.js-no weight&quot;
 
-. matrix rownames comb_irs3 = &quot;No poly: `=scalar(ir_poly_002)'&quot; &quot;Poly: `=scalar(ir_poly_112)'&quot; &quot;IRR: `=scalar(irr_pol
-&gt; y012)'&quot; &quot;Logrank: `=scalar(logrank_nowgt3)'&quot;
+. matrix rownames comb_irs3 = &quot;No PSU: `=scalar(ir_poly_002)'&quot; &quot;PSU: `=scalar(ir_poly_112)'&quot; &quot;IRR: `=scalar(irr_poly0
+&gt; 12)'&quot; &quot;Logrank: `=scalar(logrank_nowgt3)'&quot;
 
 . esttab matrix(comb_irs3) using &quot;irrs_t0_nowgt_contact_js.html&quot;, replace
 (output written to irrs_t0_nowgt_contact_js.html)
@@ -1234,10 +1234,10 @@ No polysubstance use  |   .0541226   .0009168    59.03   0.000     .0523257    .
 <tr><td>            </td><td>   comb_irs3</td></tr>
 <tr><td>            </td><td>Contact.js-no weight</td></tr>
 <tr><td colspan=2><hr></td></tr>
-<tr><td>No poly     </td><td>            </td></tr>
+<tr><td>No PSU      </td><td>            </td></tr>
 <tr><td>54.12 (95%CI: 52.33,55.92)</td><td>           0</td></tr>
 <tr><td colspan=2><hr></td></tr>
-<tr><td>Poly        </td><td>            </td></tr>
+<tr><td>PSU         </td><td>            </td></tr>
 <tr><td>90.73999999999999 (95%CI: 89.36,92.12)</td><td>           0</td></tr>
 <tr><td colspan=2><hr></td></tr>
 <tr><td>IRR         </td><td>            </td></tr>
@@ -1653,8 +1653,8 @@ No polysubstance use  |    .072249   .0016506    43.77   0.000     .0690139     
 
 . matrix colnames comb_irs4 = &quot;Contact.js-weight&quot;
 
-. matrix rownames comb_irs4 = &quot;No poly: `=scalar(ir_poly_003)'&quot; &quot;Poly: `=scalar(ir_poly_113)'&quot; &quot;IRR: `=scalar(irr_pol
-&gt; y013)'&quot; &quot;Logrank: `=scalar(logrank_wgt4)'&quot;
+. matrix rownames comb_irs4 = &quot;No PSU: `=scalar(ir_poly_003)'&quot; &quot;PSU: `=scalar(ir_poly_113)'&quot; &quot;IRR: `=scalar(irr_poly0
+&gt; 13)'&quot; &quot;Logrank: `=scalar(logrank_wgt4)'&quot;
 
 . esttab matrix(comb_irs4) using &quot;irrs_t0_wgt_contact_js.html&quot;, replace
 (output written to irrs_t0_wgt_contact_js.html)
@@ -1666,10 +1666,10 @@ No polysubstance use  |    .072249   .0016506    43.77   0.000     .0690139     
 <tr><td>            </td><td>   comb_irs4</td></tr>
 <tr><td>            </td><td>Contact.js-weight</td></tr>
 <tr><td colspan=2><hr></td></tr>
-<tr><td>No poly     </td><td>            </td></tr>
+<tr><td>No PSU      </td><td>            </td></tr>
 <tr><td>72.25 (95%CI: 69.01000000000001,75.48)</td><td>           0</td></tr>
 <tr><td colspan=2><hr></td></tr>
-<tr><td>Poly        </td><td>            </td></tr>
+<tr><td>PSU         </td><td>            </td></tr>
 <tr><td>80.26000000000001 (95%CI: 78.78,81.73999999999999)</td><td>           0</td></tr>
 <tr><td colspan=2><hr></td></tr>
 <tr><td>IRR         </td><td>            </td></tr>
@@ -2835,7 +2835,7 @@ obs. time interval:  (0, _stop]
 <tr><td>5_yrs       </td><td>         2.8</td><td>         2.9</td><td>         4.1</td><td>         3.9</td></tr>
 <tr><td colspan=5><hr></td></tr>
 </table>
-<p>Saved at= 21:29:31  9 May 2023</p>
+<p>Saved at= 23:56:57 11 May 2023</p>
 <pre><code>
 
 

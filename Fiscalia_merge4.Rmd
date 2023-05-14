@@ -492,6 +492,109 @@ c('rut_enc_saf' = 'id',
   as.data.table()
 ```
 
+```{r 1-filter-post, echo=T, fig.align='center',layout="l-body-outset", message=T, error=T, eval=F}
+#para ver excluidos en el proceso
+#2013-05-12
+plyr::rename(Base_fiscalia_v8,
+             c('rut_enc_saf' = 'id',
+               'fec_nacimiento' = 'dateofbirth',
+               'pais' = 'country',
+               'sexo' = 'sex',
+               'encontrado_como_victima' = 'victim',
+               'encontrado_como_imputado' = 'offender_d',
+               'tipo_sujeto_vic' = 'victim_type_n',
+               'gls_tipo_sujeto_vic' = 'victim_type_c',
+               'idsujeto_victima' = 'id_victim',
+               'reg' = 'reg',
+               'gls_region' = 'reg_c',
+               'idrelacion' = 'id_relac',
+               'ruc' = 'caseid',
+               'tipo_termino' = 'end_type_group',
+               'agrupa_terminos' = 'end_type',
+               'cod_delito' = 'crime_code',
+               'gls_materia' = 'crime_code_c',
+               'familia_delito' = 'crime_code_group',
+               'cod_mottermino' = 'end_type_2c',
+               'gls_mottermino' = 'end_type_2',
+               'impcod_tiposujeto' = 'offender_type',
+               'gls_tipo_imputado' = 'offender_type2',
+               'iddelito' = 'offence_type',
+               'fec_comision' = 'date_offending',
+               'marca_pena_44' = 's_sentence_1',
+               'marca_multa_45' = 's__fine_1',
+               'medida_alternativa_46' = 's_restorative_3',
+               'clasificacion_pena_47' = 's_kindprison_1',
+               'marca_pena_52' = 's_sentence_2',
+               'marca_multa_53' = 's__fine_2',
+               'medida_alternativa_54' = 's_restorative_2',
+               'clasificacion_pena_55' = 's_kindprison_2',
+               'imp_birth_date' = 'dateofbirth_imp',
+               'obs' = 'obs',
+               'edad_comision_imp' = 'age_offending_imp',
+               'edad_ter_rel_imp' = 'age_finish_rel_imp',
+               'familia_delito_rec' = 'crime_code_group_rec',
+               'familia_delito_rec_prof' = 'crime_code_group_rec_prof',
+               'sex_imp' = 'sex_imp',
+               'nat_imp2' = 'country_b',
+               'nat_imp' = 'country_a')) %>% 
+    #KEY STEP: FILTER IF THE PATIENT IS CONSIDERED AS AN OFFENDER
+    dplyr::filter(!grepl("SI",offender_d)) %>% 
+    dplyr::anti_join(distinct(Base_fiscalia_v9,id,.keep_all = T), by="id") %>% distinct(id) %>% nrow()
+
+plyr::rename(Base_fiscalia_v8,
+             c('rut_enc_saf' = 'id',
+               'fec_nacimiento' = 'dateofbirth',
+               'pais' = 'country',
+               'sexo' = 'sex',
+               'encontrado_como_victima' = 'victim',
+               'encontrado_como_imputado' = 'offender_d',
+               'tipo_sujeto_vic' = 'victim_type_n',
+               'gls_tipo_sujeto_vic' = 'victim_type_c',
+               'idsujeto_victima' = 'id_victim',
+               'reg' = 'reg',
+               'gls_region' = 'reg_c',
+               'idrelacion' = 'id_relac',
+               'ruc' = 'caseid',
+               'tipo_termino' = 'end_type_group',
+               'agrupa_terminos' = 'end_type',
+               'cod_delito' = 'crime_code',
+               'gls_materia' = 'crime_code_c',
+               'familia_delito' = 'crime_code_group',
+               'cod_mottermino' = 'end_type_2c',
+               'gls_mottermino' = 'end_type_2',
+               'impcod_tiposujeto' = 'offender_type',
+               'gls_tipo_imputado' = 'offender_type2',
+               'iddelito' = 'offence_type',
+               'fec_comision' = 'date_offending',
+               'marca_pena_44' = 's_sentence_1',
+               'marca_multa_45' = 's__fine_1',
+               'medida_alternativa_46' = 's_restorative_3',
+               'clasificacion_pena_47' = 's_kindprison_1',
+               'marca_pena_52' = 's_sentence_2',
+               'marca_multa_53' = 's__fine_2',
+               'medida_alternativa_54' = 's_restorative_2',
+               'clasificacion_pena_55' = 's_kindprison_2',
+               'imp_birth_date' = 'dateofbirth_imp',
+               'obs' = 'obs',
+               'edad_comision_imp' = 'age_offending_imp',
+               'edad_ter_rel_imp' = 'age_finish_rel_imp',
+               'familia_delito_rec' = 'crime_code_group_rec',
+               'familia_delito_rec_prof' = 'crime_code_group_rec_prof',
+               'sex_imp' = 'sex_imp',
+               'nat_imp2' = 'country_b',
+               'nat_imp' = 'country_a')) %>% 
+    #KEY STEP: FILTER IF THE PATIENT IS CONSIDERED AS AN OFFENDER
+    #dplyr::filter(!grepl("SI",offender_d)) %>% 
+    dplyr::mutate(filter=dplyr::case_when(
+        grepl("REPARATORIO|CONDICIONAL",end_type) & is.na(end_type_2)~1,
+        grepl("REPARATORIO|SENTENCIA DEFINITIVA CONDENATORIA|240|MONIT", toupper(end_type_2), ignore.case=F)~2,
+        T~0
+    )) %>% 
+    dplyr::filter(filter==0|is.na(filter))%>% 
+    dplyr::anti_join(distinct(Base_fiscalia_v9,id,.keep_all = T), by="id") %>% distinct(id) %>% nrow()
+```
+
+
 <br>
 
 We ended with `r nrow(Base_fiscalia_v9) %>% format(big.mark=",")` relationships of `r length(unique(Base_fiscalia_v9$caseid)) %>% format(big.mark=",")` court cases (`caseid`) of `r length(unique(Base_fiscalia_v9$id)) %>% format(big.mark=",")` patients. Then, we coded the crimes according to a classification discussed in formal consultations with professionals.

@@ -531,29 +531,29 @@ ser_2023_1<-rio::import("ser_2023_1.dta")
 ```
 
 # Background
-Substance use disorders (SUD) often co-occur with criminality, including violence, arrests, and incarceration$`r Cite(myBib, c("Duke2018","Sugie2017","Thomas2022","Liu2018", "Connor2014"))`$. People with polysubstance use (PSU) are considered a high-risk population, as they are associated with mortality, relapse, and contact with the criminal justice system (CJS)$`r Cite(myBib, c("Gjersing2018","Hassan2019","Wang2017","Quek2013", "Ford2022","Skjaervø2017"))`$. Although completing SUD treatment is linked with better outcomes, including preventing contact with CJS, the role of treatment completion in the link between PSU and contact with CJS is unclear$`r Cite(myBib, c("White","Andersson2019","Rezai-Zadeh2019","Timko2020"))`$. Studies have found mixed evidence regarding the association between PSU and treatment completion rates$`r Cite(myBib, c("Levola2021","Choi2020", "Andersson2021", "Andersson2018", "Basu2017"))`$. Thus, it is crucial to determine the role of treatment completion in order to improve outcomes in people with PSU. However, analyzing the role of treatment outcomes in people with PSU is challenging, as there is limited research on this population in Latin America, and high-risk populations have often been overlooked$`r Cite(myBib, c("Lalwani2022","Reyes2013", "SantisB2007", "Olivari2022", "Vilugron2022"))`$. <!----falta del tr. setting. EXTENDERSE POR QUÉ ES IMPORTANTE estudiar esto!!!!!!!---->
+Substance use disorders (SUD) often co-occur with criminality, including violence, arrests, and incarceration$`r Cite(myBib, c("Duke2018","Sugie2017","Thomas2022"))`$. People with polysubstance use (PSU) are considered a high-risk population, as they are associated with mortality, relapse, and contact with the criminal justice system (CJS)$`r Cite(myBib, c("Hassan2019","Wang2017", "Ford2022"))`$. Although completing SUD treatment is linked with better outcomes, including preventing contact with CJS, the role of treatment completion in the link between PSU and contact with CJS is unclear$`r Cite(myBib, c("White","Andersson2019","Timko2020"))`$. Studies have found mixed evidence regarding the association between PSU and treatment completion rates$`r Cite(myBib, c("Levola2021","Choi2020", "Andersson2021", "Andersson2018", "Basu2017"))`$. Thus, it is crucial to determine the role of treatment completion in order to improve outcomes in people with PSU. However, analyzing the role of treatment outcomes in people with PSU is challenging, as there is limited research on this population in Latin America, and high-risk populations have often been overlooked$`r Cite(myBib, c("Reyes2013", "SantisB2007", "Olivari2022"))`$. The study contributes to a growing literature on the importance of addressing longitudinal dynamics in specific profiles of SUD patients. Studying the link between PSU, treatment completion, and criminality is crucial for evidence-based strategies to address SUD-related issues. Effective interventions and tailored approaches for people with PSU can mitigate societal and individual harms stemming from SUDs and criminal behavior.
 
 ## Objectives
 Estimate the mediating effects of completing SUD treatment on the relationship between PSU at admission and contact with CJS among adult patients admitted to SUD treatment programs in Chile during 2010-2019. Specific: (1) To describe the prevalence of PSU, treatment completion, and contact with CJS in the sample, (2) to compare the risk of contact with CJS between people with poly and single-substance use, and (3) to estimate the proportion of the effect of PSU and treatment outcome on the contact with CJS.
 <!--- **Hypothesis:** Baseline PSU is related to lower treatment completion rates (1), baseline PSU is linked to a greater risk of contact with CJS (2), patients with PSU will have a differential risk of contact with CJS associated with treatment completion, and treatment completion will explain part of the relationship between PSU and contact with CJS (3). --->
 
 # Methods
-This research design is a retrospective cohort based on the administrative data's record linkage. The study will use data from Chilean SUTs programs and Prosecutor’s Office through a deterministic linkage process. We will request an amendment to an existing ethical approval from a study using the same data. 
+**Design**: a retrospective cohort based on the administrative data's record linkage. **Data**:  Chilean SUTs programs and Prosecutor’s Office through a deterministic linkage process. **Ethics**: We are in the process of an amendment to an existing ethical approval from a study using the same data.
 
 ## Variables
 **Exposure**: baseline PSU (using more than one main substance among alcohol and illicit drugs at admission to SUD treatment, whether sequential or concurrent); **Mediator**: SUD treatment outcome (complete vs. dropout or spelled by misconduct); **Outcome**: contact with CJS (offense that led to a condemnatory sentence).
 
 ## Analytical Plan
-The study controlled for various confounding variables related to substance use, demographics, and social factors through weights generated through the inverse probability of PSU. Patients were weighted by the inverse probability of polysubstance use based on several predictors; Weights were truncated at the 1st and 99th percentiles$`r Cite(myBib, c("Cole2008"))`$.
+The study controlled for various confounding variables related to substance use, demographics, and social factors. Patients were weighted by the inverse probability of PSU based on several predictors. Weights were truncated at the 1st and 99th percentiles$`r Cite(myBib, c("Cole2008"))`$.
 
 ```{r exp-surv4-plot, eval=T, echo=F, error=T, fig.align='center', fig.cap="Covariate balance", fig.retina=2}
 knitr::include_graphics("pbal2_mod.svg")
 ```
-We used the illness-death multistate model to simultaneously estimate transitions between admission and treatment outcome, treatment outcome and contact with CJS, and admission and contact with CJS (without completing treatment). 
+We used the illness-death multistate structure to simultaneously estimate transitions between admission and treatment outcome, treatment outcome and contact with CJS, and admission and contact with CJS (without completing treatment). 
 ```{r exp-surv3-plot, eval=T, echo=F, error=T, fig.align='center', fig.cap="Multistate scheme", fig.retina=2}
 knitr::include_graphics("transmat_ser23_2.svg")
 ```
-We calculated the Aalen-Johansen estimator for transition probabilities at 6 months, 1 and 3 years using the `multistate` Stata command$`r Cite(myBib, c("Crowther2023"))`$. Secondary analyses focused on mediation, estimating the effects of PSU given treatment outcome at 6 months, 1 and 3 years using a standard time-to-first-event approach. Proportions mediated were estimated using the bootstrap method or m-estimation of standard errors on standardized survival curves and restricted mean survival times (RMST) through the `stpm2` and `stipw` Stata commands$`r Cite(myBib, c("Stefanski2002","VanderWeele2011a","s457128", "hill2022development"))`$. We also plan to run separate analyses on patients admitted to different treatment settings. Preliminary markdowns are available on: https://fondecytacc.github.io/nDP/an_ser_2023_step_0.html.
+We calculated the Aalen-Johansen estimator for transition probabilities at 6 months, 1 and 3 years using the `multistate` Stata command$`r Cite(myBib, c("Crowther2023"))`$. Secondary analyses will focus on mediation, estimating the effects of PSU given treatment outcome at selected periods using a standard time-to-first-event approach. Proportions mediated were estimated using the bootstrap method or m-estimation of standard errors on standardized survival curves and restricted mean survival times (RMST) through the `stpm2` and `stipw` Stata commands$`r Cite(myBib, c("Stefanski2002","VanderWeele2011a","s457128", "hill2022development"))`$. We also plan to run separate analyses on patients admitted to different treatment settings. Preliminary markdowns are available on: https://fondecytacc.github.io/nDP/an_ser_2023_step_0.html.
 
 # Preliminary Results
 
@@ -561,41 +561,65 @@ We calculated the Aalen-Johansen estimator for transition probabilities at 6 mon
 invisible("Complete treatments, no weights, IRR")
 irr_tr_comp_nowgt<-rvest::read_html("irrs_t0_nowgt_tr_comp.html") %>% rvest::html_table() %>% 
   data.frame() %>% dplyr::filter(nchar(X1)>2)
-irr_tr_comp_nowgt<-cbind.data.frame(measure= irr_tr_comp_nowgt[seq(1,nrow(irr_tr_comp_nowgt),by=2),1],value=irr_tr_comp_nowgt[seq(2,nrow(irr_tr_comp_nowgt),by=2),1])
+irr_tr_comp_nowgt<-cbind.data.frame(measure= irr_tr_comp_nowgt[seq(1,nrow(irr_tr_comp_nowgt),by=2),1], value=irr_tr_comp_nowgt[seq(2,nrow(irr_tr_comp_nowgt),by=2),1])
 irr_tr_comp_nowgt$value<- stringr::str_replace_all(irr_tr_comp_nowgt$value, pattern = "(\\d)\\1{3,}", replacement = "\\1")
+irr_tr_comp_nowgt$value<- stringr::str_replace_all(irr_tr_comp_nowgt$value, pattern = "(?<![0-9])\\.", replacement = "0.")
+irr_tr_comp_nowgt$value[-4]<- stringr::str_replace_all(irr_tr_comp_nowgt$value[-4], pattern = "[()]", replacement = "")
+irr_tr_comp_nowgt$value<- stringr::str_replace_all(irr_tr_comp_nowgt$value, "p=0.0$", "p<0.001")
+irr_tr_comp_nowgt$value<- stringr::str_replace_all(irr_tr_comp_nowgt$value, pattern = "\\b(\\d+\\.\\d{2})\\d+\\b", function(x) round(as.numeric(x), 2))
+
 
 invisible("Complete treatments, weight(1), IRR")
 irr_tr_comp_wgt<-rvest::read_html("irrs_t0_wgt_tr_comp.html") %>% rvest::html_table() %>%  data.frame() %>% dplyr::filter(nchar(X1)>2)
-irr_tr_comp_wgt<-cbind.data.frame(measure= irr_tr_comp_wgt[seq(1,nrow(irr_tr_comp_wgt),by=2),1],value=irr_tr_comp_wgt[seq(2,nrow(irr_tr_comp_wgt),by=2),1])
+irr_tr_comp_wgt<-cbind.data.frame(measure= irr_tr_comp_wgt[seq(1,nrow(irr_tr_comp_wgt),by=2),1], value=irr_tr_comp_wgt[seq(2,nrow(irr_tr_comp_wgt),by=2),1])
 irr_tr_comp_wgt$value<- stringr::str_replace_all(irr_tr_comp_wgt$value, pattern = "(\\d)\\1{3,}", replacement = "\\1")
+irr_tr_comp_wgt$value<- str_replace_all(irr_tr_comp_wgt$value, pattern = "(?<![0-9])\\.", replacement = "0.")
+irr_tr_comp_wgt$value[-4]<- stringr::str_replace_all(irr_tr_comp_wgt$value[-4], pattern = "[()]", replacement = "")
+irr_tr_comp_wgt$value<- stringr::str_replace_all(irr_tr_comp_wgt$value, "p=0.0$", "p<0.001")
+irr_tr_comp_wgt$value<- stringr::str_replace_all(irr_tr_comp_wgt$value, pattern = "\\b(\\d+\\.\\d{2})\\d+\\b", function(x) round(as.numeric(x), 2))
 
 invisible("Complete treatments, weight(2), IRR")
 irr_tr_comp_wgt2<-rvest::read_html("irrs_t0_wgt_tr_comp2.html") %>% rvest::html_table() %>%  data.frame() %>% dplyr::filter(nchar(X1)>2)
-irr_tr_comp_wgt2<-cbind.data.frame(measure= irr_tr_comp_wgt2[seq(1,nrow(irr_tr_comp_wgt2),by=2),1],value=irr_tr_comp_wgt2[seq(2,nrow(irr_tr_comp_wgt2),by=2),1])
+irr_tr_comp_wgt2<-cbind.data.frame(measure= irr_tr_comp_wgt2[seq(1,nrow(irr_tr_comp_wgt2),by=2),1], value=irr_tr_comp_wgt2[seq(2,nrow(irr_tr_comp_wgt2),by=2),1])
 irr_tr_comp_wgt2$value<- stringr::str_replace_all(irr_tr_comp_wgt2$value,"\'","")
+irr_tr_comp_wgt2$value<- str_replace_all(irr_tr_comp_wgt2$value, pattern = "(?<![0-9])\\.", replacement = "0.")
 
 invisible("Contact with the justice system, no weight, IRR")
 irr_cont_js_nowgt<-rvest::read_html("irrs_t0_nowgt_contact_js.html") %>% rvest::html_table() %>%  data.frame() %>% dplyr::filter(nchar(X1)>2)
-irr_cont_js_nowgt<-cbind.data.frame(measure= irr_cont_js_nowgt[seq(1,nrow(irr_cont_js_nowgt),by=2),1],value=irr_cont_js_nowgt[seq(2,nrow(irr_cont_js_nowgt),by=2),1])
+irr_cont_js_nowgt<-cbind.data.frame(measure= irr_cont_js_nowgt[seq(1,nrow(irr_cont_js_nowgt),by=2),1], value=irr_cont_js_nowgt[seq(2,nrow(irr_cont_js_nowgt),by=2),1])
 irr_cont_js_nowgt$value<- stringr::str_replace_all(irr_cont_js_nowgt$value, pattern = "(\\d)\\1{3,}", replacement = "\\1")
+irr_cont_js_nowgt$value<- stringr::str_replace_all(irr_cont_js_nowgt$value, pattern = "(?<![0-9])\\.", replacement = "0.")
+irr_cont_js_nowgt$value<- stringr::str_replace_all(irr_cont_js_nowgt$value, pattern = "[()]", replacement = "")
+irr_cont_js_nowgt$value<- stringr::str_replace_all(irr_cont_js_nowgt$value, "p=0.0$", "p<0.001")
+irr_cont_js_nowgt$value<- stringr::str_replace_all(irr_cont_js_nowgt$value, pattern = "\\b(\\d+\\.\\d{2})\\d+\\b", function(x) round(as.numeric(x), 2))
 
 invisible("Contact with the justice system, weight(1), IRR")
 irr_cont_js_wgt<-rvest::read_html("irrs_t0_wgt_contact_js.html") %>% rvest::html_table() %>%  data.frame() %>% dplyr::filter(nchar(X1)>2)
-irr_cont_js_wgt<-cbind.data.frame(measure= irr_cont_js_wgt[seq(1,nrow(irr_cont_js_wgt),by=2),1],value=irr_cont_js_wgt[seq(2,nrow(irr_cont_js_wgt),by=2),1])
+irr_cont_js_wgt<-cbind.data.frame(measure= irr_cont_js_wgt[seq(1,nrow(irr_cont_js_wgt),by=2),1], value=irr_cont_js_wgt[seq(2,nrow(irr_cont_js_wgt),by=2),1])
 irr_cont_js_wgt$value<- stringr::str_replace_all(irr_cont_js_wgt$value, pattern = "(\\d)\\1{3,}", replacement = "\\1")
+irr_cont_js_wgt$value<- str_replace_all(irr_cont_js_wgt$value, pattern = "(?<![0-9])\\.", replacement = "0.")
+irr_cont_js_wgt$value[-4]<- stringr::str_replace_all(irr_cont_js_wgt$value[-4], pattern = "[()]", replacement = "")
+irr_cont_js_wgt$value<- stringr::str_replace_all(irr_cont_js_wgt$value, "p=0.0$", "p<0.001")
+irr_cont_js_wgt$value<- stringr::str_replace_all(irr_cont_js_wgt$value, pattern = "\\b(\\d+\\.\\d{2})\\d+\\b", function(x) round(as.numeric(x), 2))
 
 invisible("Contact with the justice system, weight(2), IRR")
 irr_cont_js_wgt2<-rvest::read_html("irrs_t0_wgt_contact_js2.html") %>% rvest::html_table() %>%  data.frame() %>% dplyr::filter(nchar(X1)>2)
-irr_cont_js_wgt2<-cbind.data.frame(measure= irr_cont_js_wgt2[seq(1,nrow(irr_cont_js_wgt2),by=2),1],value=irr_cont_js_wgt2[seq(2,nrow(irr_cont_js_wgt2),by=2),1])
+irr_cont_js_wgt2<-cbind.data.frame(measure= irr_cont_js_wgt2[seq(1,nrow(irr_cont_js_wgt2),by=2),1], value=irr_cont_js_wgt2[seq(2,nrow(irr_cont_js_wgt2),by=2),1])
 irr_cont_js_wgt2$value<- stringr::str_replace_all(irr_cont_js_wgt2$value,"\'","")
 #irr_cont_js_wgt2$value<- stringr::str_replace_all(irr_cont_js_wgt2$value,":","")
+irr_cont_js_wgt2$value<- str_replace_all(irr_cont_js_wgt2$value, pattern = "(?<![0-9])\\.", replacement = "0.")
 
 ```
 
 
+-	Before IPWs, patients with PSU at admission (`r irr_tr_comp_nowgt$value[which(irr_tr_comp_nowgt$measure=="PSU")]`) had lower rates (x1,000 person-years) of treatment completion vs. patients with no PSU (`r irr_tr_comp_nowgt$value[which(irr_tr_comp_nowgt$measure=="No PSU")]`) `r irr_tr_comp_nowgt$value[which(irr_tr_comp_nowgt$measure=="IRR")]`. However, patients with PSU at admission (`r irr_cont_js_nowgt$value[which(irr_cont_js_nowgt$measure=="PSU")]`) had greater rates (x1,000 person-years) of contact with the justice system vs. patients with no PSU (`r irr_cont_js_nowgt$value[which(irr_cont_js_nowgt$measure=="No PSU")]`) `r irr_cont_js_nowgt$value[which(irr_cont_js_nowgt$measure=="IRR")]`.
+
+-	After IPWs, patients with PSU at admission (`r irr_tr_comp_wgt$value[which(irr_tr_comp_wgt$measure=="PSU")]`) still had lower rates (x1,000 person-years) of treatment completion vs. patients with no PSU (`r irr_tr_comp_wgt$value[which(irr_tr_comp_wgt$measure=="No PSU")]`) `r irr_tr_comp_wgt$value[which(irr_tr_comp_wgt$measure=="IRR")]`, and patients with PSU at admission (`r irr_cont_js_wgt$value[which(irr_cont_js_wgt$measure=="PSU")]`) also had greater rates (x1,000 person-years) of contact with the justice system vs. patients with no PSU (`r irr_cont_js_wgt$value[which(irr_cont_js_wgt$measure=="No PSU")]`) `r irr_cont_js_wgt$value[which(irr_cont_js_wgt$measure=="IRR")]`.
+
 <br>
+
 <div class="fold s o">
-```{r exp-surv23-2, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
+```{r exp-surv23-2, eval=F, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
 prob_direct<-rvest::read_html("pr_msaj13_23.html") %>% rvest::html_table()
 prob_indirect1<-rvest::read_html("pr_msaj12_23.html") %>% rvest::html_table()
 prob_indirect2<-rvest::read_html("pr_msaj23_23.html") %>% rvest::html_table()
@@ -626,7 +650,7 @@ rbindlist(list(list(c("Probs.",rep("",6))),cbind.data.frame(prob_imp_pris_tab,pr
 kbl(format = 'html',
         escape = FALSE,
         col.names= c("Time", "Complete Tr.","Late Disch.", "Early Disch.", "Comp. vs Late", "Comp. vs Early", "Early vs Late"), 
-    caption= "Offending with imprisonment") %>% 
+    caption= "Neelson-Aalen estimates of transition probabilities in states") %>% 
     kable_styling(font_size = 24) %>%
     gsub("font-size: initial !important;", 
          "font-size: 30pt !important;", 
@@ -634,12 +658,8 @@ kbl(format = 'html',
 ```
 </div>
 
--	Compared to those receiving almost no treatment (early drop-out), those completing SUT took longer to contact the criminal justice system (IRR [Incidence rate ratio]= `r sprintf("%1.2f", irrs_early_drop$estimate[1])` 95% CI `r sprintf("%1.2f", irrs_early_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_early_drop$conf.int[2])`; aHR[adjusted hazard ratio]: 1.74  95%CI 1.66, 1.83) and to commit an offence leading to imprisonment `r sprintf("%1.2f", irrs_early_drop_pris$estimate[1])` (95% CI `r sprintf("%1.2f", irrs_early_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_early_drop_pris$conf.int[2])`; aHR= 1.99 95%CI 1.79, 2.22).
--	Compared to receiving some treatment (late drop-out), those completing SUT took longer (IRR= `r sprintf("%1.2f", irrs_late_drop$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop$conf.int[2])`; aHR=1.58 95%CI 1.52, 1.65) to contact the criminal justice system and to imprisonment (IRR= `r sprintf("%1.2f", irrs_late_drop_pris$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_late_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_late_drop_pris$conf.int[2])`; aHR=1.65 95%CI 1.51, 1.81). 
--	However, the difference was lower when we compared those who received some treatment with those with less SUT for some period (late drop-out) regarding the time to contact the criminal justice system (IRR= `r sprintf("%1.2f", irrs_early_late_drop$estimate[1])` 95% CI `r sprintf("%1.2f", irrs_early_late_drop$conf.int[1])`,`r sprintf("%1.2f", irrs_early_late_drop$conf.int[2])`) and imprisonment (IRR= `r sprintf("%1.2f", irrs_early_late_drop_pris$estimate[1])` 95% CI  `r sprintf("%1.2f", irrs_early_late_drop_pris$conf.int[1])`,`r sprintf("%1.2f", irrs_early_late_drop_pris$conf.int[2])`). Differences between Early vs Late did not overlap the null in Tables 1 & 2.
+# Discussion
 
--
- 
 # References
 ::: text_35
 ```{r refs1, echo=FALSE, results="asis", warning=F}

@@ -22,37 +22,37 @@
 	<line x1="1188.00" y1="1529.97" x2="1188.00" y2="2130.05" style="stroke:#000000;stroke-width:6.48"/>
 	<line x1="1188.00" y1="330.05" x2="2375.88" y2="330.05" style="stroke:#000000;stroke-width:6.48"/>
 	<defs>
-		<path id="path_CrcsQdgD" d="M2375.88 330.05 L2338.01 350.72 L2356.94 330.05 L2338.01 309.38 L2375.88 330.05 Z" stroke-linejoin="round"/>
+		<path id="path_LzmgQEku" d="M2375.88 330.05 L2338.01 350.72 L2356.94 330.05 L2338.01 309.38 L2375.88 330.05 Z" stroke-linejoin="round"/>
 	</defs>
 	<defs>
-		<clipPath id="clipPath_FdIeLUPx">
-			<use xlink:href="#path_CrcsQdgD"/>
+		<clipPath id="clipPath_YwuIXUuB">
+			<use xlink:href="#path_LzmgQEku"/>
 		</clipPath>
 	</defs>
-	<use xlink:href="#path_CrcsQdgD" style="stroke:none;fill:#000000"/>
-	<use xlink:href="#path_CrcsQdgD" style="fill:none;stroke:#000000;stroke-width:12.96" clip-path="url(#clipPath_FdIeLUPx)"/>
+	<use xlink:href="#path_LzmgQEku" style="stroke:none;fill:#000000"/>
+	<use xlink:href="#path_LzmgQEku" style="fill:none;stroke:#000000;stroke-width:12.96" clip-path="url(#clipPath_YwuIXUuB)"/>
 	<line x1="792.00" y1="630.03" x2="792.00" y2="1529.97" style="stroke:#000000;stroke-width:6.48"/>
 	<defs>
-		<path id="path_eQfzOhxn" d="M792.00 1529.97 L771.33 1492.10 L792.00 1511.03 L812.67 1492.10 L792.00 1529.97 Z" stroke-linejoin="round"/>
+		<path id="path_pgwDzOtL" d="M792.00 1529.97 L771.33 1492.10 L792.00 1511.03 L812.67 1492.10 L792.00 1529.97 Z" stroke-linejoin="round"/>
 	</defs>
 	<defs>
-		<clipPath id="clipPath_iaJpGGzy">
-			<use xlink:href="#path_eQfzOhxn"/>
+		<clipPath id="clipPath_lLnHNOjB">
+			<use xlink:href="#path_pgwDzOtL"/>
 		</clipPath>
 	</defs>
-	<use xlink:href="#path_eQfzOhxn" style="stroke:none;fill:#000000"/>
-	<use xlink:href="#path_eQfzOhxn" style="fill:none;stroke:#000000;stroke-width:12.96" clip-path="url(#clipPath_iaJpGGzy)"/>
+	<use xlink:href="#path_pgwDzOtL" style="stroke:none;fill:#000000"/>
+	<use xlink:href="#path_pgwDzOtL" style="fill:none;stroke:#000000;stroke-width:12.96" clip-path="url(#clipPath_lLnHNOjB)"/>
 	<line x1="2771.88" y1="630.03" x2="792.00" y2="1529.97" style="stroke:#000000;stroke-width:6.48"/>
 	<defs>
-		<path id="path_rWbilXVd" d="M792.00 1529.97 L817.99 1495.44 L809.33 1522.17 L835.19 1533.19 L792.00 1529.97 Z" stroke-linejoin="round"/>
+		<path id="path_XWmJpQQb" d="M792.00 1529.97 L817.99 1495.44 L809.33 1522.17 L835.19 1533.19 L792.00 1529.97 Z" stroke-linejoin="round"/>
 	</defs>
 	<defs>
-		<clipPath id="clipPath_xFcsAiLY">
-			<use xlink:href="#path_rWbilXVd"/>
+		<clipPath id="clipPath_EFCPEmoZ">
+			<use xlink:href="#path_XWmJpQQb"/>
 		</clipPath>
 	</defs>
-	<use xlink:href="#path_rWbilXVd" style="stroke:none;fill:#000000"/>
-	<use xlink:href="#path_rWbilXVd" style="fill:none;stroke:#000000;stroke-width:12.96" clip-path="url(#clipPath_xFcsAiLY)"/>
+	<use xlink:href="#path_XWmJpQQb" style="stroke:none;fill:#000000"/>
+	<use xlink:href="#path_XWmJpQQb" style="fill:none;stroke:#000000;stroke-width:12.96" clip-path="url(#clipPath_EFCPEmoZ)"/>
 	<text x="792.00" y="171.77" style="font-family:'Helvetica';font-size:60.02px;fill:#000000" text-anchor="middle">Admission to</text>
 	<text x="792.00" y="231.79" style="font-family:'Helvetica';font-size:60.02px;fill:#000000" text-anchor="middle">baseline treatment</text>
 	<text x="2771.88" y="171.77" style="font-family:'Helvetica';font-size:60.02px;fill:#000000" text-anchor="middle">Treatment</text>

@@ -302,7 +302,7 @@ scalar logrank_nowgt= " Chi^2(`lr2')=`lr1',p=`lr3'"
 
 matrix comb_irs = (0 \ 0 \ 0 \ 0)
 matrix colnames comb_irs = "Tr.comp-no weight"
-matrix rownames comb_irs = "No poly: `=scalar(ir_poly_00)'" "Poly: `=scalar(ir_poly_11)'" "IRR: `=scalar(irr_poly01)'" "Logrank: `=scalar(logrank_nowgt)'"
+matrix rownames comb_irs = "No PSU: `=scalar(ir_poly_00)'" "PSU: `=scalar(ir_poly_11)'" "IRR: `=scalar(irr_poly01)'" "Logrank: `=scalar(logrank_nowgt)'"
 esttab matrix(comb_irs) using "irrs_t0_nowgt_tr_comp.html", replace
 *set trace off
 <</dd_do>>
@@ -413,7 +413,7 @@ scalar logrank_wgt1 = "Cox regression-based test for equality of survival curves
 
 matrix comb_irs2 = (0 \ 0 \ 0 \ 0)
 matrix colnames comb_irs2 = "Tr.comp-weight"
-matrix rownames comb_irs2 = "No poly: `=scalar(ir_poly_001)'" "Poly: `=scalar(ir_poly_111)'" "IRR: `=scalar(irr_poly011)'" "Logrank: `=scalar(logrank_wgt1)'"
+matrix rownames comb_irs2 = "No PSU: `=scalar(ir_poly_001)'" "PSU: `=scalar(ir_poly_111)'" "IRR: `=scalar(irr_poly011)'" "Logrank: `=scalar(logrank_wgt1)'"
 esttab matrix(comb_irs2) using "irrs_t0_wgt_tr_comp.html", replace
 *set trace off
 <</dd_do>>
@@ -496,7 +496,7 @@ scalar logrank_nowgt3= " Chi^2(`lr22')=`lr12',p=`lr32'"
 
 matrix comb_irs3 = (0 \ 0 \ 0 \ 0)
 matrix colnames comb_irs3 = "Contact.js-no weight"
-matrix rownames comb_irs3 = "No poly: `=scalar(ir_poly_002)'" "Poly: `=scalar(ir_poly_112)'" "IRR: `=scalar(irr_poly012)'" "Logrank: `=scalar(logrank_nowgt3)'"
+matrix rownames comb_irs3 = "No PSU: `=scalar(ir_poly_002)'" "PSU: `=scalar(ir_poly_112)'" "IRR: `=scalar(irr_poly012)'" "Logrank: `=scalar(logrank_nowgt3)'"
 esttab matrix(comb_irs3) using "irrs_t0_nowgt_contact_js.html", replace
 *set trace off
 <</dd_do>>
@@ -618,7 +618,7 @@ scalar logrank_wgt4 = "Cox regression-based test for equality of survival curves
 
 matrix comb_irs4 = (0 \ 0 \ 0 \ 0)
 matrix colnames comb_irs4 = "Contact.js-weight"
-matrix rownames comb_irs4 = "No poly: `=scalar(ir_poly_003)'" "Poly: `=scalar(ir_poly_113)'" "IRR: `=scalar(irr_poly013)'" "Logrank: `=scalar(logrank_wgt4)'"
+matrix rownames comb_irs4 = "No PSU: `=scalar(ir_poly_003)'" "PSU: `=scalar(ir_poly_113)'" "IRR: `=scalar(irr_poly013)'" "Logrank: `=scalar(logrank_wgt4)'"
 esttab matrix(comb_irs4) using "irrs_t0_wgt_contact_js.html", replace
 *set trace off
 <</dd_do>>
