@@ -1608,4 +1608,116 @@ evalue hr `=scalar(HR_late2m1)' , lcl(`=scalar(HR_late_lo2m1)') ucl(`=scalar(HR_
 <<dd_graph: saving("eval_late_pris_m1.svg") width(800) replace>>
 
 
+*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+# Figure 
+
+~~~~
+<<dd_do>>
+*C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
+graph use "_figs\h_m_ns_rp6_stdif_s2_m1.gph"
+graph export "_figs/h_m_ns_rp6_stdif_s2_m1.pdf", as(pdf) name("h_m_ns_rp6_stdif_s2_m1") replace
+
+graph use "_figs\h_m_ns_rp6_stdif_rmst_m1.gph" 
+graph export "_figs/h_m_ns_rp6_stdif_rmst_m1.pdf", as(pdf) name("h_m_ns_rp6_stdif_rmst_m1") replace
+
+graph use "_figs\h_m_ns_rp6_stdif_s2_pris_m1.gph" 
+graph export "_figs/h_m_ns_rp6_stdif_s2_pris_m1.pdf", as(pdf) name("h_m_ns_rp6_stdif_s2_pris_m1") replace
+
+graph use "_figs\h_m_ns_rp6_stdif_rmst_pris_m1.gph" 
+graph export "_figs/h_m_ns_rp6_stdif_rmst_pris_m1.pdf", as(pdf) name("h_m_ns_rp6_stdif_rmst_pris_m1") replace
+
+<</dd_do>>
+~~~~
+
+**HACER GRAFICO DE PROBABILIDADES Y RMSTS EN EL TIEMPO**
+
+~~~~
+<<dd_do>>
+graph use "_figs\h_m_ns_rp6_s_m1.gph"
+gr_edit .yaxis1.title.text = {}
+gr_edit .yaxis1.title.text.Arrpush `"Probibability of avoiding condemnatory sentence"'
+gr_edit .legend.plotregion1.key[1].view.style.editstyle line(color(%60)) editcopy
+gr_edit .legend.plotregion1.key[2].view.style.editstyle line(color(%60)) editcopy
+gr_edit .legend.plotregion1.key[3].view.style.editstyle line(color(%60)) editcopy
+graph export "_figs/h_m_ns_rp6_s_m1.pdf", as(pdf) name("h_m_ns_rp6_s_m1") replace
+
+
+graph use "_figs\h_m_ns_rp6_s_pris_m1.gph"
+gr_edit .yaxis1.title.text = {}
+gr_edit .yaxis1.title.text.Arrpush `"Probibability of avoiding imprisonment"'
+gr_edit .legend.plotregion1.key[1].view.style.editstyle line(color(%60)) editcopy
+gr_edit .legend.plotregion1.key[2].view.style.editstyle line(color(%60)) editcopy
+gr_edit .legend.plotregion1.key[3].view.style.editstyle line(color(%60)) editcopy
+graph export "_figs/h_m_ns_rp6_s_pris_m1.pdf", as(pdf) name("h_m_ns_rp6_s_pris_m1") replace
+
+
+
+
+<</dd_do>>
+~~~~
+
+*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+# Hazard tables
+
+## Condemnatory Sentence, Imputed
+
+~~~~
+<<dd_do>>
+cap qui noi clear all
+qui estread using "mariel_feb_23_m1.sters"
+estimates replay m_nostag_rp8_tvc_1, eform
+scalar HR_earlym1_def = r(table)["b",1]
+scalar HR_early_lom1_def = r(table)["ll",1]
+scalar HR_early_upm1_def = r(table)["ul",1]
+scalar HR_latem1_def = r(table)["b",2]
+scalar HR_late_lom1_def_def = r(table)["ll",2]
+scalar HR_late_upm1_def = r(table)["ul",2]
+
+*interpreting this value directly can be misleading, because the "_rcs" term represents a change in the hazard ratio over time, and the exact shape of this change is determined by the restricted cubic spline function used in the model.
+*the most effective way to interpret the "_rcs" term is to visualize the hazard ratio over time.¨
+*hazard ratio starts at 1.74308 (the main effect) at time zero and then changes over time according to the .907554 "_rcs" term. The trajectory of the hazard ratio will likely be decreasing over time, 
+*direct interpretation of the "_rcs" term is not as straightforward. 
+*The most effective way to understand the combined effect of the main effect and the "_rcs" term is to visualize the hazard ratio over time. 
+<</dd_do>>
+~~~~
+
+## Imprisonment, Imputed
+
+~~~~
+<<dd_do>>
+cap qui noi clear all
+qui estread using "mariel_feb_23_2_m1.sters"
+estimates replay m_nostag_rp6_tvc_1, eform
+<</dd_do>>
+~~~~
+
+
+## Condemnatory Sentence, Listwise
+
+~~~~
+<<dd_do>>
+cap qui noi clear all
+qui estread using "mariel_feb_23.sters"
+estimates replay m_nostag_rp6_tvc_1, eform
+<</dd_do>>
+~~~~
+
+## Imprisonment, Listwise
+
+~~~~
+<<dd_do>>
+cap qui noi clear all
+qui estread using "mariel_feb_23_2.sters"
+estimates replay m_nostag_rp6_tvc_1, eform
+<</dd_do>>
+~~~~
+
+
+
 <<dd_display: "Ended at= `c(current_time)' `c(current_date)'">>

@@ -4,10 +4,17 @@ title: "nDP Repository"
 lang: es-ES
 subject: R Markdown
 author:
+  - first_name: "Álvaro"
+    last_name: "Castillo-Carniglia"
+    url: https://github.com/FONDECYTACC
+    affiliation: Society and Health Research Center, Universidad Mayor,Santiago, Chile; Department of Epidemiology, Columbia University Mailman School of Public Health, New York, United States; Department of Population Health and Center for Opioid Epidemiology and Policy, New York University Grossman School of Medicine, New York, United States; PI, Millennium Nucleus nDP.
+    affiliation_url: 
+    email: alvacasti@gmail.com
+    orcid_id: 0000-0002-3016-890X
   - first_name: "Andrés"
     last_name: "González-Santa Cruz"
     url: https://github.com/nDP
-    affiliation: Technical Staff of Núcleo Milenio de Drogas; Ph.D. student, School of Public Health, Universidad de Chile
+    affiliation: Young Researcher, Millennium Nucleus nDP; Ph.D. student, School of Public Health, Universidad de Chile
     affiliation_url: 
     email: gonzalez.santacruz.andres@gmail.com
     orcid_id: 0000-0002-5166-9121
@@ -18,6 +25,10 @@ author:
     affiliation_url: 
     email: mariel.mateopinones@griffithuni.edu.au
     orcid_id: 0000-0002-9607-7541
+  - name: Ruiz-Tagle Maturana, J.A. 
+    affiliation: |
+     Teacher at Duoc UC Professional Institute Foundation, Santiago, Chile; Young Researcher, Millennium Nucleus nDP; PhD Program in Public Policy, Universidad Mayor, Santiago, Chile
+    orcid_id: 0000-0002-5166-9121    
 description: |
  A small part of the research done and available in https://www.nucleondp.cl/ 
 base_url: https://beta.rstudioconnect.com/content/3776/
@@ -41,35 +52,11 @@ output:
 
 **Assessing the impact of substance use treatment for preventing criminal justice system contact in Chile**
 
-- [Chilean prosecutor’s office Data merge (Step 5)](Fiscalia_merge5.html)
-
-- [Descriptive glimpse and initial analysis ](analisis_mariel_nov_2022_stata.html)
-
-- [Descriptive glimpse and initial analysis (Imprisonment only)](analisis_mariel_nov_2022_stata_pris.html)
-
-- [Main analyses](analisis_mariel_feb_2023_stata.html)
-
-- [Main analyses (Imprisonment only)](analisis_mariel_feb_2023_stata_pris.html)
-
-- [Main analyses of Imputed Data](analisis_mariel_feb_2023_stata_m1.html)
-
-- [Main analyses of Imputed Data (Imprisonment only)](analisis_mariel_feb_2023_stata_pris_m1.html)
-
-- [Main analyses of Imputed Data (including diagnoses in-study)](analisis_mariel_feb_2023_stata_m2.html)
-
-- [Main analyses of Imputed Data (Imprisonment only, including diagnoses in-study)](analisis_mariel_feb_2023_stata_pris_m2.html)
-
-- [Summary tables & Sensitivity Analyses](res_intram_feb_2023_stata.html)
-
-- [Poster (idea)](pres_dic_22.html)
+- [LINK](index_prop_grant22_23.html)
 
 **Poly-substance use, treatment completion, and contact with the justice system: a multistate analysis of treatments for substance use disorders between 2010-2019, Chile**
 
-- [Material for SER 2023 (step 0: aalen-johansen, selection of IPWeights & schoenfeld residuals)](an_ser_2023_step_0.html)
-
-- [Material for SER 2023 (step 1: parametric partitioned survival models & multistate models)](an_ser_2023_step_1.html)
-
-- [Material for SER 2023 (step 2: parametric partitioned survival models & multistate models)](an_ser_2023_step_2.html)
+- [LINK](index_prop_grant23_24.html)
 
 **Short commentary: Self-reported offending vs. official records: estimating the gap in the Chilean context**
 

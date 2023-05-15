@@ -1818,6 +1818,60 @@ kbl(format = 'markdown',
     caption= "Offending with imprisonment (complete cases)")
 ```
 
+```{r, fig.align='center', layout="l-body-outset"}
+
+require(cowplot)
+require(gridExtra)
+require(coin)
+require(magick)
+require(pdftools)
+fig1 <- image_read_pdf('h_m_ns_rp6_stdif_s2_m1.pdf')%>%
+    image_border("white", "80x20")%>%
+    image_annotate("A)", 
+                   location = "+18+0", 
+                   size = 35, 
+                   gravity = "northwest", 
+                   boxcolor = "transparent", 
+                   font = "Arial", 
+                   strokecolor = "black")
+
+fig2 <- image_read_pdf('h_m_ns_rp6_stdif_rmst_m1.pdf')%>%
+    image_border("white", "80x20")%>%
+    image_annotate("B)", 
+                   location = "+18+0", 
+                   size = 35, 
+                   gravity = "northwest", 
+                   boxcolor = "transparent", 
+                   font = "Arial", 
+                   strokecolor = "black")
+fig3 <- image_read_pdf('h_m_ns_rp6_stdif_s2_pris_m1.pdf')%>%
+    image_border("white", "80x20")%>%
+    image_annotate("C)", 
+                   location = "+18+0", 
+                   size = 35, 
+                   gravity = "northwest", 
+                   boxcolor = "transparent", 
+                   font = "Arial", 
+                   strokecolor = "black")
+fig4 <- image_read_pdf('h_m_ns_rp6_stdif_rmst_pris_m1.pdf')%>%
+    image_border("white", "80x20")%>%
+    image_annotate("D)", 
+                   location = "+18+0", 
+                   size = 35, 
+                   gravity = "northwest", 
+                   boxcolor = "transparent", 
+                   font = "Arial", 
+                   strokecolor = "black")
+#https://fondecytacc.github.io/nDP/analisis_mariel_feb_2023_stata_m1.html
+#https://fondecytacc.github.io/nDP/analisis_mariel_feb_2023_stata_pris_m1.html
+#ggsave(plot= p4,filename= "./_figs/SER2023_test.jpg", dpi=740, height = 16*0.7, width =20*0.7)
+image_montage(c(fig1, fig2, fig3, fig4), tile = '2x2', geometry = 'x500', gravity = "Center")#
+image_write(image_montage(c(fig1, fig2, fig3, fig4), tile = '2x2', geometry = 'x500', gravity = "Center"), path = "montage.png", format = "png", density = "300x300")
+image_write(image_montage(c(fig1, fig2, fig3, fig4), tile = '2x2', geometry = 'x500', gravity = "Center"), path = "montage.pdf", format = "pdf", density = "300x300")
+
+```
+
+
 <br>
 
 # Compare Stata weights 

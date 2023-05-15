@@ -1,0 +1,50 @@
+---
+name: "repositorio_ndp_ags_mariel_jrt"
+title: "Poly-substance use, treatment completion, and contact with the justice system: a multistate analysis of treatments for substance use disorders between 2010-2019 in Chile"
+lang: es-ES
+subject: R Markdown
+author:
+  - first_name: "Andrés"
+    last_name: "González-Santa Cruz"
+    url: https://github.com/nDP
+    affiliation: Nucleo Milenio de Drogas; Ph.D. student, School of Public Health, Universidad de Chile
+    affiliation_url: 
+    email: gonzalez.santacruz.andres@gmail.com
+    orcid_id: 0000-0002-5166-9121
+  - name: Ruiz-Tagle Maturana, J.A. 
+    affiliation: |
+     Teacher at Duoc UC Professional Institute Foundation, Santiago, Chile; Young Researcher, Millennium Nucleus nDP; PhD Program in Public Policy, Universidad Mayor, Santiago, Chile
+    orcid_id: 0000-0002-5166-9121
+  - first_name: "Mariel"
+    last_name: "Mateo Piñones"
+    url: https://github.com/nDP
+    affiliation: Ph.D. student, School of Criminology and Criminal Justice, Griffith University, Australia; Nucleo Milenio de Drogas
+    affiliation_url: 
+    email: mariel.mateopinones@griffithuni.edu.au
+    orcid_id: 0000-0002-9607-7541           
+  - first_name: "Álvaro"
+    last_name: "Castillo-Carniglia"
+    url: https://github.com/FONDECYTACC
+    affiliation: Society and Health Research Center, Universidad Mayor,Santiago, Chile; Department of Epidemiology, Columbia University Mailman School of Public Health, New York, United States; Department of Population Health and Center for Opioid Epidemiology and Policy, New York University Grossman School of Medicine, New York, United States; PI, Millennium Nucleus nDP.
+    affiliation_url: 
+    email: alvacasti@gmail.com
+    orcid_id: 0000-0002-3016-890X                  
+description: |
+ Proposal grant 2023-2024
+base_url: https://beta.rstudioconnect.com/content/3776/
+creative_commons: CC BY
+output: 
+  distill::distill_article:
+    theme: theme.css
+---
+
+**Main**
+
+- [Material for SER 2023 (step 0: aalen-johansen, selection of IPWeights & schoenfeld residuals)](an_ser_2023_step_0.html)
+
+- [Material for SER 2023 (step 1: parametric partitioned survival models & multistate models)](an_ser_2023_step_1.html)
+
+- [Material for SER 2023 (step 2: parametric partitioned survival models & multistate models)](an_ser_2023_step_2.html)
+
+**Supplemental material**
+
