@@ -178,25 +178,27 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23.sters&quot;, replace
 . 
-. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_uci tt
+. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_l
+&gt; ci s_late_drop_uci tt
 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_
-&gt; uci {
+. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_
+&gt; drop s_late_drop_lci s_late_drop_uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -235,20 +237,22 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 . 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_uci {
+. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_
+&gt; uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -282,42 +286,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23.sters&quot;, replace
 . 
-. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_t
-&gt; r_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci tt
+. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sd
+&gt; iff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_l
+&gt; ate_drop_uci tt
 
 . 
-. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_lat
-&gt; e_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci {
+. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr
+&gt; _comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop
+&gt; _lci sdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 2, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_comp_late_drop diff_tr_comp_late_dro
-&gt; p_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_com
+&gt; p_late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci dif
+&gt; f_early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as13 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as13 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_u
+&gt; ci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as13 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+. matrix colnames est_as13 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Lat
+&gt; e Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as13) using &quot;${pathdata2}prob_condsent_m0_main_diff.html&quot;, replace 
@@ -341,42 +351,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23.sters&quot;, replace
 . 
-. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_dr
-&gt; op_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci tt
+. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_l
+&gt; ate_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late
+&gt; _drop_lci rmstdiff_early_late_drop_uci tt
 
 . 
-. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdi
-&gt; ff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
+. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci 
+&gt; rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop r
+&gt; mstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 5, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp_late_drop diff_tr_comp_late_drop
-&gt; _lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp
+&gt; _late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff
+&gt; _early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as14 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as14 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_u
+&gt; ci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as14 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+. matrix colnames est_as14 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Lat
+&gt; e Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as14) using &quot;${pathdata2}rmst_condsent_m0_main_diff.html&quot;, replace 
@@ -401,32 +417,33 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23.sters&quot;, replace
 . 
-. keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late
-&gt; _vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt
+. keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci s
+&gt; diff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt
 
 . 
-. foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_ea
-&gt; rly_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci {
+. foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_c
+&gt; omp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci {
   2.     local newname = substr(&quot;`var'&quot;, 2, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uc
-&gt; i diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_v
+&gt; s_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .20, .30) // tolerance of .06
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .40, .60) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .75, 1.25) // tolerance of .16
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.80, 3.20) // tolerance of .40
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.50, 5.50) // tolerance of .40
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
@@ -436,7 +453,8 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 &gt;         ests_diff_comp_vs_early , ests_diff_comp_vs_early_lci, ests_diff_comp_vs_early_uci , ///
 &gt;         ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
 
-. matrix colnames est_as15 = Comp_Late Comp_Late_lci Comp_Late_uci Comp_Early Comp_Early_lci Comp_Early_uci Early_Late Early_Late_lci Early_Late_uci 
+. matrix colnames est_as15 = Comp_Late Comp_Late_lci Comp_Late_uci Comp_Early Comp_Early_lci Comp_Early_uci Early_Lat
+&gt; e Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as15) using &quot;${pathdata2}prob_condsent_m0_IPW_diff.html&quot;, replace 
@@ -460,32 +478,35 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23.sters&quot;, replace
 . 
-. keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_ea
-&gt; rly_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci tt
+. keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp
+&gt; _vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_u
+&gt; ci tt
 
 . 
-. foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci r
-&gt; mstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci {
+. foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_e
+&gt; arly rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdi
+&gt; ff_late_vs_early_uci {
   2.     local newname = substr(&quot;`var'&quot;, 5, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uc
-&gt; i diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_v
+&gt; s_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .20, .30) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .40, .60) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .75, 1.25) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.80, 3.20) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.50, 5.50) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
@@ -495,7 +516,8 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 &gt;         ests_diff_comp_vs_late , ests_diff_comp_vs_late_lci , ests_diff_comp_vs_late_uci , ///
 &gt;         ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
 
-. matrix colnames est_as16 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+. matrix colnames est_as16 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Lat
+&gt; e Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as16) using &quot;${pathdata2}rmst_condsent_m0_main_IPW_diff.html&quot;, replace 
@@ -522,25 +544,27 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 <pre><code>. cap qui noi use &quot;mariel_feb_23_m1.dta&quot;, clear
 
 . 
-. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_uci tt
+. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_l
+&gt; ci s_late_drop_uci tt
 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_
-&gt; uci {
+. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_
+&gt; drop s_late_drop_lci s_late_drop_uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -578,20 +602,22 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 . 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_uci {
+. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_
+&gt; uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -624,43 +650,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 <pre><code>. cap qui noi use &quot;mariel_feb_23_m1.dta&quot;, clear
 
 . 
-. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_t
-&gt; r_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci tt
+. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sd
+&gt; iff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_l
+&gt; ate_drop_uci tt
 
 . 
-. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_lat
-&gt; e_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci {
+. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr
+&gt; _comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop
+&gt; _lci sdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 2, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_comp_late_drop diff_tr_comp_late_dro
-&gt; p_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_com
+&gt; p_late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci dif
+&gt; f_early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as13m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as13m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop
+&gt; _uci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as13m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as13m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as13m1) using &quot;${pathdata2}prob_condsent_m1_main_diff.html&quot;, replace 
@@ -683,43 +714,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 <pre><code>. cap qui noi use &quot;mariel_feb_23_m1.dta&quot;, clear
 
 . 
-. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_dr
-&gt; op_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci tt
+. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_l
+&gt; ate_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late
+&gt; _drop_lci rmstdiff_early_late_drop_uci tt
 
 . 
-. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdi
-&gt; ff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
+. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci 
+&gt; rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop r
+&gt; mstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 5, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp_late_drop diff_tr_comp_late_drop
-&gt; _lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp
+&gt; _late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff
+&gt; _early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .10, .30) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .35, .65) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as14m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as14m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop
+&gt; _uci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as14m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as14m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as14m1) using &quot;${pathdata2}rmst_condsent_m1_main_diff.html&quot;, replace 
@@ -744,32 +780,33 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23.sters&quot;, replace
 . 
-. keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late
-&gt; _vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt2
+. keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci s
+&gt; diff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt2
 
 . 
-. foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_ea
-&gt; rly_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci {
+. foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_c
+&gt; omp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci {
   2.     local newname = substr(&quot;`var'&quot;, 2, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uc
-&gt; i diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_v
+&gt; s_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .06
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .16
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .40
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .40
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
@@ -779,8 +816,8 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 &gt;         ests_diff_comp_vs_early , ests_diff_comp_vs_early_lci, ests_diff_comp_vs_early_uci , ///
 &gt;         ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
 
-. matrix colnames est_as15m1 = Comp_Late Comp_Late_lci Comp_Late_uci Comp_Early Comp_Early_lci Comp_Early_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as15m1 = Comp_Late Comp_Late_lci Comp_Late_uci Comp_Early Comp_Early_lci Comp_Early_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as15m1) using &quot;${pathdata2}prob_condsent_m1_IPW_diff.html&quot;, replace 
@@ -804,32 +841,35 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23.sters&quot;, replace
 . 
-. keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_ea
-&gt; rly_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci tt2
+. keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp
+&gt; _vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_u
+&gt; ci tt2
 
 . 
-. foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci r
-&gt; mstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci {
+. foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_e
+&gt; arly rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdi
+&gt; ff_late_vs_early_uci {
   2.     local newname = substr(&quot;`var'&quot;, 5, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uc
-&gt; i diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_v
+&gt; s_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
@@ -839,8 +879,8 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 &gt;         ests_diff_comp_vs_late , ests_diff_comp_vs_late_lci , ests_diff_comp_vs_late_uci , ///
 &gt;         ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
 
-. matrix colnames est_as16m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as16m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as16m1) using &quot;${pathdata2}rmst_condsent_m1_main_IPW_diff.html&quot;, replace 
@@ -867,25 +907,27 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 <pre><code>. cap qui noi use &quot;mariel_feb_23_m2.dta&quot;, clear
 
 . 
-. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_uci tt
+. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_l
+&gt; ci s_late_drop_uci tt
 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_
-&gt; uci {
+. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_
+&gt; drop s_late_drop_lci s_late_drop_uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -923,20 +965,22 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 . 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_uci {
+. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_
+&gt; uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -969,43 +1013,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 <pre><code>. cap qui noi use &quot;mariel_feb_23_m2.dta&quot;, clear
 
 . 
-. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_t
-&gt; r_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci tt
+. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sd
+&gt; iff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_l
+&gt; ate_drop_uci tt
 
 . 
-. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_lat
-&gt; e_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci {
+. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr
+&gt; _comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop
+&gt; _lci sdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 2, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_comp_late_drop diff_tr_comp_late_dro
-&gt; p_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_com
+&gt; p_late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci dif
+&gt; f_early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as13m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as13m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop
+&gt; _uci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as13m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as13m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as13m2) using &quot;${pathdata2}prob_condsent_m2_main_diff.html&quot;, replace 
@@ -1029,43 +1078,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . 
 . 
-. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_dr
-&gt; op_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci tt
+. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_l
+&gt; ate_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late
+&gt; _drop_lci rmstdiff_early_late_drop_uci tt
 
 . 
-. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdi
-&gt; ff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
+. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci 
+&gt; rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop r
+&gt; mstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 5, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp_late_drop diff_tr_comp_late_drop
-&gt; _lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp
+&gt; _late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff
+&gt; _early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as14m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as14m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop
+&gt; _uci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as14m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as14m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as14m2) using &quot;${pathdata2}rmst_condsent_m2_main_diff.html&quot;, replace 
@@ -1093,25 +1147,27 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23_2&quot;.sters&quot;, replace
 . 
-. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_uci tt
+. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_l
+&gt; ci s_late_drop_uci tt
 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_
-&gt; uci {
+. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_
+&gt; drop s_late_drop_lci s_late_drop_uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -1150,20 +1206,22 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 . 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_uci {
+. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_
+&gt; uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -1197,42 +1255,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23_2.sters&quot;, replace
 . 
-. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_t
-&gt; r_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci tt
+. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sd
+&gt; iff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_l
+&gt; ate_drop_uci tt
 
 . 
-. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_lat
-&gt; e_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci {
+. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr
+&gt; _comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop
+&gt; _lci sdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 2, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_comp_late_drop diff_tr_comp_late_dro
-&gt; p_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_com
+&gt; p_late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci dif
+&gt; f_early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as23 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as23 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_u
+&gt; ci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as23 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+. matrix colnames est_as23 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Lat
+&gt; e Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as23) using &quot;${pathdata2}prob_prison_m0_main_diff.html&quot;, replace 
@@ -1256,42 +1320,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23_2.sters&quot;, replace
 . 
-. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_dr
-&gt; op_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci tt
+. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_l
+&gt; ate_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late
+&gt; _drop_lci rmstdiff_early_late_drop_uci tt
 
 . 
-. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdi
-&gt; ff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
+. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci 
+&gt; rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop r
+&gt; mstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 5, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp_late_drop diff_tr_comp_late_drop
-&gt; _lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp
+&gt; _late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff
+&gt; _early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as24 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as24 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_u
+&gt; ci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as24 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+. matrix colnames est_as24 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Lat
+&gt; e Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as24) using &quot;${pathdata2}rmst_prison_m0_main_diff.html&quot;, replace 
@@ -1317,32 +1387,33 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 . 
 . *estread using &quot;mariel_feb_23_2.sters&quot;, replace
 . 
-. keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late
-&gt; _vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt2
+. keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci s
+&gt; diff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt2
 
 . 
-. foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_ea
-&gt; rly_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci {
+. foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_c
+&gt; omp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci {
   2.     local newname = substr(&quot;`var'&quot;, 2, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uc
-&gt; i diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_v
+&gt; s_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .06
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .16
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .40
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .40
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
@@ -1352,7 +1423,8 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 &gt;         ests_diff_comp_vs_early , ests_diff_comp_vs_early_lci, ests_diff_comp_vs_early_uci , ///
 &gt;         ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
 
-. matrix colnames est_as25 = Comp_Late Comp_Late_lci Comp_Late_uci Comp_Early Comp_Early_lci Comp_Early_uci Early_Late Early_Late_lci Early_Late_uci 
+. matrix colnames est_as25 = Comp_Late Comp_Late_lci Comp_Late_uci Comp_Early Comp_Early_lci Comp_Early_uci Early_Lat
+&gt; e Early_Late_lci Early_Late_uci 
 
 . 
 . *cap qui noi use &quot;mariel_feb_23_2_early.dta&quot;, clear
@@ -1386,32 +1458,35 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23_2.sters&quot;, replace
 . 
-. keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_ea
-&gt; rly_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci tt2
+. keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp
+&gt; _vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_u
+&gt; ci tt2
 
 . 
-. foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci r
-&gt; mstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci {
+. foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_e
+&gt; arly rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdi
+&gt; ff_late_vs_early_uci {
   2.     local newname = substr(&quot;`var'&quot;, 5, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uc
-&gt; i diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_v
+&gt; s_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
@@ -1421,7 +1496,8 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 &gt;         ests_diff_comp_vs_late , ests_diff_comp_vs_late_lci , ests_diff_comp_vs_late_uci , ///
 &gt;         ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
 
-. matrix colnames est_as26 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci 
+. matrix colnames est_as26 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Lat
+&gt; e Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as26) using &quot;${pathdata2}rmst_prison_m0_main_IPW_diff.html&quot;, replace 
@@ -1448,25 +1524,27 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 <pre><code>. cap qui noi use &quot;mariel_feb_23_2_m1.dta&quot;, clear
 
 . 
-. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_uci tt
+. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_l
+&gt; ci s_late_drop_uci tt
 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_
-&gt; uci {
+. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_
+&gt; drop s_late_drop_lci s_late_drop_uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -1504,20 +1582,22 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 . 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_uci {
+. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_
+&gt; uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -1550,43 +1630,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 <pre><code>. cap qui noi use &quot;mariel_feb_23_2_m1.dta&quot;, clear
 
 . 
-. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_t
-&gt; r_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci tt
+. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sd
+&gt; iff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_l
+&gt; ate_drop_uci tt
 
 . 
-. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_lat
-&gt; e_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci {
+. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr
+&gt; _comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop
+&gt; _lci sdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 2, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_comp_late_drop diff_tr_comp_late_dro
-&gt; p_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_com
+&gt; p_late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci dif
+&gt; f_early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as23m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as23m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop
+&gt; _uci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as23m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as23m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as23m1) using &quot;${pathdata2}prob_prison_m1_main_diff.html&quot;, replace 
@@ -1609,43 +1694,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 <pre><code>. cap qui noi use &quot;mariel_feb_23_2_m1.dta&quot;, clear
 
 . 
-. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_dr
-&gt; op_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci tt
+. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_l
+&gt; ate_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late
+&gt; _drop_lci rmstdiff_early_late_drop_uci tt
 
 . 
-. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdi
-&gt; ff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
+. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci 
+&gt; rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop r
+&gt; mstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 5, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp_late_drop diff_tr_comp_late_drop
-&gt; _lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp
+&gt; _late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff
+&gt; _early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as24m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as24m1 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop
+&gt; _uci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as24m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as24m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as24m1) using &quot;${pathdata2}rmst_prison_m1_main_diff.html&quot;, replace 
@@ -1671,32 +1761,33 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 . 
 . *estread using &quot;mariel_feb_23_2.sters&quot;, replace
 . 
-. keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late
-&gt; _vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt2
+. keep sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci s
+&gt; diff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci tt2
 
 . 
-. foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_comp_vs_early_lci sdiff_comp_vs_ea
-&gt; rly_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci {
+. foreach var of varlist sdiff_comp_vs_late sdiff_comp_vs_late_lci sdiff_comp_vs_late_uci sdiff_comp_vs_early sdiff_c
+&gt; omp_vs_early_lci sdiff_comp_vs_early_uci sdiff_late_vs_early sdiff_late_vs_early_lci sdiff_late_vs_early_uci {
   2.     local newname = substr(&quot;`var'&quot;, 2, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uc
-&gt; i diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_v
+&gt; s_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .06
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .16
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .40
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .40
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
@@ -1706,8 +1797,8 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 &gt;         ests_diff_comp_vs_early , ests_diff_comp_vs_early_lci, ests_diff_comp_vs_early_uci , ///
 &gt;         ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
 
-. matrix colnames est_as25m1 = Comp_Late Comp_Late_lci Comp_Late_uci Comp_Early Comp_Early_lci Comp_Early_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as25m1 = Comp_Late Comp_Late_lci Comp_Late_uci Comp_Early Comp_Early_lci Comp_Early_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . *cap qui noi use &quot;mariel_feb_23_2_early.dta&quot;, clear
@@ -1741,32 +1832,35 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 
 . *estread using &quot;mariel_feb_23_2.sters&quot;, replace
 . 
-. keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_ea
-&gt; rly_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci tt2
+. keep rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp
+&gt; _vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_u
+&gt; ci tt2
 
 . 
-. foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_early rmstdiff_comp_vs_early_lci r
-&gt; mstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdiff_late_vs_early_uci {
+. foreach var of varlist rmstdiff_comp_vs_late rmstdiff_comp_vs_late_lci rmstdiff_comp_vs_late_uci rmstdiff_comp_vs_e
+&gt; arly rmstdiff_comp_vs_early_lci rmstdiff_comp_vs_early_uci rmstdiff_late_vs_early rmstdiff_late_vs_early_lci rmstdi
+&gt; ff_late_vs_early_uci {
   2.     local newname = substr(&quot;`var'&quot;, 5, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_vs_early_lci diff_comp_vs_early_uc
-&gt; i diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
+. foreach var of varlist diff_comp_vs_late diff_comp_vs_late_lci diff_comp_vs_late_uci diff_comp_vs_early diff_comp_v
+&gt; s_early_lci diff_comp_vs_early_uci diff_late_vs_early diff_late_vs_early_lci diff_late_vs_early_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt2, .10, .30) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt2, .35, .65) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt2, .75, 1.25) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt2, 2.80, 3.20) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt2,  4.50, 5.50) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
@@ -1776,8 +1870,8 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 &gt;         ests_diff_comp_vs_late , ests_diff_comp_vs_late_lci , ests_diff_comp_vs_late_uci , ///
 &gt;         ests_diff_late_vs_early , ests_diff_late_vs_early_lci , ests_diff_late_vs_early_uci )
 
-. matrix colnames est_as26m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as26m1 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as26m1) using &quot;${pathdata2}rmst_prison_m1_main_IPW_diff.html&quot;, replace 
@@ -1804,25 +1898,27 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 <pre><code>. cap qui noi use &quot;mariel_feb_23_2_m2.dta&quot;, clear
 
 . 
-. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_uci tt
+. keep s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_l
+&gt; ci s_late_drop_uci tt
 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_drop s_late_drop_lci s_late_drop_
-&gt; uci {
+. foreach var of varlist s_tr_comp s_tr_comp_lci s_tr_comp_uci s_early_drop s_early_drop_lci s_early_drop_uci s_late_
+&gt; drop s_late_drop_lci s_late_drop_uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -1860,20 +1956,22 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 . 
 . 
 . *sdiff_tr_comp_early_drop sdiff_tr_comp_late_drop sdiff_early_late_drop
-. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_uci {
+. foreach var of varlist rmst_h0 rmst_h0_lci rmst_h0_uci rmst_h1 rmst_h1_lci rmst_h1_uci rmst_h2 rmst_h2_lci rmst_h2_
+&gt; uci {
   2.                         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.         }       
@@ -1906,43 +2004,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 <pre><code>. cap qui noi use &quot;mariel_feb_23_2_m2.dta&quot;, clear
 
 . 
-. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_t
-&gt; r_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci tt
+. keep sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sd
+&gt; iff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_l
+&gt; ate_drop_uci tt
 
 . 
-. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr_comp_late_drop sdiff_tr_comp_lat
-&gt; e_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop_lci sdiff_early_late_drop_uci {
+. foreach var of varlist sdiff_tr_comp_early_drop sdiff_tr_comp_early_drop_lci sdiff_tr_comp_early_drop_uci  sdiff_tr
+&gt; _comp_late_drop sdiff_tr_comp_late_drop_lci sdiff_tr_comp_late_drop_uci sdiff_early_late_drop sdiff_early_late_drop
+&gt; _lci sdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 2, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_comp_late_drop diff_tr_comp_late_dro
-&gt; p_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci  diff_tr_com
+&gt; p_late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci dif
+&gt; f_early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.001)*100,.1)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                                    
+  6.                                         scalar e6m_`var' = round(round(r(mean),.001)*100,.1)                    
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.001)*100,.1)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.001)*100,.1)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.001)*100,.1)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as23m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as23m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop
+&gt; _uci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as23m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as23m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as23m2) using &quot;${pathdata2}prob_prison_m2_main_diff.html&quot;, replace 
@@ -1965,43 +2068,48 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 <pre><code>. cap qui noi use &quot;mariel_feb_23_2_m2.dta&quot;, clear
 
 . 
-. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_dr
-&gt; op_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci tt
+. keep rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_l
+&gt; ate_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late
+&gt; _drop_lci rmstdiff_early_late_drop_uci tt
 
 . 
-. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci rmstdiff_tr_comp_late_drop rmstdi
-&gt; ff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop rmstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
+. foreach var of varlist rmstdiff_tr_comp_early_drop rmstdiff_tr_comp_early_drop_lci rmstdiff_tr_comp_early_drop_uci 
+&gt; rmstdiff_tr_comp_late_drop rmstdiff_tr_comp_late_drop_lci rmstdiff_tr_comp_late_drop_uci rmstdiff_early_late_drop r
+&gt; mstdiff_early_late_drop_lci rmstdiff_early_late_drop_uci {
   2.     local newname = substr(&quot;`var'&quot;, 5, 50)
   3.     rename `var' `newname'
   4. }
 
 . 
-. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp_late_drop diff_tr_comp_late_drop
-&gt; _lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff_early_late_drop_uci {
+. foreach var of varlist diff_tr_comp_early_drop diff_tr_comp_early_drop_lci diff_tr_comp_early_drop_uci diff_tr_comp
+&gt; _late_drop diff_tr_comp_late_drop_lci diff_tr_comp_late_drop_uci diff_early_late_drop diff_early_late_drop_lci diff
+&gt; _early_late_drop_uci {
   2.         scalar variable = &quot;`var'&quot;
   3.                                         qui summarize `var' if inrange(tt, .24, .26) // tolerance of .02
   4.                                         scalar e3m_`var' = round(round(r(mean),.0001),.001)
   5.                                         qui summarize `var' if inrange(tt, .45, .55) // tolerance of .10
-  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                                     
+  6.                                         scalar e6m_`var' = round(round(r(mean),.0001),.001)                     
+&gt;                 
   7.                                         qui summarize `var' if inrange(tt, .95, 1.05) // tolerance of .10
   8.                                         scalar e1y_`var' = round(round(r(mean),.0001),.001)
   9.                                         qui summarize `var' if inrange(tt, 2.85, 3.15) // tolerance of .30
  10.                                         scalar e3y_`var' = round(round(r(mean),.0001),.001)
  11.                                         qui summarize `var' if inrange(tt,  4.85, 5.15) // tolerance of .30
  12.                                         scalar e5y_`var' = round(round(r(mean),.0001),.001)
- 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scalar(scalar(e3y_`var'))'\ `=scalar(s
-&gt; calar(e5y_`var'))')
+ 13.          cap noi matrix ests_`var' = (`=scalar(e3m_`var')'\  `=scalar(e6m_`var')'\ `=scalar(e1y_`var')'\ `=scala
+&gt; r(scalar(e3y_`var'))'\ `=scalar(scalar(e5y_`var'))')
  14.          matrix colnames ests_`var' = `var'
  15.          matrix rownames ests_`var' = 3_mths 6_mths 1_yr 3_yrs 5_yrs
  16.                 }
 
 .         
-. matrix est_as24m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop_uci ,  ///
+. matrix est_as24m2 = (ests_diff_tr_comp_early_drop , ests_diff_tr_comp_early_drop_lci , ests_diff_tr_comp_early_drop
+&gt; _uci ,  ///
 &gt;         ests_diff_tr_comp_late_drop , ests_diff_tr_comp_late_drop_lci, ests_diff_tr_comp_late_drop_uci , ///
 &gt;         ests_diff_early_late_drop , ests_diff_early_late_drop_lci , ests_diff_early_late_drop_uci )
 
-. matrix colnames est_as24m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_Late Early_Late_lci Early_Late_uci
-&gt;  
+. matrix colnames est_as24m2 = Comp_Early Comp_Early_lci Comp_Early_uci Comp_Late Comp_Late_lci Comp_Late_uci Early_L
+&gt; ate Early_Late_lci Early_Late_uci 
 
 . 
 . esttab matrix(est_as24m2) using &quot;${pathdata2}rmst_prison_m2_main_diff.html&quot;, replace 
@@ -2033,9 +2141,9 @@ C:\Users\CISS Fondecyt\ado\plus\e\evalue.ado
 . 
 . estimates replay m_nostag_rp6_tvc_1, eform
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
 Model m_nostag_rp6_tvc_1
-------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
 
 Log likelihood = -54443.187                     Number of obs     =     60,253
 
@@ -2150,9 +2258,9 @@ Note: Estimates are transformed only in the first equation.
 . 
 . estimates replay m_nostag_rp6_tvc_1, eform
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
 Model m_nostag_rp6_tvc_1
-------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
 
 Log likelihood = -16977.437                     Number of obs     =     60,253
 
@@ -2239,7 +2347,8 @@ Note: Estimates are transformed only in the first equation.
 . set scheme s1mono
 
 . 
-. di  &quot;`=scalar(round(HR_early2,.01))'  (95%CI `=scalar(round(HR_early_lo2),.01)', `=round(scalar(HR_early_up2),.01)')&quot;
+. di  &quot;`=scalar(round(HR_early2,.01))'  (95%CI `=scalar(round(HR_early_lo2),.01)', `=round(scalar(HR_early_up2),.01)'
+&gt; )&quot;
 2.01  (95%CI 1.78, 2.28)
 
 . 
@@ -2267,9 +2376,9 @@ Note: Estimates are transformed only in the first equation.
 . 
 . estimates replay m_nostag_rp8_tvc_1, eform
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
 Model m_nostag_rp8_tvc_1
-------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
 
 Log likelihood = -67533.174                     Number of obs     =     70,863
 
@@ -2358,7 +2467,8 @@ Note: Estimates are transformed only in the first equation.
 . set scheme s1mono
 
 . 
-. di  &quot;`=scalar(round(HR_earlym1,.01))'  (95%CI `=scalar(round(HR_early_lom1),.01)', `=round(scalar(HR_early_upm1),.01)')&quot;
+. di  &quot;`=scalar(round(HR_earlym1,.01))'  (95%CI `=scalar(round(HR_early_lom1),.01)', `=round(scalar(HR_early_upm1),.0
+&gt; 1)')&quot;
 1.74  (95%CI 1.66, 1.83)
 
 . 
@@ -2369,7 +2479,8 @@ Note: Estimates are transformed only in the first equation.
 . 
 </code></pre>
 <p><img src="eval_early_m1.svg" width="800" ></p>
-<pre><code>. di  &quot;`=scalar(round(HR_latem1,.01))'  (95%CI `=scalar(round(HR_late_lom1),.01)', `=round(scalar(HR_late_upm1),.01)')&quot;
+<pre><code>. di  &quot;`=scalar(round(HR_latem1,.01))'  (95%CI `=scalar(round(HR_late_lom1),.01)', `=round(scalar(HR_late_upm1),.01)'
+&gt; )&quot;
 1.58  (95%CI 1.52, 1.65)
 
 . 
@@ -2387,9 +2498,9 @@ Note: Estimates are transformed only in the first equation.
 . 
 . estimates replay m_nostag_rp6_tvc_1, eform
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
 Model m_nostag_rp6_tvc_1
-------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
 
 Log likelihood = -21759.872                     Number of obs     =     70,863
 
@@ -2474,18 +2585,21 @@ Note: Estimates are transformed only in the first equation.
 . set scheme s1mono
 
 . 
-. di  &quot;`=scalar(round(HR_early2m1,.01))'  (95%CI `=scalar(round(HR_early_lo2m1),.01)', `=round(scalar(HR_early_up2m1),.01)')&quot;
+. di  &quot;`=scalar(round(HR_early2m1,.01))'  (95%CI `=scalar(round(HR_early_lo2m1),.01)', `=round(scalar(HR_early_up2m1)
+&gt; ,.01)')&quot;
 1.99  (95%CI 1.79, 2.22)
 
 . 
-. evalue hr `=scalar(HR_early2m1)' , lcl(`=scalar(HR_early_lo2m1)') ucl(`=scalar(HR_early_up2m1)') true(1) common figure
+. evalue hr `=scalar(HR_early2m1)' , lcl(`=scalar(HR_early_lo2m1)') ucl(`=scalar(HR_early_up2m1)') true(1) common fig
+&gt; ure
    E-value (point estimate): 2.600
    E-value (CI): 2.358
 
 . 
 </code></pre>
 <p><img src="eval_early_pris_m1.svg" width="800" ></p>
-<pre><code>. di  &quot;`=scalar(round(HR_late2m1,.01))'  (95%CI `=scalar(round(HR_late_lo2m1),.01)', `=round(scalar(HR_late_up2m1),.01)')&quot;
+<pre><code>. di  &quot;`=scalar(round(HR_late2m1,.01))'  (95%CI `=scalar(round(HR_late_lo2m1),.01)', `=round(scalar(HR_late_up2m1),.0
+&gt; 1)')&quot;
 1.65  (95%CI 1.51, 1.81)
 
 . 
@@ -2495,3 +2609,945 @@ Note: Estimates are transformed only in the first equation.
 
 </code></pre>
 <p><img src="eval_late_pris_m1.svg" width="800" ></p>
+<p>*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#: *#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#: *#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:</p>
+<h1><a href="#figure" id="figure">Figure</a></h1>
+<pre><code>. *C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
+. graph use &quot;_figs\h_m_ns_rp6_stdif_s2_m1.gph&quot;
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+
+. graph export &quot;_figs/h_m_ns_rp6_stdif_s2_m1.pdf&quot;, as(pdf) name(&quot;h_m_ns_rp6_stdif_s2_m1&quot;) replace
+(file _figs/h_m_ns_rp6_stdif_s2_m1.pdf written in PDF format)
+
+. 
+. graph use &quot;_figs\h_m_ns_rp6_stdif_rmst_m1.gph&quot; 
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+
+. graph export &quot;_figs/h_m_ns_rp6_stdif_rmst_m1.pdf&quot;, as(pdf) name(&quot;h_m_ns_rp6_stdif_rmst_m1&quot;) replace
+(file _figs/h_m_ns_rp6_stdif_rmst_m1.pdf written in PDF format)
+
+. 
+. graph use &quot;_figs\h_m_ns_rp6_stdif_s2_pris_m1.gph&quot; 
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+
+. graph export &quot;_figs/h_m_ns_rp6_stdif_s2_pris_m1.pdf&quot;, as(pdf) name(&quot;h_m_ns_rp6_stdif_s2_pris_m1&quot;) replace
+(file _figs/h_m_ns_rp6_stdif_s2_pris_m1.pdf written in PDF format)
+
+. 
+. graph use &quot;_figs\h_m_ns_rp6_stdif_rmst_pris_m1.gph&quot; 
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+
+. graph export &quot;_figs/h_m_ns_rp6_stdif_rmst_pris_m1.pdf&quot;, as(pdf) name(&quot;h_m_ns_rp6_stdif_rmst_pris_m1&quot;) replace
+(file _figs/h_m_ns_rp6_stdif_rmst_pris_m1.pdf written in PDF format)
+
+. 
+</code></pre>
+<p><strong>HACER GRAFICO DE PROBABILIDADES Y RMSTS EN EL TIEMPO</strong></p>
+<pre><code>. graph use &quot;_figs\h_m_ns_rp6_s_m1.gph&quot;
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+
+. gr_edit .yaxis1.title.text = {}
+
+. gr_edit .yaxis1.title.text.Arrpush `&quot;Probibability of avoiding condemnatory sentence&quot;'
+
+. gr_edit .legend.plotregion1.key[1].view.style.editstyle line(color(%60)) editcopy
+
+. gr_edit .legend.plotregion1.key[2].view.style.editstyle line(color(%60)) editcopy
+
+. gr_edit .legend.plotregion1.key[3].view.style.editstyle line(color(%60)) editcopy
+
+. graph export &quot;_figs/h_m_ns_rp6_s_m1.pdf&quot;, as(pdf) name(&quot;h_m_ns_rp6_s_m1&quot;) replace
+(file _figs/h_m_ns_rp6_s_m1.pdf written in PDF format)
+
+. 
+. 
+. graph use &quot;_figs\h_m_ns_rp6_s_pris_m1.gph&quot;
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+
+. gr_edit .yaxis1.title.text = {}
+
+. gr_edit .yaxis1.title.text.Arrpush `&quot;Probibability of avoiding imprisonment&quot;'
+
+. gr_edit .legend.plotregion1.key[1].view.style.editstyle line(color(%60)) editcopy
+
+. gr_edit .legend.plotregion1.key[2].view.style.editstyle line(color(%60)) editcopy
+
+. gr_edit .legend.plotregion1.key[3].view.style.editstyle line(color(%60)) editcopy
+
+. graph export &quot;_figs/h_m_ns_rp6_s_pris_m1.pdf&quot;, as(pdf) name(&quot;h_m_ns_rp6_s_pris_m1&quot;) replace
+(file _figs/h_m_ns_rp6_s_pris_m1.pdf written in PDF format)
+
+. 
+. 
+</code></pre>
+<p>*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#: *#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#: *#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:</p>
+<h1><a href="#hazard-tables" id="hazard-tables">Hazard tables</a></h1>
+<h2><a href="#condemnatory-sentence-imputed" id="condemnatory-sentence-imputed">Condemnatory Sentence, Imputed</a></h2>
+<pre><code>. cap qui noi clear all
+
+. qui estread using &quot;mariel_feb_23_m1.sters&quot;
+
+. estimates replay m_nostag_rp8_tvc_1, eform
+
+---------------------------------------------------------------------------------------------------------------------
+Model m_nostag_rp8_tvc_1
+---------------------------------------------------------------------------------------------------------------------
+
+Log likelihood = -67533.174                     Number of obs     =     70,863
+
+---------------------------------------------------------------------------------------
+                      |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+xb                    |
+        mot_egr_early |    1.74308   .0445435    21.74   0.000     1.657926    1.832607
+         mot_egr_late |   1.583146   .0330746    21.99   0.000      1.51963    1.649317
+              tr_mod2 |   1.217761       .023    10.43   0.000     1.173506    1.263685
+             sex_dum2 |     .73504   .0141646   -15.97   0.000     .7077957     .763333
+        edad_ini_cons |   .9880599   .0016926    -7.01   0.000     .9847481    .9913828
+                 esc1 |   1.157902    .027096     6.27   0.000     1.105995    1.212246
+                 esc2 |   1.106586   .0234376     4.78   0.000      1.06159     1.15349
+            sus_prin2 |   1.071889   .0264682     2.81   0.005     1.021248    1.125042
+            sus_prin3 |    1.40807   .0292356    16.48   0.000     1.351919    1.466553
+            sus_prin4 |   1.040355   .0321132     1.28   0.200     .9792802    1.105238
+            sus_prin5 |   1.014537   .0647975     0.23   0.821     .8951642    1.149829
+    fr_cons_sus_prin2 |   .9349407    .040723    -1.54   0.122     .8584371    1.018262
+    fr_cons_sus_prin3 |   1.008606   .0356281     0.24   0.808     .9411391     1.08091
+    fr_cons_sus_prin4 |   1.032608   .0382571     0.87   0.386     .9602832     1.11038
+    fr_cons_sus_prin5 |   1.066898   .0376756     1.83   0.067      .995553    1.143357
+            cond_ocu2 |   1.031147   .0286569     1.10   0.270     .9764829    1.088871
+            cond_ocu3 |   .9603183   .1248672    -0.31   0.755     .7442796    1.239066
+            cond_ocu4 |   1.118921    .036866     3.41   0.001     1.048948    1.193561
+            cond_ocu5 |   1.256781   .0704571     4.08   0.000     1.126004    1.402747
+            cond_ocu6 |   1.160912   .0190489     9.09   0.000     1.124171    1.198854
+          policonsumo |   1.033559   .0201903     1.69   0.091     .9947347    1.073899
+             num_hij2 |   1.156898   .0199633     8.45   0.000     1.118425    1.196694
+              tenviv1 |   1.082366   .0649739     1.32   0.187     .9622259    1.217507
+              tenviv2 |   1.088573   .0419101     2.20   0.027     1.009454    1.173894
+              tenviv4 |   1.053361   .0207758     2.64   0.008     1.013418    1.094878
+              tenviv5 |   1.010574   .0162738     0.65   0.514     .9791761    1.042979
+               mzone2 |   1.286188   .0240552    13.46   0.000     1.239895     1.33421
+               mzone3 |   1.428232   .0375361    13.56   0.000     1.356525    1.503729
+            n_off_vio |   1.355585   .0239751    17.20   0.000       1.3094    1.403399
+            n_off_acq |   1.809644    .029703    36.14   0.000     1.752354    1.868807
+            n_off_sud |    1.24879   .0214402    12.94   0.000     1.207467    1.291527
+            n_off_oth |   1.352543   .0236902    17.24   0.000     1.306899    1.399781
+             psy_com2 |   1.058857   .0224264     2.70   0.007     1.015802    1.103737
+             psy_com3 |   1.043868    .016503     2.72   0.007     1.012019     1.07672
+                 dep2 |   1.014576   .0174076     0.84   0.399     .9810246    1.049274
+               rural2 |   1.022953   .0262479     0.88   0.376     .9727802    1.075713
+               rural3 |   1.043664   .0294606     1.51   0.130     .9874909    1.103033
+            porc_pobr |    1.29553   .1346303     2.49   0.013     1.056796    1.588194
+              susini2 |   1.049822   .0312983     1.63   0.103     .9902367    1.112993
+              susini3 |    1.14337   .0346017     4.43   0.000     1.077524     1.21324
+              susini4 |   1.087998   .0175085     5.24   0.000     1.054217    1.122861
+              susini5 |   1.141778   .0524973     2.88   0.004     1.043385     1.24945
+         ano_nac_corr |   .8805033   .0031795   -35.24   0.000     .8742935    .8867572
+               cohab2 |   .9385429   .0252554    -2.36   0.018      .890326    .9893711
+               cohab3 |   .9807871   .0319577    -0.60   0.552     .9201093    1.045466
+               cohab4 |     .92591   .0244015    -2.92   0.003     .8792982    .9749927
+             fis_com2 |   1.025914   .0148909     1.76   0.078     .9971396    1.055519
+             fis_com3 |   .8874548   .0293626    -3.61   0.000     .8317314    .9469115
+                rc_x1 |    .861173   .0041794   -30.80   0.000     .8530203    .8694037
+                rc_x2 |    1.00745   .0162096     0.46   0.645     .9761755    1.039727
+                rc_x3 |    .940499   .0387113    -1.49   0.136     .8676061    1.019516
+                _rcs1 |   2.660683    .035516    73.31   0.000     2.591976    2.731212
+                _rcs2 |   1.112745    .005837    20.37   0.000     1.101363    1.124244
+                _rcs3 |   1.048789   .0038702    12.91   0.000     1.041231    1.056402
+                _rcs4 |   1.023992   .0024089    10.08   0.000     1.019281    1.028724
+                _rcs5 |   1.014865   .0016172     9.26   0.000     1.011701     1.01804
+                _rcs6 |   1.011019   .0012537     8.84   0.000     1.008565    1.013479
+                _rcs7 |   1.007845   .0010726     7.34   0.000     1.005745    1.009949
+                _rcs8 |   1.004567    .000909     5.04   0.000     1.002787     1.00635
+  _rcs_mot_egr_early1 |    .907554   .0143523    -6.13   0.000     .8798554    .9361246
+   _rcs_mot_egr_late1 |   .9431117   .0136921    -4.03   0.000     .9166539    .9703331
+                _cons |   7.9e+109   5.7e+110    34.81   0.000     5.1e+103    1.2e+116
+---------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+. // sacar matrices
+. matrix table_r = r(table)
+
+. 
+. // Column and rownames
+. global rownms: rown r(table)
+
+. di &quot;$rownms&quot;
+b se z pvalue ll ul df crit eform
+
+. global colnms: coln r(table)
+
+. di &quot;$colnms&quot;
+mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_s
+&gt; us_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 po
+&gt; liconsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 p
+&gt; sy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis
+&gt; _com3 rc_x1 rc_x2 rc_x3 _rcs1 _rcs2 _rcs3 _rcs4 _rcs5 _rcs6 _rcs7 _rcs8 _rcs_mot_egr_early1 _rcs_mot_egr_late1 _con
+&gt; s _d_rcs1 _d_rcs2 _d_rcs3 _d_rcs4 _d_rcs5 _d_rcs6 _d_rcs7 _d_rcs8 _d_rcs_mot_egr_early1 _d_rcs_mot_egr_late1
+
+. local reqs : roweq r(table) //coleq
+
+. di &quot;`reqs'&quot;
+_ _ _ _ _ _ _ _ _
+
+. global ceqs : coleq r(table) //coleq
+
+. di &quot;`ceqs'&quot;
+
+
+. local cname : colfullnames r(table)
+
+. di &quot;`cname'&quot;
+xb:mot_egr_early xb:mot_egr_late xb:tr_mod2 xb:sex_dum2 xb:edad_ini_cons xb:esc1 xb:esc2 xb:sus_prin2 xb:sus_prin3 xb
+&gt; :sus_prin4 xb:sus_prin5 xb:fr_cons_sus_prin2 xb:fr_cons_sus_prin3 xb:fr_cons_sus_prin4 xb:fr_cons_sus_prin5 xb:cond
+&gt; _ocu2 xb:cond_ocu3 xb:cond_ocu4 xb:cond_ocu5 xb:cond_ocu6 xb:policonsumo xb:num_hij2 xb:tenviv1 xb:tenviv2 xb:tenvi
+&gt; v4 xb:tenviv5 xb:mzone2 xb:mzone3 xb:n_off_vio xb:n_off_acq xb:n_off_sud xb:n_off_oth xb:psy_com2 xb:psy_com3 xb:de
+&gt; p2 xb:rural2 xb:rural3 xb:porc_pobr xb:susini2 xb:susini3 xb:susini4 xb:susini5 xb:ano_nac_corr xb:cohab2 xb:cohab3
+&gt;  xb:cohab4 xb:fis_com2 xb:fis_com3 xb:rc_x1 xb:rc_x2 xb:rc_x3 xb:_rcs1 xb:_rcs2 xb:_rcs3 xb:_rcs4 xb:_rcs5 xb:_rcs6
+&gt;  xb:_rcs7 xb:_rcs8 xb:_rcs_mot_egr_early1 xb:_rcs_mot_egr_late1 xb:_cons dxb:_d_rcs1 dxb:_d_rcs2 dxb:_d_rcs3 dxb:_d
+&gt; _rcs4 dxb:_d_rcs5 dxb:_d_rcs6 dxb:_d_rcs7 dxb:_d_rcs8 dxb:_d_rcs_mot_egr_early1 dxb:_d_rcs_mot_egr_late1
+
+. 
+. // Eliminate equations
+. matrix coleq table_r = &quot;&quot;
+
+. 
+. // Subset matrix by column names
+. *https://www.stata.com/manuals13/u14.pdf
+. *https://www.stata.com/manuals13/dfunctions.pdf#dfunctionsDescriptionMatrixfunctionsreturningamatrix
+. *
+. matrix A = table_r[1... , &quot;mot_egr_early&quot;], table_r[1... , &quot;mot_egr_late&quot;], table_r[1... , &quot;_rcs1&quot;..&quot; _rcs_mot_egr_
+&gt; late1&quot;], table_r[1... , &quot;_d_rcs1&quot;..&quot; _d_rcs_mot_egr_late1&quot;]
+
+. matrix mod1= A[&quot;b&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_late1&quot;] \ A[&quot;ll&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_late1&quot;] \ A[&quot;
+&gt; ul&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_early1&quot;...] \ A[&quot;pvalue&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_early1&quot;...]  // thre
+&gt; e dots, until the last
+
+. 
+. //make another matrix
+. mat mod1b= mod1
+
+. 
+. //mata: mata drop st_trans_matrix()
+. mata:
+------------------------------------------------- mata (type end to exit) -------------------------------------------
+: void st_transpose_matrix(string scalar matname)
+&gt; {
+&gt;     // Convert Stata matrix to Mata matrix
+&gt;     M = st_matrix(matname)
+&gt; 
+&gt;     // Transpose the matrix
+&gt;     transposed_M = M'
+&gt; 
+&gt;     // Convert Mata matrix to Stata matrix
+&gt;     st_matrix(matname, transposed_M)
+&gt; }
+
+: end
+---------------------------------------------------------------------------------------------------------------------
+
+. 
+. //transpose function
+. mata: st_transpose_matrix(&quot;mod1b&quot;)
+
+. 
+. //move colnames and rownames to transpose
+. local cnames :  rownames mod1
+
+. di &quot; `cnames'&quot;
+ b ll ul pvalue
+
+. mat colnames mod1b = `cnames'
+
+. local rnames :  colnames mod1 
+
+. mat rownames mod1b = `rnames' 
+
+. 
+. //export
+. esttab matrix(mod1b) using &quot;mat_tab1.html&quot;, replace
+(output written to mat_tab1.html)
+
+. 
+. *interpreting this value directly can be misleading, because the &quot;_rcs&quot; term represents a change in the hazard rati
+&gt; o over time, and the exact shape of this change is determined by the restricted cubic spline function used in the m
+&gt; odel.
+. *the most effective way to interpret the &quot;_rcs&quot; term is to visualize the hazard ratio over time.¨
+. *hazard ratio starts at 1.74308 (the main effect) at time zero and then changes over time according to the .907554 
+&gt; &quot;_rcs&quot; term. The trajectory of the hazard ratio will likely be decreasing over time, 
+. *direct interpretation of the &quot;_rcs&quot; term is not as straightforward. 
+. *The most effective way to understand the combined effect of the main effect and the &quot;_rcs&quot; term is to visualize th
+&gt; e hazard ratio over time. 
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=5><hr></td></tr>
+<tr><td>            </td><td>       mod1b</td><td>            </td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>           b</td><td>          ll</td><td>          ul</td><td>      pvalue</td></tr>
+<tr><td colspan=5><hr></td></tr>
+<tr><td>mot_egr_early</td><td>     1.74308</td><td>    1.657926</td><td>    1.832607</td><td>    7.9e-105</td></tr>
+<tr><td>mot_egr_late</td><td>    1.583146</td><td>     1.51963</td><td>    1.649317</td><td>    3.6e-107</td></tr>
+<tr><td>_rcs1       </td><td>    2.660683</td><td>    2.591976</td><td>    2.731212</td><td>           0</td></tr>
+<tr><td>_rcs2       </td><td>    1.112745</td><td>    1.101363</td><td>    1.124244</td><td>    3.38e-92</td></tr>
+<tr><td>_rcs3       </td><td>    1.048789</td><td>    1.041231</td><td>    1.056402</td><td>    4.01e-38</td></tr>
+<tr><td>_rcs4       </td><td>    1.023992</td><td>    1.019281</td><td>    1.028724</td><td>    6.92e-24</td></tr>
+<tr><td>_rcs5       </td><td>    1.014865</td><td>    1.011701</td><td>     1.01804</td><td>    2.04e-20</td></tr>
+<tr><td>_rcs6       </td><td>    1.011019</td><td>    1.008565</td><td>    1.013479</td><td>    9.81e-19</td></tr>
+<tr><td>_rcs7       </td><td>    1.007845</td><td>    1.005745</td><td>    1.009949</td><td>    2.10e-13</td></tr>
+<tr><td>_rcs8       </td><td>    1.004567</td><td>    1.002787</td><td>     1.00635</td><td>    4.77e-07</td></tr>
+<tr><td>_rcs_mot_egr_early1</td><td>     .907554</td><td>    .8798554</td><td>    .9361246</td><td>    8.58e-10</td></tr>
+<tr><td>_rcs_mot_egr_late1</td><td>    .9431117</td><td>    .9166539</td><td>    .9703331</td><td>    .0000548</td></tr>
+<tr><td>_d_rcs1     </td><td>    .9785829</td><td>    .9524204</td><td>    1.004745</td><td>           0</td></tr>
+<tr><td>_d_rcs2     </td><td>    .1068296</td><td>    .0965484</td><td>    .1171109</td><td>    3.38e-92</td></tr>
+<tr><td>_d_rcs3     </td><td>    .0476362</td><td>    .0404036</td><td>    .0548688</td><td>    4.01e-38</td></tr>
+<tr><td>_d_rcs4     </td><td>    .0237083</td><td>    .0190975</td><td>    .0283191</td><td>    6.92e-24</td></tr>
+<tr><td>_d_rcs5     </td><td>     .014756</td><td>    .0116328</td><td>    .0178791</td><td>    2.04e-20</td></tr>
+<tr><td>_d_rcs6     </td><td>    .0109587</td><td>    .0085282</td><td>    .0133891</td><td>    9.81e-19</td></tr>
+<tr><td>_d_rcs7     </td><td>    .0078141</td><td>    .0057283</td><td>       .0099</td><td>    2.10e-13</td></tr>
+<tr><td>_d_rcs8     </td><td>    .0045563</td><td>    .0027828</td><td>    .0063298</td><td>    4.77e-07</td></tr>
+<tr><td>_d_rcs_mot_egr_early1</td><td>   -.0970022</td><td>   -.1279977</td><td>   -.0660067</td><td>    8.58e-10</td></tr>
+<tr><td>_d_rcs_mot_egr_late1</td><td>   -.0585706</td><td>   -.0870253</td><td>   -.0301159</td><td>    .0000548</td></tr>
+<tr><td colspan=5><hr></td></tr>
+</table>
+<h2><a href="#imprisonment-imputed" id="imprisonment-imputed">Imprisonment, Imputed</a></h2>
+<pre><code>. cap qui noi clear all
+
+. qui estread using &quot;mariel_feb_23_2_m1.sters&quot;
+
+. estimates replay m_nostag_rp6_tvc_1, eform
+
+---------------------------------------------------------------------------------------------------------------------
+Model m_nostag_rp6_tvc_1
+---------------------------------------------------------------------------------------------------------------------
+
+Log likelihood = -21759.872                     Number of obs     =     70,863
+
+---------------------------------------------------------------------------------------
+                      |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+xb                    |
+        mot_egr_early |   1.994852   .1087314    12.67   0.000     1.792731    2.219761
+         mot_egr_late |   1.651233   .0777884    10.65   0.000     1.505598    1.810956
+              tr_mod2 |   1.152116   .0429533     3.80   0.000     1.070932    1.239455
+             sex_dum2 |   .5924607   .0255581   -12.13   0.000      .544427    .6447322
+        edad_ini_cons |   .9734059   .0040331    -6.51   0.000     .9655331    .9813429
+                 esc1 |   1.516986   .0833309     7.59   0.000     1.362145    1.689428
+                 esc2 |   1.344025     .06934     5.73   0.000     1.214766    1.487037
+            sus_prin2 |   1.195219   .0708791     3.01   0.003     1.064068    1.342535
+            sus_prin3 |   1.716276   .0822599    11.27   0.000      1.56239    1.885318
+            sus_prin4 |   1.142999   .0793454     1.93   0.054     .9975999    1.309589
+            sus_prin5 |   1.354906   .1839488     2.24   0.025     1.038354     1.76796
+    fr_cons_sus_prin2 |    .977386   .0969542    -0.23   0.818     .8046908    1.187143
+    fr_cons_sus_prin3 |   .9957392   .0799293    -0.05   0.958     .8507824    1.165394
+    fr_cons_sus_prin4 |   1.038108    .086308     0.45   0.653      .882011    1.221831
+    fr_cons_sus_prin5 |    1.08905   .0865887     1.07   0.283     .9319019    1.272699
+            cond_ocu2 |   1.087743   .0670889     1.36   0.173     .9638878    1.227513
+            cond_ocu3 |   1.143944   .2800258     0.55   0.583       .70801     1.84829
+            cond_ocu4 |   1.240744   .0810192     3.30   0.001     1.091691    1.410148
+            cond_ocu5 |   1.332646   .1368113     2.80   0.005     1.089756    1.629673
+            cond_ocu6 |   1.211739   .0420048     5.54   0.000     1.132146    1.296928
+          policonsumo |   1.007253   .0431286     0.17   0.866     .9261719    1.095431
+             num_hij2 |   1.136224   .0394231     3.68   0.000     1.061525     1.21618
+              tenviv1 |   1.018513   .1150669     0.16   0.871     .8162099    1.270959
+              tenviv2 |   1.068074   .0802883     0.88   0.381     .9217552     1.23762
+              tenviv4 |   1.012196   .0420598     0.29   0.770      .933028    1.098082
+              tenviv5 |   .9928354   .0331953    -0.22   0.830     .9298599    1.060076
+               mzone2 |   1.416263   .0524875     9.39   0.000     1.317037    1.522965
+               mzone3 |   1.544621   .0865199     7.76   0.000     1.384022    1.723855
+            n_off_vio |   1.461835   .0503418    11.03   0.000     1.366423    1.563909
+            n_off_acq |   2.796745   .0871343    33.01   0.000     2.631075    2.972847
+            n_off_sud |   1.376993   .0456524     9.65   0.000     1.290361    1.469441
+            n_off_oth |   1.702386   .0564758    16.04   0.000     1.595218    1.816754
+             psy_com2 |   1.048481   .0402961     1.23   0.218     .9724036    1.130511
+                 dep2 |   1.032711   .0387488     0.86   0.391     .9594905     1.11152
+               rural2 |   .9370524   .0520279    -1.17   0.242     .8404322    1.044781
+               rural3 |   .8649187    .054017    -2.32   0.020     .7652705    .9775424
+            porc_pobr |   1.709119   .3691358     2.48   0.013     1.119256    2.609846
+              susini2 |   1.097617   .0720002     1.42   0.156     .9651941    1.248208
+              susini3 |   1.271345   .0731854     4.17   0.000     1.135701    1.423191
+              susini4 |    1.15569   .0379013     4.41   0.000     1.083742    1.232415
+              susini5 |   1.378443   .1164494     3.80   0.000       1.1681    1.626662
+         ano_nac_corr |   .8465336   .0067735   -20.82   0.000     .8333613     .859914
+               cohab2 |   .8633277   .0473393    -2.68   0.007     .7753563    .9612803
+               cohab3 |    1.07592   .0686957     1.15   0.252     .9493631    1.219349
+               cohab4 |   .9448006   .0518821    -1.03   0.301     .8483947    1.052162
+             fis_com2 |   1.112992   .0326294     3.65   0.000     1.050843    1.178818
+                rc_x1 |   .8447476   .0086673   -16.44   0.000     .8279298    .8619071
+                rc_x2 |   .8807967   .0305094    -3.66   0.000      .822984    .9426706
+                rc_x3 |   1.297611   .1196287     2.83   0.005     1.083106    1.554598
+                _rcs1 |   2.177066   .0586595    28.87   0.000     2.065078    2.295126
+                _rcs2 |   1.071884   .0075279     9.88   0.000     1.057231    1.086741
+                _rcs3 |   1.033961   .0056547     6.11   0.000     1.022937    1.045104
+                _rcs4 |   1.019485   .0038677     5.09   0.000     1.011932    1.027094
+                _rcs5 |   1.012627   .0028211     4.50   0.000     1.007113    1.018171
+                _rcs6 |    1.01034   .0021956     4.73   0.000     1.006046    1.014653
+  _rcs_mot_egr_early1 |   .8978523   .0271955    -3.56   0.000     .8461013    .9527685
+   _rcs_mot_egr_late1 |   .9205885   .0267904    -2.84   0.004     .8695497     .974623
+                _cons |   7.4e+142   1.2e+144    20.43   0.000     1.5e+129    3.7e+156
+---------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+. // sacar matrices
+. matrix table_r2 = r(table)
+
+. 
+. // Column and rownames
+. global rownms2: rown r(table)
+
+. di &quot;$rownms2&quot;
+b se z pvalue ll ul df crit eform
+
+. global colnms2: coln r(table)
+
+. di &quot;$colnms2&quot;
+mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_s
+&gt; us_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 po
+&gt; liconsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 d
+&gt; ep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 rc_x1 rc_x2 
+&gt; rc_x3 _rcs1 _rcs2 _rcs3 _rcs4 _rcs5 _rcs6 _rcs_mot_egr_early1 _rcs_mot_egr_late1 _cons _d_rcs1 _d_rcs2 _d_rcs3 _d_r
+&gt; cs4 _d_rcs5 _d_rcs6 _d_rcs_mot_egr_early1 _d_rcs_mot_egr_late1
+
+. local reqs2 : roweq r(table) //coleq
+
+. di &quot;`reqs2'&quot;
+_ _ _ _ _ _ _ _ _
+
+. global ceqs2 : coleq r(table) //coleq
+
+. di &quot;`ceqs2'&quot;
+
+
+. local cname2 : colfullnames r(table)
+
+. di &quot;`cname2'&quot;
+xb:mot_egr_early xb:mot_egr_late xb:tr_mod2 xb:sex_dum2 xb:edad_ini_cons xb:esc1 xb:esc2 xb:sus_prin2 xb:sus_prin3 xb
+&gt; :sus_prin4 xb:sus_prin5 xb:fr_cons_sus_prin2 xb:fr_cons_sus_prin3 xb:fr_cons_sus_prin4 xb:fr_cons_sus_prin5 xb:cond
+&gt; _ocu2 xb:cond_ocu3 xb:cond_ocu4 xb:cond_ocu5 xb:cond_ocu6 xb:policonsumo xb:num_hij2 xb:tenviv1 xb:tenviv2 xb:tenvi
+&gt; v4 xb:tenviv5 xb:mzone2 xb:mzone3 xb:n_off_vio xb:n_off_acq xb:n_off_sud xb:n_off_oth xb:psy_com2 xb:dep2 xb:rural2
+&gt;  xb:rural3 xb:porc_pobr xb:susini2 xb:susini3 xb:susini4 xb:susini5 xb:ano_nac_corr xb:cohab2 xb:cohab3 xb:cohab4 x
+&gt; b:fis_com2 xb:rc_x1 xb:rc_x2 xb:rc_x3 xb:_rcs1 xb:_rcs2 xb:_rcs3 xb:_rcs4 xb:_rcs5 xb:_rcs6 xb:_rcs_mot_egr_early1 
+&gt; xb:_rcs_mot_egr_late1 xb:_cons dxb:_d_rcs1 dxb:_d_rcs2 dxb:_d_rcs3 dxb:_d_rcs4 dxb:_d_rcs5 dxb:_d_rcs6 dxb:_d_rcs_m
+&gt; ot_egr_early1 dxb:_d_rcs_mot_egr_late1
+
+. 
+. // Eliminate equations
+. matrix coleq table_r2 = &quot;&quot;
+
+. 
+. // Subset matrix by column names
+. *https://www.stata.com/manuals13/u14.pdf
+. *https://www.stata.com/manuals13/dfunctions.pdf#dfunctionsDescriptionMatrixfunctionsreturningamatrix
+. *
+. matrix A2 = table_r2[1... , &quot;mot_egr_early&quot;], table_r2[1... , &quot;mot_egr_late&quot;], table_r2[1... , &quot;_rcs1&quot;..&quot; _rcs_mot_
+&gt; egr_late1&quot;], table_r2[1... , &quot;_d_rcs1&quot;..&quot; _d_rcs_mot_egr_late1&quot;]
+
+. matrix mod2= A2[&quot;b&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_late1&quot;] \ A2[&quot;ll&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_late1&quot;] \ A
+&gt; 2[&quot;ul&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_early1&quot;...] \ A2[&quot;pvalue&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_early1&quot;...]  // 
+&gt; three dots, until the last
+
+. 
+. //make another matrix
+. mat mod2b= mod2
+
+. 
+. //mata: mata drop st_trans_matrix()
+. mata:
+------------------------------------------------- mata (type end to exit) -------------------------------------------
+: void st_transpose_matrix(string scalar matname)
+&gt; {
+&gt;     // Convert Stata matrix to Mata matrix
+&gt;     M = st_matrix(matname)
+&gt; 
+&gt;     // Transpose the matrix
+&gt;     transposed_M = M'
+&gt; 
+&gt;     // Convert Mata matrix to Stata matrix
+&gt;     st_matrix(matname, transposed_M)
+&gt; }
+
+: end
+---------------------------------------------------------------------------------------------------------------------
+
+. 
+. //transpose function
+. mata: st_transpose_matrix(&quot;mod2b&quot;)
+
+. 
+. //move colnames and rownames to transpose
+. local cnames2 :  rownames mod2
+
+. di &quot; `cnames2'&quot;
+ b ll ul pvalue
+
+. mat colnames mod2b = `cnames2'
+
+. local rnames2 :  colnames mod2 
+
+. mat rownames mod2b = `rnames2' 
+
+. 
+. //export
+. esttab matrix(mod2b) using &quot;mat_tab2.html&quot;, replace
+(output written to mat_tab2.html)
+
+. 
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=5><hr></td></tr>
+<tr><td>            </td><td>       mod2b</td><td>            </td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>           b</td><td>          ll</td><td>          ul</td><td>      pvalue</td></tr>
+<tr><td colspan=5><hr></td></tr>
+<tr><td>mot_egr_early</td><td>    1.994852</td><td>    1.792731</td><td>    2.219761</td><td>    8.71e-37</td></tr>
+<tr><td>mot_egr_late</td><td>    1.651233</td><td>    1.505598</td><td>    1.810956</td><td>    1.82e-26</td></tr>
+<tr><td>_rcs1       </td><td>    2.177066</td><td>    2.065078</td><td>    2.295126</td><td>    2.6e-183</td></tr>
+<tr><td>_rcs2       </td><td>    1.071884</td><td>    1.057231</td><td>    1.086741</td><td>    4.87e-23</td></tr>
+<tr><td>_rcs3       </td><td>    1.033961</td><td>    1.022937</td><td>    1.045104</td><td>    1.02e-09</td></tr>
+<tr><td>_rcs4       </td><td>    1.019485</td><td>    1.011932</td><td>    1.027094</td><td>    3.65e-07</td></tr>
+<tr><td>_rcs5       </td><td>    1.012627</td><td>    1.007113</td><td>    1.018171</td><td>    6.67e-06</td></tr>
+<tr><td>_rcs6       </td><td>     1.01034</td><td>    1.006046</td><td>    1.014653</td><td>    2.20e-06</td></tr>
+<tr><td>_rcs_mot_egr_early1</td><td>    .8978523</td><td>    .8461013</td><td>    .9527685</td><td>    .0003747</td></tr>
+<tr><td>_rcs_mot_egr_late1</td><td>    .9205885</td><td>    .8695497</td><td>     .974623</td><td>    .0044657</td></tr>
+<tr><td>_d_rcs1     </td><td>    .7779779</td><td>    .7251681</td><td>    .8307878</td><td>    2.6e-183</td></tr>
+<tr><td>_d_rcs2     </td><td>    .0694181</td><td>    .0556532</td><td>     .083183</td><td>    4.87e-23</td></tr>
+<tr><td>_d_rcs3     </td><td>    .0333973</td><td>    .0226783</td><td>    .0441162</td><td>    1.02e-09</td></tr>
+<tr><td>_d_rcs4     </td><td>    .0192975</td><td>    .0118618</td><td>    .0267333</td><td>    3.65e-07</td></tr>
+<tr><td>_d_rcs5     </td><td>    .0125481</td><td>    .0070878</td><td>    .0180084</td><td>    6.67e-06</td></tr>
+<tr><td>_d_rcs6     </td><td>    .0102873</td><td>    .0060281</td><td>    .0145466</td><td>    2.20e-06</td></tr>
+<tr><td>_d_rcs_mot_egr_early1</td><td>   -.1077498</td><td>   -.1671162</td><td>   -.0483833</td><td>    .0003747</td></tr>
+<tr><td>_d_rcs_mot_egr_late1</td><td>   -.0827422</td><td>   -.1397798</td><td>   -.0257045</td><td>    .0044657</td></tr>
+<tr><td colspan=5><hr></td></tr>
+</table>
+<h2><a href="#condemnatory-sentence-listwise" id="condemnatory-sentence-listwise">Condemnatory Sentence, Listwise</a></h2>
+<pre><code>. cap qui noi clear all
+
+. qui estread using &quot;mariel_feb_23.sters&quot;
+
+. estimates replay m_nostag_rp6_tvc_1, eform
+
+---------------------------------------------------------------------------------------------------------------------
+Model m_nostag_rp6_tvc_1
+---------------------------------------------------------------------------------------------------------------------
+
+Log likelihood = -54443.187                     Number of obs     =     60,253
+
+---------------------------------------------------------------------------------------
+                      |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+xb                    |
+        mot_egr_early |   1.728953   .0499925    18.94   0.000     1.633694    1.829766
+         mot_egr_late |   1.577917   .0370653    19.42   0.000     1.506917    1.652262
+              tr_mod2 |   1.218636   .0262221     9.19   0.000      1.16831    1.271129
+             sex_dum2 |   .7600293    .016327   -12.77   0.000     .7286932    .7927129
+        edad_ini_cons |   .9868996   .0019513    -6.67   0.000     .9830825    .9907315
+                 esc1 |   1.128982   .0298192     4.59   0.000     1.072025    1.188966
+                 esc2 |   1.088746    .025948     3.57   0.000     1.039058     1.14081
+            sus_prin2 |   1.066729   .0297425     2.32   0.021     1.009999    1.126646
+            sus_prin3 |   1.392948   .0326517    14.14   0.000       1.3304    1.458437
+            sus_prin4 |   1.076603   .0378667     2.10   0.036     1.004886    1.153438
+            sus_prin5 |   1.141834   .0825502     1.83   0.067     .9909792    1.315654
+    fr_cons_sus_prin2 |    .920203   .0450222    -1.70   0.089     .8360601    1.012814
+    fr_cons_sus_prin3 |   .9969857   .0395705    -0.08   0.939     .9223689    1.077639
+    fr_cons_sus_prin4 |   1.008748   .0420384     0.21   0.834     .9296295      1.0946
+    fr_cons_sus_prin5 |   1.030657   .0409393     0.76   0.447     .9534613    1.114103
+            cond_ocu2 |   1.017891   .0318157     0.57   0.570     .9574048    1.082198
+            cond_ocu3 |   1.005554   .1418086     0.04   0.969     .7627188    1.325704
+            cond_ocu4 |   1.104285   .0399243     2.74   0.006     1.028743    1.185375
+            cond_ocu5 |   1.161881    .089036     1.96   0.050     .9998462    1.350175
+            cond_ocu6 |   1.131352   .0207262     6.74   0.000      1.09145    1.172713
+          policonsumo |   1.026642   .0224184     1.20   0.229     .9836297    1.071535
+             num_hij2 |   1.165174   .0227514     7.83   0.000     1.121424     1.21063
+              tenviv1 |   1.152096    .075424     2.16   0.031     1.013358    1.309827
+              tenviv2 |   1.127523   .0494075     2.74   0.006     1.034728     1.22864
+              tenviv4 |   1.037621   .0237463     1.61   0.107     .9921074    1.085222
+              tenviv5 |   1.003652   .0179934     0.20   0.839     .9689976    1.039545
+               mzone2 |   1.302629   .0273768    12.58   0.000     1.250061    1.357407
+               mzone3 |   1.464532   .0421233    13.27   0.000     1.384256    1.549464
+            n_off_vio |   1.355274   .0258706    15.93   0.000     1.305506     1.40694
+            n_off_acq |   1.814333   .0324517    33.31   0.000     1.751831    1.879065
+            n_off_sud |   1.256841   .0233136    12.32   0.000     1.211967    1.303375
+            n_off_oth |   1.360377   .0257473    16.26   0.000     1.310838    1.411788
+             psy_com2 |    1.07078   .0257019     2.85   0.004     1.021572    1.122359
+             psy_com3 |    1.05835   .0187998     3.19   0.001     1.022137    1.095846
+                 dep2 |   1.019981   .0195475     1.03   0.302     .9823791    1.059022
+               rural2 |   1.028789   .0287124     1.02   0.309     .9740256    1.086632
+               rural3 |   1.054563   .0324416     1.73   0.084     .9928578    1.120104
+            porc_pobr |   1.228279   .1453468     1.74   0.082      .974027    1.548898
+              susini2 |   1.095891   .0455133     2.20   0.027      1.01022    1.188826
+              susini3 |   1.122648   .0372602     3.49   0.000     1.051944    1.198104
+              susini4 |   1.082362   .0193437     4.43   0.000     1.045105    1.120947
+              susini5 |   1.129855    .056192     2.45   0.014     1.024918    1.245535
+         ano_nac_corr |    .874961    .003746   -31.20   0.000     .8676497    .8823339
+               cohab2 |   .9707827   .0310641    -0.93   0.354     .9117682    1.033617
+               cohab3 |   .9914812   .0390175    -0.22   0.828      .917883    1.070981
+               cohab4 |   .9524348   .0296215    -1.57   0.117     .8961117    1.012298
+             fis_com2 |   1.027195   .0166785     1.65   0.098     .9950202     1.06041
+             fis_com3 |   .9022046   .0336831    -2.76   0.006     .8385445    .9706976
+                rc_x1 |   .8517336   .0048089   -28.42   0.000     .8423604    .8612112
+                rc_x2 |   1.028766   .0186435     1.56   0.118      .992867    1.065963
+                rc_x3 |   .8953119   .0414545    -2.39   0.017     .8176403    .9803619
+                _rcs1 |   2.632098   .0397141    64.14   0.000     2.555399    2.711098
+                _rcs2 |   1.104931   .0062859    17.54   0.000     1.092679     1.11732
+                _rcs3 |   1.042542   .0040782    10.65   0.000      1.03458    1.050566
+                _rcs4 |   1.020136   .0025116     8.10   0.000     1.015225    1.025071
+                _rcs5 |   1.011801   .0017195     6.90   0.000     1.008437    1.015177
+                _rcs6 |   1.006751    .001313     5.16   0.000     1.004181    1.009328
+  _rcs_mot_egr_early1 |     .90547    .016121    -5.58   0.000     .8744183    .9376243
+   _rcs_mot_egr_late1 |   .9427967   .0154771    -3.59   0.000     .9129449    .9736246
+                _cons |   2.9e+115   2.5e+116    30.83   0.000     1.3e+108    6.4e+122
+---------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+. // sacar matrices
+. matrix table_r3 = r(table)
+
+. 
+. // Column and rownames
+. global rownms3: rown r(table)
+
+. di &quot;$rownms3&quot;
+b se z pvalue ll ul df crit eform
+
+. global colnms3: coln r(table)
+
+. di &quot;$colnms3&quot;
+mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_s
+&gt; us_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 po
+&gt; liconsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 p
+&gt; sy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis
+&gt; _com3 rc_x1 rc_x2 rc_x3 _rcs1 _rcs2 _rcs3 _rcs4 _rcs5 _rcs6 _rcs_mot_egr_early1 _rcs_mot_egr_late1 _cons _d_rcs1 _d
+&gt; _rcs2 _d_rcs3 _d_rcs4 _d_rcs5 _d_rcs6 _d_rcs_mot_egr_early1 _d_rcs_mot_egr_late1
+
+. local reqs3 : roweq r(table) //coleq
+
+. di &quot;`reqs3'&quot;
+_ _ _ _ _ _ _ _ _
+
+. global ceqs3 : coleq r(table) //coleq
+
+. di &quot;`ceqs3'&quot;
+
+
+. local cname3 : colfullnames r(table)
+
+. di &quot;`cname3'&quot;
+xb:mot_egr_early xb:mot_egr_late xb:tr_mod2 xb:sex_dum2 xb:edad_ini_cons xb:esc1 xb:esc2 xb:sus_prin2 xb:sus_prin3 xb
+&gt; :sus_prin4 xb:sus_prin5 xb:fr_cons_sus_prin2 xb:fr_cons_sus_prin3 xb:fr_cons_sus_prin4 xb:fr_cons_sus_prin5 xb:cond
+&gt; _ocu2 xb:cond_ocu3 xb:cond_ocu4 xb:cond_ocu5 xb:cond_ocu6 xb:policonsumo xb:num_hij2 xb:tenviv1 xb:tenviv2 xb:tenvi
+&gt; v4 xb:tenviv5 xb:mzone2 xb:mzone3 xb:n_off_vio xb:n_off_acq xb:n_off_sud xb:n_off_oth xb:psy_com2 xb:psy_com3 xb:de
+&gt; p2 xb:rural2 xb:rural3 xb:porc_pobr xb:susini2 xb:susini3 xb:susini4 xb:susini5 xb:ano_nac_corr xb:cohab2 xb:cohab3
+&gt;  xb:cohab4 xb:fis_com2 xb:fis_com3 xb:rc_x1 xb:rc_x2 xb:rc_x3 xb:_rcs1 xb:_rcs2 xb:_rcs3 xb:_rcs4 xb:_rcs5 xb:_rcs6
+&gt;  xb:_rcs_mot_egr_early1 xb:_rcs_mot_egr_late1 xb:_cons dxb:_d_rcs1 dxb:_d_rcs2 dxb:_d_rcs3 dxb:_d_rcs4 dxb:_d_rcs5 
+&gt; dxb:_d_rcs6 dxb:_d_rcs_mot_egr_early1 dxb:_d_rcs_mot_egr_late1
+
+. 
+. // Eliminate equations
+. matrix coleq table_r3 = &quot;&quot;
+
+. 
+. local cname3 : colfullnames table_r3
+
+. di &quot;`cname3'&quot;
+mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_s
+&gt; us_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 po
+&gt; liconsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 p
+&gt; sy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis
+&gt; _com3 rc_x1 rc_x2 rc_x3 _rcs1 _rcs2 _rcs3 _rcs4 _rcs5 _rcs6 _rcs_mot_egr_early1 _rcs_mot_egr_late1 _cons _d_rcs1 _d
+&gt; _rcs2 _d_rcs3 _d_rcs4 _d_rcs5 _d_rcs6 _d_rcs_mot_egr_early1 _d_rcs_mot_egr_late1
+
+. 
+. // Subset matrix by column names
+. *https://www.stata.com/manuals13/u14.pdf
+. *https://www.stata.com/manuals13/dfunctions.pdf#dfunctionsDescriptionMatrixfunctionsreturningamatrix
+. *
+. matrix A3 = table_r3[1... , &quot;mot_egr_early&quot;], table_r3[1... , &quot;mot_egr_late&quot;], table_r3[1... , &quot;_rcs1&quot;..&quot; _rcs_mot_
+&gt; egr_late1&quot;], table_r3[1... , &quot;_d_rcs1&quot;..&quot; _d_rcs_mot_egr_late1&quot;]
+
+. matrix mod3= A3[&quot;b&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_late1&quot;] \ A3[&quot;ll&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_late1&quot;] \ A
+&gt; 3[&quot;ul&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_early1&quot;...] \ A3[&quot;pvalue&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_early1&quot;...]  // 
+&gt; three dots, until the last
+
+. 
+. //make another matrix
+. mat mod3b= mod3
+
+. 
+. //mata: mata drop st_transpose_matrix()
+. mata:
+------------------------------------------------- mata (type end to exit) -------------------------------------------
+: void st_transpose_matrix(string scalar matname)
+&gt; {
+&gt;     // Convert Stata matrix to Mata matrix
+&gt;     M = st_matrix(matname)
+&gt; 
+&gt;     // Transpose the matrix
+&gt;     transposed_M = M'
+&gt; 
+&gt;     // Convert Mata matrix to Stata matrix
+&gt;     st_matrix(matname, transposed_M)
+&gt; }
+
+: end
+---------------------------------------------------------------------------------------------------------------------
+
+. 
+. //transpose function
+. mata: st_transpose_matrix(&quot;mod3b&quot;)
+
+. 
+. //move colnames and rownames to transpose
+. local cnames3 :  rownames mod3
+
+. di &quot; `cnames3'&quot;
+ b ll ul pvalue
+
+. mat colnames mod3b = `cnames3'
+
+. local rnames3 :  colfullnames mod3
+
+. mat rownames mod3b = `rnames3' 
+
+. di &quot; `names3'&quot;
+ 
+
+. //export
+. esttab matrix(mod3b) using &quot;mat_tab3.html&quot;, replace
+(output written to mat_tab3.html)
+
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=5><hr></td></tr>
+<tr><td>            </td><td>       mod3b</td><td>            </td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>           b</td><td>          ll</td><td>          ul</td><td>      pvalue</td></tr>
+<tr><td colspan=5><hr></td></tr>
+<tr><td>mot_egr_early</td><td>    1.728953</td><td>    1.633694</td><td>    1.829766</td><td>    5.82e-80</td></tr>
+<tr><td>mot_egr_late</td><td>    1.577917</td><td>    1.506917</td><td>    1.652262</td><td>    5.55e-84</td></tr>
+<tr><td>_rcs1       </td><td>    2.632098</td><td>    2.555399</td><td>    2.711098</td><td>           0</td></tr>
+<tr><td>_rcs2       </td><td>    1.104931</td><td>    1.092679</td><td>     1.11732</td><td>    7.11e-69</td></tr>
+<tr><td>_rcs3       </td><td>    1.042542</td><td>     1.03458</td><td>    1.050566</td><td>    1.74e-26</td></tr>
+<tr><td>_rcs4       </td><td>    1.020136</td><td>    1.015225</td><td>    1.025071</td><td>    5.61e-16</td></tr>
+<tr><td>_rcs5       </td><td>    1.011801</td><td>    1.008437</td><td>    1.015177</td><td>    5.07e-12</td></tr>
+<tr><td>_rcs6       </td><td>    1.006751</td><td>    1.004181</td><td>    1.009328</td><td>    2.48e-07</td></tr>
+<tr><td>_rcs_mot_egr_early1</td><td>      .90547</td><td>    .8744183</td><td>    .9376243</td><td>    2.44e-08</td></tr>
+<tr><td>_rcs_mot_egr_late1</td><td>    .9427967</td><td>    .9129449</td><td>    .9736246</td><td>     .000333</td></tr>
+<tr><td>_d_rcs1     </td><td>    .9677811</td><td>    .9382084</td><td>    .9973538</td><td>           0</td></tr>
+<tr><td>_d_rcs2     </td><td>    .0997827</td><td>    .0886326</td><td>    .1109328</td><td>    7.11e-69</td></tr>
+<tr><td>_d_rcs3     </td><td>    .0416622</td><td>    .0339952</td><td>    .0493292</td><td>    1.74e-26</td></tr>
+<tr><td>_d_rcs4     </td><td>     .019936</td><td>    .0151106</td><td>    .0247614</td><td>    5.61e-16</td></tr>
+<tr><td>_d_rcs5     </td><td>    .0117321</td><td>    .0084013</td><td>    .0150629</td><td>    5.07e-12</td></tr>
+<tr><td>_d_rcs6     </td><td>    .0067286</td><td>    .0041725</td><td>    .0092847</td><td>    2.48e-07</td></tr>
+<tr><td>_d_rcs_mot_egr_early1</td><td>   -.0993012</td><td>   -.1341964</td><td>   -.0644059</td><td>    2.44e-08</td></tr>
+<tr><td>_d_rcs_mot_egr_late1</td><td>   -.0589046</td><td>   -.0910798</td><td>   -.0267295</td><td>     .000333</td></tr>
+<tr><td colspan=5><hr></td></tr>
+</table>
+<h2><a href="#imprisonment-listwise" id="imprisonment-listwise">Imprisonment, Listwise</a></h2>
+<pre><code>. cap qui noi clear all
+
+. qui estread using &quot;mariel_feb_23_2.sters&quot;
+
+. estimates replay m_nostag_rp6_tvc_1, eform
+
+---------------------------------------------------------------------------------------------------------------------
+Model m_nostag_rp6_tvc_1
+---------------------------------------------------------------------------------------------------------------------
+
+Log likelihood = -16977.437                     Number of obs     =     60,253
+
+---------------------------------------------------------------------------------------
+                      |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+xb                    |
+        mot_egr_early |   2.012536     .12695    11.09   0.000     1.778485    2.277389
+         mot_egr_late |   1.694464   .0920751     9.71   0.000     1.523278    1.884888
+              tr_mod2 |   1.218438   .0518245     4.65   0.000     1.120982    1.324366
+             sex_dum2 |    .607298   .0295195   -10.26   0.000     .5521115    .6680008
+        edad_ini_cons |   .9714319   .0047127    -5.97   0.000     .9622389    .9807126
+                 esc1 |   1.430409   .0886472     5.78   0.000     1.266802    1.615147
+                 esc2 |   1.264154    .073243     4.05   0.000     1.128451    1.416176
+            sus_prin2 |   1.157338   .0782559     2.16   0.031     1.013688    1.321344
+            sus_prin3 |   1.681938   .0916982     9.54   0.000     1.511482    1.871617
+            sus_prin4 |    1.17118   .0933799     1.98   0.048     1.001743    1.369277
+            sus_prin5 |   1.590815   .2391632     3.09   0.002     1.184813    2.135941
+    fr_cons_sus_prin2 |    .967409   .1088579    -0.29   0.768     .7759406    1.206124
+    fr_cons_sus_prin3 |   .9785847   .0894334    -0.24   0.813     .8181005    1.170551
+    fr_cons_sus_prin4 |   1.003281   .0951204     0.03   0.972     .8331449    1.208159
+    fr_cons_sus_prin5 |   1.030036   .0934609     0.33   0.744     .8622201    1.230514
+            cond_ocu2 |   1.048814   .0745353     0.67   0.502     .9124447    1.205563
+            cond_ocu3 |   1.146648   .3093534     0.51   0.612     .6757487    1.945697
+            cond_ocu4 |   1.220389   .0890058     2.73   0.006     1.057835    1.407921
+            cond_ocu5 |   1.057984   .1641719     0.36   0.716     .7805393    1.434048
+            cond_ocu6 |   1.189485   .0465057     4.44   0.000     1.101741    1.284218
+          policonsumo |   .9915966   .0486117    -0.17   0.863     .9007536    1.091601
+             num_hij2 |   1.125554   .0447828     2.97   0.003     1.041117     1.21684
+              tenviv1 |   1.067279   .1350448     0.51   0.607     .8328636    1.367672
+              tenviv2 |   1.125202   .0969405     1.37   0.171     .9503774    1.332185
+              tenviv4 |   1.038047   .0510085     0.76   0.447     .9427354    1.142994
+              tenviv5 |   1.010717   .0383263     0.28   0.779     .9383225    1.088697
+               mzone2 |   1.450399   .0608534     8.86   0.000     1.335901    1.574711
+               mzone3 |   1.528535   .0965347     6.72   0.000     1.350572    1.729948
+            n_off_vio |   1.466613   .0554377    10.13   0.000     1.361884    1.579395
+            n_off_acq |   2.798335   .0972513    29.61   0.000     2.614073    2.995586
+            n_off_sud |   1.390646   .0507004     9.05   0.000     1.294743    1.493654
+            n_off_oth |   1.736015   .0634121    15.10   0.000     1.616074    1.864858
+             psy_com2 |   1.118023   .0550376     2.27   0.023     1.015191     1.23127
+             psy_com3 |   1.100216   .0424081     2.48   0.013      1.02016    1.186555
+                 dep2 |   1.036419   .0441269     0.84   0.401     .9534424    1.126617
+               rural2 |    .898513   .0559683    -1.72   0.086      .795249    1.015186
+               rural3 |   .8606054   .0595695    -2.17   0.030     .7514247    .9856499
+            porc_pobr |   1.571197   .3932657     1.81   0.071      .962005     2.56616
+              susini2 |   1.188536   .1083406     1.89   0.058     .9940805    1.421031
+              susini3 |   1.270308   .0818754     3.71   0.000     1.119558    1.441358
+              susini4 |    1.18061   .0440211     4.45   0.000     1.097408    1.270121
+              susini5 |   1.421915   .1320064     3.79   0.000     1.185361    1.705677
+         ano_nac_corr |   .8500967   .0080232   -17.21   0.000     .8345161    .8659682
+               cohab2 |   .8802602   .0591132    -1.90   0.058     .7717015     1.00409
+               cohab3 |   1.075106   .0859654     0.91   0.365     .9191564    1.257516
+               cohab4 |    .964041   .0641775    -0.55   0.582      .846116    1.098401
+             fis_com2 |   1.057973   .0364668     1.63   0.102     .9888599    1.131916
+             fis_com3 |   .8191694   .0709746    -2.30   0.021     .6912319    .9707863
+                rc_x1 |   .8503726   .0101848   -13.53   0.000     .8306432    .8705706
+                rc_x2 |   .8817405   .0351634    -3.16   0.002      .815446    .9534245
+                rc_x3 |   1.277763   .1359053     2.30   0.021     1.037326    1.573931
+                _rcs1 |   2.200956   .0694371    25.01   0.000     2.068984    2.341346
+                _rcs2 |   1.065717   .0083576     8.12   0.000     1.049462    1.082225
+                _rcs3 |   1.033663    .006363     5.38   0.000     1.021266     1.04621
+                _rcs4 |   1.017806   .0044294     4.06   0.000     1.009161    1.026524
+                _rcs5 |   1.010267   .0032115     3.21   0.001     1.003993    1.016581
+                _rcs6 |   1.008379   .0025225     3.34   0.001     1.003447    1.013335
+  _rcs_mot_egr_early1 |   .8926688   .0314254    -3.23   0.001     .8331531    .9564359
+   _rcs_mot_egr_late1 |   .9136598   .0309637    -2.66   0.008     .8549437    .9764086
+                _cons |   1.4e+139   2.7e+140    16.86   0.000     9.7e+122    2.2e+155
+---------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+. // sacar matrices
+. matrix table_r4 = r(table)
+
+. 
+. // Column and rownames
+. global rownms4: rown r(table)
+
+. di &quot;$rownms4&quot;
+b se z pvalue ll ul df crit eform
+
+. global colnms4: coln r(table)
+
+. di &quot;$colnms4&quot;
+mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_s
+&gt; us_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 po
+&gt; liconsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 p
+&gt; sy_com3 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 fis
+&gt; _com3 rc_x1 rc_x2 rc_x3 _rcs1 _rcs2 _rcs3 _rcs4 _rcs5 _rcs6 _rcs_mot_egr_early1 _rcs_mot_egr_late1 _cons _d_rcs1 _d
+&gt; _rcs2 _d_rcs3 _d_rcs4 _d_rcs5 _d_rcs6 _d_rcs_mot_egr_early1 _d_rcs_mot_egr_late1
+
+. local reqs4 : roweq r(table) //coleq
+
+. di &quot;`reqs4'&quot;
+_ _ _ _ _ _ _ _ _
+
+. global ceqs4 : coleq r(table) //coleq
+
+. di &quot;`ceqs4'&quot;
+
+
+. local cname4 : colfullnames r(table)
+
+. di &quot;`cname4'&quot;
+xb:mot_egr_early xb:mot_egr_late xb:tr_mod2 xb:sex_dum2 xb:edad_ini_cons xb:esc1 xb:esc2 xb:sus_prin2 xb:sus_prin3 xb
+&gt; :sus_prin4 xb:sus_prin5 xb:fr_cons_sus_prin2 xb:fr_cons_sus_prin3 xb:fr_cons_sus_prin4 xb:fr_cons_sus_prin5 xb:cond
+&gt; _ocu2 xb:cond_ocu3 xb:cond_ocu4 xb:cond_ocu5 xb:cond_ocu6 xb:policonsumo xb:num_hij2 xb:tenviv1 xb:tenviv2 xb:tenvi
+&gt; v4 xb:tenviv5 xb:mzone2 xb:mzone3 xb:n_off_vio xb:n_off_acq xb:n_off_sud xb:n_off_oth xb:psy_com2 xb:psy_com3 xb:de
+&gt; p2 xb:rural2 xb:rural3 xb:porc_pobr xb:susini2 xb:susini3 xb:susini4 xb:susini5 xb:ano_nac_corr xb:cohab2 xb:cohab3
+&gt;  xb:cohab4 xb:fis_com2 xb:fis_com3 xb:rc_x1 xb:rc_x2 xb:rc_x3 xb:_rcs1 xb:_rcs2 xb:_rcs3 xb:_rcs4 xb:_rcs5 xb:_rcs6
+&gt;  xb:_rcs_mot_egr_early1 xb:_rcs_mot_egr_late1 xb:_cons dxb:_d_rcs1 dxb:_d_rcs2 dxb:_d_rcs3 dxb:_d_rcs4 dxb:_d_rcs5 
+&gt; dxb:_d_rcs6 dxb:_d_rcs_mot_egr_early1 dxb:_d_rcs_mot_egr_late1
+
+. 
+. // Eliminate equations
+. matrix coleq table_r4 = &quot;&quot;
+
+. 
+. // Subset matrix by column names
+. *https://www.stata.com/manuals14/u14.pdf
+. *https://www.stata.com/manuals14/dfunctions.pdf#dfunctionsDescriptionMatrixfunctionsreturningamatrix
+. *
+. matrix A4 = table_r4[1... , &quot;mot_egr_early&quot;], table_r4[1... , &quot;mot_egr_late&quot;], table_r4[1... , &quot;_rcs1&quot;..&quot; _rcs_mot_
+&gt; egr_late1&quot;], table_r4[1... , &quot;_d_rcs1&quot;..&quot; _d_rcs_mot_egr_late1&quot;]
+
+. matrix mod4= A4[&quot;b&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_late1&quot;] \ A4[&quot;ll&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_late1&quot;] \ A
+&gt; 4[&quot;ul&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_early1&quot;...] \ A4[&quot;pvalue&quot;,&quot;mot_egr_early&quot;..&quot;_d_rcs_mot_egr_early1&quot;...]  // 
+&gt; three dots, until the last
+
+. 
+. //make another matrix
+. mat mod4b= mod4
+
+. 
+. //mata: mata drop st_trans_matrix()
+. mata:
+------------------------------------------------- mata (type end to exit) -------------------------------------------
+: void st_transpose_matrix(string scalar matname)
+&gt; {
+&gt;     // Convert Stata matrix to Mata matrix
+&gt;     M = st_matrix(matname)
+&gt; 
+&gt;     // Transpose the matrix
+&gt;     transposed_M = M'
+&gt; 
+&gt;     // Convert Mata matrix to Stata matrix
+&gt;     st_matrix(matname, transposed_M)
+&gt; }
+
+: end
+---------------------------------------------------------------------------------------------------------------------
+
+. 
+. //transpose function
+. mata: st_transpose_matrix(&quot;mod4b&quot;)
+
+. 
+. //move colnames and rownames to transpose
+. local cnames4 :  rownames mod4
+
+. di &quot; `cnames4'&quot;
+ b ll ul pvalue
+
+. mat colnames mod4b = `cnames4'
+
+. local rnames4 :  colnames mod4 
+
+. mat rownames mod4b = `rnames4' 
+
+. 
+. //export
+. esttab matrix(mod4b) using &quot;mat_tab4.html&quot;, replace
+(output written to mat_tab4.html)
+
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=5><hr></td></tr>
+<tr><td>            </td><td>       mod4b</td><td>            </td><td>            </td><td>            </td></tr>
+<tr><td>            </td><td>           b</td><td>          ll</td><td>          ul</td><td>      pvalue</td></tr>
+<tr><td colspan=5><hr></td></tr>
+<tr><td>mot_egr_early</td><td>    2.012536</td><td>    1.778485</td><td>    2.277389</td><td>    1.44e-28</td></tr>
+<tr><td>mot_egr_late</td><td>    1.694464</td><td>    1.523278</td><td>    1.884888</td><td>    2.87e-22</td></tr>
+<tr><td>_rcs1       </td><td>    2.200956</td><td>    2.068984</td><td>    2.341346</td><td>    5.3e-138</td></tr>
+<tr><td>_rcs2       </td><td>    1.065717</td><td>    1.049462</td><td>    1.082225</td><td>    4.82e-16</td></tr>
+<tr><td>_rcs3       </td><td>    1.033663</td><td>    1.021266</td><td>     1.04621</td><td>    7.51e-08</td></tr>
+<tr><td>_rcs4       </td><td>    1.017806</td><td>    1.009161</td><td>    1.026524</td><td>      .00005</td></tr>
+<tr><td>_rcs5       </td><td>    1.010267</td><td>    1.003993</td><td>    1.016581</td><td>    .0013114</td></tr>
+<tr><td>_rcs6       </td><td>    1.008379</td><td>    1.003447</td><td>    1.013335</td><td>    .0008514</td></tr>
+<tr><td>_rcs_mot_egr_early1</td><td>    .8926688</td><td>    .8331531</td><td>    .9564359</td><td>    .0012588</td></tr>
+<tr><td>_rcs_mot_egr_late1</td><td>    .9136598</td><td>    .8549437</td><td>    .9764086</td><td>    .0077119</td></tr>
+<tr><td>_d_rcs1     </td><td>    .7888917</td><td>    .7270575</td><td>    .8507258</td><td>    5.3e-138</td></tr>
+<tr><td>_d_rcs2     </td><td>    .0636482</td><td>    .0482776</td><td>    .0790187</td><td>    4.82e-16</td></tr>
+<tr><td>_d_rcs3     </td><td>    .0331086</td><td>    .0210435</td><td>    .0451737</td><td>    7.51e-08</td></tr>
+<tr><td>_d_rcs4     </td><td>    .0176489</td><td>    .0091193</td><td>    .0261785</td><td>      .00005</td></tr>
+<tr><td>_d_rcs5     </td><td>    .0102151</td><td>    .0039847</td><td>    .0164455</td><td>    .0013114</td></tr>
+<tr><td>_d_rcs6     </td><td>    .0083439</td><td>     .003441</td><td>    .0132469</td><td>    .0008514</td></tr>
+<tr><td>_d_rcs_mot_egr_early1</td><td>   -.1135397</td><td>   -.1825379</td><td>   -.0445415</td><td>    .0012588</td></tr>
+<tr><td>_d_rcs_mot_egr_late1</td><td>   -.0902969</td><td>   -.1567197</td><td>   -.0238742</td><td>    .0077119</td></tr>
+<tr><td colspan=5><hr></td></tr>
+</table>

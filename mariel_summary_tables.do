@@ -1654,8 +1654,6 @@ gr_edit .legend.plotregion1.key[3].view.style.editstyle line(color(%60)) editcop
 graph export "_figs/h_m_ns_rp6_s_pris_m1.pdf", as(pdf) name("h_m_ns_rp6_s_pris_m1") replace
 
 
-
-
 <</dd_do>>
 ~~~~
 
@@ -1672,12 +1670,61 @@ graph export "_figs/h_m_ns_rp6_s_pris_m1.pdf", as(pdf) name("h_m_ns_rp6_s_pris_m
 cap qui noi clear all
 qui estread using "mariel_feb_23_m1.sters"
 estimates replay m_nostag_rp8_tvc_1, eform
-scalar HR_earlym1_def = r(table)["b",1]
-scalar HR_early_lom1_def = r(table)["ll",1]
-scalar HR_early_upm1_def = r(table)["ul",1]
-scalar HR_latem1_def = r(table)["b",2]
-scalar HR_late_lom1_def_def = r(table)["ll",2]
-scalar HR_late_upm1_def = r(table)["ul",2]
+// sacar matrices
+matrix table_r = r(table)
+
+// Column and rownames
+global rownms: rown r(table)
+di "$rownms"
+global colnms: coln r(table)
+di "$colnms"
+local reqs : roweq r(table) //coleq
+di "`reqs'"
+global ceqs : coleq r(table) //coleq
+di "`ceqs'"
+local cname : colfullnames r(table)
+di "`cname'"
+
+// Eliminate equations
+matrix coleq table_r = ""
+
+// Subset matrix by column names
+*https://www.stata.com/manuals13/u14.pdf
+*https://www.stata.com/manuals13/dfunctions.pdf#dfunctionsDescriptionMatrixfunctionsreturningamatrix
+*
+matrix A = table_r[1... , "mot_egr_early"], table_r[1... , "mot_egr_late"], table_r[1... , "_rcs1".." _rcs_mot_egr_late1"], table_r[1... , "_d_rcs1".." _d_rcs_mot_egr_late1"]
+matrix mod1= A["b","mot_egr_early".."_d_rcs_mot_egr_late1"] \ A["ll","mot_egr_early".."_d_rcs_mot_egr_late1"] \ A["ul","mot_egr_early".."_d_rcs_mot_egr_early1"...] \ A["pvalue","mot_egr_early".."_d_rcs_mot_egr_early1"...]  // three dots, until the last
+
+//make another matrix
+mat mod1b= mod1
+
+//mata: mata drop st_trans_matrix()
+mata:
+void st_transpose_matrix(string scalar matname)
+{
+    // Convert Stata matrix to Mata matrix
+    M = st_matrix(matname)
+
+    // Transpose the matrix
+    transposed_M = M'
+
+    // Convert Mata matrix to Stata matrix
+    st_matrix(matname, transposed_M)
+}
+end
+
+//transpose function
+mata: st_transpose_matrix("mod1b")
+
+//move colnames and rownames to transpose
+local cnames :  rownames mod1
+di " `cnames'"
+mat colnames mod1b = `cnames'
+local rnames :  colnames mod1 
+mat rownames mod1b = `rnames' 
+
+//export
+esttab matrix(mod1b) using "mat_tab1.html", replace
 
 *interpreting this value directly can be misleading, because the "_rcs" term represents a change in the hazard ratio over time, and the exact shape of this change is determined by the restricted cubic spline function used in the model.
 *the most effective way to interpret the "_rcs" term is to visualize the hazard ratio over time.¨
@@ -1687,6 +1734,9 @@ scalar HR_late_upm1_def = r(table)["ul",2]
 <</dd_do>>
 ~~~~
 
+<<dd_include: "mat_tab1.html" >>
+
+
 ## Imprisonment, Imputed
 
 ~~~~
@@ -1694,8 +1744,66 @@ scalar HR_late_upm1_def = r(table)["ul",2]
 cap qui noi clear all
 qui estread using "mariel_feb_23_2_m1.sters"
 estimates replay m_nostag_rp6_tvc_1, eform
+// sacar matrices
+matrix table_r2 = r(table)
+
+// Column and rownames
+global rownms2: rown r(table)
+di "$rownms2"
+global colnms2: coln r(table)
+di "$colnms2"
+local reqs2 : roweq r(table) //coleq
+di "`reqs2'"
+global ceqs2 : coleq r(table) //coleq
+di "`ceqs2'"
+local cname2 : colfullnames r(table)
+di "`cname2'"
+
+// Eliminate equations
+matrix coleq table_r2 = ""
+
+// Subset matrix by column names
+*https://www.stata.com/manuals13/u14.pdf
+*https://www.stata.com/manuals13/dfunctions.pdf#dfunctionsDescriptionMatrixfunctionsreturningamatrix
+*
+matrix A2 = table_r2[1... , "mot_egr_early"], table_r2[1... , "mot_egr_late"], table_r2[1... , "_rcs1".." _rcs_mot_egr_late1"], table_r2[1... , "_d_rcs1".." _d_rcs_mot_egr_late1"]
+matrix mod2= A2["b","mot_egr_early".."_d_rcs_mot_egr_late1"] \ A2["ll","mot_egr_early".."_d_rcs_mot_egr_late1"] \ A2["ul","mot_egr_early".."_d_rcs_mot_egr_early1"...] \ A2["pvalue","mot_egr_early".."_d_rcs_mot_egr_early1"...]  // three dots, until the last
+
+//make another matrix
+mat mod2b= mod2
+
+//mata: mata drop st_trans_matrix()
+mata:
+void st_transpose_matrix(string scalar matname)
+{
+    // Convert Stata matrix to Mata matrix
+    M = st_matrix(matname)
+
+    // Transpose the matrix
+    transposed_M = M'
+
+    // Convert Mata matrix to Stata matrix
+    st_matrix(matname, transposed_M)
+}
+end
+
+//transpose function
+mata: st_transpose_matrix("mod2b")
+
+//move colnames and rownames to transpose
+local cnames2 :  rownames mod2
+di " `cnames2'"
+mat colnames mod2b = `cnames2'
+local rnames2 :  colnames mod2 
+mat rownames mod2b = `rnames2' 
+
+//export
+esttab matrix(mod2b) using "mat_tab2.html", replace
+
 <</dd_do>>
 ~~~~
+
+<<dd_include: "mat_tab2.html" >>
 
 
 ## Condemnatory Sentence, Listwise
@@ -1705,8 +1813,69 @@ estimates replay m_nostag_rp6_tvc_1, eform
 cap qui noi clear all
 qui estread using "mariel_feb_23.sters"
 estimates replay m_nostag_rp6_tvc_1, eform
+// sacar matrices
+matrix table_r3 = r(table)
+
+// Column and rownames
+global rownms3: rown r(table)
+di "$rownms3"
+global colnms3: coln r(table)
+di "$colnms3"
+local reqs3 : roweq r(table) //coleq
+di "`reqs3'"
+global ceqs3 : coleq r(table) //coleq
+di "`ceqs3'"
+local cname3 : colfullnames r(table)
+di "`cname3'"
+
+// Eliminate equations
+matrix coleq table_r3 = ""
+
+local cname3 : colfullnames table_r3
+di "`cname3'"
+
+// Subset matrix by column names
+*https://www.stata.com/manuals13/u14.pdf
+*https://www.stata.com/manuals13/dfunctions.pdf#dfunctionsDescriptionMatrixfunctionsreturningamatrix
+*
+matrix A3 = table_r3[1... , "mot_egr_early"], table_r3[1... , "mot_egr_late"], table_r3[1... , "_rcs1".." _rcs_mot_egr_late1"], table_r3[1... , "_d_rcs1".." _d_rcs_mot_egr_late1"]
+matrix mod3= A3["b","mot_egr_early".."_d_rcs_mot_egr_late1"] \ A3["ll","mot_egr_early".."_d_rcs_mot_egr_late1"] \ A3["ul","mot_egr_early".."_d_rcs_mot_egr_early1"...] \ A3["pvalue","mot_egr_early".."_d_rcs_mot_egr_early1"...]  // three dots, until the last
+
+//make another matrix
+mat mod3b= mod3
+
+//mata: mata drop st_transpose_matrix()
+mata:
+void st_transpose_matrix(string scalar matname)
+{
+    // Convert Stata matrix to Mata matrix
+    M = st_matrix(matname)
+
+    // Transpose the matrix
+    transposed_M = M'
+
+    // Convert Mata matrix to Stata matrix
+    st_matrix(matname, transposed_M)
+}
+end
+
+//transpose function
+mata: st_transpose_matrix("mod3b")
+
+//move colnames and rownames to transpose
+local cnames3 :  rownames mod3
+di " `cnames3'"
+mat colnames mod3b = `cnames3'
+local rnames3 :  colfullnames mod3
+mat rownames mod3b = `rnames3' 
+di " `names3'"
+//export
+esttab matrix(mod3b) using "mat_tab3.html", replace
 <</dd_do>>
 ~~~~
+
+<<dd_include: "mat_tab3.html" >>
+
 
 ## Imprisonment, Listwise
 
@@ -1715,8 +1884,65 @@ estimates replay m_nostag_rp6_tvc_1, eform
 cap qui noi clear all
 qui estread using "mariel_feb_23_2.sters"
 estimates replay m_nostag_rp6_tvc_1, eform
+// sacar matrices
+matrix table_r4 = r(table)
+
+// Column and rownames
+global rownms4: rown r(table)
+di "$rownms4"
+global colnms4: coln r(table)
+di "$colnms4"
+local reqs4 : roweq r(table) //coleq
+di "`reqs4'"
+global ceqs4 : coleq r(table) //coleq
+di "`ceqs4'"
+local cname4 : colfullnames r(table)
+di "`cname4'"
+
+// Eliminate equations
+matrix coleq table_r4 = ""
+
+// Subset matrix by column names
+*https://www.stata.com/manuals14/u14.pdf
+*https://www.stata.com/manuals14/dfunctions.pdf#dfunctionsDescriptionMatrixfunctionsreturningamatrix
+*
+matrix A4 = table_r4[1... , "mot_egr_early"], table_r4[1... , "mot_egr_late"], table_r4[1... , "_rcs1".." _rcs_mot_egr_late1"], table_r4[1... , "_d_rcs1".." _d_rcs_mot_egr_late1"]
+matrix mod4= A4["b","mot_egr_early".."_d_rcs_mot_egr_late1"] \ A4["ll","mot_egr_early".."_d_rcs_mot_egr_late1"] \ A4["ul","mot_egr_early".."_d_rcs_mot_egr_early1"...] \ A4["pvalue","mot_egr_early".."_d_rcs_mot_egr_early1"...]  // three dots, until the last
+
+//make another matrix
+mat mod4b= mod4
+
+//mata: mata drop st_trans_matrix()
+mata:
+void st_transpose_matrix(string scalar matname)
+{
+    // Convert Stata matrix to Mata matrix
+    M = st_matrix(matname)
+
+    // Transpose the matrix
+    transposed_M = M'
+
+    // Convert Mata matrix to Stata matrix
+    st_matrix(matname, transposed_M)
+}
+end
+
+//transpose function
+mata: st_transpose_matrix("mod4b")
+
+//move colnames and rownames to transpose
+local cnames4 :  rownames mod4
+di " `cnames4'"
+mat colnames mod4b = `cnames4'
+local rnames4 :  colnames mod4 
+mat rownames mod4b = `rnames4' 
+
+//export
+esttab matrix(mod4b) using "mat_tab4.html", replace
 <</dd_do>>
 ~~~~
+
+<<dd_include: "mat_tab4.html" >>
 
 
 

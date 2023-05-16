@@ -60,7 +60,7 @@ affiliation:
 main_findings: none #- "**Baseline Treatment Completion** is associated with **lower hazards** of experiencing posterior contacts with justice system that ended in a **sentence or imprisonment**."
 logoleft_name: _style/Logo_nDP_monotono_vertical_en.png
 logoright_name: _style/Logo_nDP_color_hz_en.png
-logocenter_name: _figs/qrcode.png #"`r plot(qrcode::qr_code('https://fondecytacc.github.io/nDP/'))`"
+logocenter_name: _figs/qrcode.png #"`r plot(qrcode::qr_code('https://fondecytacc.github.io/nDP/index_prop_grant23_24.html'))`"
 output: 
   posterdown::posterdown_html:
     self_contained: true

@@ -1536,6 +1536,62 @@ subset(Base_fiscalia_v14_pris, select= c("hash_key", vars_cov, "fech_ing_num_1",
 
 <br>
 
+
+# Export
+
+```{r export, warning=FALSE, echo=T, error=T, eval=T}
+#2023-01-01 we had a problem with edad_al_ing_fmt. This variable predict better (it had lower amount of missing data and was in wide format)
+
+#cont_vars_desc[1]<-ifelse(cont_vars_desc[1]=="edad_al_ing_fmt","edad_al_ing_1",cont_vars_desc[1])
+
+library(missRanger)
+#attr(Base_fiscalia_v14$tipo_centro,"label") <- "Type of Center"
+
+subset(Base_fiscalia_v14, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1)  %>% 
+  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA.dta"))
+
+subset(Base_fiscalia_v14_pris, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1) %>%   
+  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA_pris.dta"))
+
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+# IMPUTATION
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+Base_fiscalia_v14_miss %>% 
+  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA_miss.dta"))
+
+  
+Base_fiscalia_v14_pris_miss %>%   
+  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA_miss_pris.dta"))
+
+
+Base_fiscalia_v14_miss2 %>% 
+  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA_miss2.dta"))
+
+  
+Base_fiscalia_v14_pris_miss2 %>%   
+  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA_miss_pris2.dta"))
+```
+
+<br>
+
 # Characteristics
 
 ::: controlly 
@@ -1871,6 +1927,41 @@ image_write(image_montage(c(fig1, fig2, fig3, fig4), tile = '2x2', geometry = 'x
 
 ```
 
+::: controlly
+```{r exp-surv23-5-hr, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
+# In this model, the term dxb: is typically used to indicate a time-dependent covariate, 
+#which is a covariate whose effect changes over time. For example, if you are studying the survival of 
+#patients after surgery, a time-dependent covariate might be the patient's age at the time of surgery.
+# 
+# On the other hand, xb: is typically used to denote time-independent covariates, which are covariates 
+#whose effect does not change over time. An example of a time-independent covariate might
+#be the patient's gender.
+
+tab1<-rvest::read_html("mat_tab1.html") %>% rvest::html_table() %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>%   dplyr::mutate_at(2:(ncol(.)-1), ~sprintf("%1.2f",readr::parse_number(.))) %>% dplyr::filter(dplyr::case_when(b!="NA"~T,T~F)) %>% 
+  dplyr::mutate(pvalue=dplyr::case_when(readr::parse_number(pvalue)<0.001~"<0.001",T~sprintf("%1.3f",readr::parse_number(pvalue))))
+tab2<-rvest::read_html("mat_tab2.html")  %>% rvest::html_table() %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>%   dplyr::mutate_at(2:(ncol(.)-1), ~sprintf("%1.2f",readr::parse_number(.))) %>% dplyr::filter(dplyr::case_when(b!="NA"~T,T~F)) %>% 
+  dplyr::mutate(pvalue=dplyr::case_when(readr::parse_number(pvalue)<0.001~"<0.001",T~sprintf("%1.3f",readr::parse_number(pvalue))))
+tab3<-rvest::read_html("mat_tab3.html")  %>% rvest::html_table() %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>%   dplyr::mutate_at(2:(ncol(.)-1), ~sprintf("%1.2f",readr::parse_number(.))) %>% dplyr::filter(dplyr::case_when(b!="NA"~T,T~F)) %>% 
+  dplyr::mutate(pvalue=dplyr::case_when(readr::parse_number(pvalue)<0.001~"<0.001",T~sprintf("%1.3f",readr::parse_number(pvalue))))
+tab4<-rvest::read_html("mat_tab4.html")  %>% rvest::html_table() %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>%   dplyr::mutate_at(2:(ncol(.)-1), ~sprintf("%1.2f",readr::parse_number(.))) %>% dplyr::filter(dplyr::case_when(b!="NA"~T,T~F)) %>% 
+  dplyr::mutate(pvalue=dplyr::case_when(readr::parse_number(pvalue)<0.001~"<0.001",T~sprintf("%1.3f",readr::parse_number(pvalue))))
+
+tab1 %>% 
+  dplyr::left_join(`tab2`,by="Var.1") %>% 
+  dplyr::left_join(`tab3`,by="Var.1") %>% 
+  dplyr::left_join(`tab4`,by="Var.1") %>% 
+  dplyr::mutate(`Var.1`=str_replace_all(`Var.1`, "^_d_rcs", "time-dependent: knot ")) %>% 
+  dplyr::mutate(`Var.1`=str_replace_all(`Var.1`, "^_rcs", "time-independent: knot ")) %>% 
+  dplyr::mutate(`Var.1`=str_replace_all(`Var.1`, "knot _mot_egr_early1", "Early discharge")) %>% 
+  dplyr::mutate(`Var.1`=str_replace_all(`Var.1`, "knot _mot_egr_late1", "Late discharge")) %>% 
+  dplyr::mutate(`Var.1`=str_replace_all(`Var.1`, "^mot_egr_early$", "Early discharge")) %>% 
+  dplyr::mutate(`Var.1`=str_replace_all(`Var.1`, "^mot_egr_late$", "Late discharge")) %>%  
+  dplyr::mutate(across(everything(), ~replace_na(., ""))) %>%
+  #rio::export("hrs_intramural2223.xlsx")
+  knitr::kable("markdown", caption="sdasd", col.names=c("Term",rep(c("Estimate", "95%CI lo", "95%CI up", "P-value"),4)))
+```
+:::
+
 
 <br>
 
@@ -2005,60 +2096,6 @@ initComplete = htmlwidgets::JS(
 ## `r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`
 
 <br>
-
-# Export
-
-```{r export, warning=FALSE, echo=T, error=T, eval=T}
-#2023-01-01 we had a problem with edad_al_ing_fmt. This variable predict better (it had lower amount of missing data and was in wide format)
-
-#cont_vars_desc[1]<-ifelse(cont_vars_desc[1]=="edad_al_ing_fmt","edad_al_ing_1",cont_vars_desc[1])
-
-library(missRanger)
-#attr(Base_fiscalia_v14$tipo_centro,"label") <- "Type of Center"
-
-subset(Base_fiscalia_v14, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
-  dplyr::arrange(hash_key, fech_ing_num_1)  %>% 
-  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
-  data.table::data.table() %>% 
-  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA.dta"))
-
-subset(Base_fiscalia_v14_pris, select= c("hash_key", vars_cov, "fech_ing_num_1", "fech_nac_rec", "offender_d", "age_offending_imp", "edad_al_egres_imp")) %>% 
-  dplyr::arrange(hash_key, fech_ing_num_1) %>%   
-  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
-  data.table::data.table() %>% 
-  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA_pris.dta"))
-
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-# IMPUTATION
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-
-Base_fiscalia_v14_miss %>% 
-  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
-  data.table::data.table() %>% 
-  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA_miss.dta"))
-
-  
-Base_fiscalia_v14_pris_miss %>%   
-  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
-  data.table::data.table() %>% 
-  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA_miss_pris.dta"))
-
-
-Base_fiscalia_v14_miss2 %>% 
-  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
-  data.table::data.table() %>% 
-  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA_miss2.dta"))
-
-  
-Base_fiscalia_v14_pris_miss2 %>%   
-  dplyr::mutate(age_at_censor_date=lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),unit="years")) %>% 
-  data.table::data.table() %>% 
-  rio::export(file = paste0("fiscalia_mariel_feb_2023_match_SENDA_miss_pris2.dta"))
-```
-
 
 ::: controlly
 ```{r label_to_stata, echo=T, paged.print=TRUE, eval=F}
