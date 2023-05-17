@@ -1592,6 +1592,8 @@ Base_fiscalia_v14_pris_miss2 %>%
 
 <br>
 
+----
+
 # Characteristics
 
 ::: controlly 
