@@ -63,3 +63,7 @@ output:
 - [step 1](top_vs_po.html)
 
 - [Poster (idea)](pres_2023mar.html)
+
+**Update of the C1 Agreement**
+
+- [Step 1](import_c1_deduplication.html)

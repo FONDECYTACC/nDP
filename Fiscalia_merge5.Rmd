@@ -268,6 +268,9 @@ pacman::p_load(ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi, strin
 
 pacman::p_load(WeightIt, coxed, twang, survey, dbarts, jskm, adjustedCurves, pammtools, hrcomprisk, randomForestSRC, install=T, force=T)
 if(!require(AdjKM.CIF)){try(devtools::install_github("Lesly1031/AdjKM.CIF",dependencies = TRUE, force=T, upgrade="never"))}
+if(!require(RMSTSens)){try(remotes::install_github("seungjae2525/RMSTSens",dependencies = TRUE, force=T, upgrade="never"))}
+
+
 
 #Error in if (options$noisey == TRUE) message(paste("\n", options$engine, : argument is of length zero
 
@@ -1967,12 +1970,15 @@ tab1 %>%
 
 <br>
 
-# Compare Stata weights 
 
-we compared against multi-valued treatments format.
+# Sensitivity analyses
 
-::: controlly
-```{r stata1-2023, echo=T, fig.align='center', message=T, error=T, eval=T}
+```{r stata-sens}
+invisible("
+coxph(formula = as.formula(paste('Surv(yrs_to_condemn,  event_r) ~ motivodeegreso_mod_imp_rec + rcs(edad_al_ing_1,4) +', 
+     paste(setdiff(vars_cov, 'edad_al_ing_1'), collapse = '+'))), 
+     data = Base_fiscalia_v14, ties = 'efron')
+")
 
 vars <- c("tr_mod2", "sex_dum2", "edad_ini_cons", "esc1", "esc2", 
           "sus_prin2", "sus_prin3", "sus_prin4", "sus_prin5", 
@@ -1999,9 +2005,46 @@ statadf_miss          <- rio::import("mariel_feb_23_m1.dta")
 statadf_miss_pris     <- rio::import("mariel_feb_23_2_m1.dta")
 
 
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+# 
+# motivodeegreso_mod_imp_rec ~ tr_mod2+ sex_dum2+ edad_ini_cons+ esc1+ esc2+ sus_prin2+ sus_prin3+ sus_prin4+ sus_prin5+ fr_cons_sus_prin2+ fr_cons_sus_prin3+ fr_cons_sus_prin4+ fr_cons_sus_prin5+ cond_ocu2+ cond_ocu3+ cond_ocu4+ cond_ocu5+ cond_ocu6+ policonsumo+ num_hij2+ tenviv1+ tenviv2+ tenviv4+ tenviv5+ mzone2+ mzone3+ n_off_vio+ n_off_acq+ n_off_sud+ n_off_oth+ psy_com2+ psy_com3+ dep2+ rural2+ rural3+ porc_pobr+ susini2+ susini3+ susini4+ susini5+ ano_nac_corr+ cohab2+ cohab3+ cohab4+ fis_com2+ fis_com3+ rc_x1+ rc_x2+ rc_x3, data = statadf_main_cc
+
+logit3 <- glm (as.formula(paste("motivodeegreso_mod_imp_rec~", paste(vars, collapse = "+"))), data=statadf_main_cc, family=binomial(link= "logit"))
+
+# statadf_main_cc_mod_cc<-
+# dplyr::slice(statadf_main_cc,as.numeric(attr(predict(logit3, type="response"),"names")))
+
+set.seed(2125)
+W1 <- WeightIt::weightit(as.formula(paste("motivodeegreso_mod_imp_rec~", paste(vars, collapse = "+"))), data=statadf_main_cc, method = "bart", estimand = "ATE", use.mlogit = FALSE)
+statadf_main_cc$weight_mult_b <- WeightIt::get_w_from_ps(W1$weights, statadf_main_cc$motivodeegreso_mod_imp_rec, estimand = "ATE", stabilize=T)
+
+# Surv(yrs_to_condemn, event_r) ~ motivodeegreso_mod_imp_rec + 
+#     rcs(edad_al_ing_1, 4) + motivodeegreso_mod_imp_rec + tr_modality + 
+#     sex + edad_ini_cons + escolaridad_rec + sus_principal_mod + 
+#     freq_cons_sus_prin + condicion_ocupacional_corr + policonsumo + 
+#     num_hijos_mod_joel_bin + tenencia_de_la_vivienda_mod + macrozona + 
+#     n_off_vio + n_off_acq + n_off_sud + n_off_oth + dg_cie_10_rec + 
+#     dg_trs_cons_sus_or + clas_r + porc_pobr + sus_ini_mod_mvv + 
+#     ano_nac_corr + con_quien_vive_joel + fis_comorbidity_icd_10
+
+require(RMSTSens)
+results.approx2 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_main_cc,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0)), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.5), tau=3, ini.par=1, verbose=FALSE)
+invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
+results.approx2
+```
+
+# Compare Stata weights 
+
+we compared against multi-valued treatments format.
+
+::: controlly
+```{r stata1-2023, echo=T, fig.align='center', message=T, error=T, eval=T}
+
 bal_tab_2023_1<-
 cobalt::bal.tab(motivodeegreso_mod_imp_rec ~ tr_mod2+ sex_dum2+ edad_ini_cons+ esc1+ esc2+ sus_prin2+ sus_prin3+ sus_prin4+ sus_prin5+ fr_cons_sus_prin2+ fr_cons_sus_prin3+ fr_cons_sus_prin4+ fr_cons_sus_prin5+ cond_ocu2+ cond_ocu3+ cond_ocu4+ cond_ocu5+ cond_ocu6+ policonsumo+ num_hij2+ tenviv1+ tenviv2+ tenviv4+ tenviv5+ mzone2+ mzone3+ n_off_vio+ n_off_acq+ n_off_sud+ n_off_oth+ psy_com2+ psy_com3+ dep2+ rural2+ rural3+ porc_pobr+ susini2+ susini3+ susini4+ susini5+ ano_nac_corr+ cohab2+ cohab3+ cohab4+ fis_com2+ fis_com3+ rc_x1+ rc_x2+ rc_x3, data = statadf_main_cc,
-                # weights = list("RP(df=10)+ Tenure status households" = "rpdf10_m_stag_ten_viv", "RP(df=10)+ Motive of admission & No. of children"="rpdf10_m_nostag_or_ing_num_hij", "Gompertz+ Tenure status households"="gomp_m_nostag_ten_viv", "Gompertz+ Motive of admission & No. of children"="gomp_m_nostag_or_ing_num_hij", "RP(df=6)+ Tenure status households"="rpdf6_m_nostag_ten_viv", "RP(df=6)+ Motive of admission & No. of children"="rpdf6_m_nostag_or_ing_num_hij"),
+                weights = list("Beyasian Additive Regression Trees" = "W1"),#, "RP(df=10)+ Motive of admission & No. of children"="rpdf10_m_nostag_or_ing_num_hij", "Gompertz+ Tenure status households"="gomp_m_nostag_ten_viv", "Gompertz+ Motive of admission & No. of children"="gomp_m_nostag_or_ing_num_hij", "RP(df=6)+ Tenure status households"="rpdf6_m_nostag_ten_viv", "RP(df=6)+ Motive of admission & No. of children"="rpdf6_m_nostag_or_ing_num_hij"),
                 estimand = "ATE",
                 which.treat = .all,
                 un = T, 
@@ -2026,6 +2069,7 @@ invisible("0= completar; 1= no-completar;policonsumo looks not balanced, the num
 
 ::: controlly 
 ```{r stata1-5-2023, echo=T, fig.align='center', message=T, error=T, eval=T}
+
 rbind(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_1$Pair.Balance$`2 vs. 1`$Balance),
       cbind(comp="Late Dropout vs. Tr. completion",bal_tab_2023_1$Pair.Balance$`3 vs. 1`$Balance),
       cbind(comp="Late vs. Early Dropout",bal_tab_2023_1$Pair.Balance$`3 vs. 2`$Balance)) %>% 
