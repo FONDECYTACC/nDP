@@ -3551,3 +3551,131 @@ xb:mot_egr_early xb:mot_egr_late xb:tr_mod2 xb:sex_dum2 xb:edad_ini_cons xb:esc1
 <tr><td>_d_rcs_mot_egr_late1</td><td>   -.0902969</td><td>   -.1567197</td><td>   -.0238742</td><td>    .0077119</td></tr>
 <tr><td colspan=5><hr></td></tr>
 </table>
+<p>*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#: *#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#: *#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:</p>
+<h1><a href="#transform-figures-to-restricted-mean-time-lost" id="transform-figures-to-restricted-mean-time-lost">Transform figures to Restricted Mean Time Lost</a></h1>
+<pre><code>. use mariel_feb_23_m1.dta, clear 
+
+. 
+. cap noi drop rmst_h00 rmst_h11 rmst_h22
+rmst_h00 ambiguous abbreviation
+
+. 
+. gen rmtldiff_tr_comp_early_drop_lci= -rmstdiff_tr_comp_early_drop_lci
+(70,808 missing values generated)
+
+. gen rmtldiff_tr_comp_early_drop_uci= -rmstdiff_tr_comp_early_drop_uci
+(70,808 missing values generated)
+
+. gen rmtldiff_tr_comp_early_drop= -rmstdiff_tr_comp_early_drop
+(70,807 missing values generated)
+
+. gen rmtldiff_tr_comp_late_drop_lci= -rmstdiff_tr_comp_late_drop_lci
+(70,808 missing values generated)
+
+. gen rmtldiff_tr_comp_late_drop_uci= -rmstdiff_tr_comp_late_drop_uci
+(70,808 missing values generated)
+
+. gen rmtldiff_tr_comp_late_drop= -rmstdiff_tr_comp_late_drop
+(70,807 missing values generated)
+
+. gen rmtldiff_early_late_drop_lci= -rmstdiff_early_late_drop_lci
+(70,808 missing values generated)
+
+. gen rmtldiff_early_late_drop_uci= -rmstdiff_early_late_drop_uci
+(70,808 missing values generated)
+
+. gen rmtldiff_early_late_drop= -rmstdiff_early_late_drop
+(70,807 missing values generated)
+
+. 
+. twoway  (rarea rmtldiff_tr_comp_early_drop_lci rmtldiff_tr_comp_early_drop_uci tt, color(gs2%35)) ///
+&gt;                  (line rmtldiff_tr_comp_early_drop tt, lcolor(gs2)) ///
+&gt;                 (rarea rmtldiff_tr_comp_late_drop_lci rmtldiff_tr_comp_late_drop_uci tt, color(gs6%35)) ///
+&gt;                  (line rmtldiff_tr_comp_late_drop tt, lcolor(gs6)) ///
+&gt;                 (rarea rmtldiff_early_late_drop_lci rmtldiff_early_late_drop_uci tt, color(gs10%35)) ///
+&gt;                  (line rmtldiff_early_late_drop tt, lcolor(gs10)) ///                            
+&gt;                                           (line zero tt, lcolor(black%20) lwidth(thick)) ///
+&gt;          , ylabel(, format(%3.1f)) ///
+&gt;          ytitle(&quot;Difference in RMTL (years)&quot;) ///
+&gt;          xtitle(&quot;Years from baseline treatment outcome&quot;) ///
+&gt;                  legend(order( 1 &quot;Early vs. Tr. completion&quot; 3 &quot;Late vs. Tr. completion&quot; 5 &quot;Late vs. Early dropout&quot;)
+&gt;  ring(0) pos(11) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+&gt;                                  graphregion(color(white) lwidth(large)) bgcolor(white) ///
+&gt;                                  plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001
+&gt; &quot;) ///
+&gt;                  name(RMTLdiff, replace)
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+
+. graph save &quot;`c(pwd)'\_figs\h_m_ns_rp6_stdif_rmtl_m1.gph&quot;, replace
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp6_stdif_rmtl_m1.gph saved)
+
+. graph export &quot;`c(pwd)'\_figs\h_m_ns_rp6_stdif_rmtl_m1.pdf&quot;, as(pdf) replace 
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp6_stdif_rmtl_m1.pdf written in P
+&gt; DF format)
+
+</code></pre>
+<p><img src="h_m_ns_rp6_stdif_rmtl_m1.svg" width="800" ></p>
+<pre><code>. use mariel_feb_23_2_m1.dta, clear 
+
+. 
+. cap noi drop rmst_h00 rmst_h11 rmst_h22
+rmst_h00 ambiguous abbreviation
+
+. 
+. gen rmtldiff_tr_comp_early_drop_lci= -rmstdiff_tr_comp_early_drop_lci
+(70,808 missing values generated)
+
+. gen rmtldiff_tr_comp_early_drop_uci= -rmstdiff_tr_comp_early_drop_uci
+(70,808 missing values generated)
+
+. gen rmtldiff_tr_comp_early_drop= -rmstdiff_tr_comp_early_drop
+(70,807 missing values generated)
+
+. gen rmtldiff_tr_comp_late_drop_lci= -rmstdiff_tr_comp_late_drop_lci
+(70,808 missing values generated)
+
+. gen rmtldiff_tr_comp_late_drop_uci= -rmstdiff_tr_comp_late_drop_uci
+(70,808 missing values generated)
+
+. gen rmtldiff_tr_comp_late_drop= -rmstdiff_tr_comp_late_drop
+(70,807 missing values generated)
+
+. gen rmtldiff_early_late_drop_lci= -rmstdiff_early_late_drop_lci
+(70,808 missing values generated)
+
+. gen rmtldiff_early_late_drop_uci= -rmstdiff_early_late_drop_uci
+(70,808 missing values generated)
+
+. gen rmtldiff_early_late_drop= -rmstdiff_early_late_drop
+(70,807 missing values generated)
+
+. 
+. twoway  (rarea rmtldiff_tr_comp_early_drop_lci rmtldiff_tr_comp_early_drop_uci tt, color(gs2%35)) ///
+&gt;                  (line rmtldiff_tr_comp_early_drop tt, lcolor(gs2)) ///
+&gt;                 (rarea rmtldiff_tr_comp_late_drop_lci rmtldiff_tr_comp_late_drop_uci tt, color(gs6%35)) ///
+&gt;                  (line rmtldiff_tr_comp_late_drop tt, lcolor(gs6)) ///
+&gt;                 (rarea rmtldiff_early_late_drop_lci rmtldiff_early_late_drop_uci tt, color(gs10%35)) ///
+&gt;                  (line rmtldiff_early_late_drop tt, lcolor(gs10)) ///                            
+&gt;                                           (line zero tt, lcolor(black%20) lwidth(thick)) ///
+&gt;          , ylabel(, format(%3.1f)) ///
+&gt;          ytitle(&quot;Difference in RMTL (years)&quot;) ///
+&gt;          xtitle(&quot;Years from baseline treatment outcome&quot;) ///
+&gt;                  legend(order( 1 &quot;Early vs. Tr. completion&quot; 3 &quot;Late vs. Tr. completion&quot; 5 &quot;Late vs. Early dropout&quot;)
+&gt;  ring(0) pos(11) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+&gt;                                  graphregion(color(white) lwidth(large)) bgcolor(white) ///
+&gt;                                  plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 &quot;IR = &lt;0.001
+&gt; &quot;) ///
+&gt;                  name(RMTLdiff, replace)
+(note:  named style large not found in class linewidth, default attributes used)
+(note:  linewidth not found in scheme, default attributes used)
+
+. graph save &quot;`c(pwd)'\_figs\h_m_ns_rp6_stdif_rmtl_pris_m1.gph&quot;, replace
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp6_stdif_rmtl_pris_m1.gph saved)
+
+. graph export &quot;`c(pwd)'\_figs\h_m_ns_rp6_stdif_rmtl_pris_m1.pdf&quot;, as(pdf) replace 
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\h_m_ns_rp6_stdif_rmtl_pris_m1.pdf written
+&gt;  in PDF format)
+
+</code></pre>
+<p><img src="h_m_ns_rp6_stdif_rmtl_pris_m1.svg" width="800" ></p>

@@ -1614,7 +1614,7 @@ as.data.frame.TableOne <- function(x, ...) {capture.output(print(x,
   y}
 
 tbone_desc_merge5<-
-CreateTableOne(vars=c(setdiff(vars_cov, "motivodeegreso_mod_imp_rec"), "offender_d"), data=  subset(Base_fiscalia_v14, select=c(vars_cov, "offender_d")), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr")), smd=T, strata="motivodeegreso_mod_imp_rec", addOverall = T, includeNA=T, test=T)
+CreateTableOne(vars=c(setdiff(vars_cov, "motivodeegreso_mod_imp_rec"), "offender_d"), data=  subset(Base_fiscalia_v14, select=c(vars_cov, "offender_d"), subset=!is.na(motivodeegreso_mod_imp_rec)), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr")), smd=T, strata="motivodeegreso_mod_imp_rec", addOverall = T, includeNA=T, test=T)
 
 as.data.frame.TableOne(tbone_desc_merge5, smd=T, nonnormal= T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -1635,23 +1635,34 @@ as.data.frame.TableOne(tbone_desc_merge5, smd=T, nonnormal= T)%>%
 # Treatment status (Early dropout/Late dropout/Treatment completion) 
 
 tbone_desc_merge52<-
-CreateTableOne(vars=c(setdiff(vars_cov, "motivodeegreso_mod_imp_rec"), "offender_d"), data=  subset(Base_fiscalia_v14_pris, select=c(vars_cov, "offender_d")), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr")), smd=T, strata="motivodeegreso_mod_imp_rec", addOverall = T, includeNA=T, test=T)
+CreateTableOne(vars=c(setdiff(vars_cov, "motivodeegreso_mod_imp_rec"), "offender_d"), data=  subset(Base_fiscalia_v14, select=c(vars_cov, "offender_d"), subset=!is.na(motivodeegreso_mod_imp_rec)), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr")), smd=T, strata="motivodeegreso_mod_imp_rec", addOverall = T, includeNA=T, test=T)
 
-as.data.frame.TableOne(tbone_desc_merge52, smd=T, nonnormal= T)%>% 
+tbone_desc_merge53<-
+CreateTableOne(vars=c(setdiff(vars_cov, "motivodeegreso_mod_imp_rec"), "offender_d"), data=  subset(Base_fiscalia_v14_pris, select=c(vars_cov, "offender_d"), subset=!is.na(motivodeegreso_mod_imp_rec)), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr")), smd=T, strata="motivodeegreso_mod_imp_rec", addOverall = T, includeNA=T, test=T)
+
+bind_rows(
+(as.data.frame.TableOne(tbone_desc_merge52, smd=T, nonnormal= T)%>% 
   dplyr::mutate(char2=`characteristic`) %>% 
   tidyr::fill(char2) %>% 
   dplyr::select(char2,everything()) %>% 
   dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
   dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
-  format_cells(1, 1:length(names(.)), "bold") %>%
+  format_cells(1, 1:length(names(.)), "bold")),
+subset(as.data.frame.TableOne(tbone_desc_merge53, smd=T, nonnormal= T),subset= grepl("offender",characteristic))) %>% 
   dplyr::select(-1) %>% 
-  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, Imprisonment(1), Found as an imputed (YES), by Baseline Treatment Status", escape=T)
-#kable(size=10, format="html",caption= "Summary descriptives, by Baseline Treatment Status") %>%     kableExtra::kable_classic()
+  rio::export("tableone_grant_22_23.xlsx")
 
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 if(no_mostrar==0){
-CreateTableOne(vars=c(setdiff(vars_cov, "motivodeegreso_mod_imp_rec"), "offender_d"), data=  subset(Base_fiscalia_v14, select=c(vars_cov, "offender_d")), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr")), smd=T, strata="motivodeegreso_mod_imp_rec", addOverall = T, includeNA=T, test=T)  
+Base_fiscalia_v14_filt<- subset(Base_fiscalia_v14, select=c(vars_cov, "offender_d"), subset=!is.na(motivodeegreso_mod_imp_rec))
+Base_fiscalia_v14_pris_filt<- subset(Base_fiscalia_v14_pris, select=c(vars_cov, "offender_d"), subset=!is.na(motivodeegreso_mod_imp_rec))
+
   
-Base_fiscalia_v14%>% 
+CreateTableOne(vars=c(setdiff(vars_cov, "motivodeegreso_mod_imp_rec"), "offender_d"), data=  Base_fiscalia_v14_filt, factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr")), smd=T, strata="motivodeegreso_mod_imp_rec", addOverall = T, includeNA=T, test=T)  
+  
+Base_fiscalia_v14_filt%>% 
     dplyr::select(setdiff(vars_cov, c("edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr"))) %>% 
     tidyr::gather(variable,measure, -motivodeegreso_mod_imp_rec) %>% 
     dplyr::group_by(variable) %>%
@@ -1660,39 +1671,39 @@ Base_fiscalia_v14%>%
     dplyr::mutate(statistic=sprintf("%2.0f",statistic)) %>% 
     dplyr::mutate(report=paste0("X²(",parameter,", ",nrow(Base_fiscalia_v14),")=",statistic,"; p", ifelse(p.value=="<0.001",p.value, paste0("=",p.value)))) %>%
     dplyr::mutate(report=sub("0\\.","0,",sub("\\.",",",report))) %>% 
-    rio::export("results.xlsx")
+    rio::export("tableone_grant_22_23_3.xlsx")
 
- chisq.test(Base_fiscalia_v14$motivodeegreso_mod_imp_rec, is.na(Base_fiscalia_v14$offender_d)) 
- chisq.test(Base_fiscalia_v14_pris$motivodeegreso_mod_imp_rec, is.na(Base_fiscalia_v14_pris$offender_d)) 
+ chisq.test(Base_fiscalia_v14_filt$motivodeegreso_mod_imp_rec, is.na(Base_fiscalia_v14_filt$offender_d)) 
+ chisq.test(Base_fiscalia_v14_filt$motivodeegreso_mod_imp_rec, is.na(Base_fiscalia_v14_filt$offender_d)) 
 
-Base_fiscalia_v14 %>% 
+Base_fiscalia_v14_filt %>% 
     dplyr::select(setdiff(vars_cov, c("edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr"))) %>% 
     tidyr::gather(variable,measure, -motivodeegreso_mod_imp_rec) %>% 
     dplyr::group_by(variable) %>%
     dplyr::do(fisher.test(.$motivodeegreso_mod_imp_rec, .$measure, workspace = 2e10, simulate.p.value = T, B=1e5) %>% broom::tidy()) %>% 
-    rio::export("results2.xlsx")
+    rio::export("tableone_grant_22_23_2.xlsx")
 
-fisher.test(Base_fiscalia_v14$motivodeegreso_mod_imp_rec, 
-            is.na(Base_fiscalia_v14$offender_d), workspace = 2e10, simulate.p.value = T, B=1e5) 
-fisher.test(Base_fiscalia_v14_pris$motivodeegreso_mod_imp_rec, 
-            is.na(Base_fiscalia_v14_pris$offender_d), workspace = 2e10, simulate.p.value = T, B=1e5) 
+fisher.test(Base_fiscalia_v14_filt$motivodeegreso_mod_imp_rec, 
+            is.na(Base_fiscalia_v14_filt$offender_d), workspace = 2e10, simulate.p.value = T, B=1e5) 
+fisher.test(Base_fiscalia_v14_pris_filt$motivodeegreso_mod_imp_rec, 
+            is.na(Base_fiscalia_v14_pris_filt$offender_d), workspace = 2e10, simulate.p.value = T, B=1e5) 
 
 # Kurksal Wallis
-paste0("H(",kruskal.test(edad_al_ing_1 ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$parameter,")=",
-       round(kruskal.test(edad_al_ing_1 ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$statistic,1), ", p=",
-       round(kruskal.test(edad_al_ing_1 ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$p.value,3))
+paste0("H(",kruskal.test(edad_al_ing_1 ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$parameter,")=",
+       round(kruskal.test(edad_al_ing_1 ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$statistic,1), ", p=",
+       round(kruskal.test(edad_al_ing_1 ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$p.value,3))
 
-paste0("H(",kruskal.test(edad_ini_cons ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$parameter,")=",
-       round(kruskal.test(edad_ini_cons ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$statistic,1), ", p=",
-       round(kruskal.test(edad_ini_cons ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$p.value,3)) 
+paste0("H(",kruskal.test(edad_ini_cons ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$parameter,")=",
+       round(kruskal.test(edad_ini_cons ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$statistic,1), ", p=",
+       round(kruskal.test(edad_ini_cons ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$p.value,3)) 
 
-paste0("H(",kruskal.test(ano_nac_corr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$parameter,")=",
-       round(kruskal.test(ano_nac_corr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$statistic,1), ", p=",
-       round(kruskal.test(ano_nac_corr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$p.value,3)) 
+paste0("H(",kruskal.test(ano_nac_corr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$parameter,")=",
+       round(kruskal.test(ano_nac_corr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$statistic,1), ", p=",
+       round(kruskal.test(ano_nac_corr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$p.value,3)) 
 
-paste0("H(",kruskal.test(porc_pobr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$parameter,")=",
-       round(kruskal.test(porc_pobr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$statistic,1), ", p=",
-       round(kruskal.test(porc_pobr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14)$p.value,3)) 
+paste0("H(",kruskal.test(porc_pobr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$parameter,")=",
+       round(kruskal.test(porc_pobr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$statistic,1), ", p=",
+       round(kruskal.test(porc_pobr ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$p.value,3)) 
 }
 ```
 :::
@@ -1709,34 +1720,35 @@ rmst_imp_diff<-rvest::read_html("rmst_condsent_m1_main_diff.html") %>% rvest::ht
 prob_imp_tab<-
 prob_imp %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
   dplyr::mutate_at(2:ncol(.), ~sprintf("%1.1f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
-  dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
+  dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>%
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 prob_imp_diff_tab<-
 prob_imp_diff %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
   dplyr::mutate_at(2:ncol(.), ~sprintf("%1.1f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
   dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths")) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 rmst_imp_tab<-
 rmst_imp %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
-  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci= paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci= paste0(Late," (", Late_lci,",",Late_uci,")")) %>%
+  dplyr::mutate(t=readr::parse_number(Var.1)) %>% 
+  dplyr::mutate_at(2:(ncol(.)-1), ~sprintf("%1.3f",t-readr::parse_number(.))) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_uci,",",Comp_lci,")"), Early_ci= paste0(Early," (", Early_uci,",",Early_lci,")"), Late_ci= paste0(Late," (", Late_uci,",",Late_lci,")")) %>%
   dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 rmst_imp_diff_tab<-
 rmst_imp_diff %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
-  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",-readr::parse_number(.))) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
   dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths")) 
 
-rbindlist(list(list(c("Probs.",rep("",6))),cbind.data.frame(prob_imp_tab,prob_imp_diff_tab[,-1]),
-               list(c("RMST",rep("",6))), cbind.data.frame(rmst_imp_tab,rmst_imp_diff_tab[,-1])), fill=T) %>% 
+rbindlist(list(list(c("Probs.",rep("",0))),cbind.data.frame(prob_imp_tab,prob_imp_diff_tab[,-1]),
+               list(c("RMTL",rep("",0))), cbind.data.frame(rmst_imp_tab,rmst_imp_diff_tab[,-1])), fill=T) %>% 
     #dplyr::slice(-2,-3,-4,-5,-6,-7,-14,-15,-16,-17,-18,-19) %>%        
   dplyr::filter(nchar(Time)>=2) %>% 
   #knitr::kable("markdown", size=3, col.names= c("Time", "Complete Tr.","Late Disch.", "Early Disch.", "Comp. vs Late", "Comp. vs Early", "Early vs Late"), caption= "Offending with Condemnatory Sentence")
@@ -1756,32 +1768,35 @@ rmst_imp_diff_pris<-rvest::read_html("rmst_prison_m1_main_diff.html") %>% rvest:
 prob_imp_pris_tab<-
 prob_imp_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
   dplyr::mutate_at(2:ncol(.), ~sprintf("%1.1f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
   dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 prob_imp_diff_pris_tab<-
 prob_imp_diff_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
   dplyr::mutate_at(2:ncol(.), ~sprintf("%1.1f",readr::parse_number(.))) %>%
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
   dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths")) 
 
 rmst_imp_pris_tab<-
 rmst_imp_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
-  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci= paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci= paste0(Late," (", Late_lci,",",Late_uci,")")) %>%
+  dplyr::mutate(t=readr::parse_number(Var.1)) %>% 
+  dplyr::mutate_at(2:(ncol(.)-1), ~sprintf("%1.3f",t-readr::parse_number(.))) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_uci,",",Comp_lci,")"), Early_ci= paste0(Early," (", Early_uci,",",Early_lci,")"), Late_ci= paste0(Late," (", Late_uci,",",Late_lci,")")) %>%
   dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 rmst_imp_diff_pris_tab<-
 rmst_imp_diff_pris %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
-  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",-readr::parse_number(.))) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
   dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
-rbindlist(list(list(c("Probs.",rep("",6))),cbind.data.frame(prob_imp_pris_tab,prob_imp_diff_pris_tab[,-1]), list(c("RMST",rep("",6))), cbind.data.frame(rmst_imp_pris_tab,rmst_imp_diff_pris_tab[,-1])), fill=T) %>% 
+rbindlist(
+  list(list(c("Probs.",rep("",0))),cbind.data.frame(prob_imp_pris_tab,prob_imp_diff_pris_tab[,-1]),   list(c("RMTL",rep("",0))),cbind.data.frame(rmst_imp_pris_tab,rmst_imp_diff_pris_tab[,-1])), 
+          fill=T) %>% 
     dplyr::filter(nchar(Time)>=2)  %>% #%>% rio::export("_tab_mariel_results.xlsx")
 kbl(format = 'markdown',
         escape = FALSE,
@@ -1800,34 +1815,36 @@ rmst_imp_diff_cc<-rvest::read_html("rmst_condsent_m0_main_diff.html") %>% rvest:
 prob_imp_tab_cc<-
 prob_imp_cc %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
   dplyr::mutate_at(2:ncol(.), ~sprintf("%1.1f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
   dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 prob_imp_diff_tab_cc<-
 prob_imp_diff_cc %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
   dplyr::mutate_at(2:ncol(.), ~sprintf("%1.1f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
   dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths")) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 rmst_imp_tab_cc<-
 rmst_imp_cc %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
-  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci= paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci= paste0(Late," (", Late_lci,",",Late_uci,")")) %>%
+  dplyr::mutate(t=readr::parse_number(Var.1)) %>% 
+  dplyr::mutate_at(2:(ncol(.)-1), ~sprintf("%1.3f",t-readr::parse_number(.))) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_uci,",",Comp_lci,")"), Early_ci= paste0(Early," (", Early_uci,",",Early_lci,")"), Late_ci= paste0(Late," (", Late_uci,",",Late_lci,")")) %>%
   dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 rmst_imp_diff_tab_cc<-
 rmst_imp_diff_cc %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
-  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",-readr::parse_number(.))) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
   dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths")) 
 
-rbindlist(list(list(c("Probs.",rep("",6))),cbind.data.frame(prob_imp_tab_cc,prob_imp_diff_tab_cc[,-1]),
-               list(c("RMST",rep("",6))), cbind.data.frame(rmst_imp_tab_cc,rmst_imp_diff_tab_cc[,-1])), fill=T) %>% 
+rbindlist(
+  list(list(c("Probs.",rep("",0))),cbind.data.frame(prob_imp_tab_cc,prob_imp_diff_tab_cc[,-1]),
+  list(c("RMTL",rep("",0))), cbind.data.frame(rmst_imp_tab_cc,rmst_imp_diff_tab_cc[,-1])), fill=T)%>% 
     #dplyr::slice(-2,-3,-4,-5,-6,-7,-14,-15,-16,-17,-18,-19) %>%        
   dplyr::filter(nchar(Time)>=2) %>% 
   #knitr::kable("markdown", size=3, col.names= c("Time", "Complete Tr.","Late Disch.", "Early Disch.", "Comp. vs Late", "Comp. vs Early", "Early vs Late"), caption= "Offending with Condemnatory Sentence")
@@ -1846,32 +1863,36 @@ rmst_imp_diff_pris_cc<-rvest::read_html("rmst_prison_m0_main_diff.html") %>% rve
 prob_imp_pris_tab_cc<-
 prob_imp_pris_cc %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
   dplyr::mutate_at(2:ncol(.), ~sprintf("%1.1f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci = paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci = paste0(Late," (", Late_lci,",",Late_uci,")")) %>% 
   dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 prob_imp_diff_pris_tab_cc<-
 prob_imp_diff_pris_cc %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
   dplyr::mutate_at(2:ncol(.), ~sprintf("%1.1f",readr::parse_number(.))) %>%
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
   dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths")) 
 
 rmst_imp_pris_tab_cc<-
 rmst_imp_pris_cc %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
-  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_lci,",",Comp_uci,")"), Early_ci= paste0(Early," (", Early_lci,",",Early_uci,")"), Late_ci= paste0(Late," (", Late_lci,",",Late_uci,")")) %>%
-  dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>% 
-  dplyr::filter(!Time %in% c("3_mths","6_mths"))
+  plyr::mutate(t=readr::parse_number(Var.1)) %>% 
+dplyr::mutate_at(2:(ncol(.)-1), ~sprintf("%1.3f",t-readr::parse_number(.))) %>% 
+     dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_ci= paste0(Comp," (", Comp_uci,",",Comp_lci,")"), Early_ci= paste0(Early," (", Early_uci,",",Early_lci,")"), Late_ci= paste0(Late," (", Late_uci,",",Late_lci,")")) %>%
+     dplyr::select(Time, Comp_ci, Late_ci, Early_ci) %>% 
+     dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
 rmst_imp_diff_pris_tab_cc<-
 rmst_imp_diff_pris_cc %>% as.data.table() %>% janitor::row_to_names(3) %>% data.frame() %>% 
-  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",readr::parse_number(.))) %>% 
-  dplyr::rename("Time" = 1) %>% slice(2:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
+  dplyr::mutate_at(2:ncol(.), ~sprintf("%1.3f",-readr::parse_number(.))) %>% 
+  dplyr::rename("Time" = 1) %>% slice(5:6) %>% mutate(Comp_Early_ci= paste0(Comp_Early," (", Comp_Early_lci,",",Comp_Early_uci,")"), Comp_Late_ci = paste0(Comp_Late," (", Comp_Late_lci,",",Comp_Late_uci,")"), Early_Late_ci = paste0(Early_Late," (", Early_Late_lci,",",Early_Late_uci,")")) %>% 
   dplyr::select(Time, Comp_Late_ci, Comp_Early_ci, Early_Late_ci) %>% 
   dplyr::filter(!Time %in% c("3_mths","6_mths"))
 
-rbindlist(list(list(c("Probs.",rep("",6))),cbind.data.frame(prob_imp_pris_tab_cc,prob_imp_diff_pris_tab_cc[,-1]), list(c("RMST",rep("",6))), cbind.data.frame(rmst_imp_pris_tab_cc,rmst_imp_diff_pris_tab_cc[,-1])), fill=T) %>% 
+rbindlist(
+  list(list(c("Probs.",rep("",0))),cbind.data.frame(prob_imp_pris_tab_cc,prob_imp_diff_pris_tab_cc[,-1]), 
+  list(c("RMTL",rep("",0))),cbind.data.frame(rmst_imp_pris_tab_cc,rmst_imp_diff_pris_tab_cc[,-1])),
+  fill=T) %>% 
     dplyr::filter(nchar(Time)>=2)  %>% #rio::export("_tab_mariel_results.xlsx")
 kbl(format = 'markdown',
         escape = FALSE,
@@ -1905,6 +1926,15 @@ fig2 <- image_read_pdf('h_m_ns_rp6_stdif_rmst_m1.pdf')%>%
                    boxcolor = "transparent", 
                    font = "Arial", 
                    strokecolor = "black")
+fig2rmtl <- image_read_pdf('_figs/h_m_ns_rp6_stdif_rmtl_m1.pdf')%>%
+    image_border("white", "80x20")%>%
+    image_annotate("B)", 
+                   location = "+18+0", 
+                   size = 35, 
+                   gravity = "northwest", 
+                   boxcolor = "transparent", 
+                   font = "Arial", 
+                   strokecolor = "black")
 fig3 <- image_read_pdf('h_m_ns_rp6_stdif_s2_pris_m1.pdf')%>%
     image_border("white", "80x20")%>%
     image_annotate("C)", 
@@ -1923,12 +1953,25 @@ fig4 <- image_read_pdf('h_m_ns_rp6_stdif_rmst_pris_m1.pdf')%>%
                    boxcolor = "transparent", 
                    font = "Arial", 
                    strokecolor = "black")
+fig4rmtl <- image_read_pdf('_figs/h_m_ns_rp6_stdif_rmtl_pris_m1.pdf')%>%
+    image_border("white", "80x20")%>%
+    image_annotate("D)", 
+                   location = "+18+0", 
+                   size = 35, 
+                   gravity = "northwest", 
+                   boxcolor = "transparent", 
+                   font = "Arial", 
+                   strokecolor = "black")
 #https://fondecytacc.github.io/nDP/analisis_mariel_feb_2023_stata_m1.html
 #https://fondecytacc.github.io/nDP/analisis_mariel_feb_2023_stata_pris_m1.html
 #ggsave(plot= p4,filename= "./_figs/SER2023_test.jpg", dpi=740, height = 16*0.7, width =20*0.7)
 image_montage(c(fig1, fig2, fig3, fig4), tile = '2x2', geometry = 'x500', gravity = "Center")#
 image_write(image_montage(c(fig1, fig2, fig3, fig4), tile = '2x2', geometry = 'x500', gravity = "Center"), path = "montage.png", format = "png", density = "300x300")
 image_write(image_montage(c(fig1, fig2, fig3, fig4), tile = '2x2', geometry = 'x500', gravity = "Center"), path = "montage.pdf", format = "pdf", density = "300x300")
+
+image_montage(c(fig1, fig2rmtl, fig3, fig4rmtl), tile = '2x2', geometry = 'x500', gravity = "Center")#
+image_write(image_montage(c(fig1, fig2rmtl, fig3, fig4rmtl), tile = '2x2', geometry = 'x500', gravity = "Center"), path = "montage_rmtl.png", format = "png", density = "300x300")
+image_write(image_montage(c(fig1, fig2rmtl, fig3, fig4rmtl), tile = '2x2', geometry = 'x500', gravity = "Center"), path = "montage_rmtl.pdf", format = "pdf", density = "300x300")
 
 ```
 
@@ -1967,9 +2010,7 @@ tab1 %>%
 ```
 :::
 
-
 <br>
-
 
 # Sensitivity analyses
 
@@ -1993,17 +2034,17 @@ vars <- c("tr_mod2", "sex_dum2", "edad_ini_cons", "esc1", "esc2",
 
 statadf_main          <- rio::import("mariel_feb_23.dta")
 statadf_main_cc       <-  statadf_main[complete.cases(statadf_main[, c(vars,"motivodeegreso_mod_imp_rec")]),] %>% dplyr::mutate(motivodeegreso_mod_imp_rec=factor(motivodeegreso_mod_imp_rec)) #%>% dplyr::mutate(across(vars,~factor(.)))
-statadf_main_l        <- rio::import("mariel_feb_23_late.dta")
-statadf_main_e        <- rio::import("mariel_feb_23_early.dta")
-statadf_main_e_l      <- rio::import("mariel_feb_23_early_late.dta")
+# statadf_main_l        <- rio::import("mariel_feb_23_late.dta")
+# statadf_main_e        <- rio::import("mariel_feb_23_early.dta")
+# statadf_main_e_l      <- rio::import("mariel_feb_23_early_late.dta")
 
 statadf_main_pris     <- rio::import("mariel_feb_23_2.dta")
-statadf_main_pris_l   <- rio::import("mariel_feb_23_2_late.dta")
-statadf_main_pris_e   <- rio::import("mariel_feb_23_2_early.dta")
-statadf_main_pris_e_l <- rio::import("mariel_feb_23_2_early_late.dta")
-statadf_miss          <- rio::import("mariel_feb_23_m1.dta")
-statadf_miss_pris     <- rio::import("mariel_feb_23_2_m1.dta")
-
+statadf_main_pris_cc  <- statadf_main_pris[complete.cases(statadf_main_pris[, c(vars,"motivodeegreso_mod_imp_rec")]),] %>% dplyr::mutate(motivodeegreso_mod_imp_rec=factor(motivodeegreso_mod_imp_rec)) 
+# statadf_main_pris_l   <- rio::import("mariel_feb_23_2_late.dta")
+# statadf_main_pris_e   <- rio::import("mariel_feb_23_2_early.dta")
+# statadf_main_pris_e_l <- rio::import("mariel_feb_23_2_early_late.dta")
+statadf_miss          <- rio::import("mariel_feb_23_m1.dta")%>% dplyr::mutate(motivodeegreso_mod_imp_rec=factor(motivodeegreso_mod_imp_rec)) #%>%
+statadf_miss_pris     <- rio::import("mariel_feb_23_2_m1.dta")%>% dplyr::mutate(motivodeegreso_mod_imp_rec=factor(motivodeegreso_mod_imp_rec)) #%>%
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -2011,14 +2052,12 @@ statadf_miss_pris     <- rio::import("mariel_feb_23_2_m1.dta")
 # 
 # motivodeegreso_mod_imp_rec ~ tr_mod2+ sex_dum2+ edad_ini_cons+ esc1+ esc2+ sus_prin2+ sus_prin3+ sus_prin4+ sus_prin5+ fr_cons_sus_prin2+ fr_cons_sus_prin3+ fr_cons_sus_prin4+ fr_cons_sus_prin5+ cond_ocu2+ cond_ocu3+ cond_ocu4+ cond_ocu5+ cond_ocu6+ policonsumo+ num_hij2+ tenviv1+ tenviv2+ tenviv4+ tenviv5+ mzone2+ mzone3+ n_off_vio+ n_off_acq+ n_off_sud+ n_off_oth+ psy_com2+ psy_com3+ dep2+ rural2+ rural3+ porc_pobr+ susini2+ susini3+ susini4+ susini5+ ano_nac_corr+ cohab2+ cohab3+ cohab4+ fis_com2+ fis_com3+ rc_x1+ rc_x2+ rc_x3, data = statadf_main_cc
 
-logit3 <- glm (as.formula(paste("motivodeegreso_mod_imp_rec~", paste(vars, collapse = "+"))), data=statadf_main_cc, family=binomial(link= "logit"))
-
-# statadf_main_cc_mod_cc<-
-# dplyr::slice(statadf_main_cc,as.numeric(attr(predict(logit3, type="response"),"names")))
-
 set.seed(2125)
-W1 <- WeightIt::weightit(as.formula(paste("motivodeegreso_mod_imp_rec~", paste(vars, collapse = "+"))), data=statadf_main_cc, method = "bart", estimand = "ATE", use.mlogit = FALSE)
-statadf_main_cc$weight_mult_b <- WeightIt::get_w_from_ps(W1$weights, statadf_main_cc$motivodeegreso_mod_imp_rec, estimand = "ATE", stabilize=T)
+W1 <- WeightIt::weightit(as.formula(paste("motivodeegreso_mod_imp_rec~", paste(vars, collapse = "+"))), data=statadf_miss, method = "bart", estimand = "ATE", use.mlogit = FALSE)
+statadf_miss$weight_mult_b <- WeightIt::get_w_from_ps(W1$weights, statadf_miss$motivodeegreso_mod_imp_rec, estimand = "ATE", stabilize=T)
+set.seed(2125)
+W2 <- WeightIt::weightit(as.formula(paste("motivodeegreso_mod_imp_rec~", paste(vars, collapse = "+"))), data=statadf_miss_pris, method = "bart", estimand = "ATE", use.mlogit = FALSE)
+statadf_miss_pris$weight_mult_b <- WeightIt::get_w_from_ps(W2$weights, statadf_miss_pris$motivodeegreso_mod_imp_rec, estimand = "ATE", stabilize=T)
 
 # Surv(yrs_to_condemn, event_r) ~ motivodeegreso_mod_imp_rec + 
 #     rcs(edad_al_ing_1, 4) + motivodeegreso_mod_imp_rec + tr_modality + 
@@ -2028,38 +2067,43 @@ statadf_main_cc$weight_mult_b <- WeightIt::get_w_from_ps(W1$weights, statadf_mai
 #     n_off_vio + n_off_acq + n_off_sud + n_off_oth + dg_cie_10_rec + 
 #     dg_trs_cons_sus_or + clas_r + porc_pobr + sus_ini_mod_mvv + 
 #     ano_nac_corr + con_quien_vive_joel + fis_comorbidity_icd_10
-
-require(RMSTSens)
-results.approx2 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_main_cc,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0)), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.5), tau=3, ini.par=1, verbose=FALSE)
-invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
-results.approx2
 ```
-
-# Compare Stata weights 
-
-we compared against multi-valued treatments format.
 
 ::: controlly
 ```{r stata1-2023, echo=T, fig.align='center', message=T, error=T, eval=T}
 
-bal_tab_2023_1<-
-cobalt::bal.tab(motivodeegreso_mod_imp_rec ~ tr_mod2+ sex_dum2+ edad_ini_cons+ esc1+ esc2+ sus_prin2+ sus_prin3+ sus_prin4+ sus_prin5+ fr_cons_sus_prin2+ fr_cons_sus_prin3+ fr_cons_sus_prin4+ fr_cons_sus_prin5+ cond_ocu2+ cond_ocu3+ cond_ocu4+ cond_ocu5+ cond_ocu6+ policonsumo+ num_hij2+ tenviv1+ tenviv2+ tenviv4+ tenviv5+ mzone2+ mzone3+ n_off_vio+ n_off_acq+ n_off_sud+ n_off_oth+ psy_com2+ psy_com3+ dep2+ rural2+ rural3+ porc_pobr+ susini2+ susini3+ susini4+ susini5+ ano_nac_corr+ cohab2+ cohab3+ cohab4+ fis_com2+ fis_com3+ rc_x1+ rc_x2+ rc_x3, data = statadf_main_cc,
-                weights = list("Beyasian Additive Regression Trees" = "W1"),#, "RP(df=10)+ Motive of admission & No. of children"="rpdf10_m_nostag_or_ing_num_hij", "Gompertz+ Tenure status households"="gomp_m_nostag_ten_viv", "Gompertz+ Motive of admission & No. of children"="gomp_m_nostag_or_ing_num_hij", "RP(df=6)+ Tenure status households"="rpdf6_m_nostag_ten_viv", "RP(df=6)+ Motive of admission & No. of children"="rpdf6_m_nostag_or_ing_num_hij"),
+bal_tab_2023_res_1<-
+cobalt::bal.tab(motivodeegreso_mod_imp_rec ~ tr_mod2+ sex_dum2+ edad_ini_cons+ esc1+ esc2+ sus_prin2+ sus_prin3+ sus_prin4+ sus_prin5+ fr_cons_sus_prin2+ fr_cons_sus_prin3+ fr_cons_sus_prin4+ fr_cons_sus_prin5+ cond_ocu2+ cond_ocu3+ cond_ocu4+ cond_ocu5+ cond_ocu6+ policonsumo+ num_hij2+ tenviv1+ tenviv2+ tenviv4+ tenviv5+ mzone2+ mzone3+ n_off_vio+ n_off_acq+ n_off_sud+ n_off_oth+ psy_com2+ psy_com3+ dep2+ rural2+ rural3+ porc_pobr+ susini2+ susini3+ susini4+ susini5+ ano_nac_corr+ cohab2+ cohab3+ cohab4+ fis_com2+ fis_com3+ rc_x1+ rc_x2+ rc_x3, data = statadf_miss,
+                weights = list("Beyasian Additive Regression Trees" = "weight_mult_b"),
                 estimand = "ATE",
                 which.treat = .all,
                 un = T, 
                 thresholds = c(cor = .2),
                  binary = "std", continuous = "std",
                 stats = c("mean.diffs", "variance.ratios"))
-invisible("Error: The treatment must have at least two unique values.")
 
-rbind(data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_1$Pair.Balance$`2 vs. 1`$Balance), keep.rownames=T),
-      data.table::data.table(cbind(comp="Late Dropout vs. Tr. completion",bal_tab_2023_1$Pair.Balance$`3 vs. 1`$Balance), keep.rownames=T),
-      data.table::data.table(cbind(comp="Late vs. Early Dropout",bal_tab_2023_1$Pair.Balance$`3 vs. 2`$Balance), keep.rownames=T)) %>% 
-  data.table::data.table(keep.rownames = T) %>% 
-  dplyr::select(comp, rn, everything()) %>% 
+bal_tab_2023_res_2<-
+cobalt::bal.tab(motivodeegreso_mod_imp_rec ~ tr_mod2+ sex_dum2+ edad_ini_cons+ esc1+ esc2+ sus_prin2+ sus_prin3+ sus_prin4+ sus_prin5+ fr_cons_sus_prin2+ fr_cons_sus_prin3+ fr_cons_sus_prin4+ fr_cons_sus_prin5+ cond_ocu2+ cond_ocu3+ cond_ocu4+ cond_ocu5+ cond_ocu6+ policonsumo+ num_hij2+ tenviv1+ tenviv2+ tenviv4+ tenviv5+ mzone2+ mzone3+ n_off_vio+ n_off_acq+ n_off_sud+ n_off_oth+ psy_com2+ psy_com3+ dep2+ rural2+ rural3+ porc_pobr+ susini2+ susini3+ susini4+ susini5+ ano_nac_corr+ cohab2+ cohab3+ cohab4+ fis_com2+ fis_com3+ rc_x1+ rc_x2+ rc_x3, data = statadf_miss_pris,
+                weights = list("Beyasian Additive Regression Trees" = "weight_mult_b"),
+                estimand = "ATE",
+                which.treat = .all,
+                un = T, 
+                thresholds = c(cor = .2),
+                 binary = "std", continuous = "std",
+                stats = c("mean.diffs", "variance.ratios"))
+
+cbind.data.frame(type=c(rep("Cond. sentence",3), rep("Imprisonment",3)),
+rbind(data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_res_1$Pair.Balance$`2 vs. 1`$Balance), keep.rownames=T),
+      data.table::data.table(cbind(comp="Late Dropout vs. Tr. completion",bal_tab_2023_res_1$Pair.Balance$`3 vs. 1`$Balance), keep.rownames=T),
+      data.table::data.table(cbind(comp="Late vs. Early Dropout",bal_tab_2023_res_1$Pair.Balance$`3 vs. 2`$Balance), keep.rownames=T),
+      data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_res_2$Pair.Balance$`2 vs. 1`$Balance), keep.rownames=T),
+      data.table::data.table(cbind(comp="Late Dropout vs. Tr. completion",bal_tab_2023_res_2$Pair.Balance$`3 vs. 1`$Balance), keep.rownames=T),
+      data.table::data.table(cbind(comp="Late vs. Early Dropout",bal_tab_2023_res_2$Pair.Balance$`3 vs. 2`$Balance), keep.rownames=T))) %>% 
+  #data.table::data.table(keep.rownames = T) %>% 
+  dplyr::select(type, comp, rn, everything()) %>%
+  dplyr::arrange(type, comp, -Diff.Adj) %>% 
   dplyr::mutate_if(is.numeric, ~round(.,2)) %>% 
-  knitr::kable("markdown", caption="Balance Measures (multinomial response weights)")
+  knitr::kable("markdown", caption="Balance Measures (multinomial response BART weights)")
  #  knitr::kable("html", caption="Balance Measures") %>% 
    #   kableExtra::kable_classic_2()
 
@@ -2069,15 +2113,26 @@ invisible("0= completar; 1= no-completar;policonsumo looks not balanced, the num
 
 ::: controlly 
 ```{r stata1-5-2023, echo=T, fig.align='center', message=T, error=T, eval=T}
-
-rbind(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_1$Pair.Balance$`2 vs. 1`$Balance),
-      cbind(comp="Late Dropout vs. Tr. completion",bal_tab_2023_1$Pair.Balance$`3 vs. 1`$Balance),
-      cbind(comp="Late vs. Early Dropout",bal_tab_2023_1$Pair.Balance$`3 vs. 2`$Balance)) %>% 
+cbind.data.frame(type=c(rep("Cond. sentence",3), rep("Imprisonment",3)),
+rbind(cbind(comp="Early Dropout vs. Tr. completion",
+            bal_tab_2023_res_1$Pair.Balance$`2 vs. 1`$Balance),
+      cbind(comp="Late Dropout vs. Tr. completion",
+            bal_tab_2023_res_1$Pair.Balance$`3 vs. 1`$Balance),
+      cbind(comp="Late vs. Early Dropout",
+            bal_tab_2023_res_1$Pair.Balance$`3 vs. 2`$Balance),
+      cbind(comp="Early Dropout vs. Tr. completion",
+            bal_tab_2023_res_2$Pair.Balance$`2 vs. 1`$Balance),
+      cbind(comp="Late Dropout vs. Tr. completion",
+            bal_tab_2023_res_2$Pair.Balance$`3 vs. 1`$Balance),
+      cbind(comp="Late vs. Early Dropout",
+            bal_tab_2023_res_2$Pair.Balance$`3 vs. 2`$Balance))) %>% 
     data.table::data.table(keep.rownames = T) %>% 
-    dplyr::select(comp, rn, everything()) %>% 
+    dplyr::select(type, comp, rn, everything()) %>% 
     dplyr::mutate_if(is.numeric, ~round(.,2)) %>% 
-    dplyr::summarise_if(is.numeric, ~list(min= min(.,na.rm=T), max= max(.,na.rm=T))) %>% t() %>%
-  knitr::kable("markdown", caption="Balance Measures (multinomial response weights)", col.names=c("min", "max"))
+    dplyr::group_by(type, comp) %>% 
+    dplyr::summarise_if(is.numeric, ~list(min= min(.,na.rm=T), max= max(.,na.rm=T))) %>%
+  ungroup() %>% 
+  knitr::kable("markdown", caption="Balance Measures (multinomial response BART weights)", col.names=c("Type","Comparison","Diff. Unstandardized","V.Ratio Unstandardized","Diff.Adjusted","V.Ratio.Adjusted"))
  #  knitr::kable("html", caption="Balance Measures (multinomial response weights)") %>% 
    #   kableExtra::kable_classic_2()
 ```
@@ -2086,10 +2141,41 @@ rbind(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_1$Pair.Balance$
 ::: controlly 
 ```{r stata2-2023, echo=T, fig.align='center', message=T, error=T, eval=T}
 #The “effective sample size” (ESS) is a measure of the sample size a non-weighted sample would have to have to achieve the same level of precision as the weighted sample (Ridgeway 2006).
-
-dplyr::bind_rows(data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_1$Pair.Balance$`2 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_1$Pair.Balance$`3 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_1$Pair.Balance$`3 vs. 2`$Observations),keep.rownames = T)) %>% 
+cbind.data.frame(type=c(rep("Cond.sentence",6), rep("Imprisonmente",6)),
+dplyr::bind_rows(
+data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_res_1$Pair.Balance$`2 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Late Dropout vs. Tr. completion",bal_tab_2023_res_1$Pair.Balance$`3 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Late vs. Early Dropout",bal_tab_2023_res_1$Pair.Balance$`3 vs. 2`$Observations),keep.rownames = T),
+data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_res_2$Pair.Balance$`2 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_res_2$Pair.Balance$`3 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Late vs. Early Dropout",bal_tab_2023_res_2$Pair.Balance$`3 vs. 2`$Observations),keep.rownames = T))) %>% 
   #dplyr::mutate_if(is.numeric, ~round(.,2)) %>% 
-  knitr::kable("markdown", caption="Effective sample sizes")
+  knitr::kable("markdown", caption="Effective sample sizes", col.names = c("Type", "Adj", "Comparison", "Tr. completion", "Early Dropout", "Late Dropout"))
+```
+:::
+
+::: controlly2
+```{r stata-sens2, echo=T, fig.align='center', message=T, error=T, eval=T}
+require(RMSTSens)
+results.approx11 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=1, ini.par=1, verbose=FALSE)
+invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
+results.approx11
+
+results.approx13 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=3, ini.par=1, verbose=FALSE)
+invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
+results.approx13
+
+results.approx15 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=5, ini.par=1, verbose=FALSE)
+invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
+results.approx15
+
+results.approx21 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss_pris,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=1, ini.par=1, verbose=FALSE)
+invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
+results.approx21
+
+results.approx23 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss_pris,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=3, ini.par=1, verbose=FALSE)
+invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
+results.approx23
+
+results.approx25 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss_pris,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=5, ini.par=1, verbose=FALSE)
+invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
+results.approx25
 ```
 :::
 

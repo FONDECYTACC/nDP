@@ -67,8 +67,6 @@ output:
 
 - [Main analyses of Imputed Data (Imprisonment only)](analisis_mariel_feb_2023_stata_pris_m1.html)
 
-- [Report with tables and graphics](report_ndp_prop_grant2223.html)
-
 - [Summary tables & Sensitivity Analyses](res_intram_feb_2023_stata.html)
 
 **Supplemental material**
@@ -84,3 +82,5 @@ output:
 - [Poster (idea)](pres_dic_22.html)
 
 - [Poster (updated)](pres_mar_23.html)
+
+- [Poster (final)](pres_mar_23_final.html)

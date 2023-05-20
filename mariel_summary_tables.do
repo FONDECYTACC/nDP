@@ -1945,5 +1945,88 @@ esttab matrix(mod4b) using "mat_tab4.html", replace
 <<dd_include: "mat_tab4.html" >>
 
 
+*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+*#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+# Transform figures to Restricted Mean Time Lost
+
+
+~~~~
+<<dd_do>>
+use mariel_feb_23_m1.dta, clear 
+
+cap noi drop rmst_h00 rmst_h11 rmst_h22
+
+gen rmtldiff_tr_comp_early_drop_lci= -rmstdiff_tr_comp_early_drop_lci
+gen rmtldiff_tr_comp_early_drop_uci= -rmstdiff_tr_comp_early_drop_uci
+gen rmtldiff_tr_comp_early_drop= -rmstdiff_tr_comp_early_drop
+gen rmtldiff_tr_comp_late_drop_lci= -rmstdiff_tr_comp_late_drop_lci
+gen rmtldiff_tr_comp_late_drop_uci= -rmstdiff_tr_comp_late_drop_uci
+gen rmtldiff_tr_comp_late_drop= -rmstdiff_tr_comp_late_drop
+gen rmtldiff_early_late_drop_lci= -rmstdiff_early_late_drop_lci
+gen rmtldiff_early_late_drop_uci= -rmstdiff_early_late_drop_uci
+gen rmtldiff_early_late_drop= -rmstdiff_early_late_drop
+
+twoway  (rarea rmtldiff_tr_comp_early_drop_lci rmtldiff_tr_comp_early_drop_uci tt, color(gs2%35)) ///
+                 (line rmtldiff_tr_comp_early_drop tt, lcolor(gs2)) ///
+		(rarea rmtldiff_tr_comp_late_drop_lci rmtldiff_tr_comp_late_drop_uci tt, color(gs6%35)) ///
+                 (line rmtldiff_tr_comp_late_drop tt, lcolor(gs6)) ///
+		(rarea rmtldiff_early_late_drop_lci rmtldiff_early_late_drop_uci tt, color(gs10%35)) ///
+                 (line rmtldiff_early_late_drop tt, lcolor(gs10)) ///				 
+         				  (line zero tt, lcolor(black%20) lwidth(thick)) ///
+         , ylabel(, format(%3.1f)) ///
+         ytitle("Difference in RMTL (years)") ///
+         xtitle("Years from baseline treatment outcome") ///
+		 legend(order( 1 "Early vs. Tr. completion" 3 "Late vs. Tr. completion" 5 "Late vs. Early dropout") ring(0) pos(11) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(RMTLdiff, replace)
+gr_edit .plotregion1.style.editstyle boxstyle(linestyle(color(none))) editcopy				 
+graph save "`c(pwd)'\_figs\h_m_ns_rp6_stdif_rmtl_m1.gph", replace
+graph export "`c(pwd)'\_figs\h_m_ns_rp6_stdif_rmtl_m1.pdf", as(pdf) replace 
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp6_stdif_rmtl_m1.svg") width(800) replace>>
+
+~~~~
+<<dd_do>>
+use mariel_feb_23_2_m1.dta, clear 
+
+cap noi drop rmst_h00 rmst_h11 rmst_h22
+
+gen rmtldiff_tr_comp_early_drop_lci= -rmstdiff_tr_comp_early_drop_lci
+gen rmtldiff_tr_comp_early_drop_uci= -rmstdiff_tr_comp_early_drop_uci
+gen rmtldiff_tr_comp_early_drop= -rmstdiff_tr_comp_early_drop
+gen rmtldiff_tr_comp_late_drop_lci= -rmstdiff_tr_comp_late_drop_lci
+gen rmtldiff_tr_comp_late_drop_uci= -rmstdiff_tr_comp_late_drop_uci
+gen rmtldiff_tr_comp_late_drop= -rmstdiff_tr_comp_late_drop
+gen rmtldiff_early_late_drop_lci= -rmstdiff_early_late_drop_lci
+gen rmtldiff_early_late_drop_uci= -rmstdiff_early_late_drop_uci
+gen rmtldiff_early_late_drop= -rmstdiff_early_late_drop
+
+twoway  (rarea rmtldiff_tr_comp_early_drop_lci rmtldiff_tr_comp_early_drop_uci tt, color(gs2%35)) ///
+                 (line rmtldiff_tr_comp_early_drop tt, lcolor(gs2)) ///
+		(rarea rmtldiff_tr_comp_late_drop_lci rmtldiff_tr_comp_late_drop_uci tt, color(gs6%35)) ///
+                 (line rmtldiff_tr_comp_late_drop tt, lcolor(gs6)) ///
+		(rarea rmtldiff_early_late_drop_lci rmtldiff_early_late_drop_uci tt, color(gs10%35)) ///
+                 (line rmtldiff_early_late_drop tt, lcolor(gs10)) ///				 
+         				  (line zero tt, lcolor(black%20) lwidth(thick)) ///
+         , ylabel(, format(%3.1f)) ///
+         ytitle("Difference in RMTL (years)") ///
+         xtitle("Years from baseline treatment outcome") ///
+		 legend(order( 1 "Early vs. Tr. completion" 3 "Late vs. Tr. completion" 5 "Late vs. Early dropout") ring(0) pos(11) cols(1) region(lstyle(none)) region(c(none)) nobox) ///
+				 graphregion(color(white) lwidth(large)) bgcolor(white) ///
+				 plotregion(fcolor(white)) graphregion(fcolor(white) ) /// //text(.5 1 "IR = <0.001") ///
+                 name(RMTLdiff, replace)
+gr_edit .plotregion1.style.editstyle boxstyle(linestyle(color(none))) editcopy				 
+graph save "`c(pwd)'\_figs\h_m_ns_rp6_stdif_rmtl_pris_m1.gph", replace
+graph export "`c(pwd)'\_figs\h_m_ns_rp6_stdif_rmtl_pris_m1.pdf", as(pdf) replace 
+<</dd_do>>
+~~~~
+
+<<dd_graph: saving("h_m_ns_rp6_stdif_rmtl_pris_m1.svg") width(800) replace>>
+
 
 <<dd_display: "Ended at= `c(current_time)' `c(current_date)'">>
