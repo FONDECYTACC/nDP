@@ -13,13 +13,14 @@ author_textcol:  "#ed4a11" # "#bf846f" #Colour of author text.
 author_textsize: "35pt"
 poster_height: "40in"
 poster_width: "42in"
-body_textsize: "45px"
+body_textsize: "43px"
 #column_margins:	"0.15in"
 accent_colour: "#aaaaaa"
 affiliation_textcol: "#bf846f" # "#591F0A"
 affiliation_textsize: "27pt"
 bibliography_spacing: "0.2"
 text_size: "30%" #no sirve
+column_numbers: 2
 #ESSENTIALS
 sectitle_textsize: "38pt"
 sectitle2_textsize: "25pt"
@@ -125,6 +126,12 @@ h5 {
   margin-bottom: 0 !important;
   padding: 0px !important;
 }
+.poster_title h2 {
+  line-height: .65em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+}
 
 poster_title h3 > sup {
   line-height: .65em !important;
@@ -133,6 +140,12 @@ poster_title h3 > sup {
   padding: 0px !important;
 }
 poster_title h5 {
+  line-height: .65em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+}
+poster_title h2 {
   line-height: .65em !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
@@ -653,40 +666,30 @@ ser_2023_1<-rio::import("ser_2023_1.dta")
 
 # Background
 
-- Substance use disorders (SUD) often co-occur with criminality, including violence, arrests, and incarceration$`r Cite(myBib, c("Duke2018","Sugie2017","Thomas2022"))`$
-
-- People with PSU has shown more contacts with the CJS than people with single substance use$`r Cite(myBib, c("Hassan2019","Wang2017", "Ford2022"))`$.
-
-- The relationship between polysubstance use (PSU), treatment outcomes, and contact with the criminal justice system (CJS) is complex and not fully understood. 
-
-- Completing SUD treatment can help to reduce the risk of contacts with the CJS, but it is not quite clear in people with PSU$`r Cite(myBib, c("Andersson2019","Timko2020", "Levola2021", "Andersson2021", "Andersson2018", "Basu2017"))`$.
-
-- More research is needed to understand the link between PSU, treatment completion, and contact with the CJS, particularly in Latin America$`r Cite(myBib, c("Reyes2013", "SantisB2007", "Olivari2022"))`$.
-
-- Effective interventions and tailored approaches for people with PSU can help to mitigate the harms of SUDs and contact with the CJS
+<li>Substance use disorders(SUD) often occur with criminality & contact with the justice system(CJS)</li>
+<li>People with polysubstance use (PSU) has shown more contacts with the CJS.</li>
+<li>Completing SUD treatment can help reducing the risk of contacts with the CJS, but not quite clear in people with PSU.</li>
+<li>More research is needed to understand the link between PSU, treatment completion, and contact with the CJS, specially in Latin America.</li>
 
 **Objectives**: Estimate the effects of PSU at baseline (vs. single substance use) on the probabilities of (i) completing baseline drug treatment and (ii) contacting with the CJS after treatment at 6 months, 1-, 3- & 5-years follow-ups.
 <!--- **Hypothesis:** Baseline PSU is related to lower treatment completion rates (1), baseline PSU is linked to a greater risk of contact with CJS (2), patients with PSU will have a differential risk of contact with CJS associated with treatment completion, and treatment completion will explain part of the relationship between PSU and contact with CJS (3). --->
 
 # Methods
-**Design**: a retrospective cohort based on the administrative data's record linkage. **Data**:  Chilean substance use treatment programs and Prosecutor’s Office through a deterministic linkage process. **Ethics**: We are updating an existing ethical approval by the Griffith University Human Research Ethics Committee GUHREC, GU Ref No: 2022/919.
+**Design**: retrospective cohort based on the administrative data's record linkage. **Data**:  Chilean substance use treatment programs and Prosecutor’s Office through a deterministic linkage process. **Ethics**: We are updating an existing ethical approval by the Griffith University GU Ref No: 2022/919.
 
-## Variables
-**Exposure**: baseline PSU (using more than one main substance among alcohol and illicit drugs at admission to SUD treatment); **Mediator**: SUD treatment outcome (complete vs. dropout or spelled by misconduct); **Outcome**: contact with CJS (committing an offense that led to a condemnatory sentence).
+**Exposure**: baseline PSU (using >1 substance at admission to SUD treatment); **Mediator**: SUD treatment outcome (complete vs. dropout/spelled by misconduct); **Outcome**: contact with CJS (committing an offense that led to a condemnatory sentence).
 
-## Analytical Plan
-- The research will control for a number of confounding variables (listed in Figure 1), and patients will be weighted by the inverse probability of PSU (IPW)$`r Cite(myBib, c("Cole2008"))`$.
-
-- We described the cumulative incidence rate (x1,000 person-years) of patients with PSU and no PSU, and incidence rate ratios (IRR) of treatment completion and contact with CJS, with and without weighting for IPWs.
+<li>The research control for a number of confounding variables (listed in Figure 1), and patients are weighted by the inverse probability of PSU(IPW).</li>
+<li>We described the cumulative incidence rate (x1,000 person-years) of patients with PSU and no PSU and incidence rate ratios(IRR) of treatment completion and contact with CJS, with and without  IPWs.</li>
 ```{r exp-surv4-plot, eval=T, echo=F, error=T, fig.align='center', fig.cap="Covariate balance", fig.retina=2}
 knitr::include_graphics("pbal2_mod.svg")
 ```
 
-- We used an illness-death multistate structure to estimate transitions from admission to treatment outcome, treatment outcome to contact with CJS, and admission to contact with CJS (not completing treatment) for patients with and without PSU (Figure 2). 
+<li>We used an illness-death multistate structure to estimate transitions from admission to treatment outcome, treatment outcome to contact with CJS, and admission to contact with CJS (not completing treatment) for patients with and without PSU (Figure 2).</li>
 ```{r exp-surv3-plot, eval=T, echo=F, error=T, fig.align='center', fig.cap="Multistate scheme", fig.retina=2}
 knitr::include_graphics("transmat_ser23_2.svg")
 ```
-We calculated the Aalen-Johansen for transition probabilities at 6 months, 1, 3 & 5 years$`r Cite(myBib, c("Crowther2023"))`$. Markdowns:  https://fondecytacc.github.io/nDP/index_prop_grant23_24
+We calculated the Aalen-Johansen for transition probabilities at 6 months, 1, 3 & 5 years.
 
 # Preliminary Results
 
@@ -744,14 +747,22 @@ irr_cont_js_wgt2<-rvest::read_html("irrs_t0_wgt_contact_js2.html") %>% rvest::ht
 irr_cont_js_wgt2<-cbind.data.frame(measure= irr_cont_js_wgt2[seq(1,nrow(irr_cont_js_wgt2),by=2),1], value=irr_cont_js_wgt2[seq(2,nrow(irr_cont_js_wgt2),by=2),1])
 irr_cont_js_wgt2$value<- stringr::str_replace_all(irr_cont_js_wgt2$value,"\'","")
 irr_cont_js_wgt2$value<- stringr::str_replace_all(irr_cont_js_wgt2$value, "p=0.0000", "p<0.001")
-```
--	Before IPWs, patients with PSU had lower incidence rates of treatment completion vs. patients with no PSU (IRR=`r irr_tr_comp_nowgt$value[which(irr_tr_comp_nowgt$measure=="IRR")]`). 
-- However, patients with PSU had greater rates of contact with the CJS vs. patients with no PSU (IRR=`r irr_cont_js_nowgt$value[which(irr_cont_js_nowgt$measure=="IRR")]`).
--	After IPWs, patients with PSU still had lower rates of treatment completion vs. patients with no PSU (IRR=`r irr_tr_comp_wgt$value[which(irr_tr_comp_wgt$measure=="IRR")]`)
-- Patients with PSU also had greater rates of contact with the CJS vs. patients with no PSU (IRR=`r irr_cont_js_wgt$value[which(irr_cont_js_wgt$measure=="IRR")]`).
 
+tab_irrs<-
+cbind.data.frame(trans=rep(c("Tr. completion","Contact with the CJS"),2),
+                 wgt=rep(c("Before weights","After weights"),each=2),
+                 IRRs=c(irr_tr_comp_nowgt$value[which(irr_tr_comp_nowgt$measure=="IRR")],
+                       irr_cont_js_nowgt$value[which(irr_cont_js_nowgt$measure=="IRR")],
+                       irr_tr_comp_wgt$value[which(irr_tr_comp_wgt$measure=="IRR")],
+                       irr_cont_js_wgt$value[which(irr_cont_js_wgt$measure=="IRR")]))
+```
+
+- **Before IPWs** patients with PSU had lower rates of treatment completion (IRR=`r irr_tr_comp_nowgt$value[which(irr_tr_comp_nowgt$measure=="IRR")]`) and greater rates of contact with the CJS vs. patients with no PSU (IRR=`r irr_cont_js_nowgt$value[which(irr_cont_js_nowgt$measure=="IRR")]`).
+
+-	**After IPWs**: patients with PSU had lower rates of treatment completion (IRR=`r irr_tr_comp_wgt$value[which(irr_tr_comp_wgt$measure=="IRR")]`) but greater rates of contact with the CJS vs. patients with no PSU (IRR=`r irr_cont_js_wgt$value[which(irr_cont_js_wgt$measure=="IRR")]`).
 
 ```{r exp-surv23-2, eval=T, echo=F, error=T, fig.align='center', message=FALSE, warning=FALSE}
+#Before IPWs, patients with PSU had lower incidence rates of treatment completion vs. patients with no PSU (IRR=0.53 95%CI: 0.51,0.54). However, patients with PSU had  (IRR=1.68 95%CI: 1.62,1.74).After IPWs, patients with PSU still had lower rates of treatment completion vs. patients with no PSU (IRR=0.77 95%CI: 0.74,0.8) Patients with PSU also had greater rates of contact with the CJS vs. patients with no PSU (IRR=1.11 95%CI: 1.06,1.17)
 prob_direct<-rvest::read_html("pr_msaj13_23.html") %>% rvest::html_table()
 prob_indirect1<-rvest::read_html("pr_msaj12_23.html") %>% rvest::html_table()
 prob_indirect2<-rvest::read_html("pr_msaj23_23.html") %>% rvest::html_table()
@@ -776,11 +787,12 @@ prob_indirect2 %>% as.data.table() %>% dplyr::mutate_at(c("X6","X7"),~paste0(.,"
   dplyr::select(Time, PSU, NoPSU) %>% 
   dplyr::mutate(PSU= stringr::str_replace_all(PSU, "_", "")) %>% 
   dplyr::mutate_at(c("PSU", "NoPSU"), ~stringr::str_replace_all(., pattern =  "\\b\\d+\\.?\\d*\\b", function(x) sprintf("%.1f", as.numeric(x))))
-
+trans_prob_tab<-
 bind_rows(cbind.data.frame(trans=rep("From admission to contact with CJS",),prob_direct), 
           cbind.data.frame(trans=rep("From admission to tr.completion",),prob_indirect1),
-          cbind.data.frame(trans=rep("From tr.completion to contact with CJS",),prob_indirect2)) %>%
-kbl(format = 'html',
+          cbind.data.frame(trans=rep("From tr.completion to contact with CJS",),prob_indirect2)) 
+
+kbl(trans_prob_tab,format = 'html',
         escape = FALSE,
         col.names= c("Transition", "Time", "PSU", "No PSU"), 
     caption= "Transition probabilities in states") %>% 
@@ -790,21 +802,43 @@ kbl(format = 'html',
          .) %>% 
   row_spec(1:nrow(bind_rows(cbind.data.frame(trans=rep("From admission to contact with CJS",),prob_direct), 
           cbind.data.frame(trans=rep("From admission to tr.completion",),prob_indirect1),
-          cbind.data.frame(trans=rep("From tr.completion to contact with CJS",),prob_indirect2))), extra_css = "padding: 1.3px")
+          cbind.data.frame(trans=rep("From tr.completion to contact with CJS",),prob_indirect2))), extra_css = "padding: 1.3px")#%>%
+  #kable_styling(full_width = FALSE, position = "right")
 ```
 
-**Transition probabilities**: People with PSU have higher probabilities of contact with the CJS, both post-admission and post-treatment, vs. those without PSU. Similarly, they are less likely to complete treatment. Treatment completers had lower probabilities of CJS contact vs. non-completers after 3 years since admission (Table 1).
+```{r, eval=F}
+kbl(tab_irrs,format = 'html',
+        escape = FALSE,
+        col.names= c("Event", "IPW", "IRR"),
+    caption= "Incidence rate ratios by event") %>%
+    kable_styling(font_size = 26) %>%
+    gsub("font-size: initial !important;",
+         "font-size: 26pt !important;",
+         .) %>%
+  row_spec(1:nrow(tab_irrs), extra_css = "padding: 1.3px")%>%
+  kable_styling(full_width = FALSE, position = "float_left")
+
+kbl(trans_prob_tab,format = 'html',
+        escape = FALSE,
+        col.names= c("Transition", "Time", "PSU", "No PSU"), 
+    caption= "Transition probabilities in states") %>% 
+    kable_styling(font_size = 26) %>%
+    gsub("font-size: initial !important;", 
+         "font-size: 26pt !important;", 
+         .) %>% 
+  row_spec(1:nrow(bind_rows(cbind.data.frame(trans=rep("From admission to contact with CJS",),prob_direct), 
+          cbind.data.frame(trans=rep("From admission to tr.completion",),prob_indirect1),
+          cbind.data.frame(trans=rep("From tr.completion to contact with CJS",),prob_indirect2))), extra_css = "padding: 1.3px")%>%
+  kable_styling(full_width = FALSE, position = "right")
+```
+
+**Transition probabilities**: People with PSU have higher probabilities of contact with the CJS, both post-admission and post-treatment, vs. those without PSU. Similarly, they are less likely to complete treatment. Treatment completers had lower probabilities of CJS contact vs. non-completers after 3 years since admission. 
+
+Codes & markdowns: https://fondecytacc.github.io/nDP/index_prop_grant23_24
 
 # Discussion
 Treatment completion can reduce the risk of criminal justice involvement, evident at the 3-year point when most users have finished treatment. Further analysis is needed. People with PSU may need enhanced treatment to complete treatments and avoid contact with the CJS.
 
-# References
-::: text_50
-```{r refs1, echo=FALSE, results="asis", warning=F}
-suppressWarnings(PrintBibliography(myBib))#,  first.inits = TRUE, dashed = TRUE))
-#https://github.com/ropensci/RefManageR/blob/master/R/rmdCite.R
-```
-:::
 ::: text_70 
 **Funding sources**: This work was funded by ANID -Millennium Science Initiative Program- N° NCS2021_003 (Castillo-Carniglia) and N° NCS2021_013 (Calvo); The authors have no conflict of interest to declare
 :::
