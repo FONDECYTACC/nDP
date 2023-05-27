@@ -1,0 +1,930 @@
+---
+title: "SENDAs Agreement 2-6"
+description: |
+  Load administrative data from SENDAs patient, compare information with previous databases and explore new data.
+date: "`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`"
+author: "Andrés González Santa Cruz"
+format: 
+  html:
+    code-fold: true
+    theme: 
+      - journal #https://quarto.org/docs/output-formats/html-themes-more.html
+      #- style.scss
+editor: visual
+---
+
+`r message(paste0("Date: ",withr::with_locale(new = c('LC_TIME' = 'C'), code =Sys.time())))`
+
+
+```{js zoom-jquery, echo = FALSE}
+$(document).ready(function() {
+
+$('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+
+// onClick function for all plots (img's)
+
+$('img:not(.zoomImg)').click(function() {
+$('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+$('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+});
+
+// onClick function for zoomImg
+
+$('img.zoomImg').click(function() {
+$('.zoomDiv').css({opacity: '0', width: '0%'});
+});
+});
+```
+
+```{css hideOutput-lib-src, echo = FALSE}
+<script src="https://github.com/AGSCL/gine_brechas_pandemia/blob/main/hideOutput.js"></script>
+```
+
+```{js hideOutput, echo = FALSE}
+$(document).ready(function() {
+
+\$chunks = \$('.fold');
+
+\$chunks.each(function () { // add button to source code chunks
+if ( \$(this).hasClass('s') ) {
+    \$('pre.r', this).prepend("\<div class=\\"showopt\\"\>Show Source\</div\>\<br style=\\"line-height:22px;\\"/\>");
+    \$('pre.r', this).children('code').attr('class', 'folded');
+    } // add button to output chunks
+
+    if ( \$(this).hasClass('o') ) {
+        \$('pre:not(.r)', this).has('code').prepend("\<div class=\\"showopt\\"\>Show Output\</div\>\<br style=\\"line-height:22px;\\"/\>");
+        \$('pre:not(.r)', this).children('code:not(r)').addClass('folded'); // add button to plots
+        \$(this).find('img').wrap('\<pre class=\\"plot\\"\>\</pre\>');
+        \$('pre.plot', this).prepend("\<div class=\\"showopt\\"\>Show Plot\</div\>\<br style=\\"line-height:22px;\\"/\>");
+        \$('pre.plot', this).children('img').addClass('folded');
+        }
+}); // hide all chunks when document is loaded
+
+\$('.folded').css('display', 'none') // function to toggle the visibility
+\$('.showopt').click(function() {
+        var label = \$(this).html();
+        if (label.indexOf("Show") \>= 0) {
+            \$(this).html(label.replace("Show", "Hide"));
+        } else {
+        \$(this).html(label.replace("Hide", "Show"));
+        }
+
+\$(this).siblings('code, img').slideToggle('fast', 'swing');
+});
+});
+```
+
+```{=html}
+<style type="text/css">
+
+<!-- .showopt { -->
+
+<!-- background-color: #004c93; color: #FFFFFF; width: 100px; height: 20px; text-align: center; vertical-align: middle !important; float: right; font-family: sans-serif; border-radius: 8px; -->
+
+<!-- } -->
+
+<!-- .showopt:hover { -->
+<!-- background-color: #dfe4f2; -->
+<!-- color: #004c93; -->
+
+<!-- } -->
+
+<!-- pre.plot { -->
+<!-- background-color: white !important; -->
+<!-- } -->
+
+.tablelines table, .tablelines td, .tablelines th {
+border: 1px solid black;
+}
+
+.centrado {
+text-align: center;
+}
+
+.table.center {
+margin-left:auto;
+margin-right:auto;
+}
+
+/* https://vivekjaiskumar.medium.com/css-is-and-not-selector-17c942ec83f :is()*/
+
+/* Applies to outputs that are not code other than R*/
+
+pre {
+overflow-x: auto !important;
+}
+
+pre code {
+word-wrap: normal !important;
+white-space: pre !important;
+}
+
+/*
+pre:not(.sourceCode) {
+white-space: nowrap !important;
+}
+*/
+.sourceCode { /* Important gives precedence */
+font-size: 10px !important;
+line-height: 50% !important;
+}
+body{ /* Normal */
+text-align: justify;
+}
+.superbigimage{
+overflow-y:scroll;
+height:350px;
+white-space: nowrap;
+overflow-x: auto;
+width:100%;
+}
+.superbigimage img{
+overflow-y: scroll;
+overflow-x: hidden;
+}
+.message { color:#446C6E; font-family: monospace;font-size: 10px; line-height: 110%; font-weight: bold;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
+div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
+.pandoc-table { /* Should add !important; but it seems no necessary */
+margin-left:auto; /* To center */
+margin-right:auto;
+border-collapse: collapse;
+table-layout: auto;
+font-size: 11px;
+overflow-y: auto;
+max-height:450px !important;
+white-space: nowrap;
+overflow-x: auto;
+width:450px;
+}
+.pandoc-table th {/* header */
+text-align: center !important;
+font-size: 10px;
+padding: 0px;
+}
+.pandoc-table td {
+text-align: left !important;
+font-size: 9px;
+padding: 0px;
+}
+.pandoc-table caption {
+text-align: left !important;
+font-size: 11px !important;
+}
+
+.center-table {
+text-align: left !important;
+font-size: 9px;
+overflow-y:scroll;
+height:450px;
+overflow-x: scroll;
+}
+
+.controlly{
+overflow-y:scroll;
+height:350px;
+overflow-x: scroll;
+
+}
+</style>
+```
+
+```{css, echo=F}
+h1 {
+    color: var(--heading-color);
+    font-size: 2rem;
+    margin-bottom: 1vh;
+}
+
+p {
+  font-size: 1.1rem;
+  line-height: 1.6rem;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  font-weight: bold;
+  &:hover, &:focus {
+      border-bottom: 3px solid currentColor;
+  }
+}
+
+section {
+  margin: 0 auto;
+}
+
+.post-meta {
+  font-size: 1rem;
+  font-style: italic;
+  display: block;
+  margin-bottom: 4vh;
+  color: var(--secondary-color);
+}
+
+nav {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0;
+}
+
+/*slider switch css */
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+  
+  em {
+    margin-left: 10px;
+    font-size: 1rem;
+  }
+}
+.theme-switch {
+  display: inline-block;
+  height: 34px;
+  position: relative;
+  width: 60px;
+}
+
+.theme-switch input {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 4px;
+  content: "";
+  height: 26px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 26px;
+}
+
+input:checked + .slider {
+  background-color: #66bb6a;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+
+```
+```{=html}
+<!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
+
+<div class="theme-switch-wrapper">
+    <label class="theme-switch" for="checkbox">
+        <input type="checkbox" id="checkbox" />
+        <div class="slider round"></div>
+  </label>
+  <em>Enable Dark Mode!</em>
+</div>
+
+<style type="text/css">
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+/*Simple css to style it like a toggle switch*/
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+
+  em {
+    margin-left: 10px;
+    font-size: 1rem;
+  }
+}
+.theme-switch {
+  display: inline-block;
+  height: 34px;
+  position: relative;
+  width: 60px;
+}
+
+.theme-switch input {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 4px;
+  content: "";
+  height: 26px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 26px;
+}
+
+input:checked + .slider {
+  background-color: #66bb6a;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+```
+
+```{js toggleSwitch, echo = FALSE}
+
+const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+
+function switchTheme(e) {
+    if (e.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+    else {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }    
+}
+
+toggleSwitch.addEventListener('change', switchTheme, false);
+```
+```{=html}
+<script>
+function switchTheme(e) {
+    if (e.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark'); //add this
+    }
+    else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light'); //add this
+    }    
+}
+</script>
+<script>
+function myFunction1() {
+var x = document.getElementById("myDIV");
+if (x.style.display === "none") {
+x.style.display = "block";
+} else {
+x.style.display = "none";
+}
+}
+</script>
+
+<script>
+function myFunction2() {
+var x = document.getElementById("myDIV2");
+if (x.style.display === "none") {
+x.style.display = "block";
+} else {
+x.style.display = "none";
+}
+}
+</script>
+```
+
+```{r pre-setup}
+rm(list = ls()) 
+unlink("import_c2_c6_files", recursive=T)
+#fuentes: 
+#https://rpubs.com/georgy_makarov/897844
+load("1_2023.RData")
+```
+
+```{r python-environment}
+path2<-paste0(getwd(),'/env')
+#Sys.setenv(RETICULATE_PYTHON =  "")
+
+#Sys.setenv(RETICULATE_PYTHON =  Sys.which("python"))
+
+#reticulate::py_config()
+#use_python(paste0(path,"/Scripts/python.exe"))
+
+#Sys.setenv(LD_LIBRARY_PATH =  paste0(path,"/Lib"))
+#Sys.setenv(LD_LIBRARY_PATH_64 =  paste0(path,"/Lib"))
+#instalar paquetes de funcionalidades básicas para tener ubicaciones relativas y acceso a python (reticulate)
+if(!require(reticulate)){install.packages("reticulate")}
+if(!require(rstudioapi)){install.packages("rstudioapi")}
+
+
+invisible("Create env")
+#https://stackoverflow.com/questions/54043607/how-to-set-pyenv-python-for-reticulate
+#Directory H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/env is not a Python virtualenv
+#virtualenv_create(envname  = path, packages = c("pip", "statsmodels", "matplotlib", "numpy", "pandas", "scipy"))
+# "C:/Users/andre/anaconda3/python.exe" -m venv "H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/9_Computacion_Estadistica/env"
+
+#FUENTES:
+#https://rstudio.github.io/reticulate/articles/versions.html
+#Virtual environment functions are not supported on Windows (the use of conda environments is recommended on Windows).
+
+invisible("Use environment")
+#https://ugoproto.github.io/ugo_r_doc/pdf/reticulate.pdf
+
+
+# tx  <- readLines(paste0(path2,"/pyvenv.cfg"))
+# tx[[1]] <- paste0("home = ",gsub('/', '\\', paste0(path2,"/Scripts/python.exe"), fixed=T))
+# tx[[3]] <- "version = 3.8.0"
+
+#writeLines(tx, con=paste0(path2,"/pyvenv.cfg"))
+
+#H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/env/Scripts/python.exe"
+#use_virtualenv(path2)
+
+#usar entorno virtual ya creado
+#información sobre entorno virtual
+#py_discover_config()
+#conda_python(envname =  "r-scrublet")
+
+# FUENTES
+#https://akrabat.com/creating-virtual-environments-with-pyenv/
+#https://rstudio.github.io/reticulate/reference/install_python.html
+#https://github.com/pyenv/pyenv/wiki#suggested-build-environment
+#https://github.com/pyenv/pyenv
+#https://stackoverflow.com/questions/56755156/reticulate-not-setting-python-path
+#https://github.com/rstudio/reticulate/issues/291#issuecomment-437143751
+#https://github.com/pyenv/pyenv
+#https://github.com/pyenv-win/pyenv-win#installation
+#https://stackoverflow.com/questions/52060867/how-to-use-pip-for-pyenv
+#https://github.com/pyenv/pyenv/issues/2417
+```
+
+```{python, eval=F}
+!pyenv install -l | findstr 3.8
+!pip install --upgrade pyenv-win
+!env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install
+!env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.7.5
+!pyenv build
+```
+
+<br>
+
+# Data Loading and Exploration
+
+## Loading Packages and uniting databases
+
+Proceed to load the necessary packages.
+
+```{r}
+#| message: false
+#| include: false
+#| warning: false
+
+# limpiar completamente el entorno global environment
+
+#Para importar bases
+if(!require(rio)){install.packages("rio")}
+#Para manipular bases de datos
+if(!require(tidyverse)){install.packages("tidyverse")}
+if(!require(tidylog)){install.packages("tidylog")}
+
+#Para tabla 1
+if(!require(tableone)){install.packages("tableone")}
+if(!require(compareGroups)){install.packages("compareGroups")}
+if(!require(Hmisc)){install.packages("Hmisc")}
+if(!require(kableExtra)){install.packages("kableExtra")}
+if(!require(DT)){install.packages("DT")}
+#Para explorar relaciones bivariadas
+if(!require(polycor)){install.packages("polycor")}
+if(!require(corrplot)){install.packages("corrplot")}
+#Para modelos de regresión
+if(!require(jtools)){install.packages("jtools")}
+#Para cargar paquetes
+if(!require(pacman)){install.packages("pacman")}
+#Para imputar, cargo los paqeutes con la función p_load, y en caso que no encuentre dicho paquete, instalo
+pacman::p_load(missRanger, missForest, install=T)
+#Para analizar supervivencia
+pacman::p_load(survminer, survcomp, survRM2, flexsurv, mstate, rms, install=T)
+#Para diseño de encuestas complejas o ponderación
+if(!require(survey)){install.packages("survey")}
+#para manipular tiempo
+if(!require(lubridate)){install.packages("lubridate")}
+
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+######0.C. functions------------------
+
+read_excel_mult <- function(dir, filename) {
+  assign(paste0(substr(filename, 1, 7)),read.delim(paste0(dir, filename),
+        na.strings="null", header = T, fileEncoding="UTF-8"),envir = .GlobalEnv)
+  }
+
+#function to copy names
+copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,...) {
+  write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+  return(x)}
+
+#function to save datasets in excel files (x=object to change; y=name of the excel file)
+guardar_tablas <- function (x,y) {writexl::write_xlsx(as.data.frame(x, keeprownames= T),paste0(y,".xlsx"))}
+
+
+#define a table
+as.data.frame.TableOne <- function(x, ...) {capture.output(print(x,
+                          showAllLevels = TRUE, ...) -> x)
+  y <- as.data.frame(x)
+  y$characteristic <- dplyr::na_if(rownames(x), "")
+  y <- y %>%
+  fill(characteristic, .direction = "down") %>%
+  select(characteristic, everything())
+  rownames(y) <- NULL
+  y}
+
+
+#to format rows in bold
+format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethrough")){
+
+  # select the correct markup
+  # one * for italics, two ** for bold
+  map <- setNames(c("*", "**", "~~"), c("italics", "bold", "strikethrough"))
+  markup <- map[value]  
+
+  for (r in rows){
+    for(c in cols){
+
+      # Make sure values are not factors
+      df[[c]] <- as.character( df[[c]])
+
+      # Update formatting
+      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, gsub(" ", "", df[r, c]), markup))
+    }
+  }
+
+  return(df)
+}
+
+```
+
+Load the C2-6 data
+
+```{r import-c1, message=F, error=T, eval=T, echo=T}
+path<-dirname(rstudioapi::getActiveDocumentContext()$path)
+path<-paste0(getwd())
+dir_c2_c6<-paste0(gsub("22","19",path),"/Encriptados c2 a c6/")
+
+#Durante el tratamiento los jóvenes reciben apoyo psicológico, medico, social y educacional, instalando herramientas y factores protectores durante aproximadamente 12 meses.
+#Este programa, denominado convenio 2, es un trabajo complementario entre Sename, Senda, Minsal Genchi, quienes articulan integración efectiva de más de 170 adolescentes distribuidos en siete centros de la región.
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#c2tab-Resultado-202353
+require(readr)
+invisible("https://www.senda.gob.cl/tratamiento/programas/")
+#convenio adolescentes infractores de ley
+SISTRAT_c2 <- read_delim(paste0(dir_c2_c6,"c2tab-Resultado-202353.txt"), 
+    delim = "\t", 
+    escape_double = FALSE, 
+    guess_max = min(1e5, Inf),
+    na = "null", 
+    trim_ws = TRUE)
+#situación de calle (creo)
+SISTRAT_c3 <- readr::read_delim(paste0(dir_c2_c6,"c3tab-Resultado-202353.txt"), 
+    delim = "\t", 
+    escape_double = FALSE, 
+    na = c("", "NA","null"),
+    guess_max = min(1e5, Inf),
+    trim_ws = TRUE)
+#libertad vigilada(creo)
+SISTRAT_c4 <- readr::read_delim(paste0(dir_c2_c6,"c4tab-Resultado-202353.txt"), 
+    delim = "\t", 
+    escape_double = FALSE, 
+    na = c("", "NA","null"),
+    guess_max = min(1e5, Inf),
+    trim_ws = TRUE)
+#Adulta privada de libertad? Tribunales de tratamiento de drogas?
+SISTRAT_c5 <- readr::read_delim(paste0(dir_c2_c6,"c5tab-Resultado-202353.txt"), 
+    delim = "\t", 
+    escape_double = FALSE, 
+    na = c("", "NA","null"),
+    guess_max = min(1e5, Inf),
+    trim_ws = TRUE)
+#Están cumpliendo condena
+SISTRAT_c6 <- readr::read_delim(paste0(dir_c2_c6,"c6tab-Resultado-202353.txt"), 
+    delim = "\t", 
+    escape_double = FALSE, 
+    na = c("", "NA","null"),
+    guess_max = min(1e5, Inf),
+    trim_ws = TRUE)
+SISTRAT_c6$`EDAD INGRESO`<-
+as.numeric(round((parse_date(SISTRAT_c6$`FECHA INGRESO TRATAMIENTO`,"%d/%m/%Y")-parse_date(SISTRAT_c6$`FECHA NACIMIENTO`,"%d/%m/%Y"))/365.25,3))
+```
+
+```{r, fig.cap="Histograms for Age", fig.align='center', echo=F, warning=F}
+# Create the histograms for each dataset
+hist_c2 <- ggplot(SISTRAT_c2, aes(x = Edad)) +
+  geom_histogram(fill = "gray70", color = "black", bins = 30) +
+  ggtitle("c2")+ theme_bw()+ xlim(0,90)
+
+hist_c3 <- ggplot(SISTRAT_c3, aes(x = Edad)) +
+  geom_histogram(fill = "gray70", color = "black", bins = 30) +
+  ggtitle("c3")+ theme_bw()+ xlim(0,90)
+
+hist_c4 <- ggplot(SISTRAT_c4, aes(x = EDAD)) +
+  geom_histogram(fill = "gray70", color = "black", bins = 30) +
+  ggtitle("c4")+ theme_bw()+ xlim(0,90)
+
+hist_c5 <- ggplot(SISTRAT_c5, aes(x = Edad)) +
+  geom_histogram(fill = "gray70", color = "black", bins = 30) +
+  ggtitle("c5")+ theme_bw()+ xlim(0,90)
+
+hist_c6 <- ggplot(SISTRAT_c6, aes(x = `EDAD INGRESO`)) +
+  geom_histogram(fill = "gray70", color = "black", bins = 30) +
+  ggtitle("c6")+ theme_bw()+ xlim(0,90)
+
+# Combine histograms into a single plot
+combined_plot <- ggarrange(hist_c2, hist_c3, hist_c4, hist_c5, hist_c6, ncol = 3, nrow = 2)
+
+# Display the combined plot
+print(combined_plot)
+```
+
+::: center-table
+```{r distinct-names}
+# Get the column names for each dataset
+names_c2 <- names(SISTRAT_c2)
+names_c3 <- names(SISTRAT_c3)
+names_c4 <- names(SISTRAT_c4)
+names_c5 <- names(SISTRAT_c5)
+names_c6 <- names(SISTRAT_c6)
+
+df_c2 <- data.frame(Dataset = "SISTRAT_c2", Column_Name = names_c2)
+df_c3 <- data.frame(Dataset = "SISTRAT_c3", Column_Name = names_c3)
+df_c4 <- data.frame(Dataset = "SISTRAT_c4", Column_Name = names_c4)
+df_c5 <- data.frame(Dataset = "SISTRAT_c5", Column_Name = names_c5)
+df_c6 <- data.frame(Dataset = "SISTRAT_c6", Column_Name = names_c6)
+
+full_join(df_c2, df_c3, by = "Column_Name") %>%
+    full_join(df_c4, by = "Column_Name") %>%
+    full_join(df_c5, by = "Column_Name") %>%
+    full_join(df_c6, by = "Column_Name") %>%
+    arrange(Column_Name) -> joined_df
+
+joined_df %>% 
+  dplyr::select(Column_Name, everything()) %>% 
+  dplyr::arrange(Column_Name) %>% 
+  dplyr::rename("c2"="Dataset.x","c3"="Dataset.y", "c4"="Dataset.x.x", "c5"="Dataset.y.y","c6"="Dataset") %>% 
+  dplyr::mutate_at(.vars = vars(matches("c[0-9]$")),
+                        .funs = ~ ifelse(!is.na(.), "X", "")) %>% 
+  kbl("markdown", caption="Replicated Fields in Databases")
+```
+:::
+
+We can see the following from C2-C6 databases that share different names.
+
+::: center-table
+```{r dates-c2-c6}
+rbind(
+    cbind("c2_AdmDate_min",min(readr::parse_date(SISTRAT_c2$`Fecha Ingreso Tratamiento`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c2_AdmDate_max",max(readr::parse_date(SISTRAT_c2$`Fecha Ingreso Tratamiento`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c2_DischDate_min",min(readr::parse_date(SISTRAT_c2$`Fecha Egreso`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c2_DischDate_max",max(readr::parse_date(SISTRAT_c2$`Fecha Egreso`,"%d/%m/%Y"),na.rm=T)),
+    
+    cbind("c3_AdmDate_min",min(readr::parse_date(SISTRAT_c3$`Fecha Ingreso a Tratamiento`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c3_AdmDate_max",max(readr::parse_date(SISTRAT_c3$`Fecha Ingreso a Tratamiento`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c3_DischDate_min",min(readr::parse_date(SISTRAT_c3$`Fecha Egreso de Tratamiento`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c3_DischDate_max",max(readr::parse_date(SISTRAT_c3$`Fecha Egreso de Tratamiento`,"%d/%m/%Y"),na.rm=T)),
+    
+    cbind("c4_AdmDate_min",min(readr::parse_date(SISTRAT_c4$`FECHA INGRESO TRATAMIENTO`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c4_AdmDate_max",max(readr::parse_date(SISTRAT_c4$`FECHA INGRESO TRATAMIENTO`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c4_DischDate_min",min(readr::parse_date(SISTRAT_c4$`FECHA EGRESO TRATAMIENTO`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c4_DischDate_max",max(readr::parse_date(SISTRAT_c4$`FECHA EGRESO TRATAMIENTO`,"%d/%m/%Y"),na.rm=T)),
+    
+    cbind("c5_AdmDate_min",min(readr::parse_date(SISTRAT_c5$`Fecha Ingreso Tratamiento`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c5_AdmDate_max",max(readr::parse_date(SISTRAT_c5$`Fecha Ingreso Tratamiento`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c5_DischDate_min",min(readr::parse_date(SISTRAT_c5$`Fecha Egreso`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c5_DischDate_max",max(readr::parse_date(SISTRAT_c5$`Fecha Egreso`,"%d/%m/%Y"),na.rm=T)),
+    
+    cbind("c6_AdmDate_min",min(readr::parse_date(SISTRAT_c6$`FECHA INGRESO TRATAMIENTO`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c6_AdmDate_max",max(readr::parse_date(SISTRAT_c6$`FECHA INGRESO TRATAMIENTO`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c6_DischDate_min",min(readr::parse_date(SISTRAT_c6$`FECHA EGRESO TRATAMIENTO`,"%d/%m/%Y"),na.rm=T)),
+    cbind("c6_DischDate_max",max(readr::parse_date(SISTRAT_c6$`FECHA EGRESO TRATAMIENTO`,"%d/%m/%Y"),na.rm=T))
+) %>% 
+    data.frame() %>% 
+    dplyr::rename("Date"="X2") %>% 
+    tidyr::separate(X1,sep="_", into=c("db","time","value")) %>% 
+    dplyr::mutate(Date=as.Date(as.numeric(Date),origin = "1970-01-01")) %>% 
+  kbl("markdown", caption= "Dates by different")
+```
+:::
+
+<br>
+
+## Data transformation and normalization
+
+Next, a table is presented with each of the databases.
+
+::: center-table
+```{r desc-c2, echo=T, fig.align='center', message=T, error=T, eval=T}
+#| message: false
+#| warning: false
+
+tables_c2 <- list()
+for(i in seq_along(names(SISTRAT_c2))) {
+    tables_c2[[i]] <- dim(table(SISTRAT_c2[[i]]))
+    attr(tables_c2[[i]], "var_name") <- names(SISTRAT_c2)[i]
+}
+df_tables_c2<-
+data.frame(do.call(rbind, tables_c2))
+
+for(i in seq_along(names(SISTRAT_c2))) {
+df_tables_c2$var_name[[i]] <- attr(tables_c2[[i]], "var_name")
+}
+#Dias de tratamiento  N Meses en Tratamiento  Edad Inicio Sustancia Inicial Numero Tratamientos Anteriores  Edad Inicio Sustancia Principal 
+#Fecha Egreso "Edad de la Primera detencion"  Fecha Ingreso Tratamiento   Fecha Nacimiento
+#DIAGNOSTICO TRS.
+
+#Codigo IdentificaciÃ³n Nombre Centro   Comuna Usuario  Servicio Salud  Programa SENAME
+
+tbone_desc_c2<-
+CreateTableOne(vars=setdiff(names(SISTRAT_c2), c("Rut","hash_rut_completo","Codigo IdentificaciÃ³n","ID centro","Nombre Centro","Comuna Usuario","Servicio Salud","Programa SENAME","Consorcio","Fecha Egreso", "Edad de la Primera detencion", "Fecha Ingreso Tratamiento", "Fecha Nacimiento")), data=  SISTRAT_c2, factorVars = setdiff(names(SISTRAT_c2),c("Dias de tratamiento","N Meses en Tratamiento", "Edad", "NÃºmero de hijos","AÃ±os DeserciÃ³n Escolar","Edad Inicio Sustancia Inicial","Numero Tratamientos Anteriores","Numero de Sanciones Anteriores","Edad Inicio Sustancia Principal")), smd=T, addOverall = T, includeNA=T, test=T)
+
+as.data.frame.TableOne(tbone_desc_c2, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, C2 Database", escape=T)
+#kable(size=10, format="html",caption= "Summary descriptives, by Database year") %>%     kableExtra::kable_classic()
+```
+:::
+
+```{r desc-dates-c2, echo=T, fig.align='center', message=T, error=T, eval=T}
+rbind.data.frame(
+cbind(cat="Date of admission",
+      SISTRAT_c2 %>% 
+        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso", "Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(`Fecha Ingreso Tratamiento`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Ingreso Tratamiento`, na.rm=T))),
+cbind(cat="Date of dicharge to SENDA agreement",
+      SISTRAT_c2 %>% 
+        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso", "Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(`Fecha Egreso`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`Fecha Egreso`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Egreso`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Egreso`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Egreso`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Egreso`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Egreso`, na.rm=T))),
+cbind(cat="Date of birth",
+      SISTRAT_c2 %>% 
+        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso", "Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(`Fecha Nacimiento`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`Fecha Nacimiento`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Nacimiento`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Nacimiento`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Nacimiento`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Nacimiento`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Nacimiento`, na.rm=T)))
+) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Database C2", escape=T)
+```
+
+
+::: center-table
+```{r desc-c3, echo=T, fig.align='center', message=T, error=T, eval=T}
+#| message: false
+#| warning: false
+
+tables_c3 <- list()
+for(i in seq_along(names(SISTRAT_c3))) {
+    tables_c3[[i]] <- dim(table(SISTRAT_c3[[i]]))
+    attr(tables_c3[[i]], "var_name") <- names(SISTRAT_c3)[i]
+}
+df_tables_c3<-
+data.frame(do.call(rbind, tables_c3)) %>% 
+  arrange(.,desc(do.call.rbind..tables_c3.))
+
+for(i in seq_along(names(SISTRAT_c3))) {
+df_tables_c3$var_name[[i]] <- attr(tables_c3[[i]], "var_name")
+}
+#Dias de tratamiento  N Meses en Tratamiento  Edad Inicio Sustancia Inicial Numero Tratamientos Anteriores  Edad Inicio Sustancia Principal 
+#Fecha Egreso "Edad de la Primera detencion"  Fecha Ingreso Tratamiento   Fecha Nacimiento
+#DIAGNOSTICO TRS.
+
+#Codigo IdentificaciÃ³n Nombre Centro   Comuna Usuario  Servicio Salud  Programa SENAME
+
+tbone_desc_c3<-
+CreateTableOne(vars=setdiff(names(SISTRAT_c3), c("Rut","hash_rut_completo","Codigo Identificación","ID centro","Nombre Centro","Comuna Usuario","Servicio Salud","Programa SENAME","Consorcio","Fecha Egreso", "Edad de la Primera detencion", "Fecha Ingreso a Tratamiento", "Fecha Egreso de Tratamiento")), data=  SISTRAT_c2, factorVars = setdiff(names(SISTRAT_c3),c("Dias de tratamiento","N Meses en Tratamiento", "Edad", "NÃºmero de hijos","AÃ±os DeserciÃ³n Escolar","Edad Inicio Sustancia Inicial","Numero Tratamientos Anteriores","Numero de Sanciones Anteriores","Edad Inicio Sustancia Principal")), smd=T, addOverall = T, includeNA=T, test=T)
+
+as.data.frame.TableOne(tbone_desc_c3, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, C2 Database", escape=T)
+#kable(size=10, format="html",caption= "Summary descriptives, by Database year") %>%     kableExtra::kable_classic()
+```
+:::
+
+```{r desc-dates-c2, echo=T, fig.align='center', message=T, error=T, eval=T}
+rbind.data.frame(
+cbind(cat="Date of admission",
+      SISTRAT_c2 %>% 
+        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso", "Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(`Fecha Ingreso Tratamiento`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Ingreso Tratamiento`, na.rm=T))),
+cbind(cat="Date of dicharge to SENDA agreement",
+      SISTRAT_c2 %>% 
+        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso", "Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(`Fecha Egreso`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`Fecha Egreso`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Egreso`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Egreso`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Egreso`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Egreso`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Egreso`, na.rm=T))),
+cbind(cat="Date of birth",
+      SISTRAT_c2 %>% 
+        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso", "Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(`Fecha Nacimiento`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`Fecha Nacimiento`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Nacimiento`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Nacimiento`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Nacimiento`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Nacimiento`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Nacimiento`, na.rm=T)))
+) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Database C2", escape=T)
+```
+
+
+```{=html}
+<!---
+ #https://github.com/kosukeimai/fastLink
+ 
+  #"aquellos registros que terminaronpor ejemplo, con una sentencia absolutoria o en que no se pudo acreditar un hecho delictual". No tengo la bbdd para revisar si esto aplica a nosotros, pero prefiero dejarlo acá para que no se me olvide.
+ --->
+```
+
+
+# Session info
+
+```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE}
+message(paste0("R library: ", Sys.getenv("R_LIBS_USER")))
+message(paste0("Date: ",withr::with_locale(new = c('LC_TIME' = 'C'), code =Sys.time())))
+message(paste0("Editor context: ", path))
+
+sesion_info <- devtools::session_info()
+dplyr::select(
+  tibble::as_tibble(sesion_info$packages),
+  c(package, loadedversion, source)
+) %>% 
+  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Package' = 2, 'Version'= 3),
+              caption = htmltools::tags$caption(
+        style = 'caption-side: top; text-align: left;',
+        '', htmltools::em('R packages')),
+      options=list(
+initComplete = htmlwidgets::JS(
+        "function(settings, json) {",
+        "$(this.api().tables().body()).css({
+            'font-family': 'Helvetica Neue',
+            'font-size': '50%', 
+            'code-inline-font-size': '15%', 
+            'white-space': 'nowrap',
+            'line-height': '0.75em',
+            'min-height': '0.5em'
+            });",#;
+        "}")))
+
+
+ py_list_packages()%>% 
+  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Package' = 2, 'Version'= 3),
+              caption = htmltools::tags$caption(
+        style = 'caption-side: top; text-align: left;',
+        '', htmltools::em('Python packages')),
+      options=list(
+initComplete = htmlwidgets::JS(
+        "function(settings, json) {",
+        "$(this.api().tables().body()).css({
+            'font-family': 'Helvetica Neue',
+            'font-size': '50%', 
+            'code-inline-font-size': '15%', 
+            'white-space': 'nowrap',
+            'line-height': '0.75em',
+            'min-height': '0.5em'
+            });",#;
+        "}")))
+```
+
+Save
+
+```{r}
+save.image("1_2023.RData")
+```

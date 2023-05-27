@@ -61,7 +61,7 @@ affiliation:
     address: Director, Millennium Nucleus for the evaluation and analysis of Drug Policies; Associate Professor, Society & Health Research Center
 main_findings: none #- "**Baseline Treatment Completion** is associated with **lower hazards** of experiencing posterior contacts with justice system that ended in a **sentence or imprisonment**."
 logoleft_name: _style/Logo_nDP_monotono_vertical_en.png
-logoright_name: _style/Logo_nDP_color_hz_en.png
+logoright_name: _figs/qr_poly.png
 logocenter_name: _figs/qrcode.png #"`r plot(qrcode::qr_code('https://fondecytacc.github.io/nDP/index_prop_grant23_24.html'))`"
 output: 
   posterdown::posterdown_html:
@@ -675,7 +675,7 @@ ser_2023_1<-rio::import("ser_2023_1.dta")
 <!--- **Hypothesis:** Baseline PSU is related to lower treatment completion rates (1), baseline PSU is linked to a greater risk of contact with CJS (2), patients with PSU will have a differential risk of contact with CJS associated with treatment completion, and treatment completion will explain part of the relationship between PSU and contact with CJS (3). --->
 
 # Methods
-**Design**: retrospective cohort based on the administrative data's record linkage. **Data**:  Chilean substance use treatment programs and Prosecutor’s Office through a deterministic linkage process. **Ethics**: We are updating an existing ethical approval by the Griffith University GU Ref No: 2022/919.
+**Design**: Retrospective cohort based on the administrative data's record linkage. **Data**:  Chilean substance use treatment programs and Prosecutor’s Office through a deterministic linkage process. **Ethics**: We are updating an existing ethical approval by the Griffith University GU Ref No: 2022/919.
 
 **Exposure**: baseline PSU (using >1 substance at admission to SUD treatment); **Mediator**: SUD treatment outcome (complete vs. dropout/spelled by misconduct); **Outcome**: contact with CJS (committing an offense that led to a condemnatory sentence).
 
@@ -791,18 +791,19 @@ trans_prob_tab<-
 bind_rows(cbind.data.frame(trans=rep("From admission to contact with CJS",),prob_direct), 
           cbind.data.frame(trans=rep("From admission to tr.completion",),prob_indirect1),
           cbind.data.frame(trans=rep("From tr.completion to contact with CJS",),prob_indirect2)) 
-
-kbl(trans_prob_tab,format = 'html',
+trans_prob_tab %>% 
+  dplyr::mutate(Time=stringr::str_replace_all(Time, pattern="_", " ")) %>% 
+kbl(format = 'html',
         escape = FALSE,
         col.names= c("Transition", "Time", "PSU", "No PSU"), 
-    caption= "Transition probabilities in states") %>% 
-    kable_styling(font_size = 26) %>%
+    caption= "Transition probabilities in states", table.attr = "style='width:100%;'") %>% 
+    kable_styling(font_size = 29) %>%
     gsub("font-size: initial !important;", 
-         "font-size: 26pt !important;", 
+         "font-size: 29pt !important;", 
          .) %>% 
   row_spec(1:nrow(bind_rows(cbind.data.frame(trans=rep("From admission to contact with CJS",),prob_direct), 
           cbind.data.frame(trans=rep("From admission to tr.completion",),prob_indirect1),
-          cbind.data.frame(trans=rep("From tr.completion to contact with CJS",),prob_indirect2))), extra_css = "padding: 1.3px")#%>%
+          cbind.data.frame(trans=rep("From tr.completion to contact with CJS",),prob_indirect2))), extra_css = "padding: 1.5px")#%>%
   #kable_styling(full_width = FALSE, position = "right")
 ```
 
@@ -831,13 +832,12 @@ kbl(trans_prob_tab,format = 'html',
           cbind.data.frame(trans=rep("From tr.completion to contact with CJS",),prob_indirect2))), extra_css = "padding: 1.3px")%>%
   kable_styling(full_width = FALSE, position = "right")
 ```
-
-**Transition probabilities**: People with PSU have higher probabilities of contact with the CJS, both post-admission and post-treatment, vs. those without PSU. Similarly, they are less likely to complete treatment. Treatment completers had lower probabilities of CJS contact vs. non-completers after 3 years since admission. 
-
-Codes & markdowns: https://fondecytacc.github.io/nDP/index_prop_grant23_24
+<br>
+**Transition probabilities**: People with PSU have higher probabilities of contact with the CJS, both post-admission and post-treatment, vs. those without PSU. Similarly, they are less likely to complete treatment. Completers had lower probabilities of CJS contact vs. non-completers after 3 years since admission. 
+<li>Codes & markdowns: https://fondecytacc.github.io/nDP/index_prop_grant23_24</li>
 
 # Discussion
-Treatment completion can reduce the risk of criminal justice involvement, evident at the 3-year point when most users have finished treatment. Further analysis is needed. People with PSU may need enhanced treatment to complete treatments and avoid contact with the CJS.
+Treatment completion can reduce the risk of criminal justice involvement for people with PSU, evident at the 3-year point when most users have finished treatment. Further analysis is needed. People with PSU may need enhanced treatment to complete treatments and avoid contact with the CJS.
 
 ::: text_70 
 **Funding sources**: This work was funded by ANID -Millennium Science Initiative Program- N° NCS2021_003 (Castillo-Carniglia) and N° NCS2021_013 (Calvo); The authors have no conflict of interest to declare

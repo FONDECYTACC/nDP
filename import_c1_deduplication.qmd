@@ -7,17 +7,13 @@ author: "Andrés González Santa Cruz"
 format: 
   html:
     code-fold: true
+    theme: 
+      - journal #https://quarto.org/docs/output-formats/html-themes-more.html
+      #- style.scss
 editor: visual
 ---
 
 `r message(paste0("Date: ",withr::with_locale(new = c('LC_TIME' = 'C'), code =Sys.time())))`
-
-```{css}
-#| echo: false
-
-script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
-
-```
 
 ```{js zoom-jquery, echo = FALSE}
 $(document).ready(function() {
@@ -191,9 +187,210 @@ overflow-x: scroll;
 }
 </style>
 ```
+```{css, echo=F}
+h1 {
+    color: var(--heading-color);
+    font-size: 2rem;
+    margin-bottom: 1vh;
+}
+
+p {
+  font-size: 1.1rem;
+  line-height: 1.6rem;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  font-weight: bold;
+  &:hover, &:focus {
+      border-bottom: 3px solid currentColor;
+  }
+}
+
+section {
+  margin: 0 auto;
+}
+
+.post-meta {
+  font-size: 1rem;
+  font-style: italic;
+  display: block;
+  margin-bottom: 4vh;
+  color: var(--secondary-color);
+}
+
+nav {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0;
+}
+
+/*slider switch css */
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+  
+  em {
+    margin-left: 10px;
+    font-size: 1rem;
+  }
+}
+.theme-switch {
+  display: inline-block;
+  height: 34px;
+  position: relative;
+  width: 60px;
+}
+
+.theme-switch input {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 4px;
+  content: "";
+  height: 26px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 26px;
+}
+
+input:checked + .slider {
+  background-color: #66bb6a;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+
+```
+
 ```{=html}
 <!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
 
+<div class="theme-switch-wrapper">
+    <label class="theme-switch" for="checkbox">
+        <input type="checkbox" id="checkbox" />
+        <div class="slider round"></div>
+  </label>
+  <em>Enable Dark Mode!</em>
+</div>
+
+<style type="text/css">
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+/*Simple css to style it like a toggle switch*/
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+
+  em {
+    margin-left: 10px;
+    font-size: 1rem;
+  }
+}
+.theme-switch {
+  display: inline-block;
+  height: 34px;
+  position: relative;
+  width: 60px;
+}
+
+.theme-switch input {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 4px;
+  content: "";
+  height: 26px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 26px;
+}
+
+input:checked + .slider {
+  background-color: #66bb6a;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+```
+```{js toggleSwitch, echo = FALSE}
+
+const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+
+function switchTheme(e) {
+    if (e.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+    else {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }    
+}
+
+toggleSwitch.addEventListener('change', switchTheme, false);
+```
+
+```{=html}
+<script>
+function switchTheme(e) {
+    if (e.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark'); //add this
+    }
+    else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light'); //add this
+    }    
+}
+</script>
 <script>
 function myFunction1() {
 var x = document.getElementById("myDIV");
@@ -218,8 +415,7 @@ x.style.display = "none";
 ```
 ```{r python-environment}
 rm(list = ls()) 
-unlink("Trabahjo-1_files", recursive=T)
-unlink("Trabahjo 1_files", recursive=T)
+unlink("import_c1_deduplication_files", recursive=T)
 #fuentes: 
 #https://rpubs.com/georgy_makarov/897844
 path<-paste0(getwd(),'/env')
@@ -292,7 +488,7 @@ invisible("Use environment")
 
 # Data Loading and Exploration
 
-## Loading Packages
+## Loading Packages and uniting databases
 
 Proceed to load the necessary packages.
 
@@ -386,9 +582,9 @@ format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethr
 
 ```
 
-Load the data
+Load the C1 data
 
-```{r import, message=F, error=T, eval=T, echo=T}
+```{r import-c1, message=F, error=T, eval=T, echo=T}
 path<-dirname(rstudioapi::getActiveDocumentContext()$path)
 path<-paste0(getwd())
 dir_c1<-paste0(gsub("22","19",path),"/Encriptado c1/Personas tratadas C1/")
@@ -453,16 +649,97 @@ CONS_C1_2010_19=plyr::rbind.fill(mget(paste0("SISTRAT23_c1_pre_",c(2010:2019))))
 #  dplyr::mutate(TABLE = sub(".+(....)$", "\\1", TABLE))
 ```
 
-We can see the following:
+Load the TOP data
 
-- There are variables that I did not use at any time, such as the reason for administrative discharge (`motivo_de_egreso_alta_administrativa`), which includes a reason such as "death", the consorcio that groups it.
-- There are other variables incorporated in these databases, such as `servicios_basicos`, `laboral_ingresos`, `perso_dormitorio_vivienda`,`precariedad_vivienda` and `servicios_basicos_99`.
+```{r import-top, message=F, error=T, eval=T, echo=T}
+dir_top<-paste0(gsub("22","19",path),"/encriptados TOP/")
+
+#matches a string that starts with the number 2, followed by any number of characters, followed by a space, followed by the word "txt".
+SISTRAT23_TOP<-list.files(path=toString(dir_top), pattern="202353")
+
+#Import datasets from May 3, 2022
+for (i in 1:length(SISTRAT23_TOP)) {
+  x<-SISTRAT23_TOP[i]
+  readr::read_delim(paste0(dir_top, x),
+                    na = c("", "NA","null"),
+                    guess_max = min(1e5, Inf)) %>% 
+    janitor::clean_names() %>% 
+    as.data.frame() %>% 
+    dplyr::rename("HASH_KEY"="null") %>% 
+    dplyr::select(HASH_KEY, everything()) %>% 
+    #get the name of the year to name the database
+    assign(paste0("SISTRAT23_top_",stringr::str_sub(x, 4, 7)),.,envir = .GlobalEnv)
+}
+
+#Estimate previous databases (November 13, 2019)
+SISTRAT23_TOP_pre_oct19<-list.files(path=toString(dir_top), pattern="20191113")
+
+#Import datasets
+for (i in 1:length(SISTRAT23_TOP_pre_oct19)) {
+  x<-SISTRAT23_TOP_pre_oct19[i]
+  #2019 have a special treatment because it has another registry
+  if(grepl("EneOct",x)){
+  readr::read_delim(paste0(dir_top, x),
+                    na = c("", "NA","null"),
+                    guess_max = min(1e5, Inf),
+                    skip=0) %>% 
+    janitor::clean_names() %>% 
+    as.data.frame() %>% 
+    dplyr::rename("HASH_KEY"="null") %>% 
+    #dplyr::rename("HASH_KEY" = !!names(.[92]))%>%
+    dplyr::mutate(TABLE= rep(x,)) %>% 
+    dplyr::select(TABLE, HASH_KEY, everything()) %>%       
+    assign(paste0("SISTRAT23_top_pre_",stringr::str_sub(x, 4, 7)),.,envir = .GlobalEnv)
+  } else {
+  readr::read_delim(paste0(dir_top, x),
+                    na = c("", "NA","null"),
+                    guess_max = min(1e5, Inf),
+                    skip=0) %>% 
+    janitor::clean_names() %>% 
+    as.data.frame() %>% 
+    dplyr::rename("HASH_KEY"="null") %>% 
+    #dplyr::rename("HASH_KEY" = !!names(.[91]))%>%
+    dplyr::mutate(TABLE= rep(x,)) %>% 
+    dplyr::select(TABLE, HASH_KEY, everything()) %>%       
+    assign(paste0("SISTRAT23_top_pre_",stringr::str_sub(x, 4, 7)),.,envir = .GlobalEnv)    
+  }
+}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#MERGE DATABASES
+CONS_TOP_2019_22<-
+  data.table::rbindlist(mget(paste0("SISTRAT23_top_",c(2019:2022))), idcol="TABLE", fill=T) %>% 
+  dplyr::mutate(TABLE = sub(".+(....)$", "\\1", TABLE))
+
+CONS_TOP_2015_19<-
+  plyr::rbind.fill(mget(paste0("SISTRAT23_top_pre_",c(2015:2019)))) %>% 
+  data.table::data.table() %>% 
+  dplyr::mutate(TABLE =stringr::str_sub(TABLE, 4, 7))
+```
+
+We can see the following from C1 database:
+
+-   There are variables that I did not use at any time, such as the reason for administrative discharge (`motivo_de_egreso_alta_administrativa`), which includes a reason such as "death", the consorcio that groups it.
+-   There are other variables incorporated in these databases, such as `servicios_basicos`, `laboral_ingresos`, `perso_dormitorio_vivienda`,`precariedad_vivienda` and `servicios_basicos_99`.
+
+We can see the following from TOP database:
+
+-   Databases from 2019-2022 have more columns: `r paste(setdiff(names(CONS_TOP_2019_22),names(CONS_TOP_2015_19)), collapse=", ")`.
+
+We erased individual databases.
+
+```{r erase-databases, echo=T}
+rm(list= ls()[grepl("_c1_", ls())])
+rm(list= ls()[grepl("_top_", ls())])
+```
 
 <br>
 
 ## Data transformation and normalization
 
-In the previous SENDA databases, the censoring time was set at the date of database withdrawal (November 13, 2019)., with their last treatment discharge on `r max(readr::parse_date(CONS_C1_2010_19$fecha_egreso_de_tratamiento,"%d/%m/%Y"),na.rm=T)`. For the databases from 2019 to 2023, however, the date of discharge of the last database was `r max(readr::parse_date(CONS_C1_2019_22$fecha_egreso_de_tratamiento,"%d/%m/%Y"),na.rm=T)`. The total amount of records in databases from 2010-2022 were `r format(length(c(CONS_C1_2019_22$HASH_KEY,CONS_C1_2010_19$HASH_KEY)), big.mark=",")` of `r format(length(unique(c(CONS_C1_2019_22$HASH_KEY,CONS_C1_2010_19$HASH_KEY))), big.mark=",")` patients (distinct HASHs, or encrypted National ID). `r scales::percent(length(setdiff(unique(CONS_C1_2019_22$HASH_KEY),unique(CONS_C1_2010_19$HASH_KEY)))/length(unique(CONS_C1_2019_22$HASH_KEY)),accuracy=.1)` (n= `r format(length(setdiff(unique(CONS_C1_2019_22$HASH_KEY),unique(CONS_C1_2010_19$HASH_KEY))), big.mark=",")`) were new to the SENDA Agreement 1.
+In the previous SENDA C1 databases, the censoring time was set at the date of database withdrawal (November 13, 2019), with their last treatment discharge on `r max(readr::parse_date(CONS_C1_2010_19$fecha_egreso_de_tratamiento,"%d/%m/%Y"),na.rm=T)`. For the databases from 2019 to 2022, however, the date of discharge of the last database was `r max(readr::parse_date(CONS_C1_2019_22$fecha_egreso_de_tratamiento,"%d/%m/%Y"),na.rm=T)`. The total amount of records in databases from 2010-2022 were `r format(length(c(CONS_C1_2019_22$HASH_KEY,CONS_C1_2010_19$HASH_KEY)), big.mark=",")` of `r format(length(unique(c(CONS_C1_2019_22$HASH_KEY,CONS_C1_2010_19$HASH_KEY))), big.mark=",")` patients (distinct HASHs, or encrypted National ID). `r scales::percent(length(setdiff(unique(CONS_C1_2019_22$HASH_KEY),unique(CONS_C1_2010_19$HASH_KEY)))/length(unique(CONS_C1_2019_22$HASH_KEY)),accuracy=.1)` (n= `r format(length(setdiff(unique(CONS_C1_2019_22$HASH_KEY),unique(CONS_C1_2010_19$HASH_KEY))), big.mark=",")`) were new to the SENDA Agreement 1.
+
+In the previous SENDA TOP databases, the censoring time should have been November 13, 2019, but the last time the TOP instrument was applied was on `r max(readr::parse_date(as.character(CONS_TOP_2015_19$fecha_aplicacion_top),"%Y-%m-%d"),na.rm=T)`. For the databases from 2019-2022, the date of application of TOP was `r max(readr::parse_date(as.character(CONS_TOP_2019_22$fecha_aplicacion_top),"%Y-%m-%d"),na.rm=T)`. The total amount of records in databases from 2010-2022 were `r format(length(c(CONS_TOP_2015_19$HASH_KEY, CONS_TOP_2019_22$HASH_KEY)),big.mark=",")` of `r format(length(unique(c(CONS_TOP_2015_19$HASH_KEY, CONS_TOP_2019_22$HASH_KEY))),big.mark=",")` patients (distinct HASHs). `r scales::percent(length(setdiff(unique(CONS_TOP_2019_22$HASH_KEY),unique(CONS_TOP_2015_19$HASH_KEY)))/length(unique(CONS_TOP_2019_22$HASH_KEY)),accuracy=.1)` (n=`r format(length(setdiff(unique(CONS_TOP_2019_22$HASH_KEY),unique(CONS_TOP_2015_19$HASH_KEY))), big.mark=",")`) were new to the TOP databases.
 
 The files from the prosecutor's office are being incorporated for comparison purposes from `Base_fiscalia_v2`.
 
@@ -491,7 +768,7 @@ sheet = "Base", skip = 4, guess_max = min(1000000, Inf))%>% janitor::clean_names
 Next, a table is presented with the new data.
 
 ::: center-table
-```{r desc, echo=T, fig.align='center', message=T, error=T, eval=T}
+```{r desc-c1, echo=T, fig.align='center', message=T, error=T, eval=T}
 #| message: false
 #| warning: false
 
@@ -502,7 +779,7 @@ for(i in seq_along(names(CONS_C1_2019_22))) {
 }
 
 tbone_desc<-
-CreateTableOne(vars=setdiff(names(CONS_C1_2019_22), c("HASH_KEY","codigo_identificacion","nombre_centro","comuna_residencia","consorcio","id_centro", "fecha_ingreso_a_tratamiento", "fecha_ingreso_a_convenio_senda", "fecha_egreso_de_tratamiento")), data=  CONS_C1_2019_22, factorVars = setdiff(names(CONS_C1_2019_22),CONS_C1_2010_19 %>% select_if(is.numeric) %>% names()), smd=T, strata="TABLE", addOverall = T, includeNA=T, test=T)
+CreateTableOne(vars=setdiff(names(CONS_C1_2019_22), c("HASH_KEY","TABLE","codigo_identificacion","nombre_centro","comuna_residencia","consorcio","id_centro", "fecha_ingreso_a_tratamiento", "fecha_ingreso_a_convenio_senda", "fecha_egreso_de_tratamiento")), data=  CONS_C1_2019_22, factorVars = setdiff(names(CONS_C1_2019_22),CONS_C1_2019_22 %>% select_if(is.numeric) %>% names()), smd=T, strata="TABLE", addOverall = T, includeNA=T, test=T)
 
 as.data.frame.TableOne(tbone_desc, smd=T, nonnormal= T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -512,12 +789,200 @@ as.data.frame.TableOne(tbone_desc, smd=T, nonnormal= T)%>%
   dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
   format_cells(1, 1:length(names(.)), "bold") %>%
   dplyr::select(-1) %>% 
-  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, no PSU(0), PSU (1), by Baseline Treatment Status", escape=T)
-#kable(size=10, format="html",caption= "Summary descriptives, by Baseline Treatment Status") %>%     kableExtra::kable_classic()
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, by Database year (19-22)", escape=T)
+#kable(size=10, format="html",caption= "Summary descriptives, by Database year") %>%     kableExtra::kable_classic()
 ```
 :::
 
+```{r desc-dates-c1, echo=T, fig.align='center', message=T, error=T, eval=T}
+#invisible("see applyrulesage4 chunk in Fiscalia_merge2.Rmd")
+#https://www.efta.int/sites/default/files/RvalPart3.pdf
+#https://books.google.cl/books?id=3slJDwAAQBAJ&pg=PA160&lpg=PA160&dq=%22errorlocate%22&source=bl&ots=PjMI_G_1ja&sig=ACfU3U03eKo_UALC12_ND1oulbUB6iNsgg&hl=es-419&sa=X&ved=2ahUKEwjPx-ar9tr5AhWRBLkGHYbhBOE4HhDoAXoECAIQAw#v=onepage&q=%22errorlocate%22&f=false
 
+#fecha_ingreso_a_convenio_senda  fecha_egreso_de_tratamiento   
+rbind.data.frame(
+cbind(cat="Date of admission",
+      CONS_C1_2019_22 %>% 
+        dplyr::mutate_at(c("fecha_ingreso_a_tratamiento", "fecha_ingreso_a_convenio_senda", "fecha_egreso_de_tratamiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(fecha_ingreso_a_tratamiento, na.rm=T),
+                           p025=as.Date(quantile(unclass(fecha_ingreso_a_tratamiento), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fecha_ingreso_a_tratamiento), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fecha_ingreso_a_tratamiento), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fecha_ingreso_a_tratamiento), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fecha_ingreso_a_tratamiento), .975, na.rm=T), origin = "1970-01-01"), max = max(fecha_ingreso_a_tratamiento, na.rm=T))),
+cbind(cat="Date of admission to SENDA agreement",
+      CONS_C1_2019_22 %>% 
+        dplyr::mutate_at(c("fecha_ingreso_a_tratamiento", "fecha_ingreso_a_convenio_senda", "fecha_egreso_de_tratamiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(fecha_ingreso_a_convenio_senda, na.rm=T),
+                           p025=as.Date(quantile(unclass(fecha_ingreso_a_convenio_senda), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fecha_ingreso_a_convenio_senda), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fecha_ingreso_a_convenio_senda), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fecha_ingreso_a_convenio_senda), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fecha_ingreso_a_convenio_senda), .975, na.rm=T), origin = "1970-01-01"), max = max(fecha_ingreso_a_convenio_senda, na.rm=T))),
+cbind(cat="Date of discharge",
+      CONS_C1_2019_22 %>% 
+        dplyr::mutate_at(c("fecha_ingreso_a_tratamiento", "fecha_ingreso_a_convenio_senda", "fecha_egreso_de_tratamiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(fecha_egreso_de_tratamiento, na.rm=T),
+                           p025=as.Date(quantile(unclass(fecha_egreso_de_tratamiento), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fecha_egreso_de_tratamiento), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fecha_egreso_de_tratamiento), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fecha_egreso_de_tratamiento), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fecha_egreso_de_tratamiento), .975, na.rm=T), origin = "1970-01-01"), max = max(fecha_egreso_de_tratamiento, na.rm=T)))
+) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, by Database year (19-22)", escape=T)
+```
+
+::: center-table
+```{r desc-c1-2, echo=T, fig.align='center', message=T, error=T, eval=T}
+#| message: false
+#| warning: false
+
+tbone_desc2<-
+CreateTableOne(vars=setdiff(names(CONS_C1_2010_19), c("HASH_KEY","TABLE","codigo_identificacion","nombre_centro","comuna_residencia","consorcio","id_centro", "fecha_ingreso_a_tratamiento", "fecha_ingreso_a_convenio_senda", "fecha_egreso_de_tratamiento")), data=  CONS_C1_2019_22, factorVars = setdiff(names(CONS_C1_2010_19),CONS_C1_2010_19 %>% select_if(is.numeric) %>% names()), smd=T, strata="TABLE", addOverall = T, includeNA=T, test=T)
+
+as.data.frame.TableOne(tbone_desc2, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, by Database year (10-19)", escape=T)
+#kable(size=10, format="html",caption= "Summary descriptives, by Database year") %>%     kableExtra::kable_classic()
+```
+:::
+
+```{r desc-dates-c1-2, echo=T, fig.align='center', message=T, error=T, eval=T}
+#invisible("see applyrulesage4 chunk in Fiscalia_merge2.Rmd")
+#https://www.efta.int/sites/default/files/RvalPart3.pdf
+#https://books.google.cl/books?id=3slJDwAAQBAJ&pg=PA160&lpg=PA160&dq=%22errorlocate%22&source=bl&ots=PjMI_G_1ja&sig=ACfU3U03eKo_UALC12_ND1oulbUB6iNsgg&hl=es-419&sa=X&ved=2ahUKEwjPx-ar9tr5AhWRBLkGHYbhBOE4HhDoAXoECAIQAw#v=onepage&q=%22errorlocate%22&f=false
+
+#fecha_ingreso_a_convenio_senda  fecha_egreso_de_tratamiento   
+rbind.data.frame(
+cbind(cat="Date of admission",
+      CONS_C1_2010_19 %>% 
+        dplyr::mutate_at(c("fecha_ingreso_a_tratamiento", "fecha_ingreso_a_convenio_senda", "fecha_egreso_de_tratamiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(fecha_ingreso_a_tratamiento, na.rm=T),
+                           p025=as.Date(quantile(unclass(fecha_ingreso_a_tratamiento), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fecha_ingreso_a_tratamiento), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fecha_ingreso_a_tratamiento), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fecha_ingreso_a_tratamiento), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fecha_ingreso_a_tratamiento), .975, na.rm=T), origin = "1970-01-01"), max = max(fecha_ingreso_a_tratamiento, na.rm=T))),
+cbind(cat="Date of admission to SENDA agreement",
+      CONS_C1_2010_19 %>% 
+        dplyr::mutate_at(c("fecha_ingreso_a_tratamiento", "fecha_ingreso_a_convenio_senda", "fecha_egreso_de_tratamiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(fecha_ingreso_a_convenio_senda, na.rm=T),
+                           p025=as.Date(quantile(unclass(fecha_ingreso_a_convenio_senda), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fecha_ingreso_a_convenio_senda), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fecha_ingreso_a_convenio_senda), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fecha_ingreso_a_convenio_senda), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fecha_ingreso_a_convenio_senda), .975, na.rm=T), origin = "1970-01-01"), max = max(fecha_ingreso_a_convenio_senda, na.rm=T))),
+cbind(cat="Date of discharge",
+      CONS_C1_2010_19 %>% 
+        dplyr::mutate_at(c("fecha_ingreso_a_tratamiento", "fecha_ingreso_a_convenio_senda", "fecha_egreso_de_tratamiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(fecha_egreso_de_tratamiento, na.rm=T),
+                           p025=as.Date(quantile(unclass(fecha_egreso_de_tratamiento), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fecha_egreso_de_tratamiento), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fecha_egreso_de_tratamiento), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fecha_egreso_de_tratamiento), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fecha_egreso_de_tratamiento), .975, na.rm=T), origin = "1970-01-01"), max = max(fecha_egreso_de_tratamiento, na.rm=T)))
+) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Totals (10-19)", escape=T)
+```
+
+::: center-table
+```{r desc-top, echo=T, fig.align='center', message=T, error=T, eval=T}
+#| message: false
+#| warning: false
+
+tables2 <- list()
+for(i in seq_along(names(CONS_TOP_2019_22))) {
+    tables2[[i]] <- dim(table(CONS_TOP_2019_22[[i]]))
+    attr(tables2[[i]], "var_name") <- names(CONS_TOP_2019_22)[i]
+}
+
+tbone_desc_top<-
+CreateTableOne(vars=setdiff(names(CONS_TOP_2019_22), c("HASH_KEY","TABLE","id","nombre_apliacador_del_top","nombre_del_centro","comentario","fecha_aplicacion_top","fecha_nacimiento","fecha_egreso","fecha_de_ingreso_a_tratamiento")), data=  CONS_TOP_2019_22, factorVars = names(CONS_TOP_2019_22),c(CONS_TOP_2019_22 %>% select_if(is.numeric) %>% names()), smd=T, strata="TABLE", addOverall = T, includeNA=T, test=T)
+
+as.data.frame.TableOne(tbone_desc_top, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, by Database year (19-22) TOP", escape=T)
+#kable(size=10, format="html",caption= "Summary descriptives, by Database year (19-22) TOP") %>%     kableExtra::kable_classic()
+```
+:::
+
+```{r desc-dates-top2, echo=T, fig.align='center', message=T, error=T, eval=T}
+#invisible("see applyrulesage4 chunk in Fiscalia_merge2.Rmd")
+#https://www.efta.int/sites/default/files/RvalPart3.pdf
+#https://books.google.cl/books?id=3slJDwAAQBAJ&pg=PA160&lpg=PA160&dq=%22errorlocate%22&source=bl&ots=PjMI_G_1ja&sig=ACfU3U03eKo_UALC12_ND1oulbUB6iNsgg&hl=es-419&sa=X&ved=2ahUKEwjPx-ar9tr5AhWRBLkGHYbhBOE4HhDoAXoECAIQAw#v=onepage&q=%22errorlocate%22&f=false
+
+#fecha_aplicacion_top 2019-11-07
+#fecha_nacimiento     "01/06/2015"
+#fecha_egreso         "15/12/2020"
+rbind.data.frame(
+cbind(cat="Date of birth",
+      CONS_TOP_2019_22 %>% 
+      dplyr::mutate_at(c("fecha_nacimiento","fecha_egreso"),~readr::parse_date(.,"%d/%m/%Y"))%>%
+      dplyr::mutate_at(c("fecha_aplicacion_top"),~readr::parse_date(as.character(.),"%Y-%m-%d"))%>%
+          dplyr::summarise(min = min(fecha_nacimiento, na.rm=T),
+                           p025=as.Date(quantile(unclass(fecha_nacimiento), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fecha_nacimiento), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fecha_nacimiento), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fecha_nacimiento), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fecha_nacimiento), .975, na.rm=T), origin = "1970-01-01"), max = max(fecha_nacimiento, na.rm=T))),
+cbind(cat="Date of discharge",
+      CONS_TOP_2019_22 %>% 
+      dplyr::mutate_at(c("fecha_nacimiento","fecha_egreso"),~readr::parse_date(.,"%d/%m/%Y"))%>%
+      dplyr::mutate_at(c("fecha_aplicacion_top"),~readr::parse_date(as.character(.),"%Y-%m-%d"))%>%
+          dplyr::summarise(min = min(fecha_egreso, na.rm=T),
+                           p025=as.Date(quantile(unclass(fecha_egreso), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fecha_egreso), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fecha_egreso), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fecha_egreso), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fecha_egreso), .975, na.rm=T), origin = "1970-01-01"), max = max(fecha_egreso, na.rm=T))),
+cbind(cat="Date of TOP application",
+      CONS_TOP_2019_22 %>% 
+      dplyr::mutate_at(c("fecha_nacimiento","fecha_egreso"),~readr::parse_date(.,"%d/%m/%Y"))%>%
+      dplyr::mutate_at(c("fecha_aplicacion_top"),~readr::parse_date(as.character(.),"%Y-%m-%d"))%>%
+          dplyr::summarise(min = min(fecha_aplicacion_top, na.rm=T),
+                           p025=as.Date(quantile(unclass(fecha_aplicacion_top), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fecha_aplicacion_top), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fecha_aplicacion_top), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fecha_aplicacion_top), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fecha_aplicacion_top), .975, na.rm=T), origin = "1970-01-01"), max = max(fecha_aplicacion_top, na.rm=T)))
+) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Totals (19-22) TOP", escape=T)
+```
+
+::: center-table
+```{r desc-top3, echo=T, fig.align='center', message=T, error=T, eval=T}
+#| message: false
+#| warning: false
+
+tables4 <- list()
+for(i in seq_along(names(CONS_TOP_2015_19))) {
+    tables4[[i]] <- dim(table(CONS_TOP_2015_19[[i]]))
+    attr(tables4[[i]], "var_name") <- names(CONS_TOP_2015_19)[i]
+}
+
+tbone_desc_top2<-
+CreateTableOne(vars=setdiff(names(CONS_TOP_2015_19), c("HASH_KEY","TABLE","id","nombre_apliacador_del_top","nombre_del_centro","comentario","fecha_aplicacion_top","fecha_nacimiento","fecha_egreso","fecha_de_ingreso_a_tratamiento")), data=  CONS_TOP_2015_19, factorVars = setdiff(names(CONS_TOP_2015_19),CONS_TOP_2015_19 %>% select_if(is.numeric) %>% names()), smd=T, strata="TABLE", addOverall = T, includeNA=T, test=T)
+
+as.data.frame.TableOne(tbone_desc_top2, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, by Database year (15-19) TOP", escape=T)
+#kable(size=10, format="html",caption= "Summary descriptives, by Database year") %>%     kableExtra::kable_classic()
+```
+:::
+
+```{r desc-dates-top4, echo=T, fig.align='center', message=T, error=T, eval=T}
+#invisible("see applyrulesage4 chunk in Fiscalia_merge2.Rmd")
+#https://www.efta.int/sites/default/files/RvalPart3.pdf
+#https://books.google.cl/books?id=3slJDwAAQBAJ&pg=PA160&lpg=PA160&dq=%22errorlocate%22&source=bl&ots=PjMI_G_1ja&sig=ACfU3U03eKo_UALC12_ND1oulbUB6iNsgg&hl=es-419&sa=X&ved=2ahUKEwjPx-ar9tr5AhWRBLkGHYbhBOE4HhDoAXoECAIQAw#v=onepage&q=%22errorlocate%22&f=false
+
+#fecha_aplicacion_top 2019-11-07
+#fecha_nacimiento     "01/06/2015"
+rbind.data.frame(
+cbind(cat="Date of birth",
+      CONS_TOP_2015_19 %>% 
+      dplyr::mutate_at(c("fecha_nacimiento"),~readr::parse_date(.,"%d/%m/%Y"))%>%
+      dplyr::mutate_at(c("fecha_aplicacion_top"),~readr::parse_date(as.character(.),"%Y-%m-%d"))%>%
+          dplyr::summarise(min = min(fecha_nacimiento, na.rm=T),
+                           p025=as.Date(quantile(unclass(fecha_nacimiento), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fecha_nacimiento), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fecha_nacimiento), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fecha_nacimiento), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fecha_nacimiento), .975, na.rm=T), origin = "1970-01-01"), max = max(fecha_nacimiento, na.rm=T))),
+cbind(cat="Date of TOP application",
+      CONS_TOP_2015_19 %>% 
+      dplyr::mutate_at(c("fecha_nacimiento"),~readr::parse_date(.,"%d/%m/%Y"))%>%
+      dplyr::mutate_at(c("fecha_aplicacion_top"),~readr::parse_date(as.character(.),"%Y-%m-%d"))%>%
+          dplyr::summarise(min = min(fecha_aplicacion_top, na.rm=T),
+                           p025=as.Date(quantile(unclass(fecha_aplicacion_top), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(fecha_aplicacion_top), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(fecha_aplicacion_top), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(fecha_aplicacion_top), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(fecha_aplicacion_top), .975, na.rm=T), origin = "1970-01-01"), max = max(fecha_aplicacion_top, na.rm=T)))
+) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Totals (15-19) TOP", escape=T)
+```
+
+```{=html}
+<!---
+ #https://github.com/kosukeimai/fastLink
+ 
+  #"aquellos registros que terminaronpor ejemplo, con una sentencia absolutoria o en que no se pudo acreditar un hecho delictual". No tengo la bbdd para revisar si esto aplica a nosotros, pero prefiero dejarlo acá para que no se me olvide.
+ --->
+```
 # Session info
 
 ```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE}
@@ -530,7 +995,7 @@ dplyr::select(
   tibble::as_tibble(sesion_info$packages),
   c(package, loadedversion, source)
 ) %>% 
-  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Paquete' = 2, 'Versión'= 3),
+  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Package' = 2, 'Version'= 3),
               caption = htmltools::tags$caption(
         style = 'caption-side: top; text-align: left;',
         '', htmltools::em('R packages')),
@@ -549,7 +1014,7 @@ initComplete = htmlwidgets::JS(
 
 
  py_list_packages()%>% 
-  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Paquete' = 2, 'Versión'= 3),
+  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Package' = 2, 'Version'= 3),
               caption = htmltools::tags$caption(
         style = 'caption-side: top; text-align: left;',
         '', htmltools::em('Python packages')),
@@ -570,5 +1035,5 @@ initComplete = htmlwidgets::JS(
 Save
 
 ```{r}
- save.image("1_2023.RData")
+save.image("1_2023.RData")
 ```

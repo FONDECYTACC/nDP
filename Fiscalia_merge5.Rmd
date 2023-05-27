@@ -2152,28 +2152,29 @@ data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_202
 
 ::: controlly2
 ```{r stata-sens2, echo=T, fig.align='center', message=T, error=T, eval=T}
+sub1_statadf_miss<- subset(statadf_miss,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5)|>data.table::data.table()
 require(RMSTSens)
-results.approx11 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=1, ini.par=1, verbose=FALSE)
+results.approx11 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=sub1_statadf_miss, methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=1, ini.par=1, verbose=FALSE)
 invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
 results.approx11
 
-results.approx13 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=3, ini.par=1, verbose=FALSE)
+results.approx13 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=sub1_statadf_miss, methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=3, ini.par=1, verbose=FALSE)
 invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
 results.approx13
 
-results.approx15 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=5, ini.par=1, verbose=FALSE)
+results.approx15 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=sub1_statadf_miss, methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=5, ini.par=1, verbose=FALSE)
 invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
 results.approx15
 
-results.approx21 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss_pris,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=1, ini.par=1, verbose=FALSE)
+results.approx21 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=sub1_statadf_miss, methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=1, ini.par=1, verbose=FALSE)
 invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
 results.approx21
 
-results.approx23 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss_pris,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=3, ini.par=1, verbose=FALSE)
+results.approx23 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=sub1_statadf_miss, methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=3, ini.par=1, verbose=FALSE)
 invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
 results.approx23
 
-results.approx25 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=subset(statadf_miss_pris,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5), methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=5, ini.par=1, verbose=FALSE)
+results.approx25 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=sub1_statadf_miss, methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=5, ini.par=1, verbose=FALSE)
 invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
 results.approx25
 ```

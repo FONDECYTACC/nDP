@@ -855,6 +855,8 @@ Once the standardization was complete, we **joined** the databases `CONS_C1_df_d
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #WHERE rn_id = 1
 
+#2023-05-26
+save(CONS_C1_df_dup_SEP_2020_22_d, Base_fiscalia_v9, file = "data_acc_ser_23.RData")
 
 Base_fiscalia_v10<-
 sqldf("SELECT *
@@ -892,7 +894,6 @@ lubridate::time_length(lubridate::interval(fech_nac_rec, as.Date("2019-11-13")),
    dplyr::mutate(motivodeegreso_mod_imp_rec= dplyr::case_when(grepl("Therapeutic",motivodeegreso_mod_imp)~ "Treatment completion", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 <90) ~  "Treatment non-completion (Early)", grepl("Early|Late|Administrative", motivodeegreso_mod_imp) & (fech_egres_num_1-fech_ing_num_1 >=90) ~ "Treatment non-completion (Late)", grepl("Referral|Death|Ongoing", motivodeegreso_mod_imp)~ "Censored", T~NA_character_))
 
 warning(paste0("There are ",nrow(dplyr::group_by(Base_fiscalia_v11, hash_key) %>% dplyr::mutate(rn_hash=row_number()) %>% dplyr::filter(rn_hash>1))," cases with more than one offense commited at the youngest age (p= ",dplyr::group_by(Base_fiscalia_v11, hash_key) %>% dplyr::mutate(rn_hash=row_number()) %>% dplyr::filter(rn_hash>1) %>% dplyr::distinct(hash_key) %>% nrow(),")"))
-
 
 warning(paste0("There are ",nrow(dplyr::filter(Base_fiscalia_v11,is.na(fech_nac_rec)))," missing cases in date of birth (were ",nrow(dplyr::filter(janitor::clean_names(Base_fiscalia_v10),is.na(fech_nac_rec)))," in Base_fiscalia_v10)"))
 
