@@ -2029,8 +2029,6 @@ graph export "`c(pwd)'\_figs\h_m_ns_rp6_stdif_rmtl_pris_m1.pdf", as(pdf) replace
 <<dd_graph: saving("h_m_ns_rp6_stdif_rmtl_pris_m1.svg") width(800) replace>>
 
 
-<<dd_display: "Ended at= `c(current_time)' `c(current_date)'">>
-
 
 
 *#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
@@ -2369,3 +2367,31 @@ esttab matrix(est_as24m1_alt) using "${pathdata2}rmst_prison_m1_main_diff_alt.ht
 ~~~~
 
 <<dd_include: "${pathdata2}rmst_prison_m1_main_diff_alt.html" >>
+
+
+~~~~
+<<dd_do>>
+**Perera M, Dwivedi AK. Statistical issues and methods in designing and analyzing survival studies. Cancer Rep (Hoboken). 2020;3(4):e1176. doi:10.1002/cnr2.1176
+*https://www.statalist.org/forums/forum/general-stata-discussion/general/1461519-optimism-in-flexible-parametric-survival-analysis-by-stpm2-please
+* https://sper.org/wp-content/uploads/2019/03/AMW-2012_Kaufman-Schempf_Absolute-Epidemiology.pdf
+*https://journals.sagepub.com/doi/pdf/10.1177/1536867X1201200405
+use mariel_feb_23_2_m1.dta, clear 
+*estread using "mariel_feb_23_2_m1.sters"
+
+generate times = .
+replace times  = 1 if _n==1
+replace times = 3 if _n==2
+replace times = 5 if _n==3
+
+global covs_3b_pre_dum "mot_egr_early mot_egr_late tr_mod2 sex_dum2 edad_ini_cons esc1 esc2 sus_prin2 sus_prin3 sus_prin4 sus_prin5 fr_cons_sus_prin2 fr_cons_sus_prin3 fr_cons_sus_prin4 fr_cons_sus_prin5 cond_ocu2 cond_ocu3 cond_ocu4 cond_ocu5 cond_ocu6 policonsumo num_hij2 tenviv1 tenviv2 tenviv4 tenviv5 mzone2 mzone3 n_off_vio n_off_acq n_off_sud n_off_oth psy_com2 dep2 rural2 rural3 porc_pobr susini2 susini3 susini4 susini5 ano_nac_corr cohab2 cohab3 cohab4 fis_com2 rc_x1 rc_x2 rc_x3"
+
+capture program drop b_conc
+
+program define b_conc, rclass
+qui noi stpm2 $covs_3b_pre_dum , scale(hazard) df(6) eform tvc(mot_egr_early mot_egr_late) dftvc(1) 
+stcstat2
+return scalar c = r(C)
+end
+bootstrap c=r(c), reps(500): b_conc
+
+<<dd_display: "Ended at= `c(current_time)' `c(current_date)'">>

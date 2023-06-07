@@ -3,6 +3,7 @@
 <<dd_include: "H:/Mi unidad/Alvacast/SISTRAT 2022 (github)/header.txt" >>
 <<dd_include: "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/header.txt" >>
 
+
 ~~~~
 <<dd_do>>
 clear all
@@ -55,6 +56,11 @@ if _rc==111 {
 	ssc install estwrite
 	}
 
+cap noi which strmst2pw 
+if _rc==111 {		
+	ssc install strmst2
+	}
+	
 cap noi ssc install moremata 
 
 cap noi which esttab

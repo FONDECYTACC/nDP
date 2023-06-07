@@ -1652,9 +1652,9 @@ subset(as.data.frame.TableOne(tbone_desc_merge53, smd=T, nonnormal= T),subset= g
   dplyr::select(-1) %>% 
   rio::export("tableone_grant_22_23.xlsx")
 
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 if(no_mostrar==0){
 Base_fiscalia_v14_filt<- subset(Base_fiscalia_v14, select=c(vars_cov, "offender_d"), subset=!is.na(motivodeegreso_mod_imp_rec))
 Base_fiscalia_v14_pris_filt<- subset(Base_fiscalia_v14_pris, select=c(vars_cov, "offender_d"), subset=!is.na(motivodeegreso_mod_imp_rec))
@@ -1666,12 +1666,15 @@ Base_fiscalia_v14_filt%>%
     dplyr::select(setdiff(vars_cov, c("edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr"))) %>% 
     tidyr::gather(variable,measure, -motivodeegreso_mod_imp_rec) %>% 
     dplyr::group_by(variable) %>%
-    dplyr::do(chisq.test(.$motivodeegreso_mod_imp_rec, .$measure) %>% broom::tidy()) %>%
+    dplyr::do(cbind.data.frame(broom::tidy(chisq.test(.$motivodeegreso_mod_imp_rec, .$measure)),broom::tidy(sum(table(.$motivodeegreso_mod_imp_rec, .$measure))))
+              ) %>% 
+  #casos completos
+#chisq.test(table(Base_fiscalia_v14_filt$motivodeegreso_mod_imp_rec, Base_fiscalia_v14_filt$sus_principal_mod, exclude=NULL))
     dplyr::mutate(p.value=ifelse(p.value<.001,"<0.001",sprintf("%1.3f",p.value))) %>% 
     dplyr::mutate(statistic=sprintf("%2.0f",statistic)) %>% 
-    dplyr::mutate(report=paste0("X²(",parameter,", ",nrow(Base_fiscalia_v14),")=",statistic,"; p", ifelse(p.value=="<0.001",p.value, paste0("=",p.value)))) %>%
-    dplyr::mutate(report=sub("0\\.","0,",sub("\\.",",",report))) %>% 
-    rio::export("tableone_grant_22_23_3.xlsx")
+    dplyr::mutate(report=paste0("X²(",parameter,", ",x,")=",statistic,"; p", ifelse(p.value=="<0.001",p.value, paste0("=",p.value)))) %>%
+    dplyr::mutate(report=sub("0\\.","0,",sub("\\.",",",report)))%>%
+    rio::export("tableone_grant_22_23_3_alt.xlsx")
 
  chisq.test(Base_fiscalia_v14_filt$motivodeegreso_mod_imp_rec, is.na(Base_fiscalia_v14_filt$offender_d)) 
  chisq.test(Base_fiscalia_v14_filt$motivodeegreso_mod_imp_rec, is.na(Base_fiscalia_v14_filt$offender_d)) 
@@ -1680,13 +1683,13 @@ Base_fiscalia_v14_filt %>%
     dplyr::select(setdiff(vars_cov, c("edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr"))) %>% 
     tidyr::gather(variable,measure, -motivodeegreso_mod_imp_rec) %>% 
     dplyr::group_by(variable) %>%
-    dplyr::do(fisher.test(.$motivodeegreso_mod_imp_rec, .$measure, workspace = 2e10, simulate.p.value = T, B=1e5) %>% broom::tidy()) %>% 
-    rio::export("tableone_grant_22_23_2.xlsx")
+    dplyr::do(fisher.test(table(.$motivodeegreso_mod_imp_rec, .$measure, exclude=NULL), workspace = 2e10, simulate.p.value = T, B=1e5) %>% broom::tidy()) %>% 
+    rio::export("tableone_grant_22_23_2_alt.xlsx")
 
-fisher.test(Base_fiscalia_v14_filt$motivodeegreso_mod_imp_rec, 
-            is.na(Base_fiscalia_v14_filt$offender_d), workspace = 2e10, simulate.p.value = T, B=1e5) 
-fisher.test(Base_fiscalia_v14_pris_filt$motivodeegreso_mod_imp_rec, 
-            is.na(Base_fiscalia_v14_pris_filt$offender_d), workspace = 2e10, simulate.p.value = T, B=1e5) 
+fisher.test(table(Base_fiscalia_v14_filt$motivodeegreso_mod_imp_rec, 
+            is.na(Base_fiscalia_v14_filt$offender_d),exclude=NULL), workspace = 2e10, simulate.p.value = T, B=1e5) 
+fisher.test(table(Base_fiscalia_v14_pris_filt$motivodeegreso_mod_imp_rec, 
+            is.na(Base_fiscalia_v14_pris_filt$offender_d),exclude=NULL), workspace = 2e10, simulate.p.value = T, B=1e5) 
 
 # Kurksal Wallis
 paste0("H(",kruskal.test(edad_al_ing_1 ~ motivodeegreso_mod_imp_rec, data=Base_fiscalia_v14_filt)$parameter,")=",
@@ -2130,7 +2133,7 @@ rbind(cbind(comp="Early Dropout vs. Tr. completion",
     dplyr::select(type, comp, rn, everything()) %>% 
     dplyr::mutate_if(is.numeric, ~round(.,2)) %>% 
     dplyr::group_by(type, comp) %>% 
-    dplyr::summarise_if(is.numeric, ~list(min= min(.,na.rm=T), max= max(.,na.rm=T))) %>%
+    dplyr::summarise_if(is.numeric, ~list(min= min(.,na.rm=T), max= max(.,na.rm=T)))%>%
   ungroup() %>% 
   knitr::kable("markdown", caption="Balance Measures (multinomial response BART weights)", col.names=c("Type","Comparison","Diff. Unstandardized","V.Ratio Unstandardized","Diff.Adjusted","V.Ratio.Adjusted"))
  #  knitr::kable("html", caption="Balance Measures (multinomial response weights)") %>% 
@@ -2144,14 +2147,14 @@ rbind(cbind(comp="Early Dropout vs. Tr. completion",
 cbind.data.frame(type=c(rep("Cond.sentence",6), rep("Imprisonmente",6)),
 dplyr::bind_rows(
 data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_res_1$Pair.Balance$`2 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Late Dropout vs. Tr. completion",bal_tab_2023_res_1$Pair.Balance$`3 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Late vs. Early Dropout",bal_tab_2023_res_1$Pair.Balance$`3 vs. 2`$Observations),keep.rownames = T),
-data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_res_2$Pair.Balance$`2 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_res_2$Pair.Balance$`3 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Late vs. Early Dropout",bal_tab_2023_res_2$Pair.Balance$`3 vs. 2`$Observations),keep.rownames = T))) %>% 
+data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_res_2$Pair.Balance$`2 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Early Dropout vs. Tr. completion",bal_tab_2023_res_2$Pair.Balance$`3 vs. 1`$Observations),keep.rownames = T), data.table::data.table(cbind(comp="Late vs. Early Dropout",bal_tab_2023_res_2$Pair.Balance$`3 vs. 2`$Observations),keep.rownames = T)))%>% 
   #dplyr::mutate_if(is.numeric, ~round(.,2)) %>% 
   knitr::kable("markdown", caption="Effective sample sizes", col.names = c("Type", "Adj", "Comparison", "Tr. completion", "Early Dropout", "Late Dropout"))
 ```
 :::
 
 ::: controlly2
-```{r stata-sens2, echo=T, fig.align='center', message=T, error=T, eval=T}
+```{r stata-sens2, echo=T, fig.align='center', message=T, error=T, eval=F}
 sub1_statadf_miss<- subset(statadf_miss,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5)|>data.table::data.table()
 require(RMSTSens)
 results.approx11 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=sub1_statadf_miss, methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=1, ini.par=1, verbose=FALSE)
@@ -2177,6 +2180,57 @@ results.approx23
 results.approx25 <- RMSTSens(time="diff", status="event", exposure="motivodeegreso_mod_imp_rec", level.exposed="1", ps="weight_mult_b", data=sub1_statadf_miss, methods="Optim", use.multicore=TRUE, n.core=parallel::detectCores()-2, lambda=c(1,1.25,1.5), tau=5, ini.par=1, verbose=FALSE)
 invisible("If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative because it is implemented as fast as the approximate optimization method.")
 results.approx25
+```
+:::
+
+
+::: controlly2
+```{r coxphw, echo=T, fig.align='center', message=T, error=T, eval=T}
+ifelse(!require("coxphw"), install.packages("coxphw"),library("coxphw"))
+
+system.time({
+pwp_pris<-
+  coxphw::coxphw(Surv(diff,event==1)  ~ mot_egr_early+ mot_egr_late+ tr_mod2+ sex_dum2+ edad_ini_cons+ esc1+ esc2+ sus_prin2+ sus_prin3+ sus_prin4+ sus_prin5+ fr_cons_sus_prin2+ fr_cons_sus_prin3+ fr_cons_sus_prin4+ fr_cons_sus_prin5+ cond_ocu2+ cond_ocu3+ cond_ocu4+ cond_ocu5+ cond_ocu6+ policonsumo+ num_hij2+ tenviv1+ tenviv2+ tenviv4+ tenviv5+ mzone2+ mzone3+ n_off_vio+ n_off_acq+ n_off_sud+ n_off_oth+ psy_com2+ psy_com3+ dep2+ rural2+ rural3+ porc_pobr+ susini2+ susini3+ susini4+ susini5+ ano_nac_corr+ cohab2+ cohab3+ cohab4+ fis_com2+ fis_com3+ rc_x1+ rc_x2+ rc_x3, data = statadf_miss_pris, template="AHR",  robust=T) #, clusterid=statadf_miss_pris$hash_key
+#  ~ motivodeegreso_mod_imp_rec+ tr_mod2+ sex_dum2+ edad_ini_cons+ esc1+ esc2+ sus_prin2+ sus_prin3+ sus_prin4+ sus_prin5+ fr_cons_sus_prin2+ fr_cons_sus_prin3+ fr_cons_sus_prin4+ fr_cons_sus_prin5+ cond_ocu2+ cond_ocu3+ cond_ocu4+ cond_ocu5+ cond_ocu6+ policonsumo+ num_hij2+ tenviv1+ tenviv2+ tenviv4+ tenviv5+ mzone2+ mzone3+ n_off_vio+ n_off_acq+ n_off_sud+ n_off_oth+ psy_com2+ psy_com3+ dep2+ rural2+ rural3+ porc_pobr+ susini2+ susini3+ susini4+ susini5+ ano_nac_corr+ cohab2+ cohab3+ cohab4+ fis_com2+ fis_com3+ rc_x1+ rc_x2+ rc_x3, data = statadf_miss_pris
+})
+
+
+system.time({
+pwp_condemn<-
+  coxphw::coxphw(Surv(diff,event==1)  ~ mot_egr_early+ mot_egr_late+ tr_mod2+ sex_dum2+ edad_ini_cons+ esc1+ esc2+ sus_prin2+ sus_prin3+ sus_prin4+ sus_prin5+ fr_cons_sus_prin2+ fr_cons_sus_prin3+ fr_cons_sus_prin4+ fr_cons_sus_prin5+ cond_ocu2+ cond_ocu3+ cond_ocu4+ cond_ocu5+ cond_ocu6+ policonsumo+ num_hij2+ tenviv1+ tenviv2+ tenviv4+ tenviv5+ mzone2+ mzone3+ n_off_vio+ n_off_acq+ n_off_sud+ n_off_oth+ psy_com2+ psy_com3+ dep2+ rural2+ rural3+ porc_pobr+ susini2+ susini3+ susini4+ susini5+ ano_nac_corr+ cohab2+ cohab3+ cohab4+ fis_com2+ fis_com3+ rc_x1+ rc_x2+ rc_x3, data = statadf_miss, template="AHR",  robust=T) #, clusterid=statadf_miss_pris$hash_key
+#  ~ motivodeegreso_mod_imp_rec+ tr_mod2+ sex_dum2+ edad_ini_cons+ esc1+ esc2+ sus_prin2+ sus_prin3+ sus_prin4+ sus_prin5+ fr_cons_sus_prin2+ fr_cons_sus_prin3+ fr_cons_sus_prin4+ fr_cons_sus_prin5+ cond_ocu2+ cond_ocu3+ cond_ocu4+ cond_ocu5+ cond_ocu6+ policonsumo+ num_hij2+ tenviv1+ tenviv2+ tenviv4+ tenviv5+ mzone2+ mzone3+ n_off_vio+ n_off_acq+ n_off_sud+ n_off_oth+ psy_com2+ psy_com3+ dep2+ rural2+ rural3+ porc_pobr+ susini2+ susini3+ susini4+ susini5+ ano_nac_corr+ cohab2+ cohab3+ cohab4+ fis_com2+ fis_com3+ rc_x1+ rc_x2+ rc_x3, data = statadf_miss_pris
+})
+#pris
+#sent
+
+#early
+#pwp_pris, mot_egr_early 1.8193382  1.5723899  2.1050704  ==== 3.040261 2.521084      NA
+#pwp_condemn, mot_egr_early  1.6981313  1.5911785  1.8122731 ==== 2.239818 2.101310       NA
+
+#late
+#pwp_pris, mot_egr_late  1.4784520  1.3134946  1.6641257 ==== 2.319504 1.955190       NA
+#pwp_condemn, mot_egr_late   1.5377467  1.4629155  1.6164056  ====  2.029950 1.927147       NA
+require(EValue)
+
+evalues.RR(est = 1.8193382, lo = 1.5723899, hi =2.1050704, rare=T)
+#E-values 3.040261 2.521084      NA
+evalues.RR(est = toRR(HR(1.6981313 , rare = FALSE)), 
+           lo = toRR(HR(1.5911785, rare = FALSE)), 
+           hi = toRR(HR(1.8122731, rare = FALSE)), 
+           rare=T)
+#RR       1.441756 1.378716 1.507518
+#2.239818 2.101310       NA
+evalues.RR(est = 1.4784520, lo = 1.3134946 , hi =1.6641257, rare=T)
+# 2.319504 1.955190       NA
+evalues.RR(est = toRR(HR(1.5377467, rare = FALSE)), 
+           lo = toRR(HR(1.4629155, rare = FALSE)), 
+           hi = toRR(HR(1.6164056 , rare = FALSE)), 
+           rare=T)
+# RR       1.346677 1.301161 1.393714
+# E-values 2.029950 1.927147       NA
+
+toHR(RR(2.029950,rare=F))
+
 ```
 :::
 

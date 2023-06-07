@@ -88,3 +88,35 @@ summary(rpsftm_fit_cph)
 # En este caso, parece que los valores de Z están alcanzando un máximo alrededor de ψ = -0.01010101 y luego disminuyendo, lo que podría sugerir que este es el valor óptimo del parámetro ψ. Sin embargo, la interpretación final dependerá del contexto específico y del tipo de análisis que estés realizando.
 
 
+rm(list=ls());gc()
+
+statadf_main          <- rio::import("mariel_feb_23.dta")
+statadf_main_cc       <-  statadf_main[complete.cases(statadf_main[, c(vars,"motivodeegreso_mod_imp_rec")]),] %>% dplyr::mutate(motivodeegreso_mod_imp_rec=factor(motivodeegreso_mod_imp_rec)) #%>% dplyr::mutate(across(vars,~factor(.)))
+# statadf_main_l        <- rio::import("mariel_feb_23_late.dta")
+# statadf_main_e        <- rio::import("mariel_feb_23_early.dta")
+# statadf_main_e_l      <- rio::import("mariel_feb_23_early_late.dta")
+
+statadf_main_pris     <- rio::import("mariel_feb_23_2.dta")
+statadf_main_pris_cc  <- statadf_main_pris[complete.cases(statadf_main_pris[, c(vars,"motivodeegreso_mod_imp_rec")]),] %>% dplyr::mutate(motivodeegreso_mod_imp_rec=factor(motivodeegreso_mod_imp_rec)) 
+# statadf_main_pris_l   <- rio::import("mariel_feb_23_2_late.dta")
+# statadf_main_pris_e   <- rio::import("mariel_feb_23_2_early.dta")
+# statadf_main_pris_e_l <- rio::import("mariel_feb_23_2_early_late.dta")
+statadf_miss          <- rio::import("mariel_feb_23_m1.dta")%>% dplyr::mutate(motivodeegreso_mod_imp_rec=factor(motivodeegreso_mod_imp_rec)) #%>%
+statadf_miss_pris     <- rio::import("mariel_feb_23_2_m1.dta")%>% dplyr::mutate(motivodeegreso_mod_imp_rec=factor(motivodeegreso_mod_imp_rec)) #%>%
+
+sub1_statadf_miss<- subset(statadf_miss,subset= motivodeegreso_mod_imp_rec!=3) |> dplyr::mutate(motivodeegreso_mod_imp_rec= ifelse(motivodeegreso_mod_imp_rec==2,1,0))|> slice(1:5e5)|>data.table::data.table()
+
+mod_tvc <- stpm2(Surv(diff,event==1)~motivodeegreso_mod_imp_rec+ tr_mod2+ sex_dum2+ edad_ini_cons+ esc1+ 
+                   esc2+ sus_prin2+ sus_prin3+ sus_prin4+ sus_prin5+ fr_cons_sus_prin2+ fr_cons_sus_prin3+ 
+                   fr_cons_sus_prin4+ fr_cons_sus_prin5+ cond_ocu2+ cond_ocu3+ cond_ocu4+ cond_ocu5+ 
+                   cond_ocu6+ policonsumo+ num_hij2+ tenviv1+ tenviv2+ tenviv4+ tenviv5+ mzone2+ 
+                   mzone3+ n_off_vio+ n_off_acq+ n_off_sud+ n_off_oth+ psy_com2+ psy_com3+ dep2+ 
+                   rural2+ rural3+ porc_pobr+ susini2+ susini3+ susini4+ susini5+ ano_nac_corr+ cohab2+ 
+                   cohab3+ cohab4+ fis_com2+ fis_com3+ rc_x1+ rc_x2+ rc_x3,data=sub1_statadf_miss,df=5,
+                 tvc=list(motivodeegreso_mod_imp_rec=1))
+require(rstpm2)
+predict(mod_tvc, newdata = data.frame(motivodeegreso_mod_imp_rec = 1, diff=3), type = "meanhr", var = "motivodeegreso_mod_imp_rec")
+# Error in model.frame.default(Terms, newdata, na.action = na.action, xlev = object$xlevels) : 
+#   variable lengths differ (found for 'tr_mod2')
+# In addition: Warning message:
+#   'newdata' had 1 row but variables found have 35074 rows 

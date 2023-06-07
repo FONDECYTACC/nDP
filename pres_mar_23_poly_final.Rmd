@@ -1,10 +1,10 @@
 ---
-main_topsize: 0.9 #percent coverage of the poster #no funciona
+main_topsize: 1 #percent coverage of the poster #no funciona
 main_bottomsize: 0 #https://github.com/brentthorne/posterdown/wiki/posterdown_html
 main_width: 1
-main_fontfamily: xaringanthemer::google_font('Baloo Bhai 2')
+main_fontfamily: "Roboto"
 font_family: "Roboto"
-titlebox_height: "60%" #https://github.com/brentthorne/posterdown/issues/113  The default is "15%"
+titlebox_height: "10%" #https://github.com/brentthorne/posterdown/issues/113  The default is "15%"
 title_textsize: "55pt" #poster title fontsize
 titlebox_borderwidth: "0cm" #sacar, no sirve
 primary_colour:  "#21177A60" #mas 2 digitos para la trasparencia
@@ -14,18 +14,19 @@ author_textsize: "35pt"
 poster_height: "40in"
 poster_width: "42in"
 body_textsize: "43px"
-#column_margins:	"0.15in"
+column_margins:	"1in"
+columnline_width: "1mm"
 accent_colour: "#aaaaaa"
 affiliation_textcol: "#bf846f" # "#591F0A"
 affiliation_textsize: "27pt"
-bibliography_spacing: "0.2"
+bibliography_spacing: "0.5"
 text_size: "30%" #no sirve
 column_numbers: 2
 #ESSENTIALS
 sectitle_textsize: "38pt"
 sectitle2_textsize: "25pt"
 bibliography_textsize: "10pt"
-sectitle_boxshape: "6mm 6mm" #Changes the shape of the section title box.
+sectitle_boxshape: "2mm 3mm" #Changes the shape of the section title box.
 title: '**Polysubstance use, treatment completion, and contact with the justice system: a multistate analysis of treatments for substance use disorders between 2010-2019 in Chile**'
 author:
   - name: '**A. González-Santa Cruz**'
@@ -99,6 +100,12 @@ div.logo_right{
   --text-bold-color: #21177A;
 }
 
+title {
+  line-height: .85em !important;
+  margin-top: 1 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+}
 
 h3 {
   line-height: .65em !important;
@@ -161,18 +168,12 @@ poster_title h2 {
   }
 /*  
 @page {
-  size: 1016mm 1066.8mm; 
+  size: 1010mm 1060mm; 
   line-height: .85em !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   padding: 0px !important;
 }  
-title {
-  line-height: .85em !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding: 0px !important;
-}
 author {
   line-height: .85em !important;
   margin-top: 0 !important;
@@ -675,11 +676,11 @@ ser_2023_1<-rio::import("ser_2023_1.dta")
 <!--- **Hypothesis:** Baseline PSU is related to lower treatment completion rates (1), baseline PSU is linked to a greater risk of contact with CJS (2), patients with PSU will have a differential risk of contact with CJS associated with treatment completion, and treatment completion will explain part of the relationship between PSU and contact with CJS (3). --->
 
 # Methods
-**Design**: Retrospective cohort based on the administrative data's record linkage. **Data**:  Chilean substance use treatment programs and Prosecutor’s Office through a deterministic linkage process. **Ethics**: We are updating an existing ethical approval by the Griffith University GU Ref No: 2022/919.
+**Design**: Retrospective cohort based on an administrative data's record linkage. **Data**:  Chilean substance use treatment programs and Prosecutor’s Office through a deterministic linkage process. **Ethics**: We are updating an existing ethical approval by the Griffith University GU Ref No: 2022/919.
 
 **Exposure**: baseline PSU (using >1 substance at admission to SUD treatment); **Mediator**: SUD treatment outcome (complete vs. dropout/spelled by misconduct); **Outcome**: contact with CJS (committing an offense that led to a condemnatory sentence).
 
-<li>The research control for a number of confounding variables (listed in Figure 1), and patients are weighted by the inverse probability of PSU(IPW).</li>
+<li>We controlled for a number of confounding variables (listed in Figure 1), and weighted patients  by the inverse probability of PSU(IPW).</li>
 <li>We described the cumulative incidence rate (x1,000 person-years) of patients with PSU and no PSU and incidence rate ratios(IRR) of treatment completion and contact with CJS, with and without  IPWs.</li>
 ```{r exp-surv4-plot, eval=T, echo=F, error=T, fig.align='center', fig.cap="Covariate balance", fig.retina=2}
 knitr::include_graphics("pbal2_mod.svg")
