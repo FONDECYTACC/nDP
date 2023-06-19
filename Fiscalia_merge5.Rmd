@@ -2202,7 +2202,19 @@ pwp_condemn<-
 })
 #pris
 #sent
+coxphw_coefs<-
+rbind.data.frame(
+cbind.data.frame(type="Condemnatory Sentence", coef= coef(pwp_condemn)[c(1:2)],coxphw:::confint.coxphw(pwp_condemn)[c(1:2),]),
+cbind.data.frame(type="Imprisonment",coef= c(coef(pwp_pris)[c(1:2)]),coxphw:::confint.coxphw(pwp_pris)[c(1:2),])
+) 
 
+coxphw_coefs%>% 
+  dplyr::mutate_if(is.numeric,~exp(.)) %>% 
+  knitr::kable("markdown", caption="Averaged hazard ratios", digits=2)
+```
+
+
+```{r coxphw2, echo=T, fig.align='center', message=T, error=T, eval=T}
 #early
 #pwp_pris, mot_egr_early 1.8193382  1.5723899  2.1050704  ==== 3.040261 2.521084      NA
 #pwp_condemn, mot_egr_early  1.6981313  1.5911785  1.8122731 ==== 2.239818 2.101310       NA
@@ -2212,25 +2224,25 @@ pwp_condemn<-
 #pwp_condemn, mot_egr_late   1.5377467  1.4629155  1.6164056  ====  2.029950 1.927147       NA
 require(EValue)
 
-evalues.RR(est = 1.8193382, lo = 1.5723899, hi =2.1050704, rare=T)
+evalues.RR(est = exp(coxphw_coefs[3,2]), 
+           lo = exp(coxphw_coefs[3,3]), hi= exp(coxphw_coefs[3,4]), rare=T)
 #E-values 3.040261 2.521084      NA
-evalues.RR(est = toRR(HR(1.6981313 , rare = FALSE)), 
-           lo = toRR(HR(1.5911785, rare = FALSE)), 
-           hi = toRR(HR(1.8122731, rare = FALSE)), 
+evalues.RR(est = toRR(HR(exp(coxphw_coefs[1,2]), rare = FALSE)), 
+           lo = toRR(HR(exp(coxphw_coefs[1,3]), rare = FALSE)), 
+           hi = toRR(HR(exp(coxphw_coefs[1,4]), rare = FALSE)), 
            rare=T)
 #RR       1.441756 1.378716 1.507518
 #2.239818 2.101310       NA
-evalues.RR(est = 1.4784520, lo = 1.3134946 , hi =1.6641257, rare=T)
+evalues.RR(est = exp(coxphw_coefs[4,2]), 
+           lo = exp(coxphw_coefs[4,3]), 
+           hi = exp(coxphw_coefs[4,4]), rare=T)
 # 2.319504 1.955190       NA
-evalues.RR(est = toRR(HR(1.5377467, rare = FALSE)), 
-           lo = toRR(HR(1.4629155, rare = FALSE)), 
-           hi = toRR(HR(1.6164056 , rare = FALSE)), 
+evalues.RR(est = toRR(HR(exp(coxphw_coefs[2,2]), rare = FALSE)), 
+           lo = toRR(HR(exp(coxphw_coefs[2,3]), rare = FALSE)), 
+           hi = toRR(HR(exp(coxphw_coefs[2,4]) , rare = FALSE)), 
            rare=T)
 # RR       1.346677 1.301161 1.393714
 # E-values 2.029950 1.927147       NA
-
-toHR(RR(2.029950,rare=F))
-
 ```
 :::
 

@@ -402,7 +402,7 @@ zp4 <-
   ggplot(data=dat_zp4) +
   geom_bar(aes(x = interaction(as.factor(category), L1), y = perc, fill = variable),
            stat = "identity", position = "stack") +
-  facet_grid(var2~.) +
+  facet_grid(category~.) +
   scale_fill_manual(aesthetics = "fill",
                     values = colors_plot,
                     name = "Response Categories",
@@ -480,3 +480,181 @@ bind_rows(CONS_C1_2010_19,CONS_C1_2019_22) %>%  #dplyr::filter(is.na(motivo_de_e
   dplyr::mutate(date_adm= readr::parse_date(fecha_ingreso_a_tratamiento,c("%d/%m/%Y"))) %>% 
   #dplyr::select(TABLE, fecha_ingreso_a_tratamiento, date_adm) %>% View()
   janitor::tabyl(sustancia_principal,otras_sustancias_no1, otras_sustancias_no2, otras_sustancias_no3) %>% melt() %>% dplyr::filter(variable=="n") %>% arrange(value) %>% View()
+
+bind_rows(CONS_C1_2010_19,CONS_C1_2019_22) %>% 
+  dplyr::filter(sustancia_principal!="Alcohol"|is.na(sustancia_principal)) %>% 
+  janitor::tabyl(otras_sustancias_no1, otras_sustancias_no2,otras_sustancias_no3) %>% melt() %>% 
+  dplyr::select(otras_sustancias_no1, variable, L1, value) %>% 
+  dplyr::filter(otras_sustancias_no1=="Alcohol"|variable=="Alcohol"|L1=="Alcohol") %>% dplyr::filter(value>0) %>% summarise(sum=sum(value))
+
+
+
+
+explanatory = c("sex", "escolaridad_rec", "sus_ini_mod_mvv", "dg_trs_cons_sus_or","sus_principal_mod") 
+#dup_filt_num tr_mod mot_egres_mod_imp_rec_num
+
+dat_cor_zp4<-
+Base_fiscalia_v13 %>%
+  dplyr::mutate(factor= factor(interaction(tr_mod, mot_egres_mod_imp_rec_num,dup_filt_num), 
+                               labels=c("Ambulatory\nNon-complete\nSingle","Residential\nNon-complete\nSingle",
+                                        "Ambulatory\nComplete\nSingle","Residential\nComplete\nSingle",
+                                        "Ambulatory\nNon-complete\n>1","Residential\nNon-complete\n>1",
+                                        "Ambulatory\nComplete\n>1","Residential\nComplete\n>1"))) %>% 
+  #janitor::tabyl(factor)
+  dplyr::select("factor", explanatory) %>%
+  na.omit() %>% 
+  mutate(across(c("factor", explanatory), ~ factor(.))) %>%
+  gather(variable, measure, -factor) %>% 
+  group_split(variable)%>%
+  map(~ tabyl(.,factor, measure)) %>% 
+  melt() %>% 
+  dplyr::mutate(var="factor") %>% 
+  dplyr::rename("category"="factor") %>% 
+  dplyr::mutate(L1= factor(L1, labels=c("SUD\nComorbidity", "Educational\nAttainment", "Sex", "First\nsubstance used", "Primary Substance\nat Admission"))) %>% 
+  dplyr::select(var, L1, category, variable, value) %>% 
+  dplyr::arrange(var, L1, category, variable, value) %>% 
+  dplyr::group_by(var, L1, category) %>% 
+  dplyr::mutate(perc=value/sum(value))
+
+
+#p + geom_label_repel(aes(fill=factor(cyl)), colour="white", segment.colour="black")
+# Define a function to generate the color sequence
+color_gen <- function(low, high, n) {
+  palette <- colorRampPalette(c(low, high))
+  colors <- palette(n)
+  return(colors)
+}
+
+require(ggrepel)
+zp4_cor_splt<-
+dat_cor_zp4 %>%
+  dplyr::mutate(lab=paste0(round(perc,2)*100,"%"), half=(perc/10)*4) %>% 
+  split(., .$L1) %>%
+  map(~{ggplot(.x,aes(x = category, y = perc, fill = variable, label=lab)) +
+  geom_bar(stat = "identity", position = "stack") +
+  #  geom_text(aes(x = category,label=`lab`, y=.5, fill = variable), size = 5) +
+      theme(
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        line = element_blank())+
+      geom_label_repel(aes(label=lab),#aes(y=lab, label=lab),
+                 #position = position_dodge(width = .5),    # move to center of bars
+                 #vjust = 0,    # nudge above top of bar
+                 #position = position_dodge(width = .8),
+                 #vjust = .1,
+                 position = position_stack(vjust = 0.5),
+                 size = 8,
+                 force_pull = 1,
+                 max.time = 6,
+                 max.iter = 1e6,
+                 #direction = "y",
+                 #force=1,
+                 seed=2125,
+                 colour = "white", fontface = "bold")+
+      labs(y = "Response probabilities",
+           x = NULL,
+           fill = NULL) +
+      theme(axis.text.y = element_blank(),
+            axis.ticks.y = element_blank(),
+            panel.grid.major.y = element_blank(),
+            legend.text = element_text(size=12),
+            axis.text.x = element_text(angle = 30, hjust = 1),
+            legend.position = "right") +
+      guides(fill = guide_legend(reverse = F,override.aes = aes(label = "", alpha = 1))) +
+      scale_y_continuous(breaks = seq(0, 1, by = .2), labels = scales::percent_format(accuracy = 1)) +
+      theme_sjplot()+
+     # scale_fill_brewer(palette = color_gen("#21177A60", "#ff7f50", 
+    # length(levels(.x$variable))))
+     scale_fill_manual(values = color_gen("#21177A60", "#ff7f5060", 
+                                                   length(unique(.x$variable))))#, levels(.x$variable)))
+  })
+#warning("Sacamos a los que son derivación") resuelto
+
+ggsave(plot= zp4_cor_splt[[1]], filename="acc_ser23_plot_sud_com.pdf", height=10, width=13)#, height=5, width=6.5, dpi=300)
+ggsave(plot= zp4_cor_splt[[2]], filename="acc_ser23_plot_ed_att.pdf", height=10, width=13)#, height=5, width=6.5, dpi=300)
+ggsave(plot= zp4_cor_splt[[3]], filename="acc_ser23_plot_sex.pdf", height=10, width=13)#, height=5, width=6.5, dpi=300)
+ggsave(plot= zp4_cor_splt[[4]], filename="acc_ser23_plot_1st_subs_used.pdf", height=10, width=13)#, height=5, width=6.5, dpi=300)
+ggsave(plot= zp4_cor_splt[[5]], filename="acc_ser23_plot_prim_subs_adm.pdf", height=10, width=13)#, height=5, width=6.5, dpi=300)
+
+ggsave(plot= zp4_cor_splt[[1]], filename="acc_ser23_plot_sud_com.png", height=10, width=13)#, height=5, width=6.5, dpi=300)
+ggsave(plot= zp4_cor_splt[[2]], filename="acc_ser23_plot_ed_att.png", height=10, width=13)#, height=5, width=6.5, dpi=300)
+ggsave(plot= zp4_cor_splt[[3]], filename="acc_ser23_plot_sex.png", height=10, width=13)#, height=5, width=6.5, dpi=300)
+ggsave(plot= zp4_cor_splt[[4]], filename="acc_ser23_plot_1st_subs_used.png", height=10, width=13)#, height=5, width=6.5, dpi=300)
+ggsave(plot= zp4_cor_splt[[5]], filename="acc_ser23_plot_prim_subs_adm.png", height=10, width=13)#, height=5, width=6.5, dpi=300)
+
+df<-
+Base_fiscalia_v13%>% 
+  dplyr::group_by(hash_key)%>%
+  dplyr::mutate(n_hash=n())%>% 
+  slice(1) %>% 
+  ungroup() %>% 
+  dplyr::select(starts_with("dias_treat_imp_sin_na_")) %>%  #mean_cum_dias_trat_sin_na_1
+  gather(option,value) %>%
+  dplyr::mutate(option=dplyr::case_when(option=="dias_treat_imp_sin_na_1"~"01",
+                                        option=="dias_treat_imp_sin_na_2"~"02",
+                                        option=="dias_treat_imp_sin_na_3"~"03",
+                                        T~"04+")) %>% 
+  ggplot(aes(x = factor(option), y=value,group= option)) +
+  stat_summary(fun = mean, geom="bar",alpha=.8)+
+  stat_summary(fun = median, geom="point")+
+  stat_summary(fun.y = median,
+               fun.min = function(x) quantile(x,.25), 
+               fun.max = function(x) quantile(x,.75), 
+               geom = "errorbar", width = 0.5)+
+  geom_label(inherit.aes = FALSE, data = . %>% group_by(option) %>% slice(1), 
+             aes(label = paste0(count, " Obs."), x = option), y = -0.5)+
+  geom_label(inherit.aes = FALSE, data = . %>% group_by(option) %>% slice(1), 
+             aes(label = paste0(count, " Obs."), x = option), y = -0.5)+
+  theme_bw()+
+  labs(x="Number of Treatment of Each User", y="Days in Treatment",
+       caption=paste0("Note. Bars=Means, Dots= Medians, Error bars= Percentiles 25 and 75"))
+       
+zp5_cor<- 
+Base_fiscalia_v13%>% 
+  dplyr::group_by(hash_key)%>%
+  dplyr::mutate(n_hash=n())%>% 
+  slice(1) %>% 
+  ungroup() %>% 
+dplyr::mutate(factor= factor(interaction(tr_mod, mot_egres_mod_imp_rec_num), 
+                             labels=c("Ambulatory\nNon-complete","Residential\nNon-complete",
+                                      "Ambulatory\nComplete","Residential\nComplete"))) %>% 
+  split(., .$factor) %>%
+  map(~{
+  dplyr::select(.x, starts_with("dias_treat_imp_sin_na_")) %>%  #mean_cum_dias_trat_sin_na_1
+  gather(option,value) %>%
+dplyr::mutate(option=dplyr::case_when(option=="dias_treat_imp_sin_na_1"~"01",
+                                      option=="dias_treat_imp_sin_na_2"~"02",
+                                      option=="dias_treat_imp_sin_na_3"~"03",
+                                      T~"04+")) %>% 
+  dplyr::mutate(option=factor(option)) %>% 
+  dplyr::group_by(option) %>% 
+  dplyr::mutate(count = length(na.omit(value))) %>% 
+  dplyr::ungroup() %>% 
+  ggplot(aes(x = option, y=value,group= option)) +
+  stat_summary(fun = mean, geom="bar",alpha=.8, na.rm = T)+
+  stat_summary(fun = median, geom="point", na.rm = T)+
+  stat_summary(fun = median,
+               fun.min = function(x) quantile(x,.25, na.rm = T), 
+               fun.max = function(x) quantile(x,.75, na.rm = T), 
+               geom = "errorbar", width = 0.5)+
+  geom_label(inherit.aes = FALSE, data = . %>% group_by(option) %>% slice(1), 
+             aes(label = paste0(count, " Obs."), x = option), y = -0.5)+
+  geom_label(inherit.aes = FALSE, data = . %>% group_by(option) %>% slice(1), 
+             aes(label = paste0(count, " Obs."), x = option), y = -0.5)+
+  theme_bw()+
+  theme(plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  #geom_bar(stat = "identity")+
+  #geom_errorbar() +
+  labs(x="Number of Treatment of Each User", y="Days in Treatment",caption=paste0("Note. Bars=Means, Dots= Medians, Error bars= Percentiles 25 and 75"))
+})
+  #janitor::tabyl(factor)
+#c("Ambulatory\nNon-complete","Residential\nNon-complete",
+#  "Ambulatory\nComplete","Residential\nComplete"))) %>% 
+  
+ggsave(plot= zp5_cor[[1]], filename="acc_ser23_plot_amb_noncomp.pdf", height=10, width=13)#, height=5, width=6.5, dpi=300)
+ggsave(plot= zp5_cor[[2]], filename="acc_ser23_plot_res_noncomp.pdf", height=10, width=13)#, height=5, width=6.5, dpi=300)
+ggsave(plot= zp5_cor[[3]], filename="acc_ser23_plot_amb_comp.pdf", height=10, width=13)#, height=5, width=6.5, dpi=300)
+ggsave(plot= zp5_cor[[4]], filename="acc_ser23_plot_res_comp.pdf", height=10, width=13)#, height=5, width=6.5, dpi=300)
+

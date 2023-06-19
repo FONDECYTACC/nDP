@@ -644,7 +644,7 @@ CONS_C1_2019_22=data.table::rbindlist(mget(paste0("SISTRAT23_c1_",c(2019:2022)))
 
 CONS_C1_2010_19=plyr::rbind.fill(mget(paste0("SISTRAT23_c1_pre_",c(2010:2019)))) %>% 
   data.table::data.table() %>% 
- dplyr::mutate(TABLE = sub(".+(....)$", "\\1", TABLE))
+ dplyr::mutate(TABLE = sub("^(\\d{4}).*", "\\1", TABLE))
 # data.table::rbindlist(mget(paste0("SISTRAT23_c1_pre_",c(2010:2019))), idcol="TABLE", fill=T)%>% 
 #  dplyr::mutate(TABLE = sub(".+(....)$", "\\1", TABLE))
 ```
