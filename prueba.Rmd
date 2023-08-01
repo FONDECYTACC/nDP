@@ -1,5 +1,5 @@
 ---
-title: "Individual offenses eported in TOP databases and Prossecutors Office's Records"
+title: "Individual offenses reported in TOP databases and Prossecutors Office's Records"
 date: "`r withr::with_locale(new = c('LC_TIME' = 'C'), code =format(Sys.time(),'%B %d, %Y'))`"
 output:
   distill::distill_article:

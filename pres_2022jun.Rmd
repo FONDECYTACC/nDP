@@ -544,7 +544,7 @@ fig_trans+
     )+
     scale_x_continuous(breaks=seq(1,max(data$Paciente),by=10))+
     scale_y_continuous(breaks=seq(min(data$y),max(data$y4),by=2), labels=seq(min(data$y),max(data$y4),by=2)+2000)+
-   labs(y="Tiempo de seguimiento (en trimestres)", x="Individuos (ID)")+
+   labs(y="Tiempo de seguimiento (en años)", x="Individuos (ID)")+
   #labs(y="Follow-up (in quarters)",x="Individual(ID)", caption="Note. Dot= Complete treatment;\nSquare= Contact w/ justice system (imputed);\nTriangle= Contact w/ justice system (victim);\nBlue line= Time in treatment;\nOrange line= Time in conctact w/justice system;\nShared area=Follow-up window")+
   theme(plot.caption = element_text(hjust = 0, face= "italic"))
  
@@ -563,9 +563,9 @@ fig_trans_final
 
 - Para reflejar un poco la problemática, expondré este esquema de trayectorias de tratamiento.
 
-- La figura muestra distintas trayectorias de la cohorte. Incluye personas con y sin contactos con el sistema judicial. La entrada de paciente a la cohorte retrospectiva empieza a la fecha en que es admitido por primera vez en un tratamiento por uso de sustancias enn el período de 2010-2019 y figura en las listas anuales del SENDA al 2010 al 2019 (independientemente si tienen tratamientos previos).
+- La figura muestra distintas trayectorias de la cohorte. Incluye personas con y sin contactos con el sistema judicial. La entrada de paciente a la cohorte retrospectiva empieza a la fecha en que es admitido por primera vez en un tratamiento por uso de sustancias en el período de 2010-2019 y figura en las listas anuales del SENDA al 2010 al 2019 (independientemente si tienen tratamientos previos).
 
-- **Punto**= Completa tratamiento;**Cuadrado**= Contacto con el sistema judicial como imputado;**Triángulo**= Contacto con el sistema judicial como víctima;**Area sombreada**: Ventana de seguimiento;**Línea Naranja**=Tiempo de contacto con el sistema judicial;**Azul**=Tiempo en tratamiento
+- **Punto**= Completa tratamiento;**Cuadrado**= Contacto con el sistema judicial como imputado (cualquier contacto) ;**Triángulo**= Contacto con el sistema judicial como imputado, con resultado de encarcelamiento;**Area sombreada**: Ventana de seguimiento;**Línea Naranja**=Tiempo de contacto con el sistema judicial;**Azul**=Tiempo en tratamiento
 
 - **Censura administrativa**: entrega información SENDA (2019-11-13), 
 - Otra censura ocurre después que se produce un evento de resultado competidor

@@ -150,6 +150,7 @@ Base_fiscalia_v13<-
   dplyr::mutate(policonsumo= ifelse(!is.na(otras_sus1_mod),1,0)) %>% 
   dplyr::mutate(cut_fec_nac=cut2(fech_nac_rec, cuts=as.Date(attr(dlookr::binning(as.numeric(fech_nac_rec)),"breaks"))),cut_com_del=cut2(fec_comision_simple, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>%
   dplyr::mutate(tr_modality=dplyr::case_when(grepl("PR", as.character(tipo_de_plan_2_1))~ "Residential", grepl("PAI|PAB", as.character(tipo_de_plan_2_1))~ "Ambulatory", T~ NA_character_)) %>% 
+  #2023-07-17, cuidado: puede que sea imprecisa
   dplyr::mutate(time_to_off_from_adm=age_offending_imp-edad_al_egres_imp) %>% 
   dplyr::mutate(time_to_off_from_disch=age_offending_imp-edad_al_egres_imp) %>% 
   as.data.table()%>% 

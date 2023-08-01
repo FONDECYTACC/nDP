@@ -93,3 +93,4 @@ renv.lock
 *.sters
 parmodels_m2_nov_22.sters
 *.rds
+_bibs/*

@@ -1035,5 +1035,8 @@ initComplete = htmlwidgets::JS(
 Save
 
 ```{r}
-save.image("1_2023.RData")
+save.image(paste0("1_ndp_",format(Sys.time(), "%Y_%m_%d_%H_00_00"),".RData"))
+
+paste0("Saved in: ",
+       "1_ndp_",format(Sys.time(), "%Y_%m_%d_%H_00_00"),".RData")
 ```

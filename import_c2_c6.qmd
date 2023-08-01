@@ -15,7 +15,6 @@ editor: visual
 
 `r message(paste0("Date: ",withr::with_locale(new = c('LC_TIME' = 'C'), code =Sys.time())))`
 
-
 ```{js zoom-jquery, echo = FALSE}
 $(document).ready(function() {
 
@@ -188,7 +187,6 @@ overflow-x: scroll;
 }
 </style>
 ```
-
 ```{css, echo=F}
 h1 {
     color: var(--heading-color);
@@ -290,6 +288,7 @@ input:checked + .slider:before {
 
 
 ```
+
 ```{=html}
 <!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
 
@@ -363,7 +362,6 @@ input:checked + .slider:before {
 }
 </style>
 ```
-
 ```{js toggleSwitch, echo = FALSE}
 
 const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
@@ -379,6 +377,7 @@ function switchTheme(e) {
 
 toggleSwitch.addEventListener('change', switchTheme, false);
 ```
+
 ```{=html}
 <script>
 function switchTheme(e) {
@@ -415,13 +414,21 @@ x.style.display = "none";
 </script>
 ```
 
+
 ```{r pre-setup}
 rm(list = ls()) 
+
+paste0("Sys time:", format(Sys.time(), "%Y_%m_%d_%H_00_00"))
+
 unlink("import_c2_c6_files", recursive=T)
 #fuentes: 
 #https://rpubs.com/georgy_makarov/897844
-load("1_2023.RData")
+load("1_ndp_2023_07_05_19_00_00.RData")
+paste0("Loaded: ",
+       "1_ndp_2023_07_05_19_00_00.RData"
+       )
 ```
+
 
 ```{r python-environment}
 path2<-paste0(getwd(),'/env')
@@ -531,6 +538,9 @@ if(!require(survey)){install.packages("survey")}
 #para manipular tiempo
 if(!require(lubridate)){install.packages("lubridate")}
 
+#para encriptar
+if(!require(safer)){install.packages("safer")}
+
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -636,11 +646,14 @@ SISTRAT_c6 <- readr::read_delim(paste0(dir_c2_c6,"c6tab-Resultado-202353.txt"),
     na = c("", "NA","null"),
     guess_max = min(1e5, Inf),
     trim_ws = TRUE)
-SISTRAT_c6$`EDAD INGRESO`<-
-as.numeric(round((parse_date(SISTRAT_c6$`FECHA INGRESO TRATAMIENTO`,"%d/%m/%Y")-parse_date(SISTRAT_c6$`FECHA NACIMIENTO`,"%d/%m/%Y"))/365.25,3))
+
 ```
 
 ```{r, fig.cap="Histograms for Age", fig.align='center', echo=F, warning=F}
+SISTRAT_c6$`EDAD INGRESO`<-
+as.numeric(round((parse_date(SISTRAT_c6$`FECHA INGRESO TRATAMIENTO`,"%d/%m/%Y")-parse_date(SISTRAT_c6$`FECHA NACIMIENTO`,"%d/%m/%Y"))/365.25,3))
+
+
 # Create the histograms for each dataset
 hist_c2 <- ggplot(SISTRAT_c2, aes(x = Edad)) +
   geom_histogram(fill = "gray70", color = "black", bins = 30) +
@@ -738,11 +751,13 @@ rbind(
 ```
 :::
 
+Next, tables are presented with overall information of each of the databases.
+
 <br>
 
-## Data transformation and normalization
+## Data exploring
 
-Next, a table is presented with each of the databases.
+### C2
 
 ::: center-table
 ```{r desc-c2, echo=T, fig.align='center', message=T, error=T, eval=T}
@@ -769,6 +784,8 @@ df_tables_c2$var_name[[i]] <- attr(tables_c2[[i]], "var_name")
 tbone_desc_c2<-
 CreateTableOne(vars=setdiff(names(SISTRAT_c2), c("Rut","hash_rut_completo","Codigo IdentificaciÃ³n","ID centro","Nombre Centro","Comuna Usuario","Servicio Salud","Programa SENAME","Consorcio","Fecha Egreso", "Edad de la Primera detencion", "Fecha Ingreso Tratamiento", "Fecha Nacimiento")), data=  SISTRAT_c2, factorVars = setdiff(names(SISTRAT_c2),c("Dias de tratamiento","N Meses en Tratamiento", "Edad", "NÃºmero de hijos","AÃ±os DeserciÃ³n Escolar","Edad Inicio Sustancia Inicial","Numero Tratamientos Anteriores","Numero de Sanciones Anteriores","Edad Inicio Sustancia Principal")), smd=T, addOverall = T, includeNA=T, test=T)
 
+#Edad Inicio Sustancia Inicial is a string variable
+
 as.data.frame.TableOne(tbone_desc_c2, smd=T, nonnormal= T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
   tidyr::fill(char2) %>% 
@@ -789,7 +806,7 @@ cbind(cat="Date of admission",
         dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso", "Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
           dplyr::summarise(min = min(`Fecha Ingreso Tratamiento`, na.rm=T),
                            p025=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Ingreso Tratamiento`, na.rm=T))),
-cbind(cat="Date of dicharge to SENDA agreement",
+cbind(cat="Date of discharge",
       SISTRAT_c2 %>% 
         dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso", "Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
           dplyr::summarise(min = min(`Fecha Egreso`, na.rm=T),
@@ -803,6 +820,7 @@ cbind(cat="Date of birth",
   knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Database C2", escape=T)
 ```
 
+### C3
 
 ::: center-table
 ```{r desc-c3, echo=T, fig.align='center', message=T, error=T, eval=T}
@@ -828,7 +846,7 @@ df_tables_c3$var_name[[i]] <- attr(tables_c3[[i]], "var_name")
 #Codigo IdentificaciÃ³n Nombre Centro   Comuna Usuario  Servicio Salud  Programa SENAME
 
 tbone_desc_c3<-
-CreateTableOne(vars=setdiff(names(SISTRAT_c3), c("Rut","hash_rut_completo","Codigo Identificación","ID centro","Nombre Centro","Comuna Usuario","Servicio Salud","Programa SENAME","Consorcio","Fecha Egreso", "Edad de la Primera detencion", "Fecha Ingreso a Tratamiento", "Fecha Egreso de Tratamiento")), data=  SISTRAT_c2, factorVars = setdiff(names(SISTRAT_c3),c("Dias de tratamiento","N Meses en Tratamiento", "Edad", "NÃºmero de hijos","AÃ±os DeserciÃ³n Escolar","Edad Inicio Sustancia Inicial","Numero Tratamientos Anteriores","Numero de Sanciones Anteriores","Edad Inicio Sustancia Principal")), smd=T, addOverall = T, includeNA=T, test=T)
+CreateTableOne(vars=setdiff(names(SISTRAT_c3), c("Rut","hash_rut_completo","Codigo Identificación","ID centro","Nombre Centro", "Comuna Residencia", "Comuna Usuario","Servicio Salud","Programa SENAME","Consorcio","Fecha Egreso", "Edad de la Primera detencion", "Fecha Ingreso a Tratamiento", "Fecha Egreso de Tratamiento")), data=  SISTRAT_c3, factorVars = setdiff(names(SISTRAT_c3),c("Dias en Tratamiento", "Comuna Residencia", "Servicio de Salud", "Tiempo en Calle Año", "Tiempo en Calle Mes", "Edad Inicio Consumo", "Edad Inicio (Sustancia Principal)", "N Meses en Tratamiento", "Edad", "Número de Hijos","Numero de Tratamientos Anteriores","Numero Tratamientos Anteriores","Numero de Sanciones Anteriores")), smd=T, addOverall = T, includeNA=T, test=T)
 
 as.data.frame.TableOne(tbone_desc_c3, smd=T, nonnormal= T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -838,30 +856,206 @@ as.data.frame.TableOne(tbone_desc_c3, smd=T, nonnormal= T)%>%
   dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
   format_cells(1, 1:length(names(.)), "bold") %>%
   dplyr::select(-1) %>% 
-  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, C2 Database", escape=T)
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, C3 Database", escape=T)
 #kable(size=10, format="html",caption= "Summary descriptives, by Database year") %>%     kableExtra::kable_classic()
 ```
 :::
 
-```{r desc-dates-c2, echo=T, fig.align='center', message=T, error=T, eval=T}
+```{r desc-dates-c3, echo=T, fig.align='center', message=T, error=T, eval=T}
 rbind.data.frame(
 cbind(cat="Date of admission",
-      SISTRAT_c2 %>% 
-        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso", "Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+      SISTRAT_c3 %>% 
+        dplyr::mutate_at(c("Fecha Ingreso a Tratamiento", "Fecha Egreso de Tratamiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(`Fecha Ingreso a Tratamiento`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`Fecha Ingreso a Tratamiento`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Ingreso a Tratamiento`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Ingreso a Tratamiento`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Ingreso a Tratamiento`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Ingreso a Tratamiento`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Ingreso a Tratamiento`, na.rm=T))),
+cbind(cat="Date of discharge",
+      SISTRAT_c3 %>% 
+        dplyr::mutate_at(c("Fecha Ingreso a Tratamiento", "Fecha Egreso de Tratamiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(`Fecha Egreso de Tratamiento`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`Fecha Egreso de Tratamiento`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Egreso de Tratamiento`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Egreso de Tratamiento`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Egreso de Tratamiento`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Egreso de Tratamiento`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Egreso de Tratamiento`, na.rm=T)))
+) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Database C3", escape=T)
+```
+
+### C4
+
+::: center-table
+```{r desc-c4, echo=T, fig.align='center', message=T, error=T, eval=T}
+#| message: false
+#| warning: false
+
+tables_c4 <- list()
+for(i in seq_along(names(SISTRAT_c4))) {
+    tables_c4[[i]] <- dim(table(SISTRAT_c4[[i]]))
+    attr(tables_c4[[i]], "var_name") <- names(SISTRAT_c4)[i]
+}
+df_tables_c4<-
+data.frame(do.call(rbind, tables_c4)) %>% 
+  arrange(.,desc(do.call.rbind..tables_c4.))
+
+for(i in seq_along(names(SISTRAT_c4))) {
+df_tables_c4$var_name[[i]] <- attr(tables_c4[[i]], "var_name")
+}
+#FECHA INGRESO TRATAMIENTO FECHA NACIMIENTO FECHA EGRESO TRATAMIENTO
+
+tbone_desc_c4<-
+CreateTableOne(vars=setdiff(names(SISTRAT_c4), c("Rut","CODIGO IDENTIFICACION","NOMBRE CENTRO","COMUNA DEL CENTRO", "FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "FECHA ULTIMO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO")), data=  SISTRAT_c4, factorVars = setdiff(names(SISTRAT_c4),c("CODIGO IDENTIFICACION","NOMBRE CENTRO", "COMUNA DEL CENTRO", "FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "NUMERO DE HIJOS", "NUMERO TRATAMIENTOS ANTERIORES","FECHA ULTIMO TRATAMIENTO", "EDAD DE INICIO (SUSTANCIA INICIAL)", "EDAD DE PRIMER DELITO", "NÚMERO DE VECES QUE HA INGRESADO A SISTEMA PRIVADO LIBERTAD", "NÚMERO DE VECES QUE HA INGRESADO A SISTEMA PRIVADO LIBERTAD", "TIEMPO DE PERMANENCIA PRIVADO DE LIBERTAD(Dias)", "TIEMPO DE PERMANENCIA PRIVADO DE LIBERTAD(Meses)", "TIEMPO DE PERMANENCIA PRIVADO DE LIBERTAD(Años)", "FECHA EGRESO TRATAMIENTO", "DIAS DE TRATAMIENTO", "EDAD", "Edad de inico Sustancia Principal")), smd=T, addOverall = T, includeNA=T, test=T)
+
+as.data.frame.TableOne(tbone_desc_c4, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, C4 Database", escape=T)
+#kable(size=10, format="html",caption= "Summary descriptives, by Database year") %>%     kableExtra::kable_classic()
+
+```
+:::
+
+```{r desc-dates-c4, echo=T, fig.align='center', message=T, error=T, eval=T}
+rbind.data.frame(
+cbind(cat="Date of birth",
+      SISTRAT_c4 %>% 
+        dplyr::mutate_at(c("FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO"),~readr::parse_date(.,"%d/%m/%Y")) %>% # dplyr::select(c("FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "FECHA ULTIMO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO"))
+          dplyr::summarise(min = min(`FECHA NACIMIENTO`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`FECHA NACIMIENTO`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`FECHA NACIMIENTO`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`FECHA NACIMIENTO`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`FECHA NACIMIENTO`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`FECHA NACIMIENTO`), .975, na.rm=T), origin = "1970-01-01"), max = max(`FECHA NACIMIENTO`, na.rm=T))),
+cbind(cat="Date of admission",
+      SISTRAT_c4 %>% 
+        dplyr::mutate_at(c("FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(`FECHA INGRESO TRATAMIENTO`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`FECHA INGRESO TRATAMIENTO`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`FECHA INGRESO TRATAMIENTO`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`FECHA INGRESO TRATAMIENTO`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`FECHA INGRESO TRATAMIENTO`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`FECHA INGRESO TRATAMIENTO`), .975, na.rm=T), origin = "1970-01-01"), max = max(`FECHA INGRESO TRATAMIENTO`, na.rm=T))),
+cbind(cat="Date of discharge",
+      SISTRAT_c4 %>% 
+        dplyr::mutate_at(c("FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+          dplyr::summarise(min = min(`FECHA EGRESO TRATAMIENTO`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`FECHA EGRESO TRATAMIENTO`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`FECHA EGRESO TRATAMIENTO`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`FECHA EGRESO TRATAMIENTO`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`FECHA EGRESO TRATAMIENTO`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`FECHA EGRESO TRATAMIENTO`), .975, na.rm=T), origin = "1970-01-01"), max = max(`FECHA EGRESO TRATAMIENTO`, na.rm=T)))
+) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Database C4", escape=T)
+```
+
+### C5
+
+::: center-table
+```{r desc-c5, echo=T, fig.align='center', message=T, error=T, eval=T}
+#| message: false
+#| warning: false
+
+tables_c5 <- list()
+for(i in seq_along(names(SISTRAT_c5))) {
+    tables_c5[[i]] <- dim(table(SISTRAT_c5[[i]]))
+    attr(tables_c5[[i]], "var_name") <- names(SISTRAT_c5)[i]
+}
+df_tables_c5<-
+data.frame(do.call(rbind, tables_c5)) %>% 
+  arrange(.,desc(do.call.rbind..tables_c5.))
+
+for(i in seq_along(names(SISTRAT_c5))) {
+df_tables_c5$var_name[[i]] <- attr(tables_c5[[i]], "var_name")
+}
+#Fecha Egreso
+#"Dias en Tratamiento" "N Meses Tratamiento" "Edad" "AÃ±os DeserciÃ³n Escolar" "Edad Inicio Sustancia Principal" "Edad Inicio Sustancia Inicial" "NÃºmero de hijos" "Fecha Egreso" "IDBD" 
+
+tbone_desc_c5<-
+CreateTableOne(vars=setdiff(names(SISTRAT_c5), c("Rut", "hash_rut_completo", "Codigo IdentificaciÃ³n", "Nombre Centro", "Nombre Consorcio/Prestador", "RegiÃ³n Centro", "RegiÃ³n Usuario", "Comuna Usuario", "Servicio Salud", "Fecha Ingreso Tratamiento", "Fecha Egreso","Fecha Nacimiento")), data=  SISTRAT_c5, factorVars = setdiff(names(SISTRAT_c5),c("Rut", "hash_rut_completo", "Codigo IdentificaciÃ³n", "Nombre Centro", "Nombre Consorcio/Prestador", "RegiÃ³n Centro", "RegiÃ³n Usuario", "Comuna Usuario", "Servicio Salud", "Fecha Ingreso Tratamiento", "Fecha Nacimiento", "Dias en Tratamiento", "N Meses Tratamiento", "Edad", "AÃ±os DeserciÃ³n Escolar", "Edad Inicio Sustancia Principal", "Edad Inicio Sustancia Inicial", "NÃºmero de hijos", "Numero Tratamientos Anteriores", "Edad de inicio de conductas delictivas", "Fecha Egreso", "IDBD")), smd=T, addOverall = T, includeNA=T, test=T)
+#
+as.data.frame.TableOne(tbone_desc_c5, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, C5 Database", escape=T)
+#kable(size=10, format="html",caption= "Summary descriptives, by Database year") %>%     kableExtra::kable_classic()
+
+```
+:::
+
+```{r desc-dates-c5, echo=T, fig.align='center', message=T, error=T, eval=T}
+rbind.data.frame(
+cbind(cat="Date of birth",
+      SISTRAT_c5 %>% 
+        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso","Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% # dplyr::select(c("FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "FECHA ULTIMO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO"))
+          dplyr::summarise(min = min(`Fecha Nacimiento`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`Fecha Nacimiento`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Nacimiento`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Nacimiento`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Nacimiento`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Nacimiento`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Nacimiento`, na.rm=T))),
+cbind(cat="Date of admission",
+      SISTRAT_c5 %>% 
+        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso","Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>%
           dplyr::summarise(min = min(`Fecha Ingreso Tratamiento`, na.rm=T),
                            p025=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Ingreso Tratamiento`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Ingreso Tratamiento`, na.rm=T))),
-cbind(cat="Date of dicharge to SENDA agreement",
-      SISTRAT_c2 %>% 
-        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso", "Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
+cbind(cat="Date of discharge",
+      SISTRAT_c5 %>% 
+        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso","Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>%
           dplyr::summarise(min = min(`Fecha Egreso`, na.rm=T),
-                           p025=as.Date(quantile(unclass(`Fecha Egreso`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Egreso`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Egreso`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Egreso`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Egreso`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Egreso`, na.rm=T))),
-cbind(cat="Date of birth",
-      SISTRAT_c2 %>% 
-        dplyr::mutate_at(c("Fecha Ingreso Tratamiento", "Fecha Egreso", "Fecha Nacimiento"),~readr::parse_date(.,"%d/%m/%Y")) %>% 
-          dplyr::summarise(min = min(`Fecha Nacimiento`, na.rm=T),
-                           p025=as.Date(quantile(unclass(`Fecha Nacimiento`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Nacimiento`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Nacimiento`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Nacimiento`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Nacimiento`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Nacimiento`, na.rm=T)))
+                           p025=as.Date(quantile(unclass(`Fecha Egreso`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`Fecha Egreso`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`Fecha Egreso`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`Fecha Egreso`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`Fecha Egreso`), .975, na.rm=T), origin = "1970-01-01"), max = max(`Fecha Egreso`, na.rm=T)))
 ) %>% 
-  knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Database C2", escape=T)
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Database C5", escape=T)
+```
+
+### C6
+
+::: center-table
+```{r desc-c6, echo=T, fig.align='center', message=T, error=T, eval=T}
+#| message: false
+#| warning: false
+
+tables_c6 <- list()
+for(i in seq_along(names(SISTRAT_c6))) {
+    tables_c6[[i]] <- dim(table(SISTRAT_c6[[i]]))
+    attr(tables_c6[[i]], "var_name") <- names(SISTRAT_c6)[i]
+}
+df_tables_c6<-
+data.frame(do.call(rbind, tables_c6)) %>% 
+  arrange(.,desc(do.call.rbind..tables_c6.))
+
+for(i in seq_along(names(SISTRAT_c6))) {
+df_tables_c6$var_name[[i]] <- attr(tables_c6[[i]], "var_name")
+}
+#"FECHA INGRESO TRATAMIENTO", "FECHA NACIMIENTO", "FECHA ULTIMO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO", 
+#"Dias en Tratamiento", "N Meses en Tratamiento", "NUMERO DE HIJOS","NUMERO TRATAMIENTOS ANTERIORES", "EDAD DE INICIO (SUSTANCIA PRINCIPAL)", "EDAD DE INICIO (SUSTANCIA INICIAL)", "EDAD DE PRIMER DELITO", "NÚMERO DE VECES QUE HA INGRESADO A SISTEMA PRIVADO LIBERTAD", "DURACION DE LA CONDENA AÑO", "DURACION DE LA CONDENA MES", "DURACION DE LA CONDENA DÍAS", "TIEMPO CUMPLIMIENTO DE CONDENA AÑO", "TIEMPO CUMPLIMIENTO DE CONDENA MES", "TIEMPO CUMPLIMIENTO DE CONDENA DÍAS", "EDAD INGRESO"
+
+tbone_desc_c6<-
+CreateTableOne(vars=setdiff(names(SISTRAT_c6), c("Rut", "hash_rut_completo", "CODIGO IDENTIFICACION", "Nombre Usuario", "NOMBRE DEL CENTRO", 
+"TIPO CENTRO", "COMUNA", "FECHA INGRESO TRATAMIENTO", "FECHA NACIMIENTO", "FECHA ULTIMO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO")), data=  SISTRAT_c6, factorVars = setdiff(names(SISTRAT_c6),c("Rut", "hash_rut_completo", "CODIGO IDENTIFICACION", "Nombre Usuario", "NOMBRE DEL CENTRO", "TIPO CENTRO", "REGION DEL CENTRO", "FECHA INGRESO TRATAMIENTO", "FECHA NACIMIENTO", "FECHA ULTIMO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO", "Dias en Tratamiento", "N Meses en Tratamiento", "NUMERO DE HIJOS","NUMERO TRATAMIENTOS ANTERIORES", "EDAD DE INICIO (SUSTANCIA PRINCIPAL)", "EDAD DE INICIO (SUSTANCIA INICIAL)", "EDAD DE PRIMER DELITO", "NÚMERO DE VECES QUE HA INGRESADO A SISTEMA PRIVADO LIBERTAD", "DURACION DE LA CONDENA AÑO", "DURACION DE LA CONDENA MES", "DURACION DE LA CONDENA DÍAS", "TIEMPO CUMPLIMIENTO DE CONDENA AÑO", "TIEMPO CUMPLIMIENTO DE CONDENA MES", "TIEMPO CUMPLIMIENTO DE CONDENA DÍAS", "EDAD INGRESO")), smd=T, addOverall = T, includeNA=T, test=T)
+#
+as.data.frame.TableOne(tbone_desc_c6, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, C6 Database", escape=T)
+#kable(size=10, format="html",caption= "Summary descriptives, by Database year") %>%     kableExtra::kable_classic()
+
+```
+:::
+
+```{r desc-dates-c6, echo=T, fig.align='center', message=T, error=T, eval=T}
+#"FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO",  #"FECHA ULTIMO TRATAMIENTO", "
+rbind.data.frame(
+cbind(cat="Date of birth",
+      SISTRAT_c6 %>% 
+        dplyr::mutate_at(c("FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO"),~readr::parse_date(.,"%d/%m/%Y")) %>% # dplyr::select(c("FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "FECHA ULTIMO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO"))
+          dplyr::summarise(min = min(`FECHA NACIMIENTO`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`FECHA NACIMIENTO`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`FECHA NACIMIENTO`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`FECHA NACIMIENTO`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`FECHA NACIMIENTO`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`FECHA NACIMIENTO`), .975, na.rm=T), origin = "1970-01-01"), max = max(`FECHA NACIMIENTO`, na.rm=T))),
+cbind(cat="Date of admission",
+      SISTRAT_c6 %>% 
+        dplyr::mutate_at(c("FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO"),~readr::parse_date(.,"%d/%m/%Y")) %>% #
+          dplyr::summarise(min = min(`FECHA INGRESO TRATAMIENTO`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`FECHA INGRESO TRATAMIENTO`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`FECHA INGRESO TRATAMIENTO`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`FECHA INGRESO TRATAMIENTO`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`FECHA INGRESO TRATAMIENTO`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`FECHA INGRESO TRATAMIENTO`), .975, na.rm=T), origin = "1970-01-01"), max = max(`FECHA INGRESO TRATAMIENTO`, na.rm=T))),
+cbind(cat="Date of discharge",
+      SISTRAT_c6 %>% 
+        dplyr::mutate_at(c("FECHA NACIMIENTO", "FECHA INGRESO TRATAMIENTO", "FECHA EGRESO TRATAMIENTO"),~readr::parse_date(.,"%d/%m/%Y")) %>% #
+          dplyr::summarise(min = min(`FECHA EGRESO TRATAMIENTO`, na.rm=T),
+                           p025=as.Date(quantile(unclass(`FECHA EGRESO TRATAMIENTO`), .025, na.rm=T), origin = "1970-01-01"),p25=as.Date(quantile(unclass(`FECHA EGRESO TRATAMIENTO`), .25, na.rm=T), origin = "1970-01-01"), p50=as.Date(quantile(unclass(`FECHA EGRESO TRATAMIENTO`), .5, na.rm=T), origin = "1970-01-01"), p75=as.Date(quantile(unclass(`FECHA EGRESO TRATAMIENTO`), .75, na.rm=T), origin = "1970-01-01"), p975=as.Date(quantile(unclass(`FECHA EGRESO TRATAMIENTO`), .975, na.rm=T), origin = "1970-01-01"), max = max(`FECHA EGRESO TRATAMIENTO`, na.rm=T)))
+) %>% 
+  knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Database C6", escape=T)
 ```
 
 
@@ -873,6 +1067,237 @@ cbind(cat="Date of birth",
  --->
 ```
 
+<br>
+
+## Data transformation and normalization
+
+### Clean names
+
+We changed the UTF-8 code names into ANSI format. Then, we transformed unprocessed column names into lowercase names with no spaces.
+
+```{r clean-names, echo=T, fig.align='center', message=T, error=T, eval=T}
+#https://www.i18nqa.com/debug/utf8-debug.html
+#https://www.indalcasa.com/programacion/html/tabla-de-codificaciones-de-caracteres-entre-ansi-utf-8-javascript-html/
+
+# Create a data frame of ANSI and UTF-8 conversion
+conv_chars <- data.frame(
+    ANSI = c("Á", "á", "É", "é", "Í", "í", "Ó", "ó", "Ú", "ú", "Ñ", "ñ", "¿", "ó"),
+    UTF_8 = c("Ã", "Ã¡", "Ã‰", "Ã©", "Ã", "Ã­", "Ã“", "Ã³", "Ãš", "Ãº", "Ã‘", "Ã±", "Â¿", "Ã²"),
+    JAVASCRIPT = c("u00c1", "u00e1", "u00c9", "u00e9", "u00cd", "u00ed", "u00d3", "u00f3", "u00da", "u00fa", "u00d1", "u00f1", "u00bf", "0xF2"),
+    HTML = c("&#193;", "&#225;", "&#201;", "&#233;", "&#205;", "&#237;", "&#211;", "&#243;", "&#218;", "&#250;", "&#209;", "&#241;", "&#191;", "")
+)
+
+iconv <- readxl::read_excel("iconv.xlsx")
+
+# Function to convert strings
+convert_chars <- function(string) {
+  for (i in seq_len(nrow(conv_chars))) {
+    string <- gsub(iconv$`UTF-8`[i], iconv$ANSI[i], string)
+  }
+  string
+}
+
+# Loop over the dataset names
+for(name in paste0("SISTRAT_c",2:6)){
+  # Get the dataset
+  dataset <- get(name)
+  #Convert strings
+  colnames(dataset) <- sapply(names(dataset), convert_chars)
+  # Clean the names
+  cleaned_dataset <- janitor::clean_names(dataset)
+  # Overwrite the original dataset
+  assign(name, cleaned_dataset, envir = .GlobalEnv)
+}
+
+#modify specifics
+colnames(SISTRAT_c2)<- gsub("_a2n","on",names(SISTRAT_c2))
+colnames(SISTRAT_c2)<- gsub("^na$","otros_problemas_de_atencion_clinica_2",names(SISTRAT_c2))
+colnames(SISTRAT_c6)<- gsub("con_quien_vi_vi_a","con_quien_vivia",names(SISTRAT_c6))
+
+```
+
+
+### Sort fields
+
+We generated an encrypted rownumber (`id_vers`), and ordered the first columns to be the RUN, the RUN under the assumption of a missing verification digit, and SENDA code.
+
+```{r sort-fields, echo=T, fig.align='center', message=T, error=T, eval=T}
+SISTRAT_c2 <-
+SISTRAT_c2 %>% 
+  dplyr::mutate(rn=row_number()) %>% 
+dplyr::select(rn, rut, hash_rut_completo, codigo_identificacion, everything())
+
+# ENCRYPT
+SISTRAT_c2$id_vers<-
+sapply(SISTRAT_c2$rn, function(x) safer::encrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+#sapply(SISTRAT_c2$id_vers, function(x) safer::decrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+
+SISTRAT_c2$rn <- NULL
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+SISTRAT_c3 <-
+SISTRAT_c3 %>% 
+  dplyr::mutate(rn=row_number()) %>% 
+dplyr::select(rn, rut, hash_rut_completo, codigo_identificacion, everything())
+
+# ENCRYPT
+SISTRAT_c3$id_vers<-
+sapply(SISTRAT_c3$rn, function(x) safer::encrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+#sapply(SISTRAT_c3$id_vers, function(x) safer::decrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+
+SISTRAT_c3$rn <- NULL
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+SISTRAT_c4 <-
+SISTRAT_c4 %>% 
+  dplyr::mutate(rn=row_number()) %>% 
+dplyr::select(rn, rut, hash_rut_completo, codigo_identificacion, everything())
+
+# ENCRYPT
+SISTRAT_c4$id_vers<-
+sapply(SISTRAT_c4$rn, function(x) safer::encrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+#sapply(SISTRAT_c4$id_vers, function(x) safer::decrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+
+SISTRAT_c4$rn <- NULL
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+SISTRAT_c5 <-
+SISTRAT_c5 %>% 
+  dplyr::mutate(rn=row_number()) %>% 
+dplyr::select(rn, rut, hash_rut_completo, codigo_identificacion, everything())
+
+# ENCRYPT
+SISTRAT_c5$id_vers<-
+sapply(SISTRAT_c5$rn, function(x) safer::encrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+#sapply(SISTRAT_c5$id_vers, function(x) safer::decrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+
+SISTRAT_c5$rn <- NULL
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+SISTRAT_c6 <-
+SISTRAT_c6 %>% 
+  dplyr::mutate(rn=row_number()) %>% 
+dplyr::select(rn, rut, hash_rut_completo, codigo_identificacion, everything())
+
+# ENCRYPT
+SISTRAT_c6$id_vers<-
+sapply(SISTRAT_c6$rn, function(x) safer::encrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+#sapply(SISTRAT_c6$id_vers, function(x) safer::decrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+
+SISTRAT_c6$rn <- NULL
+
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+CONS_C1_2010_19 <-
+CONS_C1_2010_19 %>% 
+  dplyr::mutate(rn=row_number()) %>% 
+  janitor::clean_names() %>% 
+dplyr::select(rn, hash_key, hash_rut_completo, codigo_identificacion, everything())
+
+# ENCRYPT
+CONS_C1_2010_19$id_vers<-
+sapply(CONS_C1_2010_19$rn, function(x) safer::encrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+#sapply(SISTRAT_c6$id_vers, function(x) safer::decrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+
+CONS_C1_2010_19$rn <- NULL
+
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+CONS_C1_2019_22 <-
+CONS_C1_2019_22 %>% 
+  dplyr::mutate(rn=row_number()) %>% 
+  janitor::clean_names() %>% 
+dplyr::select(rn, hash_key, hash_rut_completo, codigo_identificacion, everything())
+
+# ENCRYPT
+CONS_C1_2019_22$id_vers<-
+sapply(CONS_C1_2019_22$rn, function(x) safer::encrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+#sapply(SISTRAT_c6$id_vers, function(x) safer::decrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+
+CONS_C1_2019_22$rn <- NULL
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+CONS_TOP_2015_19 <-
+CONS_TOP_2015_19 %>% 
+  dplyr::mutate(rn=row_number()) %>% 
+  janitor::clean_names() %>% 
+dplyr::select(rn, hash_key, hash_rut_completo, id, everything())
+
+# ENCRYPT
+CONS_TOP_2015_19$id_vers<-
+sapply(CONS_TOP_2015_19$rn, function(x) safer::encrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+#sapply(SISTRAT_c6$id_vers, function(x) safer::decrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+
+CONS_TOP_2015_19$rn <- NULL
+
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+CONS_TOP_2019_22 <-
+CONS_TOP_2019_22 %>% 
+  dplyr::mutate(rn=row_number()) %>% 
+  janitor::clean_names() %>% 
+dplyr::select(rn, hash_key, hash_rut_completo, id, everything())
+
+# ENCRYPT
+CONS_TOP_2019_22$id_vers<-
+sapply(CONS_TOP_2019_22$rn, function(x) safer::encrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+#sapply(SISTRAT_c6$id_vers, function(x) safer::decrypt_string(as.character(x), key = "fondecytacc1191282"), USE.NAMES = FALSE)
+
+CONS_TOP_2019_22$rn <- NULL
+```
+
+
+# Export to .tsv
+
+```{r csv-export, echo=T, fig.align='center', message=T, error=T, eval=T}
+for(name in paste0("SISTRAT_c",2:6)){
+  # Get the dataset
+  dataset <- get(name)
+  #Convert strings
+  rio::export(dataset, 
+              paste0(paste0(gsub("22","19",path),"/Encriptados c2 a c6/"),name,"_ndp.tsv")
+              )
+}
+
+rio::export(CONS_C1_2010_19, 
+            paste0(paste0(gsub("22","19",path),"/Encriptado c1/"),"CONS_C1_2010_19","_ndp.tsv")
+            )
+rio::export(CONS_C1_2019_22, 
+            paste0(paste0(gsub("22","19",path),"/Encriptado c1/"),"CONS_C1_2019_22","_ndp.tsv")
+            )
+rio::export(CONS_TOP_2015_19, 
+            paste0(paste0(gsub("22","19",path),"/Encriptado c1/"),"CONS_TOP_2015_19","_ndp.tsv")
+            )
+rio::export(CONS_TOP_2019_22, 
+            paste0(paste0(gsub("22","19",path),"/Encriptado c1/"),"CONS_TOP_2019_22","_ndp.tsv")
+            )
+```
+
+<br>
 
 # Session info
 
@@ -926,5 +1351,8 @@ initComplete = htmlwidgets::JS(
 Save
 
 ```{r}
-save.image("1_2023.RData")
+save.image(paste0("2_ndp_",format(Sys.time(), "%Y_%m_%d_%H_00_00"),".RData"))
+
+paste0("Saved in: ",
+       "2_ndp_",format(Sys.time(), "%Y_%m_%d_%H_00_00"),".RData")
 ```
