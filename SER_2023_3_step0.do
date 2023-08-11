@@ -310,7 +310,6 @@ frame example_a: cap drop _start
 frame example_a: cap gen _start= 0
 frame example_a: stset time_to_off_from_adm [pw=HAW], enter(_start) failure(event_offense==1) //*scale(12) 
 
-
 frame example_a: stsum, by (poly)
 <</dd_do>>
 ~~~~
@@ -327,11 +326,11 @@ margins i.poly, predict(ir)
 matrix pois_ir_t0_wgt= r(table)
 
 //IR for no PSU, from mat ir
-scalar ir_poly_00= string(`=scalar(round(pois_ir_t0_wgt[1,1]*1000,.01))',"%9.2f")+" (95%CI: "+string(`=scalar(round(pois_ir_t0_wgt[5,1]*1000,.01))',"%9.2f")+", "+string(`=scalar(round(pois_ir_t0_wgt[6,1]*1000,.01))',"%9.2f")+")" 
+scalar ir_poly_001= string(`=scalar(round(pois_ir_t0_wgt[1,1]*1000,.01))',"%9.2f")+" (95%CI: "+string(`=scalar(round(pois_ir_t0_wgt[5,1]*1000,.01))',"%9.2f")+", "+string(`=scalar(round(pois_ir_t0_wgt[6,1]*1000,.01))',"%9.2f")+")" 
 //IR for PSU, from mat ir
-scalar ir_poly_11= string(`=scalar(round(pois_ir_t0_wgt[1,2]*1000,.01))',"%9.2f")+" (95%CI: "+string(`=scalar(round(pois_ir_t0_wgt[5,2]*1000,.01))',"%9.2f")+", "+string(`=scalar(round(pois_ir_t0_wgt[6,2]*1000,.01))',"%9.2f")+")" 
+scalar ir_poly_111= string(`=scalar(round(pois_ir_t0_wgt[1,2]*1000,.01))',"%9.2f")+" (95%CI: "+string(`=scalar(round(pois_ir_t0_wgt[5,2]*1000,.01))',"%9.2f")+", "+string(`=scalar(round(pois_ir_t0_wgt[6,2]*1000,.01))',"%9.2f")+")" 
 //IRR for PSU, from mat irr (no * 1000)
-scalar irr_poly01= string(`=scalar(round(pois_irr_t0_wgt[1,2],.01))',"%9.2f")+" (95%CI: "+string(`=scalar(round(pois_irr_t0_wgt[5,2],.01))',"%9.2f")+", "+string(`=scalar(round(pois_irr_t0_wgt[6,2],.01))',"%9.2f")+")" 
+scalar irr_poly011= string(`=scalar(round(pois_irr_t0_wgt[1,2],.01))',"%9.2f")+" (95%CI: "+string(`=scalar(round(pois_irr_t0_wgt[5,2],.01))',"%9.2f")+", "+string(`=scalar(round(pois_irr_t0_wgt[6,2],.01))',"%9.2f")+")" 
 
 <</dd_do>>
 ~~~~
@@ -661,13 +660,15 @@ Cocaine paste base and cocaine hydrochloride were the only variables that were n
 /*
 FORMA DE EXPORTAR LOS DATOS Y EL MARKDOWN
 
-cap rm "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/an_ser_2023_step_0.html"
-dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\SER 2023_2_step0.do", saving("E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_0.html") replace nostop 
-copy "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_0.html" "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\an_ser_2023_step_0.html", replace
+cap rm "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/an_ser_2023_step_0_aug_23.html"
+dyndoc "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\SER_2023_3_step0.do", saving("E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_0_aug_23.html") replace nostop 
+copy "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_0_aug_23.html" "E:\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\an_ser_2023_step_0_aug_23.html", replace
 
-cap rm "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/an_ser_2023_step_0.html"
-dyndoc "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\SER 2023_2_step0.do", saving("C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_0.html") replace nostop 
-copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_0.html" "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\an_ser_2023_step_0.html", replace
+cap rm "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/an_ser_2023_step_0_aug_23.html"
+dyndoc "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\SER_2023_3_step0.do", saving("C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_0_aug_23.html") replace nostop 
+copy "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\an_ser_2023_step_0_aug_23.html" "C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_outputs\an_ser_2023_step_0_aug_23.html", replace
+
+
 
 _outputs
 */

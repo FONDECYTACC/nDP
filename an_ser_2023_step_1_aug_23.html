@@ -1,0 +1,500 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<pre><code>. clear all
+
+. cap noi which tabout
+C:\Users\CISS Fondecyt\ado\plus\t\tabout.ado
+*! 2.0.8 Ian Watson 15mar2019
+*! tabout version 3 (beta) available at: http://tabout.net.au
+
+. if _rc==111 {
+.         cap noi ssc install tabout
+.         }
+
+. cap noi which pathutil
+C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+*! version 2.2.0 19nov2020 daniel klein
+
+. if _rc==111 {
+.         cap noi net install pathutil, from(&quot;http://fmwww.bc.edu/repec/bocode/p/&quot;) 
+.         }
+
+. cap noi which pathutil
+C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+*! version 2.2.0 19nov2020 daniel klein
+
+. if _rc==111 {
+.         ssc install dirtools    
+.         }
+
+. cap noi which project
+C:\Users\CISS Fondecyt\ado\plus\p\project.ado
+*! version 1.3.1  22dec2013  picard@netbox.com
+
+. if _rc==111 {   
+.         ssc install project
+.         }
+
+. cap noi which stipw
+C:\Users\CISS Fondecyt\ado\plus\s\stipw.ado
+*! Version 1.0.0 17Jan2022
+
+. if _rc==111 {   
+.         ssc install stipw
+.         }
+
+. cap noi which stpm2
+C:\Users\CISS Fondecyt\ado\plus\s\stpm2.ado
+*! version 1.7.5 May2021
+
+. if _rc==111 {   
+.         ssc install stpm2
+.         }       
+
+. cap noi which rcsgen
+C:\Users\CISS Fondecyt\ado\plus\r\rcsgen.ado
+*! version 1.5.9 13FEB2022
+
+. if _rc==111 {   
+.         ssc install rcsgen
+.         }       
+
+. cap noi which matselrc
+C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
+*! NJC 1.1.0 20 Apr 2000  (STB-56: dm79)
+
+. if _rc==111 {           
+. cap noi net install dm79, from(http://www.stata.com/stb/stb56)
+.         }
+
+. cap noi which pbalchk
+C:\Users\CISS Fondecyt\ado\plus\p\pbalchk.ado
+*! Version: 3.0.0
+*! Author:  Mark Lunt
+*! Date:    October 2, 2017 @ 12:47:35
+
+. if _rc==111 {
+.         cap noi net install pbalchk.pkg
+.         }
+
+. cap noi which med4way   
+C:\Users\CISS Fondecyt\ado\plus\m\med4way.ado
+*! Hello, I'm med4way.ado
+*! v2.3.2 - 30sep2021
+
+. if _rc==111 {
+.         cap noi net install med4way, from(&quot;https://raw.githubusercontent.com/anddis/med4way/master/&quot;) replace
+.         }       
+
+</code></pre>
+<h1><a href="#exercise" id="exercise">Exercise</a></h1>
+<p>Date created: 18:00:53  1 Aug 2023.</p>
+<p>Get the folder</p>
+<pre><code>
+C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
+
+
+Fecha:  1 Aug 2023, considerando un SO Windows para el usuario: CISS Fondecyt
+
+</code></pre>
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<p>Path data= ;</p>
+<p>Tiempo:  1 Aug 2023, considerando un SO Windows</p>
+<p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)ser_2023_0.dta</p>
+<p>=============================================================================</p>
+<h2><a href="#database" id="database">database</a></h2>
+<p>=============================================================================</p>
+<p>We open the files</p>
+<pre><code>. *#https://www.pauldickman.com/software/stata/mediation_meansurv.do
+. *#https://www.pauldickman.com/software/stata/mediation_standsurv.do
+. 
+. use &quot;ser_2023_3_0.dta&quot;, clear
+
+</code></pre>
+<pre><code>. *https://www.pauldickman.com/software/stata/mediation_meansurv.do
+. 
+. stpm2 poly event_dropout, df(5) tvc(poly) dftvc(3) scale(hazard) eform
+
+Iteration 0:   log pseudolikelihood = -129197.72  
+Iteration 1:   log pseudolikelihood = -129180.74  
+Iteration 2:   log pseudolikelihood = -129180.71  
+Iteration 3:   log pseudolikelihood = -129180.71  
+
+Log pseudolikelihood = -129180.71               Number of obs     =     72,359
+
+-------------------------------------------------------------------------------
+              |               Robust
+              |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+xb            |
+         poly |   1.185456   .0274524     7.35   0.000     1.132853    1.240501
+event_dropout |   .5472245    .013485   -24.47   0.000     .5214225    .5743032
+        _rcs1 |   2.560221   .0469048    51.31   0.000      2.46992    2.653823
+        _rcs2 |   1.123532   .0181528     7.21   0.000     1.088511     1.15968
+        _rcs3 |   1.033511   .0097679     3.49   0.000     1.014543    1.052834
+        _rcs4 |   1.008967   .0043085     2.09   0.037     1.000558    1.017447
+        _rcs5 |   1.003375   .0021405     1.58   0.114     .9991887    1.007579
+   _rcs_poly1 |   .9747201   .0190264    -1.31   0.190     .9381334    1.012734
+   _rcs_poly2 |   .9867623    .016676    -0.79   0.430     .9546134    1.019994
+   _rcs_poly3 |   1.020275   .0104316     1.96   0.050     1.000033    1.040927
+        _cons |   .2250872   .0049911   -67.25   0.000     .2155143    .2350853
+-------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+. 
+. range temptime 0.5 3 30
+variable temptime already defined
+r(110);
+
+. 
+. /*survival (women)*/
+. predict s0m0 if poly==0, meansurv timevar(temptime)
+
+. 
+. /*survival (men)*/
+. predict s1m1 if poly==1, meansurv timevar(temptime)
+
+. 
+. /* Survival of males if they had the stage distribution of females */
+. predict s1m0 if poly==0, meansurv at(poly 1) timevar(temptime)
+
+. 
+. /* Survival of females if they had the stage distribution of males */
+. /* This is not used in the mediation analysis */
+. predict s0m1 if poly==1, meansurv at(poly 0) timevar(temptime)
+
+. 
+. // Estimate NDE, NIE, TE, and PM
+. generate TE = (s0m0 - s1m1)*100 if temptime != .
+(72,330 missing values generated)
+
+. generate NIE = (s1m0 - s1m1)*100 if temptime != .
+(72,330 missing values generated)
+
+. generate NDE = (s0m0 - s1m0)*100 if temptime != .
+(72,330 missing values generated)
+
+. generate PM = (NIE / TE)*100 if temptime != .
+(72,330 missing values generated)
+
+. 
+. label variable TE &quot;Total effect&quot;
+
+. label variable NIE &quot;Natural indirect effect&quot;
+
+. label variable NDE &quot;Natural direct effect&quot;
+
+. label variable PM &quot;Proportion mediated&quot;
+
+. 
+. format TE NDE NIE PM %6.2f 
+
+. 
+. gen temptime_round= round(temptime,0.01)
+(72,330 missing values generated)
+
+. 
+. list temptime TE NDE NIE PM if inlist(temptime_round,0.5, 1.02,3)
+
+       +---------------------------------------+
+       | temptime     TE    NDE    NIE      PM |
+       |---------------------------------------|
+    1. |       .5   1.45   1.11   0.34   23.24 |
+   29. |        3   5.11   3.95   1.16   22.74 |
+       +---------------------------------------+
+
+. 
+. twoway  (line s1m0 temptime, sort lcolor(blue) lpattern(dash)) ///
+&gt;                 (line s0m1 temptime, sort lcolor(red) lpattern(dash)) ///
+&gt;                 (line s1m1 temptime, sort lcolor(blue)) ///
+&gt;                 (line s0m0 temptime, sort lcolor(red)) ///
+&gt;                 , ///
+&gt;                 graphregion(color(white)) ///
+&gt;                 xlabel(0(5)15, labsize(*1.0)) ///s
+&gt;                 ylab(0.5(0.1)1, nogrid angle(0) labsize(*1.0) format(%04.2f)) ///
+&gt;                         legend(cols(2) size(*0.6) region(lcolor(white)) bmargin(zero) order(4 3 2 1) position(6) ring(0) ///
+&gt;                         label(1 &quot;S1M0 (men if stage dist. of women)&quot;) label(2 &quot;S0M1 (women if stage dist. of men)&quot;) label(3 &quot;S1M1 (men)&quot;) label(4 &quot;S0M0 (women)&quot;)) ///
+&gt;                         title (Survival) name(survival, replace) ///
+&gt;                         xtitle(&quot;Years since diagnosis&quot;) ///
+&gt;                         ytitle(&quot;Cause-specific survival&quot;, size(*1.0)) 
+
+.                         
+. twoway  (line PM temptime, sort lcolor(blue) lpattern(solid)) ///
+&gt;                 , ///
+&gt;                 graphregion(color(white)) ///
+&gt;                 xlabel(0(5)15, labsize(*1.0)) ///
+&gt;                 ylab(0(10)100, nogrid angle(0) labsize(*1.0) format(%4.0f)) ///
+&gt;                         title (Percentage of polysubstance use difference mediated by dropout) name(pm, replace) ///
+&gt;                         xtitle(&quot;Years since diagnosis&quot;) legend(off) ///
+&gt;                         ytitle(&quot;Percentage mediated&quot;, size(*1.0)) 
+
+</code></pre>
+<pre><code>. *#Discacciati, A., Bellavia, A., Lee, J.J., Mazumdar, M., Valeri, L. Med4way: a Stata command to investigate mediating and interactive mechanisms using the four-way effect d
+&gt; ecomposition. International Journal of Epidemiology. 2019 Feb;48(1):15-20. doi: 10.1093/ije/dyy236
+. *https://github.com/anddis/med4way
+. 
+. med4way poly event_dropout, a0(0) a1(1) m(0) yreg(aft, e) mreg(logistic) c(1) /// // yreg permite aft, w para weibull; también puede ser cox
+&gt;  cformat(%6.4f) /// //* using four decimal places 
+&gt;  boot reps(100) seed(2125) //By default, normal-based CIs are calculated.
+Warning: no covariates specified.
+
+-&gt; Summary
+
+   Outcome    (yvar):  time_to_off_from_adm
+   Exposure   (avar):  poly
+   Mediator   (mvar):  event_dropout
+   Covariates (cvars): [ none ]
+
+   Model for the outcome  (yreg): aft, exponential
+   Model for the mediator (mreg): logistic
+
+   Referent exposure level (a0):             0
+   Actual exposure level   (a1):             1
+   Mediator level for the decomposition (m): 0
+
+   Bootstrap replications (reps): 100
+
+
+-&gt; Model for the outcome
+
+         failure _d:  event_offense == 1
+   analysis time _t:  time_to_off_from_adm
+  enter on or after:  time _start
+                 id:  id
+             weight:  [pweight=HAW]
+
+Iteration 0:   log pseudolikelihood = -133637.66  
+Iteration 1:   log pseudolikelihood =  -132355.7  
+Iteration 2:   log pseudolikelihood = -132324.43  
+Iteration 3:   log pseudolikelihood = -132324.41  
+Iteration 4:   log pseudolikelihood = -132324.41  
+
+Exponential AFT regression
+
+No. of subjects      =      137,348             Number of obs    =      72,359
+No. of failures      =       39,429
+Time at risk         =  436970.9963
+                                                Wald chi2(3)     =      879.75
+Log pseudolikelihood =   -132324.41             Prob &gt; chi2      =      0.0000
+
+                                          (Std. Err. adjusted for 72,359 clusters in id)
+----------------------------------------------------------------------------------------
+                       |               Robust
+                    _t |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-----------------------+----------------------------------------------------------------
+                  poly |  -.1061579   .0252171    -4.21   0.000    -.1555825   -.0567333
+         event_dropout |   .6474729   .0514386    12.59   0.000     .5466551    .7482907
+_polyXevent_dropou_000 |  -.0218257    .056733    -0.38   0.700    -.1330202    .0893689
+                 _cons |   2.329756   .0233224    99.89   0.000     2.284045    2.375467
+----------------------------------------------------------------------------------------
+
+
+-&gt; Model for the mediator
+
+Iteration 0:   log likelihood = -38813.036  
+Iteration 1:   log likelihood = -38503.524  
+Iteration 2:   log likelihood = -38501.454  
+Iteration 3:   log likelihood = -38501.454  
+
+Logistic regression                             Number of obs     =     72,359
+                                                LR chi2(1)        =     623.16
+                                                Prob &gt; chi2       =     0.0000
+Log likelihood = -38501.454                     Pseudo R2         =     0.0080
+
+-------------------------------------------------------------------------------
+event_dropout |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+         poly |  -.4831949   .0191089   -25.29   0.000    -.5206476   -.4457422
+        _cons |  -.8804959   .0157701   -55.83   0.000    -.9114047   -.8495872
+-------------------------------------------------------------------------------
+
+
+-&gt; 4-way decomposition: delta method
+
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      tereri |    -0.1645     0.0218    -7.55   0.000      -0.2072     -0.1218
+   ereri_cde |    -0.0795     0.0187    -4.24   0.000      -0.1162     -0.0428
+ereri_intref |    -0.0298     0.0223    -1.34   0.181      -0.0735      0.0139
+ereri_intmed |     0.0091     0.0068     1.34   0.182      -0.0043      0.0224
+   ereri_pie |    -0.0643     0.0060   -10.66   0.000      -0.0761     -0.0525
+------------------------------------------------------------------------------
+
+
+-&gt; 4-way decomposition: bootstrap
+
+------------------------------------------------------------------------------
+             |   Observed   Bootstrap                         Normal-based
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      tereri |    -0.1645     0.0244    -6.74   0.000      -0.2123     -0.1167
+   ereri_cde |    -0.0795     0.0175    -4.54   0.000      -0.1138     -0.0452
+ereri_intref |    -0.0298     0.0239    -1.25   0.212      -0.0766      0.0170
+ereri_intmed |     0.0091     0.0073     1.25   0.213      -0.0052      0.0234
+   ereri_pie |    -0.0643     0.0061   -10.53   0.000      -0.0763     -0.0523
+------------------------------------------------------------------------------
+
+   tereri=total excess relative risk; ereri_cde=excess relative risk due to controlled direct effect; ereri_intref=excess relative risk due to reference interaction;
+   ereri_intmed=excess relative risk due to mediated interaction; ereri_pie=excess relative risk due to pure indirect effect.
+
+.  
+.  
+. //Show the legend of the coefficients
+. med4way, coeflegend
+
+-&gt; 4-way decomposition: boostrap
+
+------------------------------------------------------------------------------
+             |   Observed
+             |      Coef.  Legend
+-------------+----------------------------------------------------------------
+      tereri |  -.1644941  _b[tereri]
+   ereri_cde |  -.0794987  _b[ereri_cde]
+ereri_intref |  -.0298001  _b[ereri_intref]
+ereri_intmed |   .0090937  _b[ereri_intmed]
+   ereri_pie |   -.064289  _b[ereri_pie]
+------------------------------------------------------------------------------
+
+. 
+. *Test whether the component of the total excess mean survival-time ratio due to controlled direct effect (ereri_cde) is statistically different from the component of the tot
+&gt; al excess mean survival-time ratio due to pure indirect effect (ereri_pie)
+. 
+. test _b[ereri_cde] = _b[ereri_pie]
+
+ ( 1)  ereri_cde - ereri_pie = 0
+
+           chi2(  1) =    0.55
+         Prob &gt; chi2 =    0.4565
+
+. 
+. *Given the 4 basic components of the total effect, additional derived quantities can be estimated with the post-estimation commands lincom or nlcom, as appropriate. For exam
+&gt; ple, to calculate the overall proportion mediated (op_m)
+. nlcom (_b[ereri_pie]+_b[ereri_intmed])/(_b[ereri_cde]+_b[ereri_intref]+_b[ereri_intmed]+_b[ereri_pie]), noheader
+
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       _nl_1 |   .3355455   .0659701     5.09   0.000     .2062464    .4648445
+------------------------------------------------------------------------------
+
+.  
+.  
+.  *Mediation analysis was performed using the “med4way” command in STATA.17, 18 This method decomposes the total effect (TE, the effect of SES on overall survival) into four 
+&gt; components: controlled direct effect (CDE, the effect neither due to the mediator nor to exposure-mediator interaction), reference interaction (INTref, the effect only due t
+&gt; o interaction), mediated interaction (INTmed, the effect due to interaction only active when mediation is present) and the pure indirect effect (PIE, the effect due to media
+&gt; tion alone). The decomposition can be explained by the following equation
+.  
+.  *Sensitivity analyses for unmeasured confounding from smoking status were subsequently carried out by producing a bias factor using the following equation (8
+.  *https://onlinelibrary.wiley.com/doi/full/10.1002/cam4.3418
+.  
+.  *A bootstrapped analysis was used to empirically evaluate the difference in the mediation results between male and female infants for first trimester hCG only. We resampled
+&gt;  the dataset 1,000 times for male and females separately, did mediation analysis in each dataset, then pooled the results together to calculate the difference and variance i
+&gt; n the 5 decomposition quantities. Of the 1,000 estimates, we used the values at the 2.5th, 50th, and 97.5th percentiles to evaluate differences.
+. 
+. *https://uu.diva-portal.org/smash/get/diva2:1177117/FULLTEXT01.pdf
+.  
+.  
+. *#https://www.statalist.org/forums/forum/general-stata-discussion/general/1706954-help-with-interpretation-of-mediation-results-from-med4way-command
+. *https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6206666/
+. *https://www.stata.com/symposiums/biostatistics-and-epidemiology23/slides/Bio23_Valeri.pdf
+</code></pre>
+<p>Saved at= 18:10:58  1 Aug 2023</p>
+<pre><code>
+</code></pre>

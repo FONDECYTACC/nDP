@@ -201,6 +201,90 @@ ssizeEpiCont.default(power= 0.90,
 #condition index, all provided by most statistical packages.
 
 
+# People who abandoned ---------------------------------------------------------------------
+#2023-08-02
+load("an_grant_23_24.RData")
+mat_dias_tto_por_mot_egr<-
+CONS_C1_2010_19 %>% 
+  dplyr::group_by(motivo_de_egreso) %>% 
+  count(dias_en_tratamiento) %>% 
+  dplyr::filter(dias_en_tratamiento>=0) %>%
+  ggplot2::ggplot(aes(x = dias_en_tratamiento, y = n, color=factor(motivo_de_egreso), label = paste0("n=",n))) +
+  geom_line() +
+  theme_bw()+
+  xlim(0,300)+
+  labs(x="Days in treatment", y="Count of patients treated", color="Cause of\ndischarge")
+
+ggsave("days_in_treatment_cause_of_disch.png", mat_dias_tto_por_mot_egr, dpi=500)
+
+round(prop.table(table(CONS_C1_2010_19$evaluacion_del_proceso_terapeutico,
+                       CONS_C1_2010_19$motivo_de_egreso),2),2)
+
+CONS_C1_df_dup_SEP_2020_22_d %>%
+  dplyr::group_by(motivodeegreso_mod_imp_1) %>% 
+  count(dias_treat_imp_sin_na_1) %>% 
+  ggplot2::ggplot(aes(x = dias_treat_imp_sin_na_1, y = n, color=factor(motivodeegreso_mod_imp_1), label = paste0("n=",n))) +
+  geom_line() +
+  theme_bw()+
+  xlim(0,300)+
+  labs(x="Days in treatment", y="Count of patients treated", color="Cause of\ndischarge")
+
+
+round(prop.table(table(CONS_C1_df_dup_SEP_2020_22_d$evaluacindelprocesoteraputico,
+                       CONS_C1_df_dup_SEP_2020_22_d$motivodeegreso_mod_imp_1),2),2)
+
+# People who abandoned ---------------------------------------------------------------------
+#2023-08-02
+load("an_grant_23_24.RData", an_grant_23_24 <- new.env() )
+
+require(tidyverse)
+require(tidySEM)
+
+CONS_C1_df_dup_SEP_2020<-
+an_grant_23_24$CONS_C1_df_dup_SEP_2020
+
+CONS_C1_df_dup_SEP_2020_22_d<-
+  an_grant_23_24$CONS_C1_df_dup_SEP_2020_22_d
+
+rm(an_grant_23_24)
+
+#evaluacindelprocesoteraputico
+mydata_preds1<- 
+  subset(CONS_C1_df_dup_SEP_2020, dup==1) %>% 
+  dplyr::select(eva_consumo,
+                eva_fam,
+                eva_relinterp,
+                eva_ocupacion,
+                eva_sm,
+                eva_fisica,
+                eva_transgnorma) %>%  
+  data.table::data.table()
+
+mydata_preds2 <- mydata_preds1%>% 
+  dplyr::mutate(across(c("eva_consumo", "eva_fam", "eva_relinterp",
+                         "eva_ocupacion","eva_sm", "eva_fisica", "eva_transgnorma"), ~ 
+                         dplyr::case_when(is.na(.)~ 1, T~ parse_number(as.character(.))+1)))%>% 
+  dplyr::mutate(across(c("eva_consumo", "eva_fam", "eva_relinterp",
+                         "eva_ocupacion","eva_sm", "eva_fisica", "eva_transgnorma"), ~ 
+                         as.ordered(.)))
+set.seed(123)
+res <- tidySEM::mx_lca(data = mydata_preds2, classes = 1:6)
+invisible("Se demora como 1 día en hacer 6, y son todas no concluyentes")
+# Name Classes        LL  Parameters       AIC       BIC     saBIC   Entropy  prob_min  prob_max      n_min     n_max  np_ratio
+# 1    1       1 -732948.0 21 1465937.9 1466134.3 1466067.5 1.0000000 1.0000000 1.0000000 1.00000000 1.0000000 4049.9048
+# 2    2       2 -542079.3 43 1084244.6 1084646.7 1084510.0 0.9470386 0.9836945 0.9866397 0.48460869 0.5153913 1977.8605
+# 3    3       3 -459786.9 65  919703.8  920311.6  920105.0 0.9474716 0.9586688 0.9848738 0.23224532 0.3911086 1308.4308
+# 4    4       4 -384087.8 87  768349.7  769163.2  768886.7 0.9530913 0.9682008 1.0000000 0.06164754 0.3766461  977.5632
+# 5    5       5 -375106.1 109  750430.2  751449.5  751103.1 0.9111643 0.8540046 1.0000000 0.06164754 0.3118709  780.2569
+# 6    6       6 -369728.0 131  739718.0  740943.0  740526.7 0.9017279 0.8561914 1.0000000 0.06164754 0.3171268  649.2214
+# np_local
+# 1 4049.9048
+# 2 1962.6190
+# 3  940.5714
+# 4  249.6667
+# 5  249.6667
+# 6  249.6667
+
 
 
 # DAG ---------------------------------------------------------------------

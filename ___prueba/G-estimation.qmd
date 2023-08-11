@@ -1,0 +1,538 @@
+---
+title: "G estimation"
+format: html
+editor: visual
+---
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+ $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+  
+```
+
+```{css hideOutput-lib-src, echo = FALSE}
+<script src="hideOutput.js"></script> 
+```
+
+```{js hideOutput, echo = FALSE}
+$(document).ready(function() {    
+	$chunks = $('.fold');    
+	$chunks.each(function () {      // add button to source code chunks     
+	if ( $(this).hasClass('s') ) {       
+		$('pre.r', this).prepend("<div class=\"showopt\">Show Source</div><br style=\"line-height:22px;\"/>");
+       		$('pre.r', this).children('code').attr('class', 'folded');     
+       		}      // add button to output chunks     
+		if ( $(this).hasClass('o') ) {       
+			$('pre:not(.r)', this).has('code').prepend("<div class=\"showopt\">Show Output</div><br style=\"line-height:22px;\"/>");       
+			$('pre:not(.r)', this).children('code:not(r)').addClass('folded');        // add button to plots       
+			$(this).find('img').wrap('<pre class=\"plot\"></pre>');       
+			$('pre.plot', this).prepend("<div class=\"showopt\">Show Plot</div><br style=\"line-height:22px;\"/>");       
+			$('pre.plot', this).children('img').addClass('folded');      
+			}   
+});    // hide all chunks when document is loaded   
+	$('.folded').css('display', 'none')    // function to toggle the visibility   
+	$('.showopt').click(function() {     
+			var label = $(this).html();     
+			if (label.indexOf("Show") >= 0) {       
+				$(this).html(label.replace("Show", "Hide"));     
+			} else {
+			  $(this).html(label.replace("Hide", "Show"));     
+			}     
+	$(this).siblings('code, img').slideToggle('fast', 'swing');   
+	}); 
+}); 
+
+```
+
+```{=html}
+<style type="text/css">
+.showopt {   
+  background-color: #004c93;   color: #FFFFFF;    width: 100px;   height: 20px;   text-align: center;   vertical-align: middle !important;   float: right;   font-family: sans-serif;   border-radius: 8px; 
+  }  
+.showopt:hover {     
+        background-color: #dfe4f2;
+        color: #004c93; 
+        }  
+pre.plot {   
+        background-color: white !important; 
+        } 
+.tablelines table, .tablelines td, .tablelines th {
+        border: 1px solid black;
+        }
+.centrado {
+    text-align: center;
+}
+.table.center {
+    margin-left:auto; 
+    margin-right:auto;
+  }
+.table_wrapper{
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+code.r{
+  font-size: 8px;
+}
+body{ /* Normal  */
+      text-align: justify;
+  }
+.superbigimage{
+    overflow-y:scroll;
+    white-space: nowrap;
+}
+.superbigimage img{
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+</style>
+```
+```{=html}
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px; text-align: justify;}
+</style>
+```
+```{=html}
+<!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
+<script>
+function myFunction1() {
+    var x = document.getElementById("myDIV");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<script>
+function myFunction2() {
+    var x = document.getElementById("myDIV2");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+```
+```{r prev_setup, include = FALSE, cache=T}
+rm(list=ls());gc()
+if(!grepl("4.1.2",R.version.string)){stop("Different version (must be 4.1.2)")}
+path<-rstudioapi::getSourceEditorContext()$path
+
+if (grepl("CISS Fondecyt",path)==T){
+  setwd("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2019 (github)/SUD_CL/");load("C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2019 (github)/mult_state_5_apr22.RData")
+} else if (grepl("andre",path)==T){
+  setwd('C:/Users/andre/Desktop/SUD_CL/');load("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/mult_state_5_apr22.RData")
+} else if (grepl("E:",path)==T){
+  setwd("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/SUD_CL/");load("E:/Mi unidad/Alvacast/SISTRAT 2019 (github)/mult_state_5_apr22.RData")
+} else {
+  setwd("G:/Mi unidad/Alvacast/SISTRAT 2019 (github)/SUD_CL/");load("G:/Mi unidad/Alvacast/SISTRAT 2019 (github)/mult_state_5_apr22.RData")
+}
+```
+
+```{r setup, include = FALSE, cache=T, error=T, echo=T}
+#Libraries used in the routine. Dont change the order
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
+  if(class(ungroup(x))[1]=="tbl_df"){
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)    
+        }
+  } else {
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)       
+  }
+ }
+} 
+Sys.setenv("QUARTO_CMD"=rmarkdown::find_pandoc()$dir)
+
+if(!require(pacman)){install.packages("pacman")}
+pacman::p_load(APCtools, ggpattern, withr, boot, matrixStats, knitr, tidyr, stringi,stringr, ggplot2, Hmisc, kableExtra, plotly, janitor, rbokeh, zoo, broom, sqldf, devtools, codebook, data.table, panelr, RColorBrewer, lsmeans, finalfit, ggiraph, sf, treemapify, dplyr, tidyverse, epiR, survminer, ggfortify, survMisc, foreign, reshape2, stargazer, tableone, MatchIt, cobalt, eha, igraph, Amelia, DiagrammeR, DiagrammeRsvg, rsvg, mstate, htmltools, webshot, flexsurv, muhaz, Metrics, rpivotTable, caret, polycor, ClusterR, flextable, ggstatsplot, ggside, daff, explore, sjPlot, compareGroups, job, missForest, showtext, ggpattern, distill, showtext, confoundr,quarto, install=F)
+try(webshot::install_phantomjs())
+
+options(scipen=6) #display numbers rather scientific number
+
+#remotes::install_github("chjackson/flexsurv-dev", upgrade = "never")
+#devtools::install_github("stulacy/multistateutils", build_vignettes=TRUE, upgrade = "never")
+#devtools::install_github("hputter/mstate", upgrade = "never")
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+fitstats.flexsurvreg = function(x){
+  ll = x$loglik
+  aic = x$AIC
+  k = length(x$coefficients)
+  n = sum(x$data$m["(weights)"])
+  aicc = aic + ((2 * k) * (k + 1) / (n - k - 1))
+  bic = - 2 * ll + (k * log(n))
+  data.frame(
+   Df = k,
+    "n2ll" = -2 * ll,
+    AIC = aic,
+    AICc = aicc,
+    BIC = bic
+  )
+}
+
+
+if(.Platform$OS.type == "windows") withAutoprint({
+  memory.size()
+  memory.size(TRUE)
+  memory.limit()
+})
+memory.limit(size=56000)
+```
+
+## Ejemplo con confoundr
+
+Primero formateo la base de datos para distinguir la censura `s` de la exposición `a`
+
+```{r}
+library(confoundr)
+#data("example_sml")
+
+d_match_surv_msprep_mod<-
+d_match_surv_msprep %>% 
+  plyr::rename(c("Readmission_status"="s_0","Readmission2_status"="s_1",
+                 "Readmission3_status"="s_2","Readmission4_status"="s_3",
+                 "tipo_de_plan_res_1"="a_0","tipo_de_plan_res_2"="a_1",
+                 "tipo_de_plan_res_3"="a_2","tipo_de_plan_res_4"="a_3",
+                 "TD_1"="l_0","TD_2"="l_1","TD_3"="l_2","TD_4"="l_3")) %>% 
+  dplyr::mutate(h_0="H", h_1=ifelse(a_0==1,"H1","H0"), 
+                h_1=dplyr::case_when(a_1==1~paste0(h_0,"1"),
+                                     a_1==0~paste0(h_0,"0"),
+                                     T~paste0(h_0,"0")),
+                h_2=dplyr::case_when(a_2==1~paste0(h_1,"1"),
+                                     a_2==0~paste0(h_1,"0"),
+                                     T~paste0(h_1,"0")),
+                h_3=dplyr::case_when(a_2==1~paste0(h_2,"1"),
+                                     a_2==0~paste0(h_2,"0"),
+                                     T~paste0(h_2,"0"))) %>% 
+  dplyr::mutate(across(paste0("s_",0:3),~if_else(.x==1,0,1,1), # da lo mismo si se le pone NA_real_ en vez de 1 en caso de perdido
+               .names = 'post_{col}')) %>% 
+  plyr::rename(c("post_s_0"="c_0","post_s_1"="c_1","post_s_2"="c_2","post_s_3"="c_3"))
+
+invisible("Es lo mismo solo que este me pone como NA a quellos que no tienen la misma cantidad de seguimientos")
+mydata.history <- makehistory.one(input=d_match_surv_msprep %>% 
+  plyr::rename(c("Readmission_status"="s_0","Readmission2_status"="s_1",
+                 "Readmission3_status"="s_2","Readmission4_status"="s_3",
+                 "tipo_de_plan_res_1"="a_0","tipo_de_plan_res_2"="a_1",
+                 "tipo_de_plan_res_3"="a_2","tipo_de_plan_res_4"="a_3",
+                 "TD_1"="l_0","TD_2"="l_1","TD_3"="l_2","TD_4"="l_3")),
+                                  id="id",
+                                  exposure="a",
+                                  name.history="h",
+                                  times=c(0,1,2,3))
+
+d_match_surv_msprep_mod_l<-
+lengthen(d_match_surv_msprep_mod, 
+         diagnostic=2,#diagnostic of interest e.g. 1, 2, or 3= 
+         censoring="yes", 
+         id="id", 
+         times.exposure=0:3, 
+         times.covariate=0:3,
+         exposure="a", 
+         temporal.covariate=c("l"), 
+         static.covariate = NULL,
+         history = "h", 
+         weight.exposure = NULL, 
+         censor = "s",
+         weight.censor = NULL, 
+         strata = NULL)
+mydata.history_l<-
+lengthen(d_match_surv_msprep_mod, 
+         diagnostic=2,#diagnostic of interest e.g. 1, 2, or 3= 
+         censoring="yes", 
+         id="id", 
+         times.exposure=0:3, 
+         times.covariate=0:3,
+         exposure="a", 
+         temporal.covariate=c("l"), 
+         static.covariate = NULL,
+         history = "h", 
+         weight.exposure = NULL, 
+         censor = "s",
+         weight.censor = NULL, 
+         strata = NULL)
+
+invisible("sólo funciona para opc. 2")
+
+table.std <- balance(input=d_match_surv_msprep_mod_l,
+  diagnostic=2,
+  approach="none",
+  censoring="no",
+  scope="average",
+  average.over="distance",
+  ignore.missing.metric="no",
+  times.exposure=c(0,1,2,3),
+  times.covariate=c(0,1,2,3),
+  exposure="a",
+  history="h"
+) 
+table.std2 <- balance(input=mydata.history_l,
+  diagnostic=2,
+  approach="none",
+  censoring="yes",
+  scope="average",
+  average.over="distance",
+  ignore.missing.metric="yes",
+  times.exposure=c(0,1,2,3),
+  times.covariate=c(0,1,2,3),
+  exposure="a",
+  history="h"
+) 
+table.std3 <- balance(input=mydata.history_l,
+  diagnostic=2,
+  approach="none",
+  censoring="yes",
+  scope="average",
+  average.over="distance",
+  ignore.missing.metric="yes",
+  times.exposure=c(0,1,2,3),
+  times.covariate=c(0,1,2,3),
+  exposure="a",
+  history="h"
+) 
+invisible("Diagnostic 2 assesses whether there is feedback between exposures and confounders over time. If present, it indicates the use of g-methods to control for time-varying confounding for any definition of time-varying exposure that is explicitly or implicitly multivariate (e.g., ever use at time $t$). The diagnostic examines whether the covariate mean differs across prior exposure groups, after adjustment for covariates (that precede the exposure) through inverse probability weighting or propensity score stratification.")
+print(table.std)
+sum(table(d_match_surv_msprep$duplicates_filtered)[2:8])
+
+```
+
+### Diagnóstico 1
+
+El primer diagnóstico busca examinar si el promedio de la covariable anterior ($l_{k-1}$) es el mismo en grupos de exposición, entre personas que han seguido una trayectoria de exposición particular hasta un punto en el tiempo. Busca describir si los grupos de exposición han tenido distintas distribuciones de covariables anteriores.
+
+Para diagnosticar 1 cualquiera sea no asumiendo censura
+
+```{r}
+d1_noc<-
+diagnose(input=d_match_surv_msprep_mod,
+         diagnostic=1,
+         censoring="no",
+         approach="none",
+         scope="all",
+         id="id",
+         times.exposure=c(0,1,2,3),
+         times.covariate=c(0,1,2,3),
+         exposure="a",
+         temporal.covariate=c("l"),
+         history="h",
+         ignore.missing.metric="no",
+         loop="yes",
+         sd.ref="no")
+d1_noc %>% knitr::kable("markdown")
+```
+
+Ahora asumiendo censura
+
+```{r}
+d1_c<-
+diagnose(input=d_match_surv_msprep_mod,#[,-"c_3"]
+         diagnostic=1,
+         censoring="yes",
+         approach="none",
+         scope="all",
+         id="id",
+         times.exposure=c(0,1,2,3),
+         times.covariate=c(0,1,2,3),
+         exposure="a",
+         censor="c",
+         temporal.covariate=c("l"),
+         history="h",
+         ignore.missing.metric="no",
+         loop="yes",
+         sd.ref="no")
+d1_c %>% knitr::kable("markdown")
+```
+
+Por lo visto, hay trayectorias que parecen bastante distintas dependiendo de la trayectoria de tratamiento Por ej., quienes no son readmitidos con posterioridad, pero también los que sólo fueron admitidos a tratamientos ambulatorios (`H000`) paracen haber completado mayormente el tratamiento anterior. En cambio, quienes completaron el tratamiento ambulatorio a la base pero luego transitaron por 2 tratamientos residenciales (`H011`) parecen no haber completado los 2 tratamientos anteriores, pero sí el tercero. Respecto a quienes sólo fueron admitidos al tratamiento residencial a la base y luego transitan por 2 tratamientos ambulatorios (`H100`)
+
+### Diagnóstico 2
+
+El segundo diagnóstico busca chequear si hay retroalimentación entre exposición y confusor en el tiempo. De haberlo, indica el uso de métodos-g para controlar por confusores tiempo-dependientes para cualquier definición de exposición tiempo-dependiente que es implícita o explícitamente multivariable. El diagnóstico examina si un promedio de covariables ($l_k$) difiere entre grupos de exposición previa ($a_{k-1}$) después de ajustar por las covariables, mediante IPW o estratificación PS.
+
+Para diagnosticar 2 cualquiera sea no asumiendo censura
+
+```{r}
+d2_c<-
+diagnose(input=d_match_surv_msprep_mod,
+         diagnostic=2,
+         censoring="no",
+         approach="none",
+         scope="all",
+         id="id",
+         times.exposure=c(0,1,2,3),
+         times.covariate=c(0,1,2,3),
+         exposure="a",
+         temporal.covariate=c("l"),
+         history="h",
+         ignore.missing.metric="no",
+         loop="yes",
+         sd.ref="no")
+
+d2_c %>% knitr::kable("markdown")
+```
+
+Ahora asumiendo censura
+
+```{r}
+d2_c<-
+diagnose(input=d_match_surv_msprep_mod,#[,-"c_3"]
+         diagnostic=2,
+         censoring="yes",
+         approach="none",
+         scope="all",
+         id="id",
+         times.exposure=c(0,1,2,3),
+         times.covariate=c(0,1,2,3),
+         exposure="a",
+         censor="c",
+         temporal.covariate=c("l"),
+         history="h",
+         ignore.missing.metric="no",
+         loop="yes",
+         sd.ref="no")
+d2_c %>% knitr::kable("markdown")
+```
+
+Por lo visto no hay un desbalance tan importante de los valores promedio de las covariables dependiendo del tratamiento anterior.
+
+### Diagnóstico 3
+
+El tercer diagnóstico debe utilizarse cuando los investigadores han aplicado los diagnósticos anteriores y han decidido utilizar métodos-g para ajustar por confusión/sesgo de selección. Por lo mismo, no se utilizará en este ejemplo.
+
+## Ejemplo con DT reg
+
+```{r}
+#| label: fig-airquality
+#| fig-cap: Temperature and ozone level.
+#| warning: false
+#| results: 'hide'
+#| eval: FALSE
+
+if(!require(DTRreg)){install.packages("DTRreg")}
+
+set.seed(1)
+# expit function
+expit <- function(x) {1 / (1 + exp(-x))}
+# sample size and parameters
+n <- 1000
+theta1 <- c(6.3, 1.5, -0.8, 0.1, 0.1)
+theta2 <- c(4, 1.1, -0.2, -0.9, 0.6, -0.1)
+lambda <- 1/300
+p <- 0.9
+beta <- 2
+# covariates and treatment (X = patient information, A = treatment)
+X1 <- runif(n, 0.1, 1.29)
+X14 <- X1^4
+A1 <- rbinom(n, size = 1, prob = expit(2*X1 - 1))
+X2 <- runif(n, 0.9, 2)
+X23 <- X2^3
+A2 <- rbinom(n, size = 1, prob = expit(-2*X2 + 2.8))
+delta <- rbinom(n, size = 1, prob = expit(2*X1 - 0.4))
+eta2 <- rbinom(n, 1, prob = 0.8)
+delta2 <- delta[eta2 == 1]
+# survival time
+logY2 <- logT2 <- theta2[1] + theta2[2]*X2[eta2 == 1] + theta2[3]*X23[eta2 == 1] 
++ theta2[4]*A2[eta2 == 1] + theta2[5]*A2[eta2 == 1]*X2[eta2 == 1] 
++ theta2[6]*X1[eta2 == 1] + rnorm(sum(eta2), sd = 0.3)
+trueA2opt <- ifelse(theta2[4]*A2[eta2 == 1] 
+                    + theta2[5]*A2[eta2 == 1]*X2[eta2 == 1] > 0, 1, 0)
+logT2opt <- logT2 + (trueA2opt - A2[eta2 == 1])*(theta2[4]*A2[eta2 == 1] 
+                                                 + theta2[5]*A2[eta2 == 1]*X2[eta2 == 1])
+logT <- theta1[1] + theta1[2]*X1 + theta1[3]*X14 + theta1[4]*A1 
++ theta1[5]*A1*X1 + rnorm(n, sd = 0.3)
+T1 <- exp(logT[eta2 == 1 & delta == 1]) - exp(logT2opt[delta2 == 1])
+logT[eta2 == 1 & delta == 1] <- log(T1 + exp(logT2[delta2 == 1]))
+# censoring time
+C <- (- log(runif(n - sum(delta), 0, 1))/(lambda * exp(beta * X1[delta == 0])))^(1/p)
+eta2d0 <- eta2[delta == 0]
+C1 <- rep(NA, length(C))
+C2 <- rep(NA, length(C))
+for(i in 1:length(C))
+{
+  if(eta2d0[i] == 0){
+    C1[i] <-  C[i]
+    C2[i] <- 0
+  }else{
+    C1[i] <- runif(1, 0, C[i])
+    C2[i] <- C[i] - C1[i]
+  }
+}
+# observed survival time
+Y2 <- rep(NA, n)
+Y1 <- rep(NA, n)
+Y2[delta == 0] <- C2
+Y1[delta == 0] <- C1
+Y1[delta == 1 & eta2 == 1] <- T1
+Y1[delta == 1 & eta2 == 0] <- exp(logT[delta == 1 & eta2 == 0])
+Y2[delta == 1 & eta2 == 0] <- 0
+Y2[delta == 1 & eta2 == 1] <- exp(logT2[delta2 == 1])
+logY <- log(Y1 + Y2)
+logY2 <- log(Y2[eta2 == 1])
+# data and run DWSurv
+mydata <- data.frame(X1,X14,A1,X2,X23,A2,delta,Y1,Y2)
+
+head(mydata) %>% 
+  knitr::kable("markdown")
+```
+
+Para mis datos, deberé asumir que "C" es un equivalente a tratamiento "en curso". Y a juzgar por el ejemplo, debo ocupar \`d_match_surv_msprep\` (wide). Aunque viendo la salida de código, me da la impresión de que delta es una forma de censura por no seguir en los tratamientos. Ahora ver:
+
+-   Por lo visto, para cada etapa se deben definir los tiempos (Y), los controles, el modelo predictor del tratamiento (da lo mismo que se repitan), el tf (modelo treatment-free),
+
+-   Me queda la duda de la estructura de confusión. sobre todo de treat.mod (cómo afecta al tratamiento
+
+-   Ver si se pueden repetir los términos, por lo visto sí. Auqneu no sé cómo especificar el TF
+
+-   Decidí meter todo al treat.mod, como predictor, pero quien sabe si no estoy sobreajustando. Ver si es mejor verlo con DAG
+
+```{r}
+#| eval: FALSE
+mydata <- data.frame(X1,X14,A1,X2,X23,A2,delta,Y1,Y2)
+mod_nocensoring <- DWSurv(time = list(~Y1, ~Y2), blip.mod = list(~X1, ~X2), 
+  treat.mod = list(A1~X1, A2~X2), tf.mod = list(~X1 + X14, ~X2 + X23 + X1), 
+  cens.mod = list(~delta, ~delta), var.estim = "asymptotic", data = mydata)
+mod_nocensoring
+
+mod_nocensoring2 <- DWSurv(time = list(~Readmission_time, ~Readmission2_time, ~Readmission3_time, ~Readmission4_time), blip.mod = list(~TD_1, ~TD_2, ~TD_3, ~TD_4), treat.mod = list(tipo_de_plan_res_1~1, tipo_de_plan_res_2~ tipo_de_plan_res_1+ TD_1, tipo_de_plan_res_3~tipo_de_plan_res_2+ TD_2, tipo_de_plan_res_4~ tipo_de_plan_res_3+ TD_3), tf.mod = list(~dias_treat_imp_sin_na_1, ~TD_1+ dias_treat_imp_sin_na_1, ~dias_treat_imp_sin_na_2+ TD_2, ~dias_treat_imp_sin_na_3+ TD_3), cens.mod = list(~Readmission_status, ~Readmission2_status, ~Readmission3_status, ~Readmission4_status), var.estim = "asymptotic", data = d_match_surv_msprep %>% dplyr::mutate_at(c("Readmission_status",paste0("Readmission",2:4,"_status")),~ifelse(.==0,1,0))) #d_match_surv_msprep[which(d_match_surv_msprep$id %in% 1:10000),])
+mod_nocensoring2
+
+```

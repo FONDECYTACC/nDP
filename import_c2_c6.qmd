@@ -413,8 +413,6 @@ x.style.display = "none";
 }
 </script>
 ```
-
-
 ```{r pre-setup}
 rm(list = ls()) 
 
@@ -428,7 +426,6 @@ paste0("Loaded: ",
        "1_ndp_2023_07_05_19_00_00.RData"
        )
 ```
-
 
 ```{r python-environment}
 path2<-paste0(getwd(),'/env')
@@ -1058,7 +1055,6 @@ cbind(cat="Date of discharge",
   knitr::kable(size=10, format="markdown",caption= "Summary descriptives of dates, Database C6", escape=T)
 ```
 
-
 ```{=html}
 <!---
  #https://github.com/kosukeimai/fastLink
@@ -1066,7 +1062,6 @@ cbind(cat="Date of discharge",
   #"aquellos registros que terminaronpor ejemplo, con una sentencia absolutoria o en que no se pudo acreditar un hecho delictual". No tengo la bbdd para revisar si esto aplica a nosotros, pero prefiero dejarlo acá para que no se me olvide.
  --->
 ```
-
 <br>
 
 ## Data transformation and normalization
@@ -1083,9 +1078,9 @@ We changed the UTF-8 code names into ANSI format. Then, we transformed unprocess
 conv_chars <- data.frame(
     ANSI = c("Á", "á", "É", "é", "Í", "í", "Ó", "ó", "Ú", "ú", "Ñ", "ñ", "¿", "ó"),
     UTF_8 = c("Ã", "Ã¡", "Ã‰", "Ã©", "Ã", "Ã­", "Ã“", "Ã³", "Ãš", "Ãº", "Ã‘", "Ã±", "Â¿", "Ã²"),
-    JAVASCRIPT = c("u00c1", "u00e1", "u00c9", "u00e9", "u00cd", "u00ed", "u00d3", "u00f3", "u00da", "u00fa", "u00d1", "u00f1", "u00bf", "0xF2"),
-    HTML = c("&#193;", "&#225;", "&#201;", "&#233;", "&#205;", "&#237;", "&#211;", "&#243;", "&#218;", "&#250;", "&#209;", "&#241;", "&#191;", "")
+    JAVASCRIPT = c("u00c1", "u00e1", "u00c9", "u00e9", "u00cd", "u00ed", "u00d3", "u00f3", "u00da", "u00fa", "u00d1", "u00f1","0&#201;", "&#233;", "&#205;", "&#237;", "&#211;", "&#243;", "&#218;", "&#250;", "&#209;", "&#241;", "&#191;", "")
 )
+
 
 iconv <- readxl::read_excel("iconv.xlsx")
 
@@ -1116,10 +1111,9 @@ colnames(SISTRAT_c6)<- gsub("con_quien_vi_vi_a","con_quien_vivia",names(SISTRAT_
 
 ```
 
-
 ### Sort fields
 
-We generated an encrypted rownumber (`id_vers`), and ordered the first columns to be the RUN, the RUN under the assumption of a missing verification digit, and SENDA code.
+We generated an encrypted row number (`id_vers`), and ordered the first columns to be the RUN, the RUN under the assumption of a missing verification digit, and SENDA code.
 
 ```{r sort-fields, echo=T, fig.align='center', message=T, error=T, eval=T}
 SISTRAT_c2 <-
@@ -1269,7 +1263,6 @@ sapply(CONS_TOP_2019_22$rn, function(x) safer::encrypt_string(as.character(x), k
 
 CONS_TOP_2019_22$rn <- NULL
 ```
-
 
 # Export to .tsv
 

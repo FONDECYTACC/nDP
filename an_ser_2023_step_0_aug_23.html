@@ -1,0 +1,1494 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<pre><code>. clear all
+
+. cap noi which tabout
+C:\Users\CISS Fondecyt\ado\plus\t\tabout.ado
+*! 2.0.8 Ian Watson 15mar2019
+*! tabout version 3 (beta) available at: http://tabout.net.au
+
+. if _rc==111 {
+.         cap noi ssc install tabout
+.         }
+
+. cap noi which pathutil
+C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+*! version 2.2.0 19nov2020 daniel klein
+
+. if _rc==111 {
+.         cap noi net install pathutil, from(&quot;http://fmwww.bc.edu/repec/bocode/p/&quot;) 
+.         }
+
+. cap noi which pathutil
+C:\Users\CISS Fondecyt\ado\plus\p\pathutil.ado
+*! version 2.2.0 19nov2020 daniel klein
+
+. if _rc==111 {
+.         ssc install dirtools    
+.         }
+
+. cap noi which project
+C:\Users\CISS Fondecyt\ado\plus\p\project.ado
+*! version 1.3.1  22dec2013  picard@netbox.com
+
+. if _rc==111 {   
+.         ssc install project
+.         }
+
+. cap noi which stipw
+C:\Users\CISS Fondecyt\ado\plus\s\stipw.ado
+*! Version 1.0.0 17Jan2022
+
+. if _rc==111 {   
+.         ssc install stipw
+.         }
+
+. cap noi which stpm2
+C:\Users\CISS Fondecyt\ado\plus\s\stpm2.ado
+*! version 1.7.5 May2021
+
+. if _rc==111 {   
+.         ssc install stpm2
+.         }       
+
+. cap noi which rcsgen
+C:\Users\CISS Fondecyt\ado\plus\r\rcsgen.ado
+*! version 1.5.9 13FEB2022
+
+. if _rc==111 {   
+.         ssc install rcsgen
+.         }       
+
+. cap noi which matselrc
+C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
+*! NJC 1.1.0 20 Apr 2000  (STB-56: dm79)
+
+. if _rc==111 {           
+. cap noi net install dm79, from(http://www.stata.com/stb/stb56)
+.         }
+
+. cap noi which pbalchk
+C:\Users\CISS Fondecyt\ado\plus\p\pbalchk.ado
+*! Version: 3.0.0
+*! Author:  Mark Lunt
+*! Date:    October 2, 2017 @ 12:47:35
+
+. if _rc==111 {
+.         cap noi net install pbalchk from(&quot;http://personalpages.manchester.ac.uk/staff/mark.lunt/&quot;)
+.         }
+
+. cap noi which matselrc
+C:\Users\CISS Fondecyt\ado\plus\m\matselrc.ado
+*! NJC 1.1.0 20 Apr 2000  (STB-56: dm79)
+
+. if _rc==111 {
+.         ssc install matselrc
+.         }
+
+. 
+</code></pre>
+<h1><a href="#exercise" id="exercise">Exercise</a></h1>
+<p>Date created: 18:27:23  1 Aug 2023.</p>
+<p>Get the folder</p>
+<pre><code>
+C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)
+
+
+Fecha:  1 Aug 2023, considerando un SO Windows para el usuario: CISS Fondecyt
+
+</code></pre>
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown2.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		$(document).ready(function() {
+		  // Add button after each code chunk
+		  $('.sourceCode').after('<button class="show-code">Show code</button>');
+
+		  // Hide code after each chunk
+		  $('.sourceCode').hide();
+
+		  // Show code when button is clicked
+		  $('.show-code').click(function() {
+		    $(this).prev('.sourceCode').toggle();
+		  });
+		});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button.toggle-code").click(function() {
+    $(this).toggleClass("collapsed");
+    $(this).siblings("div.sourceCode").toggleClass("hide");
+  });
+});
+</script>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<p>Path data= ;</p>
+<p>Tiempo:  1 Aug 2023, considerando un SO Windows</p>
+<p>The file is located and named as: C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)fiscalia_mariel_jan_2023_match_SENDA.dta</p>
+<p>=============================================================================</p>
+<h2><a href="#structure-database-and-survival" id="structure-database-and-survival">Structure database and survival</a></h2>
+<p>=============================================================================</p>
+<p>We open the files</p>
+<pre><code>. use &quot;an_grant_23_24_miss.dta&quot;, clear
+
+. encode escolaridad_rec, gen(esc_rec)
+
+. encode sex, generate(sex_enc)
+
+. encode sus_principal_mod, gen(sus_prin_mod)
+
+. encode freq_cons_sus_prin, gen(fr_sus_prin)
+
+. encode compromiso_biopsicosocial, gen(comp_biosoc)
+
+. encode tenencia_de_la_vivienda_mod, gen(ten_viv)
+
+. *encode dg_cie_10_rec, generate(dg_cie_10_mental_h) *already numeric
+. encode dg_trs_cons_sus_or, generate(sud_severity_icd10)
+
+. encode macrozona, generate(macrozone)
+
+. 
+. recode policonsumo (0=0 &quot;No polysubstance use&quot;) (1=1 &quot;Polysubstance use&quot;), gen(poly)
+(0 differences between policonsumo and poly)
+
+. 
+. lab var poly &quot;Polysubstance use&quot;
+
+. 
+. *rename Clasificación clas 
+. *encode Clasificación, gen(clas)
+. *drop Clasificación
+. 
+. gen     clas = 0
+
+. replace clas = 1 if strpos(clasificacion,&quot;Mixta&quot;)&gt;0
+(8,205 real changes made)
+
+. replace clas = 2 if strpos(clasificacion,&quot;Rural&quot;)&gt;0
+(7,148 real changes made)
+
+. recode clas (0=0 &quot;Urban&quot;) (1=1 &quot;Mixed&quot;) (2=2 &quot;Rural&quot;), gen(clas2) 
+(0 differences between clas and clas2)
+
+. drop clas
+
+. 
+. rename clas2 clas
+
+. 
+. lab var clas &quot;Classification of Municipallities of Residence into Rural-Urban&quot; 
+
+. lab var offender_d &quot;Offenders (proxy of event; missing not event)&quot; 
+
+. 
+. lab var porc_pobr &quot;Poverty of municipallities of Residence (numeric)&quot; 
+
+. lab var comuna_residencia_cod_rec &quot;Municipallity of Residence (code)&quot; 
+
+. 
+. drop clasificacion
+
+. 
+. *región
+. format comuna_residencia_cod_rec 
+
+  variable name              display format
+  -----------------------------------------
+  comuna_residencia_cod_rec  %-9s
+  -----------------------------------------
+
+. gen comuna_residencia_cod_rec_num = real(comuna_residencia_cod_rec)
+(2 missing values generated)
+
+. gen comuna_residencia_cod_rec_str = string(comuna_residencia_cod_rec_num ,&quot;%05.0f&quot;)
+
+. 
+. gen region=substr(comuna_residencia_cod_rec_str, 1,2)
+
+. gen region_num = real(region)
+(2 missing values generated)
+
+. 
+. drop comuna_residencia_cod_rec_num
+
+. 
+. lab var comuna_residencia_cod_rec &quot;Municipallity of Residence (code)&quot; 
+
+. lab var region &quot;Region&quot; 
+
+. lab var region_num &quot;Region (numeric)&quot; 
+
+. lab var age_at_censor_date &quot;Age at censorship date (2019-11-13)&quot; 
+
+. 
+. lab var event_offense &quot;Offense after admission&quot; 
+
+. lab var event_dropout &quot;Dropout after admission&quot; 
+variable event_dropout not found
+r(111);
+
+.  
+. 
+. /*
+&gt; label define country1 1 &quot;Ukraine&quot; 2 &quot;Bulgaria&quot; 3 &quot;Georgia&quot; 4 &quot;Russia&quot; 5 &quot;Lithuania&quot; 6 &quot;Czech Republic&quot; ///
+&gt; 7 &quot;Hungary&quot; 8 &quot;Slovakia&quot; 9 &quot;Portugal&quot; 10 &quot;Croatia&quot; 11 &quot;Ireland&quot; 12 &quot;Estonia&quot; 13 &quot;France&quot; 14 &quot;Cyprus&quot; ///
+&gt; 15 &quot;Poland&quot; 16 &quot;Germany&quot; 17 &quot;Great Britain&quot; 18 &quot;Slovenia&quot; 19 &quot;Israel&quot; 20 &quot;Spain&quot; 21 &quot;Belgium&quot; ///
+&gt; 22 &quot;Netherlands&quot; 23 &quot;Switzerland&quot; 24 &quot;Sweden&quot; 25 &quot;Norway&quot; 26 &quot;Denmark&quot; 27 &quot;Finland&quot; 
+&gt; label values country country1
+&gt; */
+. 
+</code></pre>
+<p>Then we set the data base in surirval format and bring the urban-rural classification of municipallities from this <a href="&quot;https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.masvidarural.gob.cl%2Fwp-content%2Fuploads%2F2021%2F04%2FClasificacion-comunas-PNDR.xlsx&amp;wdOrigin=BROWSELINK&quot;">link</a>.</p>
+<p>===================================================================================</p>
+<h2><a href="#survival" id="survival">Survival</a></h2>
+<p>===================================================================================</p>
+<pre><code>. *si no está perdido cod_region, significa que hubo un registro (0/1) y el tiempo es el tiempo desde 
+. *set the indicator
+. 
+. 
+. //id in numeric format
+. *encode hash_key, gen(id)
+. *gen id= encode(hash_key)
+. egen long id = group(hash_key)
+
+. lab var id &quot;HASH (numeric)&quot; 
+
+. 
+. //Sort variables
+. order id hash_key time_to_drop_from_adm event_dropout time_to_off_from_adm event_offense edad_al_ing_1 age_dropout_imp age_offending_imp
+variable event_dropout not found
+r(111);
+
+</code></pre>
+<p>We show a table of missing values</p>
+<pre><code>. misstable sum poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc_pobr macrozone
+                                                               Obs&lt;.
+                                                +------------------------------
+               |                                | Unique
+      Variable |     Obs=.     Obs&gt;.     Obs&lt;.  | values        Min         Max
+  -------------+--------------------------------+------------------------------
+  sus_prin_mod |         1              85,047  |      5          1           5
+   fr_sus_prin |       421              84,627  |      5          1           5
+  edad_al_in~1 |         7              85,041  |   &gt;500   10.28493    88.83836
+  edad_ini_c~s |     6,592              78,456  |     68          5          74
+       esc_rec |       384              84,664  |      3          1           3
+       ten_viv |     4,679              80,369  |      5          1           5
+     porc_pobr |         2              85,046  |   &gt;500   .0003295    .6363748
+     macrozone |        20              85,028  |      3          1           3
+  -----------------------------------------------------------------------------
+
+</code></pre>
+<p>And missing patterns</p>
+<pre><code>. misstable pat poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc_pobr macrozone
+
+          Missing-value patterns
+            (1 means complete)
+
+              |   Pattern
+    Percent   |  1  2  3  4    5  6  7  8
+  ------------+---------------------------
+       87%    |  1  1  1  1    1  1  1  1
+              |
+        7     |  1  1  1  1    1  1  1  0
+        5     |  1  1  1  1    1  1  0  1
+       &lt;1     |  1  1  1  1    1  1  0  0
+       &lt;1     |  1  1  1  1    1  0  1  1
+       &lt;1     |  1  1  1  1    0  1  1  1
+       &lt;1     |  1  1  1  1    1  0  0  1
+       &lt;1     |  1  1  1  1    0  1  1  0
+       &lt;1     |  1  1  1  1    0  1  0  1
+       &lt;1     |  1  1  1  1    1  0  1  0
+       &lt;1     |  1  1  1  1    1  0  0  0
+       &lt;1     |  1  1  1  1    0  1  0  0
+       &lt;1     |  1  1  1  0    1  1  0  1
+       &lt;1     |  1  1  0  1    1  1  1  0
+       &lt;1     |  1  1  1  0    1  1  1  0
+       &lt;1     |  1  1  1  0    1  1  1  1
+       &lt;1     |  1  0  1  1    1  1  1  1
+       &lt;1     |  1  1  1  1    0  0  0  1
+       &lt;1     |  1  1  1  1    0  0  1  1
+       &lt;1     |  0  1  1  1    0  0  0  0
+       &lt;1     |  1  1  0  0    1  1  1  0
+       &lt;1     |  1  1  1  0    1  1  0  0
+       &lt;1     |  1  1  1  1    0  0  0  0
+       &lt;1     |  1  1  1  1    0  0  1  0
+  ------------+---------------------------
+      100%    |
+
+  Variables are  (1) sus_prin_mod  (2) porc_pobr  (3) edad_al_ing_1  (4) macrozone  (5) esc_rec  (6) fr_sus_prin  (7) ten_viv  (8) edad_ini_cons
+
+</code></pre>
+<p>86% of patients showed complete data, and 2% had missing data due to tenure status of the household and age of onset of substance use.</p>
+<p>=======================================</p>
+<h2><a href="#survival-descriptives-ipw" id="survival-descriptives-ipw">Survival, descriptives &amp; IPW</a></h2>
+<p>=======================================</p>
+<p><strong>Time to tr. completion</strong></p>
+<pre><code>. *comp contact_js
+. *stset edad_al_egres_imp, enter(edad_al_ing_1_mod) failure(comp==1) //*scale(12) 
+. cap drop  _st
+
+. cap drop _d
+
+. cap drop _t
+
+. cap drop _t0
+
+. cap drop _start
+
+. 
+. cap gen _start= 0
+
+. stset time_to_off_from_adm, enter(_start) failure(event_offense==1) //*scale(12) 
+
+     failure event:  event_offense == 1
+obs. time interval:  (0, time_to_off_from_adm]
+ enter on or after:  time _start
+ exit on or before:  failure
+
+------------------------------------------------------------------------------
+     85,048  total observations
+          7  event time missing (time_to_off_from_adm&gt;=.)       PROBABLE ERROR
+------------------------------------------------------------------------------
+     85,041  observations remaining, representing
+     27,725  failures in single-record/single-failure data
+ 289,405.39  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =  12.57176
+
+. 
+. stsum, by (poly)
+
+         failure _d:  event_offense == 1
+   analysis time _t:  time_to_off_from_adm
+  enter on or after:  time _start
+
+         |               Incidence     Number of   |------ Survival time -----|
+    poly | Time at risk       rate      subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+No polys |  72,527.6473   .0640445         22550   4.615456         .         .
+Polysubs |  216,877.744   .1064194         62491   1.896742   8.93254         .
+---------+---------------------------------------------------------------------
+   Total |  289,405.391   .0957999         85041   2.264536         .         .
+
+. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1635683-stata-stir-command-with-pweights
+</code></pre>
+<pre><code>. poisson _d i.poly , irr exposure(_t) vce(rob)
+
+Iteration 0:   log pseudolikelihood = -90851.829  
+Iteration 1:   log pseudolikelihood = -90851.829  
+
+Poisson regression                              Number of obs     =     85,041
+                                                Wald chi2(1)      =     896.12
+                                                Prob &gt; chi2       =     0.0000
+Log pseudolikelihood = -90851.829               Pseudo R2         =     0.0061
+
+------------------------------------------------------------------------------------
+                   |               Robust
+                _d |        IRR   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------------+----------------------------------------------------------------
+              poly |
+Polysubstance use  |   1.661647   .0281875    29.94   0.000     1.607309    1.717822
+             _cons |   .0640445   .0009823  -179.17   0.000     .0621479    .0659991
+            ln(_t) |          1  (exposure)
+------------------------------------------------------------------------------------
+Note: _cons estimates baseline incidence rate.
+
+. matrix pois_irr_t0_nowgt= r(table)
+
+. *matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/1) r(1, 5/6)
+. 
+. margins i.poly, predict(ir)
+
+Adjusted predictions                            Number of obs     =     85,041
+Model VCE    : Robust
+
+Expression   : Predicted incidence rate, predict(ir)
+
+---------------------------------------------------------------------------------------
+                      |            Delta-method
+                      |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+                 poly |
+No polysubstance use  |   .0640445   .0009823    65.20   0.000     .0621192    .0659699
+   Polysubstance use  |   .1064194   .0007711   138.00   0.000      .104908    .1079308
+---------------------------------------------------------------------------------------
+
+. matrix pois_ir_t0_nowgt= r(table)
+
+. *matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/2) r(1, 5/6)
+. 
+. //IR for no PSU, from mat ir
+. scalar ir_poly_00= string(`=scalar(round(pois_ir_t0_nowgt[1,1]*1000,.01))',&quot;%9.2f&quot;)+&quot; (95%CI: &quot;+string(`=scalar(round(pois_ir_t0_nowgt[5,1]*1000,.01))',&quot;%9.2f&quot;)+&quot;, &quot;+string(
+&gt; `=scalar(round(pois_ir_t0_nowgt[6,1]*1000,.01))',&quot;%9.2f&quot;)+&quot;)&quot; 
+
+. //IR for PSU, from mat ir
+. scalar ir_poly_11= string(`=scalar(round(pois_ir_t0_nowgt[1,2]*1000,.01))',&quot;%9.2f&quot;)+&quot; (95%CI: &quot;+string(`=scalar(round(pois_ir_t0_nowgt[5,2]*1000,.01))',&quot;%9.2f&quot;)+&quot;, &quot;+string(
+&gt; `=scalar(round(pois_ir_t0_nowgt[6,2]*1000,.01))',&quot;%9.2f&quot;)+&quot;)&quot; 
+
+. //IRR for PSU, from mat irr (no * 1000)
+. scalar irr_poly01= string(`=scalar(round(pois_irr_t0_nowgt[1,2],.01))',&quot;%9.2f&quot;)+&quot; (95%CI: &quot;+string(`=scalar(round(pois_irr_t0_nowgt[5,2],.01))',&quot;%9.2f&quot;)+&quot;, &quot;+string(`=scalar
+&gt; (round(pois_irr_t0_nowgt[6,2],.01))',&quot;%9.2f&quot;)+&quot;)&quot; 
+
+</code></pre>
+<pre><code>. *set trace on //string(exp(`m_m9'),&quot;%9.2f&quot;)+
+. cap noi qui sts test poly, logrank
+
+. scalar logrank_chi= string(round(r(chi2),.01),&quot;%9.2f&quot;) 
+
+. scalar logrank_df= r(df)
+
+. scalar logrank_p=  round(chiprob(r(df),r(chi2)),.001)  // round(chiprob(r(df),r(chi2)),.001)
+
+. local lr1: di %3.2f logrank_chi
+
+. local lr2: di %1.0f logrank_df
+
+. local lr3: di %5.4f logrank_p
+
+. scalar logrank_nowgt= &quot; Chi^2(`lr2')=`lr1',p=`lr3'&quot;
+
+. *di logrank_nowgt
+. 
+. matrix comb_irs = (0 \ 0 \ 0 \ 0)
+
+. matrix colnames comb_irs = &quot;Tr.comp-no weight&quot;
+
+. matrix rownames comb_irs = &quot;No PSU: `=scalar(ir_poly_00)'&quot; &quot;PSU: `=scalar(ir_poly_11)'&quot; &quot;IRR: `=scalar(irr_poly01)'&quot; &quot;Logrank: `=scalar(logrank_nowgt)'&quot;
+
+. esttab matrix(comb_irs) using &quot;irrs_t0_nowgt_tr_comp_jul_2023.html&quot;, replace
+(output written to irrs_t0_nowgt_tr_comp_jul_2023.html)
+
+. *set trace off
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=2><hr></td></tr>
+<tr><td>            </td><td>    comb_irs</td></tr>
+<tr><td>            </td><td>Tr.comp-no weight</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>No PSU      </td><td>            </td></tr>
+<tr><td>64.04 (95%CI: 62.12, 65.97)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>PSU         </td><td>            </td></tr>
+<tr><td>106.42 (95%CI: 104.91, 107.93)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR         </td><td>            </td></tr>
+<tr><td>1.66 (95%CI: 1.61, 1.72)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>Logrank     </td><td>            </td></tr>
+<tr><td>Chi^2(1)=1299.25,p=0.0000</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+</table>
+<p>We calculated the inverse probability weights</p>
+<pre><code>. *https://www.statalist.org/forums/forum/general-stata-discussion/general/1600895-survival-model-stpm2-using-previously-estimated-weights
+. *pweights are Stata’s sampling weights—the inverse of the probability that the subject was chosen from the population.
+. 
+. stipw (logit poly sus_prin_mod fr_sus_prin edad_al_ing_1 edad_ini_cons sex_enc esc_rec ten_viv dg_cie_10_rec n_off_vio n_off_acq n_off_sud clas porc_pobr macrozone), distrib
+&gt; ution(weibull) ipwtype(stabilised) vce(robust) genweight(ipw_wgt) //*edad_al_ing_1 df(10)  ten_viv colinealidad
+11213 observations have missing treatment and/or missing confounder values and/or _st = 0.
+These observations are excluded from the analysis, see variable _stipw_flag
+
+Fitting logistic regression to obtain denominator for weights
+
+Iteration 0:   log likelihood = -43293.384  
+Iteration 1:   log likelihood = -36271.043  
+Iteration 2:   log likelihood =  -36003.21  
+Iteration 3:   log likelihood = -36002.775  
+Iteration 4:   log likelihood = -36002.775  
+Fitting second logistic regression with no confounders to obtain numerator for stabilised weights
+
+Iteration 0:   log likelihood = -43293.384  
+Iteration 1:   log likelihood = -43293.384  
+
+Fitting weighted survival model to obtain point estimates
+
+         failure _d:  event_offense == 1
+   analysis time _t:  time_to_off_from_adm
+  enter on or after:  time _start
+             weight:  [pweight=ipw_wgt]
+
+Fitting constant-only model:
+
+Iteration 0:   log pseudolikelihood = -77888.011
+Iteration 1:   log pseudolikelihood = -76308.645
+Iteration 2:   log pseudolikelihood = -76290.353
+Iteration 3:   log pseudolikelihood =  -76290.35
+
+Fitting full model:
+
+Iteration 0:   log pseudolikelihood =  -76290.35  
+Iteration 1:   log pseudolikelihood = -76282.337  
+Iteration 2:   log pseudolikelihood = -76282.335  
+
+Displaying weighted survival model with Robust standard errors
+
+Weibull PH regression                           Number of obs     =     73,835
+                                                Wald chi2(1)      =       6.86
+Log pseudolikelihood = -76282.335               Prob &gt; chi2       =     0.0088
+
+------------------------------------------------------------------------------
+             |               Robust
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        poly |   1.061262   .0240916     2.62   0.009     1.015078    1.109546
+       _cons |   .1323391   .0028584   -93.63   0.000     .1268536    .1380617
+-------------+----------------------------------------------------------------
+       /ln_p |  -.3055842    .005994   -50.98   0.000    -.3173322   -.2938361
+-------------+----------------------------------------------------------------
+           p |   .7366929   .0044157                      .7280888    .7453987
+         1/p |   1.357418   .0081364                      1.341564    1.373459
+------------------------------------------------------------------------------
+Note: _cons estimates baseline hazard.
+
+</code></pre>
+<p>We calculated the incidence rate.</p>
+<pre><code>. cap drop  _st
+
+. cap drop _d
+
+. cap drop _t
+
+. cap drop _t0
+
+. cap drop _start
+
+. 
+. cap gen _start= 0
+
+. stset time_to_off_from_adm [pw=ipw_wgt], enter(_start) failure(event_offense==1) //*scale(12) 
+
+     failure event:  event_offense == 1
+obs. time interval:  (0, time_to_off_from_adm]
+ enter on or after:  time _start
+ exit on or before:  failure
+            weight:  [pweight=ipw_wgt]
+
+------------------------------------------------------------------------------
+     85,048  total observations
+          7  event time missing (time_to_off_from_adm&gt;=.)       PROBABLE ERROR
+     11,206  weights invalid                                    PROBABLE ERROR
+------------------------------------------------------------------------------
+     73,835  observations remaining, representing
+     22,617  failures in single-record/single-failure data
+ 235,931.53  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =  11.91507
+
+. 
+. stsum, by (poly)
+
+         failure _d:  event_offense == 1
+   analysis time _t:  time_to_off_from_adm
+  enter on or after:  time _start
+             weight:  [pweight=ipw_wgt]
+
+         |               Incidence     Number of   |------ Survival time -----|
+    poly | Time at risk       rate      subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+No polys |  65,456.2345   .0931461      21945.88   2.634604         .         .
+Polysubs |  179,512.549   .0955865      53457.46   2.291632         .         .
+---------+---------------------------------------------------------------------
+   Total |  244,968.784   .0949344      75403.34   2.367457         .         .
+
+</code></pre>
+<p>Given the possible errors pointed out by stata in the weights, we calculated the IPW manually</p>
+<pre><code>. cap qui noi frame drop example_a
+frame example_a not found
+
+. frame copy default example_a
+
+. frame example_a: logistic poly i.sus_prin_mod i.fr_sus_prin edad_al_ing_1 edad_ini_cons i.sex_enc i.esc_rec i.ten_viv i.dg_cie_10_rec i.n_off_vio i.n_off_acq i.n_off_sud i.c
+&gt; las porc_pobr i.macrozone, nolog 
+
+Logistic regression                             Number of obs     =     73,835
+                                                LR chi2(27)       =   17112.68
+                                                Prob &gt; chi2       =     0.0000
+Log likelihood = -34737.046                     Pseudo R2         =     0.1976
+
+-------------------------------------------------------------------------------------------------------------
+                                       poly | Odds Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+--------------------------------------------+----------------------------------------------------------------
+                               sus_prin_mod |
+                     Cocaine hydrochloride  |   4.290258   .1252687    49.88   0.000     4.051629    4.542942
+                             Cocaine paste  |   3.842627   .0957475    54.03   0.000     3.659474    4.034946
+                                 Marijuana  |   2.352174   .1006072    20.00   0.000     2.163026    2.557861
+                                     Other  |   2.474297   .1759361    12.74   0.000     2.152418     2.84431
+                                            |
+                                fr_sus_prin |
+                        2 to 3 days a week  |   1.370427    .052316     8.25   0.000     1.271632    1.476898
+                        4 to 6 days a week  |   1.341233   .0553693     7.11   0.000     1.236985    1.454266
+                                     Daily  |   1.486416   .0559183    10.54   0.000     1.380761    1.600156
+                    Less than 1 day a week  |   .8282231   .0432295    -3.61   0.000     .7476846    .9174369
+                                            |
+                              edad_al_ing_1 |   .9638451   .0009433   -37.63   0.000     .9619982    .9656956
+                              edad_ini_cons |   .9484293   .0016648   -30.16   0.000      .945172    .9516978
+                                            |
+                                    sex_enc |
+                                     Women  |   .8363717   .0191109    -7.82   0.000     .7997413    .8746798
+                                            |
+                                    esc_rec |
+           2-Completed high school or less  |   .8011382   .0216729    -8.20   0.000     .7597667    .8447625
+        3-Completed primary school or less  |    .618291    .018456   -16.11   0.000     .5831557    .6555433
+                                            |
+                                    ten_viv |
+                                    Others  |   .8631246   .0937166    -1.36   0.175     .6976723    1.067814
+Owner/Transferred dwellings/Pays Dividends  |   .8034975   .0750484    -2.34   0.019     .6690838    .9649139
+                                   Renting  |   .9283818   .0879633    -0.78   0.433     .7710385    1.117834
+         Stays temporarily with a relative  |   .9880995   .0923691    -0.13   0.898     .8226764    1.186786
+                                            |
+                              dg_cie_10_rec |
+           Diagnosis unknown (under study)  |   1.226239   .0335045     7.46   0.000     1.162299    1.293697
+              With psychiatric comorbidity  |   1.458974    .030977    17.79   0.000     1.399506    1.520968
+                                            |
+                                  n_off_vio |
+                                         1  |   1.010805    .026529     0.41   0.682     .9601235    1.064161
+                                            |
+                                  n_off_acq |
+                                         1  |   1.209861   .0339053     6.80   0.000       1.1452    1.278173
+                                            |
+                                  n_off_sud |
+                                         1  |   1.110935   .0298604     3.91   0.000     1.053925     1.17103
+                                            |
+                                       clas |
+                                     Mixed  |   .6404669   .0197541   -14.45   0.000     .6028966    .6803784
+                                     Rural  |   .5158884   .0171422   -19.92   0.000     .4833609    .5506048
+                                            |
+                                  porc_pobr |   16.49116   2.365287    19.54   0.000     12.44989    21.84424
+                                            |
+                                  macrozone |
+                                     North  |   1.571658   .0491534    14.46   0.000     1.478212     1.67101
+                                     South  |   .8444963   .0256582    -5.56   0.000     .7956751     .896313
+                                            |
+                                      _cons |    8.38815   .9470158    18.84   0.000     6.723047    10.46565
+-------------------------------------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. frame example_a: predict double ps //ps = propensity score
+(option pr assumed; Pr(poly))
+(11,213 missing values generated)
+
+. 
+. frame example_a: gen double HAW = ((poly == 1) / ps) + ((poly == 0) / (1 - ps)) // 
+(11,213 missing values generated)
+
+. *Compute the inverse probability Treatment weights (IPTW)
+. frame example_a: summarize HAW, detail
+
+                             HAW
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.044342       1.010117
+ 5%     1.064793       1.010902
+10%     1.080171       1.013557       Obs              73,835
+25%     1.123153       1.014552       Sum of Wgt.      73,835
+
+50%     1.259286                      Mean           2.036245
+                        Largest       Std. Dev.      2.294315
+75%     1.799306       40.71928
+90%     3.326556       41.69675       Variance       5.263881
+95%     6.545816       53.94726       Skewness       5.015346
+99%     12.60029       73.19824       Kurtosis       46.20905
+
+. *keep if inrange(HAW, r(p05), r(p95))
+. frame example_a: keep if inrange(HAW, r(p1), r(p99)) //2023-01-08
+(12,689 observations deleted)
+
+. 
+. frame example_a: cap drop  _st
+
+. frame example_a: cap drop _d
+
+. frame example_a: cap drop _t
+
+. frame example_a: cap drop _t0
+
+. frame example_a: cap drop _start
+
+. 
+. frame example_a: cap gen _start= 0
+
+. frame example_a: stset time_to_off_from_adm [pw=HAW], enter(_start) failure(event_offense==1) //*scale(12) 
+
+     failure event:  event_offense == 1
+obs. time interval:  (0, time_to_off_from_adm]
+ enter on or after:  time _start
+ exit on or before:  failure
+            weight:  [pweight=HAW]
+
+------------------------------------------------------------------------------
+     72,359  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     72,359  observations remaining, representing
+     21,803  failures in single-record/single-failure data
+ 231,732.39  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =  11.91507
+
+. 
+. frame example_a: stsum, by (poly)
+
+         failure _d:  event_offense == 1
+   analysis time _t:  time_to_off_from_adm
+  enter on or after:  time _start
+             weight:  [pweight=HAW]
+
+         |               Incidence     Number of   |------ Survival time -----|
+    poly | Time at risk       rate      subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+No polys |  194,452.719   .0845156      65016.21   3.102825         .         .
+Polysubs |  242,518.278   .0948155       72331.4   2.330685         .         .
+---------+---------------------------------------------------------------------
+   Total |  436,970.996    .090232      137347.6   2.636194         .         .
+
+</code></pre>
+<pre><code>. frame change example_a
+
+. poisson _d i.poly [pw=HAW], irr exposure(_t) vce(rob)
+
+Iteration 0:   log pseudolikelihood = -133573.92  
+Iteration 1:   log pseudolikelihood = -133573.92  
+
+Poisson regression                              Number of obs     =     72,359
+                                                Wald chi2(1)      =      26.02
+Log pseudolikelihood = -133573.92               Prob &gt; chi2       =     0.0000
+
+------------------------------------------------------------------------------------
+                   |               Robust
+                _d |        IRR   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------------+----------------------------------------------------------------
+              poly |
+Polysubstance use  |    1.12187   .0252924     5.10   0.000     1.073377    1.172553
+             _cons |   .0845156   .0017545  -119.02   0.000      .081146    .0880252
+            ln(_t) |          1  (exposure)
+------------------------------------------------------------------------------------
+Note: _cons estimates baseline incidence rate.
+
+. matrix pois_irr_t0_wgt= r(table)
+
+. *matselrc pois_ir_t0_nowgt pois_ir_t0_nowgt, c(1/1) r(1, 5/6)
+. 
+. margins i.poly, predict(ir)
+
+Adjusted predictions                            Number of obs     =     72,359
+Model VCE    : Robust
+
+Expression   : Predicted incidence rate, predict(ir)
+
+---------------------------------------------------------------------------------------
+                      |            Delta-method
+                      |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+                 poly |
+No polysubstance use  |   .0845156   .0017545    48.17   0.000     .0810769    .0879543
+   Polysubstance use  |   .0948155   .0008338   113.72   0.000     .0931813    .0964497
+---------------------------------------------------------------------------------------
+
+. matrix pois_ir_t0_wgt= r(table)
+
+. 
+. //IR for no PSU, from mat ir
+. scalar ir_poly_001= string(`=scalar(round(pois_ir_t0_wgt[1,1]*1000,.01))',&quot;%9.2f&quot;)+&quot; (95%CI: &quot;+string(`=scalar(round(pois_ir_t0_wgt[5,1]*1000,.01))',&quot;%9.2f&quot;)+&quot;, &quot;+string(`=s
+&gt; calar(round(pois_ir_t0_wgt[6,1]*1000,.01))',&quot;%9.2f&quot;)+&quot;)&quot; 
+
+. //IR for PSU, from mat ir
+. scalar ir_poly_111= string(`=scalar(round(pois_ir_t0_wgt[1,2]*1000,.01))',&quot;%9.2f&quot;)+&quot; (95%CI: &quot;+string(`=scalar(round(pois_ir_t0_wgt[5,2]*1000,.01))',&quot;%9.2f&quot;)+&quot;, &quot;+string(`=s
+&gt; calar(round(pois_ir_t0_wgt[6,2]*1000,.01))',&quot;%9.2f&quot;)+&quot;)&quot; 
+
+. //IRR for PSU, from mat irr (no * 1000)
+. scalar irr_poly011= string(`=scalar(round(pois_irr_t0_wgt[1,2],.01))',&quot;%9.2f&quot;)+&quot; (95%CI: &quot;+string(`=scalar(round(pois_irr_t0_wgt[5,2],.01))',&quot;%9.2f&quot;)+&quot;, &quot;+string(`=scalar(ro
+&gt; und(pois_irr_t0_wgt[6,2],.01))',&quot;%9.2f&quot;)+&quot;)&quot; 
+
+. 
+</code></pre>
+<pre><code>. *set trace on
+. cap noi qui sts test poly
+
+. scalar logrank_chi1= round(r(chi2),.01)
+
+. scalar logrank_df1= r(df)
+
+. scalar logrank_p1= round(chiprob(r(df),r(chi2)),.001)
+
+. local lr10: di %3.2f logrank_chi1
+
+. local lr20: di %1.0f logrank_df1
+
+. local lr30: di %5.4f logrank_p1
+
+. scalar logrank_wgt1 = &quot;Cox regression-based test for equality of survival curves: Wald Chi^2(`lr20')=`lr10',p=`lr30'&quot;
+
+. *di logrank_nowgt
+. 
+. matrix comb_irs2 = (0 \ 0 \ 0 \ 0)
+
+. matrix colnames comb_irs2 = &quot;Tr.comp-weight&quot;
+
+. matrix rownames comb_irs2 = &quot;No PSU: `=scalar(ir_poly_001)'&quot; &quot;PSU: `=scalar(ir_poly_111)'&quot; &quot;IRR: `=scalar(irr_poly011)'&quot; &quot;Logrank: `=scalar(logrank_wgt1)'&quot;
+
+. esttab matrix(comb_irs2) using &quot;irrs_t0_wgt_tr_comp_jul_2023.html&quot;, replace
+(output written to irrs_t0_wgt_tr_comp_jul_2023.html)
+
+. *set trace off
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=2><hr></td></tr>
+<tr><td>            </td><td>   comb_irs2</td></tr>
+<tr><td>            </td><td>Tr.comp-weight</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>No PSU      </td><td>            </td></tr>
+<tr><td>84.52 (95%CI: 81.08, 87.95)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>PSU         </td><td>            </td></tr>
+<tr><td>94.82 (95%CI: 93.18, 96.45)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR         </td><td>            </td></tr>
+<tr><td>1.12 (95%CI: 1.07, 1.17)</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>Logrank     </td><td>            </td></tr>
+<tr><td>Cox regression-based test for equality of survival curves: Wald Chi^2(1)=62.69,p=0.0000</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+</table>
+<pre><code>. frame example_a: stdescribe, weight
+
+         failure _d:  event_offense == 1
+   analysis time _t:  time_to_off_from_adm
+  enter on or after:  time _start
+             weight:  [pweight=HAW]
+
+                                   |-------------- per subject --------------|
+                         weighted     weighted              weighted
+Category                   total        mean         min     median        max
+------------------------------------------------------------------------------
+no. of subjects        137347.61   
+no. of records         137347.61           1           1          1          1
+
+(first) entry time                         0           0          0          0
+(final) exit time                   3.181497      .00022   2.641096   11.91507
+
+subjects with gap              0   
+time on gap if gap             0   
+time at risk              436971    3.181497      .00022   2.641096   11.91507
+
+failures               39428.787     .287073           0          0          1
+------------------------------------------------------------------------------
+
+. frame change default
+
+. 
+</code></pre>
+<p><strong>##############################</strong></p>
+<h3><a href="#get-weighted-balance-tables-and-proportional-hazards-from-the-selected-weights" id="get-weighted-balance-tables-and-proportional-hazards-from-the-selected-weights">GET WEIGHTED BALANCE TABLES AND PROPORTIONAL HAZARDS FROM THE SELECTED WEIGHTS</a></h3>
+<p><strong>##############################</strong></p>
+<pre><code>. quietly tab sus_prin_mod, generate(sus_prin_mod_cat) 
+
+. quietly tab fr_sus_prin, gen(fr_sus_prin_cat)
+
+. 
+. quietly tab esc_rec, gen(esc_rec_tab) 
+
+. quietly tab ten_viv, gen(ten_viv_tab) 
+
+. quietly tab dg_cie_10_rec, gen(dg_cie_10_rec_tab) 
+
+. quietly tab clas, gen(clas) 
+
+. quietly tab macrozone, gen(macrozone_cat) 
+
+. 
+. lab var macrozone_cat2 &quot;Macrozone (North)&quot;  
+
+. lab var macrozone_cat3 &quot;Macrozone (South)&quot;  
+
+. lab var clas2 &quot;Municipallity of Residence Classification (Mixed)&quot;
+
+. lab var clas3 &quot;Municipallity of Residence Classification (Rural)&quot;
+
+. lab var sex_enc &quot;Sex (Women)&quot;
+
+. lab var n_off_vio &quot;Pre-tr. criminality (Violent)&quot;
+
+. lab var n_off_acq &quot;Pre-tr. criminality (Acquisitve)&quot;
+
+. lab var n_off_sud &quot;Pre-tr. criminality (substance-related)&quot;
+
+. lab var dg_cie_10_rec_tab2 &quot;Psychiatric comorbidity ICD-10 (Diagnosis under study)&quot;
+
+. lab var dg_cie_10_rec_tab3 &quot;Psychiatric comorbidity ICD-10 (Diagnosis under study)&quot;
+
+. lab var ten_viv_tab1 &quot;Housing situation (Illegal Settlement)&quot;
+
+. lab var ten_viv_tab3 &quot;Housing situation (owner/Tr. dwellings/Pays divide)&quot;
+
+. lab var ten_viv_tab4 &quot;Housing situation (Renting)&quot;
+
+. lab var ten_viv_tab5 &quot;Housing situation (Stays temporary w/ a relative)&quot;
+
+. lab var esc_rec_tab2 &quot;Educational Attainment (Complete high-school or less)&quot;
+
+. lab var esc_rec_tab3 &quot;Educational Attainment (Complete high-school or less)&quot;
+
+. lab var edad_al_ing_1 &quot;Admission Age&quot;
+
+. lab var edad_ini_cons &quot;Substance use onset age&quot;
+
+. lab var sus_prin_mod_cat1 &quot;Primary`=char(9)'Subs`=char(9)'at`=char(9)'Adm.`=char(9)'(Alcohol)&quot; //asdsa
+
+. lab var sus_prin_mod_cat2 &quot;Primary Subs at Adm. (Snort cocaine)&quot;
+
+. lab var sus_prin_mod_cat3 &quot;Primary Subs at Adm. (Cocaine paste base)&quot;
+
+. lab var sus_prin_mod_cat4 &quot;Primary Subs at Adm .(Marijuana)&quot;
+
+. lab var fr_sus_prin_cat1 &quot;Primary Subs use Freq (1 day a week or more)&quot;
+
+. lab var fr_sus_prin_cat2 &quot;Primary Subs use Freq (2-3 days a week or more)&quot;
+
+. lab var fr_sus_prin_cat3 &quot;Primary Subs use Freq (4-6 days a week or more)&quot;
+
+. lab var fr_sus_prin_cat4 &quot;Primary Subs use Freq (Daily)&quot;
+
+. 
+.                                                                                                                 
+. logistic poly sus_prin_mod_cat1 sus_prin_mod_cat2 sus_prin_mod_cat3 sus_prin_mod_cat4 ///
+&gt;                                                         fr_sus_prin_cat1 fr_sus_prin_cat2 fr_sus_prin_cat3 fr_sus_prin_cat4 /// 
+&gt;                                                         edad_al_ing_1 edad_ini_cons ///
+&gt;                                                         sex_enc ///
+&gt;                                                         esc_rec_tab2 esc_rec_tab3 /// 
+&gt;                                                         ten_viv_tab1 ten_viv_tab3 ten_viv_tab4 ten_viv_tab5 /// 
+&gt;                                                         dg_cie_10_rec_tab2 dg_cie_10_rec_tab3 /// 
+&gt;                                                         n_off_vio  /// 
+&gt;                                                         n_off_acq  /// 
+&gt;                                                         n_off_sud  /// 
+&gt;                                                         clas2 clas3 /// 
+&gt;                                                         porc_pobr ///
+&gt;                                                         macrozone_cat2 macrozone_cat3, nolog 
+
+Logistic regression                             Number of obs     =     73,835
+                                                LR chi2(27)       =   17112.68
+                                                Prob &gt; chi2       =     0.0000
+Log likelihood = -34737.046                     Pseudo R2         =     0.1976
+
+------------------------------------------------------------------------------------
+              poly | Odds Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------------+----------------------------------------------------------------
+ sus_prin_mod_cat1 |   .4041552   .0287377   -12.74   0.000     .3515791    .4645937
+ sus_prin_mod_cat2 |    1.73393   .1285928     7.42   0.000     1.499354    2.005206
+ sus_prin_mod_cat3 |   1.553018    .112403     6.08   0.000     1.347624    1.789715
+ sus_prin_mod_cat4 |   .9506434   .0763293    -0.63   0.528     .8122182     1.11266
+  fr_sus_prin_cat1 |   1.207404    .063021     3.61   0.000     1.089993    1.337462
+  fr_sus_prin_cat2 |    1.65466    .071669    11.63   0.000     1.519988    1.801263
+  fr_sus_prin_cat3 |    1.61941   .0744577    10.48   0.000     1.479858    1.772122
+  fr_sus_prin_cat4 |   1.794705   .0764145    13.74   0.000     1.651015    1.950902
+     edad_al_ing_1 |   .9638451   .0009433   -37.63   0.000     .9619982    .9656956
+     edad_ini_cons |   .9484293   .0016648   -30.16   0.000      .945172    .9516978
+           sex_enc |   .8363717   .0191109    -7.82   0.000     .7997413    .8746798
+      esc_rec_tab2 |   .8011382   .0216729    -8.20   0.000     .7597667    .8447625
+      esc_rec_tab3 |    .618291    .018456   -16.11   0.000     .5831557    .6555433
+      ten_viv_tab1 |   1.158581   .1257968     1.36   0.175     .9364928    1.433338
+      ten_viv_tab3 |   .9309171   .0553324    -1.20   0.228     .8285463    1.045936
+      ten_viv_tab4 |   1.075606   .0662823     1.18   0.237     .9532335    1.213688
+      ten_viv_tab5 |   1.144794   .0682807     2.27   0.023     1.018492    1.286758
+dg_cie_10_rec_tab2 |   1.226239   .0335045     7.46   0.000     1.162299    1.293697
+dg_cie_10_rec_tab3 |   1.458974    .030977    17.79   0.000     1.399506    1.520968
+         n_off_vio |   1.010805    .026529     0.41   0.682     .9601235    1.064161
+         n_off_acq |   1.209861   .0339053     6.80   0.000       1.1452    1.278173
+         n_off_sud |   1.110935   .0298604     3.91   0.000     1.053925     1.17103
+             clas2 |   .6404669   .0197541   -14.45   0.000     .6028966    .6803784
+             clas3 |   .5158884   .0171422   -19.92   0.000     .4833609    .5506048
+         porc_pobr |   16.49116   2.365287    19.54   0.000     12.44989    21.84424
+    macrozone_cat2 |   1.571658   .0491534    14.46   0.000     1.478212     1.67101
+    macrozone_cat3 |   .8444963   .0256582    -5.56   0.000     .7956751     .896313
+             _cons |   13.05714   1.706855    19.65   0.000     10.10595    16.87014
+------------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. predict double ps //ps = propensity score
+(option pr assumed; Pr(poly))
+(11,213 missing values generated)
+
+. gen double HAW = ((poly == 1) / ps) + ((poly == 0) / (1 - ps)) // 
+(11,213 missing values generated)
+
+. *Compute the inverse probability Treatment weights (IPTW)
+. summarize HAW, detail
+
+                             HAW
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     1.044342       1.010117
+ 5%     1.064793       1.010902
+10%     1.080171       1.013557       Obs              73,835
+25%     1.123153       1.014552       Sum of Wgt.      73,835
+
+50%     1.259286                      Mean           2.036245
+                        Largest       Std. Dev.      2.294315
+75%     1.799306       40.71928
+90%     3.326556       41.69675       Variance       5.263881
+95%     6.545816       53.94726       Skewness       5.015346
+99%     12.60029       73.19824       Kurtosis       46.20905
+
+. //ci mean HAW //2022-01-08 does not work well, many out
+. keep if inrange(HAW, r(p1), r(p99))
+(12,689 observations deleted)
+
+. //keep if inrange(HAW, r(lb), r(ub))
+. 
+. cap drop  _st
+
+. cap drop _d
+
+. cap drop _t
+
+. cap drop _t0
+
+. cap drop _start
+
+. 
+. cap gen _start= 0
+
+. stset time_to_off_from_adm [pw=HAW], enter(_start) failure(event_offense==1) id(id) //*scale(12) 
+
+                id:  id
+     failure event:  event_offense == 1
+obs. time interval:  (time_to_off_from_adm[_n-1], time_to_off_from_adm]
+ enter on or after:  time _start
+ exit on or before:  failure
+            weight:  [pweight=HAW]
+
+------------------------------------------------------------------------------
+     72,359  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     72,359  observations remaining, representing
+     72,359  subjects
+     21,803  failures in single-failure-per-subject data
+ 231,732.39  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =  11.91507
+
+. 
+. stsum, by (poly)
+
+         failure _d:  event_offense == 1
+   analysis time _t:  time_to_off_from_adm
+  enter on or after:  time _start
+                 id:  id
+             weight:  [pweight=HAW]
+
+         |               Incidence     Number of   |------ Survival time -----|
+    poly | Time at risk       rate      subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+No polys |  194,452.719   .0845156      65016.21   3.102825         .         .
+Polysubs |  242,518.278   .0948155       72331.4   2.330685         .         .
+---------+---------------------------------------------------------------------
+   Total |  436,970.996    .090232      137347.6   2.636194         .         .
+
+. scalar ir_total= round(r(ir),.01) 
+
+. global ir_total= ir_total
+
+</code></pre>
+<p>We explored the inicidence rate ratios (IRR) of polysubstance use.</p>
+<pre><code>. stptime, title(person-years) per(1000) by(poly)
+
+         failure _d:  event_offense == 1
+   analysis time _t:  time_to_off_from_adm
+  enter on or after:  time _start
+                 id:  id
+             weight:  [pweight=HAW]
+
+      poly | person-years   Failures        Rate   [95% Conf. Interval]
+-----------+-----------------------------------------------------------
+ No poly~e |    194452.72    16434.3   84.515624   81.15696    88.03867
+ Polysub~e |    242518.28    22994.5    94.81551   93.19626    96.46497
+-----------+-----------------------------------------------------------
+     Total |       436971    39428.8   90.232046   88.46528     92.0392
+
+Note: The jackknife was used to calculate confidence intervals.
+
+. 
+. stmh poly
+
+         failure _d:  event_offense == 1
+   analysis time _t:  time_to_off_from_adm
+  enter on or after:  time _start
+                 id:  id
+             weight:  [pweight=HAW]
+
+Mantel-Haenszel estimate of the rate ratio
+  comparing poly==1 vs. poly==0
+
+------------------------------------------------------------------------
+    Rate ratio         chi2         P&gt;chi2          [95% Conf. Interval]
+------------------------------------------------------------------------
+         1.122       126.88         0.0000              1.100      1.145
+------------------------------------------------------------------------
+Warning: pweights used; confidence intervals and p-values may be wrong.
+
+. scalar poly_b_rr= string(round(r(rratio),.01),&quot;%9.2f&quot;)  // round( r(rratio), .01)
+
+. scalar poly_b_rr_lb= string(round(r(lb),.01),&quot;%9.2f&quot;)  //  
+
+. scalar poly_b_rr_ub= string(round(r(ub),.01),&quot;%9.2f&quot;)  //  
+
+. local ir1b= poly_b_rr
+
+. local ir2b= poly_b_rr_lb
+
+. local ir3b= poly_b_rr_ub
+
+. global poly2_irr &quot; `title': IRR: `ir1b' (95%IC `ir2b' - `ir3b') &quot;
+
+. scalar exp1= &quot;`poly2_irr'&quot;
+
+</code></pre>
+<ul>
+<li>The weighted IRR of treatment completion was  : IRR: 1.12 (95%IC 1.10 - 1.14)  per 1,000 person-years</li>
+</ul>
+<pre><code>. 
+. *set trace on
+. local stname `&quot; &quot;2_1&quot; &quot;' 
+
+. local titl `&quot; &quot;Poly vs No-Poly&quot; &quot;' 
+
+. foreach s of local stname {
+  2.         gettoken title titl: titl
+  3. cap noi qui ir _d poly _t
+  4. scalar ir2_`s' = string(round(r(irr),.01),&quot;%9.2f&quot;) // round(r(irr),.01)
+  5. *di ir_`s'
+. scalar ir2_`s'_lb = string(round(r(lb_irr),.01),&quot;%9.2f&quot;) 
+  6. *di ir_`s'_lb
+. scalar ir2_`s'_ub = string(round(r(ub_irr),.01),&quot;%9.2f&quot;)  
+  7. *di ir_`s'_ub
+. local ir12a= ir2_`s'
+  8. local ir22a= ir2_`s'_lb
+  9. local ir32a= ir2_`s'_ub
+ 10. *di  in gr _col(13) &quot; `title': IRR `ir1' (IC 95% `ir2' - `ir3') &quot;
+. global irr2_`s' &quot; `title': IRR (non weighted): `ir12a' (IC 95% `ir22a' - `ir32a') &quot;
+ 11. global ir2_`s' &quot;`ir1' (IC 95% `ir2' - `ir3')&quot;
+ 12. }       
+
+</code></pre>
+<ul>
+<li>Poly vs No-Poly: IRR (non weighted): 1.77 (IC 95% 1.71 - 1.84)</li>
+</ul>
+<pre><code>. matrix comb_irs6 = (0 \ 0 )
+
+. matrix colnames comb_irs6 = IRRs_t0
+
+. matrix rownames comb_irs6 = &quot;IRR weighted: '$poly2_irr'&quot; &quot;IRR non qweighted: '$irr2_2_1'&quot; 
+
+. esttab matrix(comb_irs6) using &quot;irrs_t0_wgt_tr_comp2_jul_2023.html&quot;, replace
+(output written to irrs_t0_wgt_tr_comp2_jul_2023.html)
+
+. *set trace off
+</code></pre>
+<table border="0" width="*">
+<tr><td colspan=2><hr></td></tr>
+<tr><td>            </td><td>   comb_irs6</td></tr>
+<tr><td>            </td><td>     IRRs_t0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR weighted</td><td>            </td></tr>
+<tr><td>' Poly vs No-Poly: IRR: .77 (95%IC .76 - .79) '</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+<tr><td>IRR non qweighted</td><td>            </td></tr>
+<tr><td>' Poly vs No-Poly: IRR (non weighted): .5 (IC 95% .49 - .52) '</td><td>           0</td></tr>
+<tr><td colspan=2><hr></td></tr>
+</table>
+<pre><code>. pbalchk poly sus_prin_mod_cat1 sus_prin_mod_cat2 sus_prin_mod_cat3 sus_prin_mod_cat4 ///
+&gt;                                                         fr_sus_prin_cat1 fr_sus_prin_cat2 fr_sus_prin_cat3 fr_sus_prin_cat4 /// 
+&gt;                                                         edad_al_ing_1 edad_ini_cons sex_enc ///
+&gt;                                                         esc_rec_tab2 esc_rec_tab3 /// 
+&gt;                                                         ten_viv_tab1 ten_viv_tab3 ten_viv_tab4 ten_viv_tab5 /// 
+&gt;                                                         dg_cie_10_rec_tab2 dg_cie_10_rec_tab3 /// 
+&gt;                                                         n_off_vio  /// 
+&gt;                                                         n_off_acq  /// 
+&gt;                                                         n_off_sud  /// 
+&gt;                                                         clas2 clas3 /// 
+&gt;                                                         porc_pobr ///
+&gt;                                                         macrozone_cat2 macrozone_cat3, wt(HAW) p mahal sqrt diag graph xline(.15 -.15)
+
+               Mean in treated   Mean in Untreated   p-value for diff.
+----------------------------------------------------------------------
+sus_prin_m~1 |            0.34               0.38                0.000
+sus_prin_m~2 |            0.20               0.19                0.008
+sus_prin_m~3 |            0.38               0.34                0.000
+sus_prin_m~4 |            0.07               0.08                0.000
+fr_sus_pri~1 |            0.07               0.07                0.025
+fr_sus_pri~2 |            0.28               0.28                0.952
+fr_sus_pri~3 |            0.17               0.17                0.105
+fr_sus_pri~4 |            0.43               0.42                0.001
+edad_al_in~1 |           35.89              36.89                0.000
+edad_ini_c~s |           16.65              17.17                0.000
+     sex_enc |            1.26               1.28                0.000
+esc_rec_tab2 |            0.56               0.54                0.019
+esc_rec_tab3 |            0.27               0.29                0.001
+ten_viv_tab1 |            0.01               0.01                0.349
+ten_viv_tab3 |            0.37               0.39                0.000
+ten_viv_tab4 |            0.18               0.18                0.631
+ten_viv_tab5 |            0.41               0.38                0.000
+dg_cie_10_~2 |            0.19               0.19                0.757
+dg_cie_10_~3 |            0.43               0.41                0.000
+   n_off_vio |            1.17               1.16                0.157
+   n_off_acq |            1.17               1.15                0.000
+   n_off_sud |            1.17               1.16                0.000
+       clas2 |            0.10               0.10                0.041
+       clas3 |            0.08               0.09                0.018
+   porc_pobr |            0.12               0.12                0.000
+macrozone_~2 |            0.14               0.11                0.000
+macrozone_~3 |            0.10               0.10                0.113
+----------------------------------------------------------------------
+
+Mahalonobis Distance between mean vectors: 
+
+(original covariance in treated):  0.064
+(square root):                     0.253
+(Weighted covariance in treated):  0.061
+(square root):                     0.247
+
+
+. graph save &quot;Graph&quot; &quot;`c(pwd)'\_figs\pbal2_jul_2023.gph&quot;, replace
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_jul_2023.gph saved)
+
+. 
+. mat smd_before = r(usmeandiff)
+
+. 
+. // Change legends
+. gr_edit .legend.plotregion1.label[1].text = {}
+
+. gr_edit .legend.plotregion1.label[1].text.Arrpush Before Adjustment
+
+. gr_edit .legend.plotregion1.label[2].text = {}
+
+. gr_edit .legend.plotregion1.label[2].text.Arrpush After Adjustment
+
+. 
+. //change image background 
+. gr_edit style.editstyle boxstyle(shadestyle(color(gs16))) editcopy
+
+. gr_edit .yaxis1.style.editstyle majorstyle(tickstyle(textstyle(size(vsmall)))) editcopy
+
+. 
+. //mod points in grayscale
+. gr_edit .plotregion1.plot1.style.editstyle marker(fillcolor(gs7%60)) editcopy
+
+. gr_edit .plotregion1.plot1.style.editstyle marker(linestyle(color(gs7%60))) editcopy
+
+. gr_edit .plotregion1.plot2.style.editstyle marker(fillcolor(gs3%60)) editcopy
+
+. gr_edit .plotregion1.plot2.style.editstyle marker(linestyle(color(gs3%60))) editcopy
+
+. 
+. // modify label
+. gr_edit .legend.style.editstyle boxstyle(linestyle(color(none))) editcopy //.legend.Edit , style(rows(2)) style(cols(0)) keepstyles 
+
+. // modify label
+. gr_edit .xaxis1.title.text = {}
+
+. gr_edit .xaxis1.title.text.Arrpush Standardardized differences
+
+. // note 
+. gr_edit .note.text = {}
+
+. gr_edit .note.text.Arrpush Note: Red lines depict standardized differences of -0.15 and +0.15
+
+. gr_edit .note.DragBy -.2314887155038407 -45
+
+. 
+. //title
+. gr_edit .title.style.editstyle size(medlarge) editcopy
+
+. gr_edit .title.text = {}
+
+. gr_edit .title.text.Arrpush Figure 1. Graphical Representation of SMDs
+
+. gr_edit .title.style.editstyle color(black) editcopy
+
+. gr_edit .title.style.editstyle box_alignment(nwest) editcopy
+
+. gr_edit .title.style.editstyle horizontal(left) editcopy
+
+. gr_edit .title.xoffset = -45
+
+. gr_edit .title.DragBy 2 0
+
+. //eliminate title 2023-04-23
+. gr_edit .title.draw_view.setstyle, style(no)
+
+. 
+. /*
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 26
+&gt; gr_edit .yaxis1.edit_tick 27 26 `&quot;Primary Subs Adm (Cocaine paste base)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 26
+&gt; gr_edit .yaxis1.edit_tick 24 24 `&quot;Primary Subs Adm (Cocaine)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 26
+&gt; //gr_edit .yaxis1.edit_tick 24 24 `&quot;Primary Subs Adm (Cocaine)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 25
+&gt; //gr_edit .yaxis1.edit_tick 23 23 `&quot;Housing situation (Owner/Tr. dwellings/Pays divide)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 25
+&gt; gr_edit .yaxis1.edit_tick 23 23 `&quot;Housing situation (Owner/Tr. dwellings/Pays divide)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 24
+&gt; gr_edit .yaxis1.edit_tick 22 22 `&quot;Housing situation (Stays temporary w/ relative)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 23
+&gt; gr_edit .yaxis1.edit_tick 21 21 `&quot;Macrozone (South)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 22
+&gt; gr_edit .yaxis1.edit_tick 20 20 `&quot;Pre-tr. criminality (Acquisitve)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 21
+&gt; gr_edit .yaxis1.edit_tick 17 17 `&quot;Macrozone (North)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 19
+&gt; gr_edit .yaxis1.edit_tick 16 16 `&quot;Pre-tr. criminality (substance-related)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 19
+&gt; gr_edit .yaxis1.edit_tick 17 19 `&quot;Educational Attainment (Complete primary school or less)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 18
+&gt; gr_edit .yaxis1.edit_tick 16 18 `&quot;Municipallity of Residence Classification (Mixed)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 17
+&gt; gr_edit .yaxis1.edit_tick 12 12 `&quot;Municipallity of Residence Classification (Urban)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 16
+&gt; gr_edit .yaxis1.edit_tick 13 14 `&quot;Educational Attainment (Complete high-school or less)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 14
+&gt; gr_edit .yaxis1.edit_tick 12 15 `&quot;Substance use frequency (primary subs)- Daily&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 13
+&gt; gr_edit .yaxis1.edit_tick 10 10 `&quot;Substance use frequency (primary subs)- &lt; 1 day a week&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 4
+&gt; gr_edit .yaxis1.edit_tick 2 2 `&quot;Housing situation (Other)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 3
+&gt; gr_edit .yaxis1.edit_tick 1 1 `&quot;Substance use frequency (primary subs)- 4-6 days a week&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 7
+&gt; gr_edit .yaxis1.edit_tick 5 5 `&quot;Pre-tr. criminality (Violent)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 6
+&gt; gr_edit .yaxis1.edit_tick 4 4 `&quot;Primary Subs Adm (Other)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 5
+&gt; gr_edit .yaxis1.edit_tick 3 3 `&quot;Housing situation (Renting)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 8
+&gt; gr_edit .yaxis1.edit_tick 6 6 `&quot;Sex (Women)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 9
+&gt; gr_edit .yaxis1.edit_tick 7 7 `&quot;Substance use frequency (primary subs)- 2-3 days a week&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 11
+&gt; gr_edit .yaxis1.edit_tick 9 11 `&quot;Primary substance at admission (Marijuana)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 10
+&gt; gr_edit .yaxis1.edit_tick 8 8 `&quot;Poverty of municipallities of residence&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 6
+&gt; gr_edit .yaxis1.edit_tick 4 24 `&quot;Primary Subs Adm (Cocaine)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 5
+&gt; gr_edit .yaxis1.edit_tick 3 23 `&quot;Housing situation (owner/Tr. dwellings/Pays divide)&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 4
+&gt; gr_edit .yaxis1.edit_tick 2 13 `&quot;Psychiatric comorbidity (ICD-10)- Under study&quot;', tickset(major)
+&gt; gr_edit .yaxis1.major.num_rule_ticks = 3
+&gt; gr_edit .yaxis1.edit_tick 1 9 `&quot;Psychiatric comorbidity (ICD-10)- Presence&quot;', tickset(major)
+&gt; */
+. 
+. graph export &quot;`c(pwd)'\_figs\pbal2_mod_jul_2023.jpg&quot;, as(jpg) replace width(2000) height(1333)
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod_jul_2023.jpg written in JPEG format)
+
+. graph export &quot;`c(pwd)'\_figs\pbal2_mod_jul_2023.png&quot;, as(png) replace width(1800) height(1000)
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod_jul_2023.png written in PNG format)
+
+. graph export &quot;`c(pwd)'\_figs\pbal2_mod_jul_2023.eps&quot;, as(eps) replace
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod_jul_2023.eps written in EPS format)
+
+. graph export &quot;`c(pwd)'\_figs\pbal2_mod_jul_2023.pdf&quot;, as(pdf) replace //*width(2000) height(2000) orientation(landscape)
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod_jul_2023.pdf written in PDF format)
+
+. *graph export &quot;_Appendix2_Graph_Mean_SE_g32.svg&quot;, as(svg) replace height(20000) fontface (Helvetica)
+. graph save &quot;`c(pwd)'\_figs\pbal2_mod_jul_2023&quot;, replace
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod_jul_2023.gph saved)
+
+. graph save &quot;Graph&quot; &quot;`c(pwd)'\_figs\pbal2_mod_jul_2023.gph&quot;, replace
+(file C:\Users\CISS Fondecyt\Mi unidad\Alvacast\SISTRAT 2022 (github)\_figs\pbal2_mod_jul_2023.gph saved)
+
+. //graph use &quot;pbal2_mod&quot;
+. 
+</code></pre>
+<p><img src="pbal2_mod_jul_2023.svg" width="800" ></p>
+<p>Cocaine paste base and cocaine hydrochloride were the only variables that were not well adjusted if resticted the sample to the 5% and 95%.</p>
+<p>Saved at= 18:40:54  1 Aug 2023</p>
+<pre><code>frame example1 not found
+
+frame example2 not found
+
+frame example3 not found
+
+
+frame example_b not found
+
+
+</code></pre>

@@ -1,7 +1,7 @@
 ---
-title: "Trabajo 1"
+title: "Data explore & construction"
 description: |
-  Cargar una base de datos de tiempo al evento a cometer un delito que deriva en sentencia definitiva condenatoria, pero pasando por completar/abandonar tratamiento por uso de sustancias.
+  Explore and construct data, descriptives, several tests of patterns of polysubstance use, and imputation of missing variables
 date: "`r format(Sys.time(),'%B %d, %Y')`"
 author: "Andrés González Santa Cruz"
 format: 
@@ -1259,29 +1259,25 @@ rbind(
 # GLCA
 
 ::: controlly
-```{r, "glca0"}
-# https://agscl.github.io/IVE/
+```{r, "glca00"}
 require(glca)
 
 mydata_preds1<- 
   Base_fiscalia_v15c_grant_23_24 %>% 
   dplyr::select(sus_principal_mod,
+      dg_trs_cons_sus_or,
+      freq_cons_sus_prin,
       otras_sus1_mod,
-      otras_sus2_mod,
-      otras_sus3_mod) %>%  
+      otras_sus2_mod) %>%  
   data.table::data.table()
 
-mydata_preds2 <- mydata_preds1%>% dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod", "otras_sus3_mod"), ~ dplyr::case_when(is.na(.)~ "none", T~ .)))
+mydata_preds2 <- mydata_preds1%>% dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(is.na(.)~ "none", T~ .)))
 
 dplyr::group_by(mydata_preds2,sus_principal_mod, otras_sus1_mod, otras_sus2_mod) %>%  count() %>% dplyr::ungroup() %>%  arrange(desc(n)) %>% dplyr::mutate(perc= scales::percent(round(n/sum(n),2))) %>% dplyr::filter(n>0) %>% knitr::kable("markdown", caption="Combinations of substances", col.names= c("Primary substance", "Other substances (1)", "Other substances (2)","n", "%"))
-
-mydata_preds3 <- mydata_preds2%>% 
-dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod", "otras_sus3_mod"), ~ as.numeric(factor(.))+1))%>% dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod", "otras_sus3_mod"), ~ dplyr::case_when(.=="none"~ 1, T~ .)))%>%   
-  data.table::data.table()
 ```
 :::
 
-```{r, "glca0b"}
+```{r, "glca01"}
 first_five<-
 dplyr::group_by(mydata_preds2,sus_principal_mod, otras_sus1_mod, otras_sus2_mod) %>%  count() %>% dplyr::ungroup() %>%  arrange(desc(n)) %>%  dplyr::filter(n>0, !"none"==otras_sus1_mod) %>% slice(1:5) %>% summarise(sum(n))/nrow(mydata_preds2) %>% unlist() %>% as.numeric(.)
 
@@ -1290,10 +1286,20 @@ paste0("The first four (there is one that is exchangeable) make the ",
        " of the sample")
 ```
 
+::: controlly
+```{r, "glca02"}
+dplyr::group_by(mydata_preds2,sus_principal_mod, otras_sus1_mod, otras_sus2_mod, dg_trs_cons_sus_or, freq_cons_sus_prin) %>%  count() %>% dplyr::ungroup() %>%  arrange(desc(n)) %>% dplyr::mutate(perc= scales::percent(round(n/sum(n),2))) %>% dplyr::filter(n>0) %>% knitr::kable("markdown", caption="Combinations of substances", col.names= c("Primary substance", "Other substances (1)", "Other substances (2)", "ICD 10 SUD Dg", "Subs.Use.Freq.", "n", "%"))
+
+mydata_preds3 <- mydata_preds2%>% 
+dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ as.numeric(factor(.))+1))%>% dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(.=="none"~ 1, T~ .)))%>%   
+  data.table::data.table()
+```
+:::
+
 ```{r, "glca1"}
 invisible("glca format")
 # We excluded otras_sus3_mod because it had only one value
-f_preds2<- item(sus_principal_mod, otras_sus1_mod, otras_sus2_mod) ~ 1
+f_preds2<- item(sus_principal_mod, otras_sus1_mod, otras_sus2_mod, dg_trs_cons_sus_or, freq_cons_sus_prin) ~ 1
 
 # f <- cbind(sus_principal_mod, otras_sus1_mod, otras_sus2_mod, otras_sus3_mod)~1
 # gss.lc2 <- poLCA(f,mydata_preds3,nclass=2)
@@ -1301,23 +1307,25 @@ f_preds2<- item(sus_principal_mod, otras_sus1_mod, otras_sus2_mod) ~ 1
 
 seed<-2125
 
+testiter <- 250
+
 old <- Sys.time()
 print(old)
 
-lca202 <- glca(f_preds2, data = mydata_preds3, nclass = 2, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
+lca202 <- glca(f_preds2, data = mydata_preds3, nclass = 2, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
 #43 minutes each more or less
-lca203 <- glca(f_preds2, data = mydata_preds3, nclass = 3, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
-lca204 <- glca(f_preds2, data = mydata_preds3, nclass = 4, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
-lca205 <- glca(f_preds2, data = mydata_preds3, nclass = 5, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
-lca206 <- glca(f_preds2, data = mydata_preds3, nclass = 6, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
-lca207 <- glca(f_preds2, data = mydata_preds3, nclass = 7, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
-lca208 <- glca(f_preds2, data = mydata_preds3, nclass = 8, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
-lca209 <- glca(f_preds2, data = mydata_preds3, nclass = 9, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
-lca210 <- glca(f_preds2, data = mydata_preds3, nclass = 10, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
-lca211 <- glca(f_preds2, data = mydata_preds3, nclass = 11, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
-lca212 <- glca(f_preds2, data = mydata_preds3, nclass = 12, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
-lca213 <- glca(f_preds2, data = mydata_preds3, nclass = 13, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
-lca214 <- glca(f_preds2, data = mydata_preds3, nclass = 14, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = 500)
+lca203 <- glca(f_preds2, data = mydata_preds3, nclass = 3, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca204 <- glca(f_preds2, data = mydata_preds3, nclass = 4, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca205 <- glca(f_preds2, data = mydata_preds3, nclass = 5, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca206 <- glca(f_preds2, data = mydata_preds3, nclass = 6, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca207 <- glca(f_preds2, data = mydata_preds3, nclass = 7, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca208 <- glca(f_preds2, data = mydata_preds3, nclass = 8, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca209 <- glca(f_preds2, data = mydata_preds3, nclass = 9, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca210 <- glca(f_preds2, data = mydata_preds3, nclass = 10, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca211 <- glca(f_preds2, data = mydata_preds3, nclass = 11, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca212 <- glca(f_preds2, data = mydata_preds3, nclass = 12, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca213 <- glca(f_preds2, data = mydata_preds3, nclass = 13, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca214 <- glca(f_preds2, data = mydata_preds3, nclass = 14, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
 
 gof2<-
   gofglca(lca202, lca203, lca204, lca205, lca206, lca207, lca208, lca209, lca210, lca211, lca212, lca213, lca214, test = "chisq")
