@@ -94,3 +94,7 @@ renv.lock
 parmodels_m2_nov_22.sters
 *.rds
 _bibs/*
+
+#exclude MINSAL data
+DatosDefuncionesEncrip.csv
+___datos_minsal/2023-08-11 DatosDefuncionesEncrip.csv
