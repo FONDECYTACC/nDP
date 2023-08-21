@@ -419,7 +419,6 @@ Once the standardization and correction of values and labels was complete, we **
 
 <br>
 
-
 ::: controlly
 ```{r join1-fiscalia-merge4, echo=T, fig.align='center', message=T, error=T, eval=T}
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -447,7 +446,7 @@ paste0("Observations of SENDA database: ",nrow(CONS_C1_df_dup_SEP_2020_22_d))#10
 paste0("Observations of PO database: ", nrow(Base_fiscalia_v10_grant_23_24))#204,115 nrow
 
 # #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#clean names, select the first event (whatever the crime committed, we selected the first)
+#clean names, select the first event (whatever the crime comitted, we selected the first)
 Base_fiscalia_v11_grant_23_24<-
 Base_fiscalia_v10_grant_23_24 %>% 
   #discrepancies in names of variables
@@ -512,10 +511,9 @@ dplyr::filter(hash_key=="1951c4d080cda8b68759d638a840d82f") %>%
 #v12: discarded patients where the first treatment corresponded to ongoing treatments (p & n=5,521), external referral (p & n=8,948) == 14,469 users were discarded.
 
 ```
-
 :::
 
-We did not drop censored treatments (never ended), referrals and deaths, so we got `r format(length(unique(Base_fiscalia_v11_grant_23_24$hash_key)), big.mark=",")` users (n= `r format(length(Base_fiscalia_v11_grant_23_24$hash_key), big.mark=",")`). Next, we joined the pre-treatment criminality records.
+We did not drop censored treatments (never ended), referrals and deaths, so we got `r format(length(unique(Base_fiscalia_v11_grant_23_24$hash_key)), big.mark=",")` users (n= `r format(length(Base_fiscalia_v11_grant_23_24$hash_key), big.mark=",")`). Next, we joined the pre-treatment criminality records. **These algorithms only capture the presence/absence of offenses by type (not the count of offenses)**.
 
 ```{r, "pre-treatment-criminality-___acc_ser_fondecyt_23.R", eval= T}
 #Create the variables of pretreatment criminality
@@ -529,6 +527,10 @@ Base_fiscalia_v10b_grant_23_24<-
   ON x.hash_key == y.id AND 
   x.edad_al_ing_1 > y.age_offending_imp AND x.dup = 1") #2022-11-25  added dup // #changed the direction to past events, where age at discharge is greater than the age of commission
 
+#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_
+# Count pre-treatment offenses
 
 Base_fiscalia_v11b_grant_23_24<-
   Base_fiscalia_v10b_grant_23_24 %>% 
@@ -550,6 +552,11 @@ Base_fiscalia_v11b_grant_23_24<-
 warning(paste0("Users in the database of previous crimes: ",format(length(unique(Base_fiscalia_v11b_grant_23_24$hash_key)), big.mark=",")))
 
 warning(paste0("Users in the merged database (after filtering for observations coded as referrals, deaths, censored at baseline treatment or with ongoing treatments) : ",format(length(unique(Base_fiscalia_v11_grant_23_24$hash_key)), big.mark=",")))
+
+#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_
+# Join pre-treatment criminality
 
 # Pre-treatment Criminality 
 Base_fiscalia_v13_grant_23_24<-
@@ -598,12 +605,104 @@ invisible("treatment setting, binary, numeric")
 Base_fiscalia_v13_grant_23_24$tr_mod <- ifelse(Base_fiscalia_v13_grant_23_24$tr_modality=="Residential",1,0)
 ```
 
+<br>
+
+### Post treatment criminality
+
+Selected offenses after discharge/dropout. We counted distinct patient ID, crime code and age of commission of the offense.
+
+```{r, "post-treatment-criminality", eval= T}
+
+Base_fiscalia_v10c_grant_23_24<-
+  sqldf::sqldf("SELECT *
+  FROM CONS_C1_df_dup_SEP_2020_22_d AS x  
+  LEFT JOIN (SELECT *
+             FROM Base_fiscalia_v9
+             ) AS y
+  ON x.hash_key == y.id AND 
+  x.edad_al_egres_1 < y.age_offending_imp AND x.dup = 1") 
+
+#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_
+# 2023-08-15
+# Count post-treatment offenses
+
+Base_fiscalia_v11c_grant_23_24<-
+  Base_fiscalia_v10c_grant_23_24 %>% 
+  #discrepancies in names of variables
+  janitor::clean_names() %>%   #janitor::tabyl(!is.na(dob_imp_num))
+  #previously recoded, 
+  dplyr::select(-dateofbirth_imp, -country, -victim, -id_victim,  -reg_c, -end_type_2c, -cod_comunadelito, -cod_lugarocurrencia, -sex_imp, -region_delito, -filter, -id)%>%
+  plyr::rename(c("dateofbirth_imp_2"="dateofbirth_imp")) %>% #2023-08-15, omitted -crime_code_c
+  dplyr::ungroup() %>% 
+  #2023-08-15: added the age of commission of the crime, we omitted caseid. Then i backed down, because it was a different offense
+  dplyr::group_by(hash_key, crime_code_group_rec_prof, caseid, edad_comision) %>%
+  dplyr::slice(1) %>% 
+  dplyr::ungroup() %>% 
+  # 2023-08-15: test
+ # dplyr::filter(hash_key=="20f6876567ebaf145aed0b1913f05337") %>% dplyr::select(hash_key, ano_bd_first, fech_nac, fech_ing, fech_egres_imp, motivodeegreso_mod_imp, fec_comision_simple, edad_comision, edad_al_egres_1, region_delito_rec, crime_code_c, crime_code_group_rec_prof, end_type, end_type_2 ) %>% rio::export("_particular_case_with_post_off2.xlsx")
+  # 2023-08-15: test with only violent crimes
+      #dplyr::filter(hash_key=="4e92f1e4b4fec715adb252aea4af2579") %>% dplyr::select(hash_key, ano_bd_first, fech_nac, fech_ing, fech_egres_imp, motivodeegreso_mod_imp, fec_comision_simple, edad_comision, edad_al_egres_1, region_delito_rec, crime_code_c, crime_code_group_rec_prof, end_type, end_type_2 ) %>% View() %>% rio::export("_particular_case_with_post_off_violent.xlsx")
+  #selected the first row with distinct information regarding patient ID, crime code.
+  dplyr::group_by(hash_key) %>% 
+  summarise(n_post_off_acq= sum(crime_code_group_rec_prof=="Acquisitive", na.rm=T), n_post_off_vio= sum(crime_code_group_rec_prof=="Violent", na.rm=T), n_post_off_sud= sum(crime_code_group_rec_prof== "Substance-related", na.rm=T), n_post_off_oth=  sum(crime_code_group_rec_prof== "Other", na.rm=T)) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::mutate(n_post_off= rowSums(select(., starts_with("n_post_")))) 
+
+warning(paste0("Users in the database of previous crimes: ",format(length(unique(Base_fiscalia_v11c_grant_23_24$hash_key)), big.mark=",")))
+
+#2023-08-15 - count
+#arrange(Base_fiscalia_v11c_grant_23_24,desc(n_post_off))
+
+#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_
+# Join post-treatment criminality
+
+# Post-treatment Criminality 
+Base_fiscalia_v13c_grant_23_24<-
+  Base_fiscalia_v13_grant_23_24 %>% 
+  #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+  # 2023-07-17: we made it in the previous chunk
+  #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+  # dplyr::group_by(hash_key) %>% 
+  # #select the first and without ties (only one)
+  # dplyr::slice_min(age_offending_imp, n = 1, with_ties = F) %>% 
+  # dplyr::ungroup() %>% 
+  #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+  # Join database with the pre-treatment criminality counts
+  dplyr::inner_join(Base_fiscalia_v11c_grant_23_24, by="hash_key") %>% 
+  # NO SE SI SIRVE, 2023-07-17 lo saqué
+  # dplyr::mutate(cut_fec_nac=cut2(fech_nac_rec, cuts=as.Date(attr(dlookr::binning(as.numeric(fech_nac_rec)),"breaks"))),cut_com_del=cut2(fec_comision_simple, cuts=as.Date(attr(dlookr::binning(as.numeric(fec_comision_simple)),"breaks")))) %>%
+  # dplyr::mutate(tr_modality=dplyr::case_when(grepl("PR", as.character(tipo_de_plan_2_1))~  "Residential", grepl("PAI|PAB", as.character(tipo_de_plan_2_1))~ "Ambulatory", T~ NA_character_))%>% 
+  data.table::as.data.table()%>% 
+  purrr::when(nrow(.)>nrow(Base_fiscalia_v13_grant_23_24)~ stop("More cases in the new database"), ~.) 
+
+```
 
 <br>
 
 ### Discard deaths
 
-First we formatted the dates of discharge of the former database of treatments to get the column of administrative discharge motive and discard deaths.
+In the analysis, a critical step involved processing the treatment database to extract only relevant data while ignoring the entries of individuals who passed away.
+
+- Loaded the treatment data from `2_ndp_2023_07_05_20_00_00.RData` (data of SENDA Treatments retrieved in 2023), and extracted and cleaned the date of discharge column (`fecha_egreso_de_tratamiento`) and the reason for administrative discharge (`motivo_de_egreso_alta_administrativa`).
+
+- Renamed and formatted the columns for ease of understanding and analysis using `janitor::clean_names`.
+
+- Converted the date of discharge into a numerical value using unclass.
+
+- Identified dates that failed parsing and stored them in the parsing_failures data frame. This is a precaution to ensure all date values are consistent and no incorrect dates are processed further.
+
+- The data had multiple date formats. They were converted to a consistent format using a series of conditional operations.
+Errors in the dates, such as 307203, 01707/2010, 30520011, and 30/08/20011, were manually corrected.
+
+- Entries with "Fallecimiento" (death) as the reason for administrative discharge were extracted and stored in `cause_of_adm_discharge_ndp_23_2_filt`.
+
+- The core objective was to ensure that there were no inconsistencies in the data, especially concerning deceased individuals.
+
+- Checks were made to: Ensure no person was admitted to treatment after their recorded death date; Ensure no person was discharged from treatment after their recorded death date; Ensure no person committed an offense after their recorded death date; If any of these inconsistencies were found, an error message would be triggered. This acted as a fail-safe to avoid the propagation of incorrect data or conclusions.
 
 ```{r, "disc-deaths1-format-dates", error=T, eval=T}
 load("2_ndp_2023_07_05_20_00_00.RData", ndp_2023_step2 <- new.env() )
@@ -671,18 +770,18 @@ cause_of_adm_discharge_ndp_23_2 %>%
 Now we discard censorship due to deaths from the original database.
 
 ```{r, "disc-deaths1-format-dates-step2", error=T, eval=T}
-if(Base_fiscalia_v13_grant_23_24 %>% 
+if(Base_fiscalia_v13c_grant_23_24 %>% 
     dplyr::left_join(cause_of_adm_discharge_ndp_23_2_filt[,c("hash_key", "fecha_egreso_de_tratamiento_num","fecha_egreso_de_tratamiento_fmt")], by=c("hash_key")) %>% 
     dplyr::filter(fech_ing_num_1 > fecha_egreso_de_tratamiento_num) %>% nrow() >0){error("There are cases in which people were admitted to treatment after their death")}
 
-if(Base_fiscalia_v13_grant_23_24 %>% 
+if(Base_fiscalia_v13c_grant_23_24 %>% 
     dplyr::left_join(cause_of_adm_discharge_ndp_23_2_filt[,c("hash_key", "fecha_egreso_de_tratamiento_num","fecha_egreso_de_tratamiento_fmt")], by=c("hash_key")) %>% 
     dplyr::filter(fech_egres_num_1 > fecha_egreso_de_tratamiento_num) %>% nrow() >0){error("There are cases in which people were discharged of treatment after their death")}
 
-if(Base_fiscalia_v13_grant_23_24 %>% 
+if(Base_fiscalia_v13c_grant_23_24 %>% 
     dplyr::left_join(cause_of_adm_discharge_ndp_23_2_filt[,c("hash_key", "fecha_egreso_de_tratamiento_num","fecha_egreso_de_tratamiento_fmt")], by=c("hash_key")) %>% 
     dplyr::mutate(fec_comision_simple_num=unclass(fec_comision_simple)) %>% 
-    dplyr::filter(fec_comision_simple_num > fecha_egreso_de_tratamiento_num) %>% nrow() >0){error("There are cases in which people committed an offense after their death")}
+    dplyr::filter(fec_comision_simple_num > fecha_egreso_de_tratamiento_num) %>% nrow() >0){error("There are cases in which people comitted an offense after their death")}
 
 # Base_fiscalia_v13_grant_23_24 %>% 
 #    dplyr::left_join(cause_of_adm_discharge_ndp_23_2_filt[,c("hash_key", "fecha_egreso_de_tratamiento_num","fecha_egreso_de_tratamiento_fmt")], by=c("hash_key")) %>% 
@@ -700,6 +799,18 @@ invisible("It is probable that many SENDA dates are bad, and due to to the proce
 ### Municipallity
 
 Given that we found no cases with censorship due to deaths, we brought the classification of rurality (from the Census of 2017 in this [link](https://www.masvidarural.gob.cl/wp-content/uploads/2021/04/Clasificacion-comunas-PNDR.xlsx)) and poverty index of communes between 2007-2020 ([link](https://observatorio.ministeriodesarrollosocial.gob.cl/pobreza-comunal)).
+
+- The dataset `Clasificacion-comunas-PNDR.xlsx`, had a variable named `cod_com`. This variable represents codes for different communes in Chile, but it appears these codes need to be transformed or standardized for some communes.
+
+- For instance, the commune with code "16101" needs to be changed to "8401", "16102" to "8402", and so forth. This transformation is achieved using dplyr's case_when function, and the transformed data is stored back into `Comunas_PNDR` with an additional column, cod, holding the standardized commune codes.
+
+- The next section reads multiple Excel files containing poverty data estimates for Chilean communes across different years (from 2007 to 2020). Each year's data is read into its own data frame (e.g., pobr_mult_2020 for the year 2020).
+
+- During this reading process: The year is added as a new column (`anio`). Then, the relevant columns were selected and renamed for consistency. Any additional transformations, like renaming variables, were done to ensure that the datasets had a consistent structure.
+
+- Once all the annual datasets are loaded and transformed, they are aggregated into a single data frame, `pobr_mult_2007_2020`, using the rbind.data.frame function. This dataset now has all commune-level poverty estimates from 2007 to 2020. Similar to the transformation done with `Comunas_PNDR`, this aggregated dataset also undergoes a transformation where the commune codes (`Código`) were standardized, resulting in a new `cod` column.
+
+- Finally, to keep the workspace clean and optimize memory usage, individual annual data frames (like `pobr_mult_2020`) were deleted. This is achieved using a loop that checks if each data frame exists and, if so, removes it.
 
 ```{r, "bring-db0-Fiscalia-merge5", echo=T, fig.align='center', message=T, error=T, eval=T}
 #http://observatorio.ministeriodesarrollosocial.gob.cl/pobreza-comunal-2020
@@ -821,7 +932,31 @@ for (name in object_names) {
 }
 ```
 
+<br>
+
 ### SENDA September 2020
+
+**Analyzing and Cleaning the Data from the Fondecyt 1191282 Project**
+
+The Fondecyt 1191282 project (SENDA treatments 2010-2019) contained information about various aspects, including demographic details, the reasons for admission and discharge from a program, and data related to the occurrence of certain events post-admission. We used the original (not filtered/selected) data from a previously saved R session 8.RData. This was specifically the `CONS_C1_df_dup_SEP_2020` dataset.
+
+- We merged and transformed the data to create a new database named `Base_fiscalia_v14_grant_23_24` by updating it from the previous version `Base_fiscalia_v13c_grant_23_24`.
+
+- Demographic Information: The code started with deriving new variables like the year of admission (anio_ing_tr) and residence code (comuna_residencia_cod_rec).
+
+- Linking to External Datasets: External datasets like `pobr_mult_2007_2020` (poverty index) and `Comunas_PNDR` (classification of rurality) were joined to the base data on municipality codes and admission year.
+
+- Data Quality Checks: Warnings were generated when inconsistencies were found, such as when the age at offense was lower than the age at discharge or admission. This allowed for timely identification and rectification of data issues.
+
+- Deriving New Variables: The age at the time of an offense or at the time of a program's completion was computed, along with the time to these events from the date of admission. This would be pivotal in survival analyses or any time-to-event analysis.
+
+- Cleaning and Transforming Variables: Numerous variables like substance use frequency, education levels, and others were transformed into factors or ordered factors for easier analysis. Special care was given to ensure consistency and meaningful categories in these variables. For instance, entries where the frequency of substance use was logged as "Did not use" were recoded as "Less than 1 day a week".
+
+- Feature Engineering: Variables like `con_quien_vive_joel`, which indicates with whom an individual lives, were derived from existing data. Using string matching functions, detailed living arrangements were bucketed into broader categories such as "Family of origin", "Alone", "With couple/children", and "Others".
+
+- Integrating External Information: The data was further augmented by joining with the `CONS_C1_df_dup_SEP_2020` dataset to integrate information about pregnancies. This influenced the computation of a new variable indicating the number of children (`numero_de_hijos_mod_joel`).
+
+- Creating Health Metrics: Various health metrics were calculated. For instance, a composite physical health score (`dg_fis_total`) was computed as the sum of binary flags indicating different health conditions.
 
 ```{r, "bring-db1-format-variables",echo=T}
 invisible("Retrieve CONS_C1_df_dup_SEP_2020 from previous 8.RData (Fondecyt 1191282)")
@@ -837,14 +972,14 @@ rm(fiscalia_merge3)
 invisible("Make the database")
 
 Base_fiscalia_v14_grant_23_24<-
-Base_fiscalia_v13_grant_23_24 %>%
+Base_fiscalia_v13c_grant_23_24 %>%
   dplyr::mutate(comuna_residencia_cod_rec= as.character(readr::parse_number(comuna_residencia_cod)), anio_ing_tr= lubridate::epiyear(fech_ing)) %>% #glimpse()
   dplyr::left_join(pobr_mult_2007_2020[,c("anio", "cod","porc_pobr")], by= c("comuna_residencia_cod_rec"="cod", "anio_ing_tr"="anio")) %>% 
   dplyr::left_join(Comunas_PNDR[,c("cod", "Clasificación")], by= c("comuna_residencia_cod_rec"="cod"))%>%
   #2023-07-17: we eliminated class_centros
   #2023-02-01
   # dplyr::left_join(class_centros[,c("id_centro", "nombre_centro_1", "classification")], by= "id_centro")%>%
-    purrr::when(nrow(.)>nrow(Base_fiscalia_v13_grant_23_24) ~ stop("More cases in the new database"), ~.) %>% 
+    purrr::when(nrow(.)>nrow(Base_fiscalia_v13c_grant_23_24) ~ stop("More cases in the new database"), ~.) %>% 
   #2023-07-17: create the event and time to event
   #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
   # ages at offense vs. ages at discharge
@@ -954,12 +1089,25 @@ Base_fiscalia_v14_grant_23_24$via_adm_sus_prin_act <- relevel(factor(Base_fiscal
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 
 ```
+
 ### Victim data
+
+We knew that our quest began with the retrieval of the `CONS_C1_df_dup_SEP_2020` (Total SENDA treatments 2010-2019) dataset from the old 8.RData. As it's a part of the Fondecyt 1191282 project, this dataset might contain secrets we needed for our analyses. But before we could start our analysis, a new dataset named `data_mariel_fisc_merge4` emerged from the depth of the 14.RData, giving us the `CONS_TOP` (Original TOP) to proceed.
+
+We made a list of crimes that threatened psychosexual integrity. The list contained grave offenses such as "ABANDONO DE NIÑOS", "FEMICIDIO INTIMO ART. 390 BIS", and "VIOLACIÓN CON HOMICIDIO O FEMICIDIO ART. 372 BIS.". The classification was made considering a [categorization](https://amparoyjusticia.cl/wp-content/uploads/2023/04/Estudio-Fundacion-amparo-y-Justicia.pdf) sourced from the Fundación Amparo y Justicia.
+
+Drawing data from `data_mariel_fisc_merge4` (PO data), we zeroed in on those who had been victims to these offenses. To ensure we had a unique list of offenses, we sought distinct matters that related to the victims. The data was exported to an excel file named "offenses_victims.xlsx".
+
+The merger with `Base_fiscalia_v14_grant_23_24` left us with more revelations, especially on how many new rows had been added.
+
+The objective was to get the first offense per user and count any distinct previous offenses in terms of the date and type. This was a strategic move to gauge the extent of repeat offenses against a single individual. We decided to count records of patients as victims of crimes. Finally, the dataset `Base_fiscalia_v15c_grant_23_24` would reveal some truths. How many cases dropped out? Was there a link between the events of offenses and deaths? The answers lay within the statistical tables.
 
 ```{r, "victims-sud"}
 invisible("Retrieve CONS_C1_df_dup_SEP_2020 from previous 8.RData (Fondecyt 1191282)")
 
 load("14.Rdata", data_mariel_fisc_merge4 <- new.env() )
+
+CONS_TOP <- data_mariel_fisc_merge4$CONS_TOP
 
 #offenses that threatens psychosexual integrity
 #https://amparoyjusticia.cl/wp-content/uploads/2023/04/Estudio-Fundacion-amparo-y-Justicia.pdf
@@ -1092,72 +1240,281 @@ Base_fiscalia_v15b_grant_23_24 %>%
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 cat("Cases that dropped out")
-Base_fiscalia_v14_grant_23_24 %>% 
+Base_fiscalia_v15c_grant_23_24 %>% 
      janitor::tabyl(event_comp, event_death)
-Base_fiscalia_v14_grant_23_24 %>% 
+Base_fiscalia_v15c_grant_23_24 %>% 
      janitor::tabyl(event_offense, event_death)
 ```
+
+### TOP
+
+We divided what was done into 2 actions
+
+**Data Processing and Standardization for Self-reported Offenses**
+
+We started by analyzing the data regarding the self-reported offenses. Our objective was to standardize various variables in the Treatment Outcome Profile (TOP) dataset, particularly the dates. This involved the following steps:
+
+- Joining the Datasets: We merged the primary dataset with a subset that contained unique hash keys and birth dates. This provided us with additional context for each entry based on their date of birth.
+
+- Date Parsing: We converted the Fecha.Aplicación.TOP field into a numeric format, ensuring there were no parsing failures.
+
+- Data Transformation: For offense-related columns (like Hurto, Robo, etc.), we converted the 'S' values to 1 and others to 0. We also calculated the total number of offenses reported in the TOP for each row and then calculated the age of the individual at the time they answered the TOP questionnaire.
+
+- Grouping and Filtering: The data was grouped by hash key and age at application of TOP, then filtered to ensure non-missing age values.
+
+The final standardized dataset, `CONS_TOP_2022`, consisted of various applications dates for different patients. This process allowed us to better understand the self-reported offenses and the demographics of the individuals reporting them.
+
+**Looking for Offenses Post-TOP Application**
+
+Next, we focused on identifying the offenses that occurred within a specific window post-TOP application:
+
+- SQL Join: We aimed to identify records where offenses were reported within thirty days one month (1/12 years) to 7 months from the application of the TOP after treatment dropout. This was achieved using an SQL left join.
+
+- Removing Duplicate Keys: We identified and addressed cases with more than one application, ensuring that each hash key was unique and referred to a single individual.
+
+- Data Summarization: For individuals with multiple TOP applications, we aggregated the reported offenses and identified the earliest and latest application dates.
+
+
+```{r, "top", results="hold"}
+#Recording theft, robberies/ burglary, domestic violence and other actions committed in the last 4 weeks
+#Domestic violence (physical or psychological)
+#By each TOP, thefts are reported presence/absence committed last 4 weeks ("yes"/"no"), not by quantity
+CONS_TOP_2022<-
+  # 107307
+  CONS_TOP%>% 
+  dplyr::left_join(subset(dplyr::mutate(dplyr::group_by(Base_fiscalia_v15c_grant_23_24, hash_key), hash_rn=row_number())%>% ungroup(), hash_rn==1, select=c("hash_key", "dateofbirth_imp")), by= c("HASH_KEY" = "hash_key"))%>% 
+  #8,698 distinct hash key
+  dplyr::mutate(fech_ap_top_num= as.numeric(as.Date(str_sub(as.character(lubridate::parse_date_time(Fecha.Aplicación.TOP, c("%Y-%m-%d"),exact=T)),1,10))))%>% #No parse failures
+  dplyr::select(HASH_KEY, fech_ap_top_num, Fecha.Aplicación.TOP, dateofbirth_imp, Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro) %>% 
+  dplyr::filter(!is.na(HASH_KEY)) %>% 
+  dplyr::mutate_at(vars("Hurto", "Robo", "Venta.Drogas", "Riña", "Otro"), ~ifelse(.=="S",1,0)) %>% 
+  dplyr::mutate(Total.VIF= ifelse(Total.VIF>0,1,0))%>% 
+  dplyr::mutate(tot_off_top = base::rowSums(dplyr::select(.,c(Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro)), na.rm = T)) %>% 
+  dplyr::mutate(dateofbirth_imp_num= as.numeric(dateofbirth_imp),
+                fech_ap_top= lubridate::parse_date_time(Fecha.Aplicación.TOP, c("%Y-%m-%d"),exact=T),
+                edad_a_ap_top_num= lubridate::time_length(lubridate::interval(dateofbirth_imp, fech_ap_top),unit="years"),
+                edad_b_ap_top_num= (fech_ap_top_num-dateofbirth_imp_num)/365.25) %>% 
+  dplyr::select(-dateofbirth_imp, -dateofbirth_imp_num) %>% 
+  dplyr::filter(!is.na(edad_a_ap_top_num)) %>% 
+  dplyr::group_by(HASH_KEY, edad_b_ap_top_num) %>% 
+  dplyr::slice(1) %>% 
+  dplyr::ungroup()
+
+message(paste0("Then, we standardized the varibles in TOP (e.g., dates format) and counted self-reported offenses, and also we standardized data with PO records (dates of birth) to get the age when the patient have answered TOP and the age previous [ (1/12)*365.25 ]=",round((1/12)*365.25,0)," days before TOP application. This resulted in ", format(nrow(CONS_TOP_2022), big.mark=","), " rows (combination of different application dates and patients) of ", format(length(unique(CONS_TOP_2022$HASH_KEY)), big.mark=","), " patients."))
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+invisible("Given that offenses are reported for the last four weeks, we added 1/12= 0.08333333 years to the event of application to have")
+
+Base_fiscalia_v15d_grant_23_24<-
+  sqldf::sqldf("SELECT * FROM Base_fiscalia_v15c_grant_23_24 AS x  
+  LEFT JOIN (SELECT *
+             FROM CONS_TOP_2022
+             ) AS y
+  ON x.hash_key == y.HASH_KEY AND 
+  x.edad_al_egres_1 + 0.08333333 < y.edad_b_ap_top_num AND 
+  x.edad_al_egres_1 + 0.58333333 > y.edad_b_ap_top_num")
+
+# Base_fiscalia_v15d_grant_23_24 <- sqldf::sqldf("
+#   SELECT *, x.edad_al_egres_1 + 0.5 AS edad_al_egres_1_6m
+#   FROM Base_fiscalia_v15c_grant_23_24 AS x  
+#   LEFT JOIN (SELECT * FROM CONS_TOP_2022_anti) AS y
+#   ON x.hash_key = y.HASH_KEY 
+#   AND x.edad_al_egres_1 < y.edad_b_ap_top_num 
+#   AND x.edad_al_egres_1 + 0.5 > y.edad_b_ap_top_num
+# ")
+
+Base_fiscalia_v15e_grant_23_24 <- 
+  Base_fiscalia_v15d_grant_23_24 %>% 
+  dplyr::select(-HASH_KEY)
+
+message(
+paste0("Of the total of TOP applications (p= ", format(length(unique(CONS_TOP_2022$HASH_KEY)), big.mark=","), "; n= ",format(nrow(CONS_TOP_2022), big.mark=","),"), we looked for offenses reported in the period of thirty days after 6 months from the application of TOP (p= ", format(length(unique(Base_fiscalia_v15e_grant_23_24$hash_key)), big.mark=","), "; n= ",format(nrow(Base_fiscalia_v15e_grant_23_24), big.mark=","),"). If this database contains more records, is beacause there may be some patients that had more than one record as a result of more than one application of TOP. This will be resolved in the next step")
+)
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+message("Cases with more than one application")
+Base_fiscalia_v15e_grant_23_24 %>% 
+    dplyr::group_by(hash_key) %>% 
+    count() %>% 
+    dplyr::filter(n>1) %>% 
+    dplyr::group_by(n) %>% 
+    dplyr::summarise(n=n())
+
+message("HASHs with more than one application")
+vector_more_one_top_app<-
+as.character(
+  unlist(
+  Base_fiscalia_v15e_grant_23_24 %>% 
+    dplyr::group_by(hash_key) %>% 
+    count() %>% 
+    dplyr::filter(n>1) %>% 
+  dplyr::select(hash_key)
+)
+)
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+invisible("To compare with the summarised dataset")
+Base_fiscalia_v15e_grant_23_24_filt<-
+Base_fiscalia_v15e_grant_23_24%>% 
+dplyr::filter(hash_key %in% vector_more_one_top_app) %>% 
+  dplyr::select(hash_key, fech_nac_rec, edad_al_egres_1, fech_egres_imp_1, `Fecha.Aplicación.TOP`, Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro, fech_ap_top, edad_a_ap_top_num)
+
+Base_fiscalia_v15f_grant_23_24<-
+Base_fiscalia_v15e_grant_23_24%>% 
+    #dplyr::filter(hash_key %in% vector_more_one_top_app) %>% 
+    #dplyr::select(hash_key, fech_nac_rec, motivodeegreso_mod_imp, edad_al_egres_1, fech_egres_imp_1, `Fecha.Aplicación.TOP`, Hurto, Robo, Venta.Drogas, Riña, Total.VIF, Otro, fech_ap_top, edad_a_ap_top_num) %>% #431
+    rowwise() %>%
+    mutate(na_top_count = sum(is.na(Hurto), is.na(Robo), is.na(Venta.Drogas), is.na(Riña), is.na(Total.VIF), is.na(Otro)))%>% 
+  dplyr::ungroup() %>% 
+  # 2023-08-18, no longer i will use this, because we want to obtain as much as information possible
+  # #eliminate applications with less information (greater na count)
+  # dplyr::group_by(hash_key) %>% 
+  # slice_min(na_count) %>%
+  dplyr::ungroup() %>% #417 #362 after adding one month (0,83333)
+  dplyr::group_by(hash_key) %>% 
+  dplyr::mutate(Hurto = sum(Hurto, na.rm=T), Robo = sum(Robo, na.rm=T), Venta.Drogas = sum(Venta.Drogas, na.rm=T), Riña = sum(Riña, na.rm=T), Total.VIF = sum(Total.VIF, na.rm=T), Otro = sum(Otro, na.rm=T), min_fech_ap_top= min(fech_ap_top), max_fech_ap_top= max(fech_ap_top), min_edad_a_ap_top_num= min(edad_a_ap_top_num), max_edad_a_ap_top_num= max(edad_a_ap_top_num), n_top_records=n()) %>% 
+  slice(1) %>% #  2023-08-18: 85242 - 85048
+  dplyr::ungroup() %>%  
+  dplyr::mutate(Fecha.Aplicación.TOP= as.Date(Fecha.Aplicación.TOP), 
+  min_fech_ap_top= as.Date(stringi::stri_sub(as.character(min_fech_ap_top),1,10))+1, 
+  max_fech_ap_top= as.Date(stringi::stri_sub(as.character(max_fech_ap_top),1,10))+1) %>% 
+  #dplyr::ungroup() %>%  dplyr::filter(is.na(edad_al_egres_1)) %>%
+  #dplyr::select(any_of(c("hash_key", "fech_nac_rec", "motivodeegreso_mod_imp", "edad_al_egres_1", "fech_egres_imp_1","min_fech_egres_imp_1", "min_fech_ap_top", "max_fech_ap_top", "min_edad_a_ap_top_num", "max_edad_a_ap_top_num", "n_top_records", "Fecha.Aplicación.TOP", "Hurto", "Robo", "Venta.Drogas", "Riña", "Total.VIF", "Otro", "fech_ap_top", "edad_a_ap_top_num") ))
+  dplyr::select(-fech_ap_top) %>% 
+  dplyr::rename("date_ap_top"="Fecha.Aplicación.TOP")%>% 
+  janitor::clean_names()
+
+
+#Fecha.APlicación.TOP, eliminar fecha_ap_top , añadir 4 hrs.(pa llegar a un dia)
+
+
+invisible("It is admissible that a patient could have reported one crime the last month, but after 2 months, it can be anohter crime (e.g., 6a1efd68b0f4c15706f760b215b9c1fc")
+
+invisible("How many birth dates were missing?, 5,528, possibly ongoing treatments. Only two were not")
+# 026f81b4ffbcfe9c2fccab83cf270885
+
+# 1257b2d7deca5d747569d13ee288aaca
+# 4c7781ef7fdf301ebff0b016367c4df4
+
+invisible("Why de delicts dont sum?")
+
+# 1 0a1d3531b6f494c7e075f36f09dc079c     4
+#  2 2a143662d1a390c6b41d4268fbfe6113     4
+#  3 6a1efd68b0f4c15706f760b215b9c1fc
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+message(
+paste0("For each baseline treatment after dropout, count the number of posterior reported offenses in TOP records (those with 0s are people that did not report an offense in the period posterior to the application of TOP, from one month and 7 months after dropout) (p= ", format(length(unique(Base_fiscalia_v15f_grant_23_24$hash_key)), big.mark=","), "; n= ",format(nrow(Base_fiscalia_v15f_grant_23_24), big.mark=","),")")
+)
+```
+
+Some patients reported different crimes across multiple applications, indicating the evolving nature of their circumstances.
+We noticed missing birth dates in some records, possibly suggesting ongoing treatments or data entry issues. There were some inconsistencies in the reported offenses. It's crucial to further explore and understand the reasons behind these discrepancies.
 
 <br>
 
 ## Descriptives
 
-Generate the event dates and time to events.
+We generated the event dates and time to events. As of August 20, 2023, we decided to discard observations of patients admitted to treatment before 2015 (TOP applications)
 
-```{r, "bring-db2-label-variables",echo=T}
+```{r, "filter-date-top",echo=T, results="hold"}
+Base_fiscalia_v16_grant_23_24<-Base_fiscalia_v15f_grant_23_24[which(as.numeric(as.character(Base_fiscalia_v15f_grant_23_24$ano_bd_first))>=2015),]
+```
+
+
+We ended with `r format(length(unique(Base_fiscalia_v16_grant_23_24$hash_key)),big.mark=",")` individuals.
+
+
+```{r, "bring-db2-label-variables",echo=T, results="hold"}
 invisible("Label variables")
 
 #2023-07-19
-attr(Base_fiscalia_v15c_grant_23_24$motivodeegreso_mod_imp_rec,"label") <- "Complete status of treatment (binary)"
-attr(Base_fiscalia_v15c_grant_23_24$offense_after_adm,"label") <- "Committing an offense after admission (binary)"
-attr(Base_fiscalia_v15c_grant_23_24$age_at_censor_date,"label") <- "Age at censorship"
-attr(Base_fiscalia_v15c_grant_23_24$age_offending_imp,"label") <- "Age at offending"
-attr(Base_fiscalia_v15c_grant_23_24$age_tr_comp_imp,"label") <- "Age at completing tr."
+attr(Base_fiscalia_v16_grant_23_24$motivodeegreso_mod_imp_rec,"label") <- "Complete status of treatment (binary)"
+attr(Base_fiscalia_v16_grant_23_24$offense_after_adm,"label") <- "Committing an offense after admission (binary)"
+attr(Base_fiscalia_v16_grant_23_24$age_at_censor_date,"label") <- "Age at censorship"
+attr(Base_fiscalia_v16_grant_23_24$age_offending_imp,"label") <- "Age at offending"
+attr(Base_fiscalia_v16_grant_23_24$age_tr_comp_imp,"label") <- "Age at completing tr."
 
-#attr(Base_fiscalia_v15c_grant_23_24$tr_modality,"label") <- "Treatment Modality"
-attr(Base_fiscalia_v15c_grant_23_24$time_to_off_from_adm,"label") <- "Time to offense from admission"
-attr(Base_fiscalia_v15c_grant_23_24$time_to_drop_from_adm,"label") <- "Time to dropout from admission"
+#attr(Base_fiscalia_v16_grant_23_24$tr_modality,"label") <- "Treatment Modality"
+attr(Base_fiscalia_v16_grant_23_24$time_to_off_from_adm,"label") <- "Time to offense from admission"
+attr(Base_fiscalia_v16_grant_23_24$time_to_drop_from_adm,"label") <- "Time to dropout from admission"
 
 #2023-07-31
-attr(Base_fiscalia_v15c_grant_23_24$age_at_death,"label") <- "Age at death"
-attr(Base_fiscalia_v15c_grant_23_24$date_death,"label") <- "Time to death from admission"
-attr(Base_fiscalia_v15c_grant_23_24$event_death,"label") <- "Death from admission"
+attr(Base_fiscalia_v16_grant_23_24$age_at_death,"label") <- "Age at death"
+attr(Base_fiscalia_v16_grant_23_24$date_death,"label") <- "Time to death from admission"
+attr(Base_fiscalia_v16_grant_23_24$event_death,"label") <- "Death from admission"
 
-attr(Base_fiscalia_v15c_grant_23_24$event_comp,"label") <- "Event: tr.completion"
-attr(Base_fiscalia_v15c_grant_23_24$event_offense,"label") <- "Event: offense"
+attr(Base_fiscalia_v16_grant_23_24$event_comp,"label") <- "Event: tr.completion"
+attr(Base_fiscalia_v16_grant_23_24$event_offense,"label") <- "Event: offense"
 
 
-attr(Base_fiscalia_v15c_grant_23_24$edad_al_ing_1,"label") <- "Age (admission to treatment)"
-attr(Base_fiscalia_v15c_grant_23_24$sex,"label") <- "Sex"
-attr(Base_fiscalia_v15c_grant_23_24$edad_ini_cons,"label") <- "Age of Onset of Substance Use"
-attr(Base_fiscalia_v15c_grant_23_24$escolaridad_rec,"label") <- "Educational Attainment"
-attr(Base_fiscalia_v15c_grant_23_24$sus_principal_mod,"label") <- "Primary Substance (admission to treatment)"
-attr(Base_fiscalia_v15c_grant_23_24$freq_cons_sus_prin,"label") <- "Frequency of Substance Use (Primary Substance)"
-attr(Base_fiscalia_v15c_grant_23_24$condicion_ocupacional_corr,"label") <- "Corrected Occupational Status (f)"
-attr(Base_fiscalia_v15c_grant_23_24$policonsumo,"label") <- "Co-occurring Substance Use Disorders (Polysubstance use)"
+attr(Base_fiscalia_v16_grant_23_24$edad_al_ing_1,"label") <- "Age (admission to treatment)"
+attr(Base_fiscalia_v16_grant_23_24$sex,"label") <- "Sex"
+attr(Base_fiscalia_v16_grant_23_24$edad_ini_cons,"label") <- "Age of Onset of Substance Use"
+attr(Base_fiscalia_v16_grant_23_24$escolaridad_rec,"label") <- "Educational Attainment"
+attr(Base_fiscalia_v16_grant_23_24$sus_principal_mod,"label") <- "Primary Substance (admission to treatment)"
+attr(Base_fiscalia_v16_grant_23_24$freq_cons_sus_prin,"label") <- "Frequency of Substance Use (Primary Substance)"
+attr(Base_fiscalia_v16_grant_23_24$condicion_ocupacional_corr,"label") <- "Corrected Occupational Status (f)"
+attr(Base_fiscalia_v16_grant_23_24$policonsumo,"label") <- "Co-occurring Substance Use Disorders (Polysubstance use)"
 
 #20203-07-17
-attr(Base_fiscalia_v15c_grant_23_24$otras_sus1_mod,"label") <- "First additional substance at admission"
-attr(Base_fiscalia_v15c_grant_23_24$otras_sus2_mod,"label") <- "Second additional substance at admission"
-attr(Base_fiscalia_v15c_grant_23_24$otras_sus3_mod,"label") <- "Third additional substance at admission"
+attr(Base_fiscalia_v16_grant_23_24$otras_sus1_mod,"label") <- "First additional substance at admission"
+attr(Base_fiscalia_v16_grant_23_24$otras_sus2_mod,"label") <- "Second additional substance at admission"
+attr(Base_fiscalia_v16_grant_23_24$otras_sus3_mod,"label") <- "Third additional substance at admission"
 
-attr(Base_fiscalia_v15c_grant_23_24$num_hijos_mod_joel_bin,"label") <- "Number of Children (dichotomized)"
-attr(Base_fiscalia_v15c_grant_23_24$tenencia_de_la_vivienda_mod,"label") <- "Housing Situation (Tenure Status)"
-attr(Base_fiscalia_v15c_grant_23_24$macrozona,"label") <- "Macro Administrative Zone in Chile"
-attr(Base_fiscalia_v15c_grant_23_24$n_off_vio,"label") <- "Violent Criminal Offenses (Pre-Treatment)"
-attr(Base_fiscalia_v15c_grant_23_24$n_off_acq,"label") <- "Acquisitive Criminal Offenses (Pre-Treatment)"
-attr(Base_fiscalia_v15c_grant_23_24$n_off_sud,"label") <- "Substance-Related Criminal Offenses (Pre-Treatment)"
-attr(Base_fiscalia_v15c_grant_23_24$n_off_oth,"label") <- "Other Criminal Offenses (Pre-Treatment)"
-attr(Base_fiscalia_v15c_grant_23_24$dg_cie_10_rec,"label") <- "Psychiatric Comorbidity (ICD-10)"
-attr(Base_fiscalia_v15c_grant_23_24$dg_trs_cons_sus_or,"label") <- "SUD Severity (Dependence status)"
-attr(Base_fiscalia_v15c_grant_23_24$clas_r,"label") <- "Socioeconomic Classification"
-attr(Base_fiscalia_v15c_grant_23_24$porc_pobr,"label") <- "Percentage of people in poverty"
-attr(Base_fiscalia_v15c_grant_23_24$sus_ini_mod_mvv,"label") <- "Primary Substance (initial diagnosis)"
-attr(Base_fiscalia_v15c_grant_23_24$ano_nac_corr,"label") <- "Corrected birth year"
-attr(Base_fiscalia_v15c_grant_23_24$con_quien_vive_joel,"label") <- "Cohabitation status (Recoded) (f)"
-attr(Base_fiscalia_v15c_grant_23_24$fis_comorbidity_icd_10,"label") <- "Physical Comorbidity (ICD-10)"
+attr(Base_fiscalia_v16_grant_23_24$num_hijos_mod_joel_bin,"label") <- "Number of Children (dichotomized)"
+attr(Base_fiscalia_v16_grant_23_24$tenencia_de_la_vivienda_mod,"label") <- "Housing Situation (Tenure Status)"
+attr(Base_fiscalia_v16_grant_23_24$macrozona,"label") <- "Macro Administrative Zone in Chile"
+attr(Base_fiscalia_v16_grant_23_24$n_off_vio,"label") <- "Violent Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v16_grant_23_24$n_off_acq,"label") <- "Acquisitive Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v16_grant_23_24$n_off_sud,"label") <- "Substance-Related Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v16_grant_23_24$n_off_oth,"label") <- "Other Criminal Offenses (Pre-Treatment)"
+attr(Base_fiscalia_v16_grant_23_24$dg_cie_10_rec,"label") <- "Psychiatric Comorbidity (ICD-10)"
+attr(Base_fiscalia_v16_grant_23_24$dg_trs_cons_sus_or,"label") <- "SUD Severity (Dependence status)"
+attr(Base_fiscalia_v16_grant_23_24$clas_r,"label") <- "Socioeconomic Classification"
+attr(Base_fiscalia_v16_grant_23_24$porc_pobr,"label") <- "Percentage of people in poverty"
+attr(Base_fiscalia_v16_grant_23_24$sus_ini_mod_mvv,"label") <- "Primary Substance (initial diagnosis)"
+attr(Base_fiscalia_v16_grant_23_24$ano_nac_corr,"label") <- "Corrected birth year"
+attr(Base_fiscalia_v16_grant_23_24$con_quien_vive_joel,"label") <- "Cohabitation status (Recoded) (f)"
+attr(Base_fiscalia_v16_grant_23_24$fis_comorbidity_icd_10,"label") <- "Physical Comorbidity (ICD-10)"
 
-vars_cov <- c("motivodeegreso_mod_imp_rec", "edad_al_ing_1", "sex", "edad_ini_cons", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "condicion_ocupacional_corr", "policonsumo", "otras_sus1_mod", "otras_sus2_mod", "otras_sus3_mod", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "macrozona", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "dg_cie_10_rec", "dg_trs_cons_sus_or", "clas_r", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", "fis_comorbidity_icd_10", "time_to_off_from_adm", "time_to_drop_from_adm", "age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "age_at_death","event_death")
+attr(Base_fiscalia_v16_grant_23_24$n_post_off_vio,"label") <- "Count of Violent Criminal Offenses (Post-Treatment)"
+attr(Base_fiscalia_v16_grant_23_24$n_post_off_acq,"label") <- "Count of Acquisitive Criminal Offenses (Post-Treatment)"
+attr(Base_fiscalia_v16_grant_23_24$n_post_off_sud,"label") <- "Count of Substance-Related Criminal Offenses (Post-Treatment)"
+attr(Base_fiscalia_v16_grant_23_24$n_post_off_oth,"label") <- "Count of Other Criminal Offenses (Post-Treatment)"
+attr(Base_fiscalia_v16_grant_23_24$n_post_off,"label") <- "Count of Post-treatment Offenses"
+
+# n_post_off_vio, n_post_off_acq, n_post_off_sud, n_post_off_oth, n_post_off
+
+invisible("Paper ACC: The items of the TOP referring to criminal activity were adjusted to reflect the Chilean context. Shoplifting and drug selling were kept; theft from or of a vehicle, other property theft or burglary, fraud, forgery and handling stolen goods and committing assault or violence were removed; and theft, fights, number of domestic violence incidents during the last 28 days were included. with the exception of the last item (number of domestic violence incidents during the last 28 days), the other items were simplified to report any participation (yes/no) within the past 4 weeks")
+
+attr(Base_fiscalia_v16_grant_23_24$date_ap_top,"label") <- "TOP applicaton date"
+attr(Base_fiscalia_v16_grant_23_24$hurto,"label") <- "Count of TOP criminal activity reports: theft"
+attr(Base_fiscalia_v16_grant_23_24$robo,"label") <- "Count of TOP criminal activity reports: robbery"
+attr(Base_fiscalia_v16_grant_23_24$venta_drogas,"label") <- "Count of TOP criminal activity reports: drug selling"
+attr(Base_fiscalia_v16_grant_23_24$rina,"label") <- "Count of TOP criminal activity reports: fights"
+attr(Base_fiscalia_v16_grant_23_24$total_vif,"label") <- "Count of TOP criminal activity reports: domestic violence"
+attr(Base_fiscalia_v16_grant_23_24$otro,"label") <- "Count of TOP criminal activity reports: other"
+attr(Base_fiscalia_v16_grant_23_24$tot_off_top,"label") <- "Count of TOP criminal activity reports: any"
+attr(Base_fiscalia_v16_grant_23_24$edad_a_ap_top_num,"label") <- "Age at TOP application (a)"
+attr(Base_fiscalia_v16_grant_23_24$edad_b_ap_top_num,"label") <- "Age at TOP application (b)"
+attr(Base_fiscalia_v16_grant_23_24$na_top_count,"label") <- "Count of missing TOP criminal activity report"
+attr(Base_fiscalia_v16_grant_23_24$min_fech_ap_top,"label") <- "Minimum TOP applicaton date"
+attr(Base_fiscalia_v16_grant_23_24$max_fech_ap_top,"label") <- "Maximum TOP applicaton date"
+attr(Base_fiscalia_v16_grant_23_24$min_edad_a_ap_top_num,"label") <- "Minimum age at TOP application"
+attr(Base_fiscalia_v16_grant_23_24$max_edad_a_ap_top_num,"label") <- "Maximum age at TOP application"
+attr(Base_fiscalia_v16_grant_23_24$n_top_records,"label") <- "TOP records between 1-7 months after dropout"
+
+#variable_names <- c(  "Hurto", "Robo", "Venta.Drogas", "Riña",   "Total.VIF", "Otro", "tot_off_top", "edad_a_ap_top_num",   "edad_b_ap_top_num", "na_top_count", "min_fech_ap_top",   "max_fech_ap_top", "min_edad_a_ap_top_num",   "max_edad_a_ap_top_num", "n_top_records" )
+
+vars_cov <- c("motivodeegreso_mod_imp_rec", "edad_al_ing_1", "sex", "edad_ini_cons", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "condicion_ocupacional_corr", "policonsumo", "otras_sus1_mod", "otras_sus2_mod", "otras_sus3_mod", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "macrozona", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "dg_cie_10_rec", "dg_trs_cons_sus_or", "clas_r", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", "fis_comorbidity_icd_10", "time_to_off_from_adm", "time_to_drop_from_adm", "age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "age_at_death","event_death", "n_post_off_vio", "n_post_off_acq", "n_post_off_sud", "n_post_off_oth", "n_post_off","hurto", "robo", "venta_drogas", "rina", "total_vif", "otro", "tot_off_top", "edad_a_ap_top_num",   "edad_b_ap_top_num", "na_top_count", "min_fech_ap_top", "max_fech_ap_top", "min_edad_a_ap_top_num",   "max_edad_a_ap_top_num", "n_top_records")
 
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -1175,7 +1532,7 @@ as.data.frame.TableOne <- function(x, ...) {capture.output(print(x,
 #_#_#_#_#_#_#_#_#_#_#_#_#_
 
 tbone_desc_merge5_grant_23_24<-
-CreateTableOne(vars=c(setdiff(vars_cov, "policonsumo"), "offense_after_adm"), data=  Base_fiscalia_v15c_grant_23_24[,c("motivodeegreso_mod_imp_rec", "edad_al_ing_1", "sex", "edad_ini_cons", 
+CreateTableOne(vars=c(setdiff(vars_cov, "policonsumo"), "offense_after_adm"), data=  Base_fiscalia_v16_grant_23_24[,c("motivodeegreso_mod_imp_rec", "edad_al_ing_1", "sex", "edad_ini_cons", 
 "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", 
 "condicion_ocupacional_corr", "policonsumo", "otras_sus1_mod", 
 "otras_sus2_mod", "otras_sus3_mod", "num_hijos_mod_joel_bin", 
@@ -1183,7 +1540,10 @@ CreateTableOne(vars=c(setdiff(vars_cov, "policonsumo"), "offense_after_adm"), da
 "n_off_sud", "n_off_oth", "dg_cie_10_rec", "dg_trs_cons_sus_or", 
 "clas_r", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", 
 "fis_comorbidity_icd_10", "time_to_off_from_adm", "time_to_drop_from_adm", 
-"age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "offense_after_adm","age_at_death", "event_death")], factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr", "time_to_off_from_adm", "time_to_drop_from_adm", "age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "age_at_death")), smd=T, strata="policonsumo", addOverall = T, includeNA=T, test=T)
+"age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "offense_after_adm","age_at_death", "event_death","n_post_off_vio", "n_post_off_acq", "n_post_off_sud", "n_post_off_oth", "n_post_off", "hurto", "robo", "venta_drogas", "rina", "total_vif", "otro", "tot_off_top", "edad_a_ap_top_num", "edad_b_ap_top_num", "na_top_count", "min_edad_a_ap_top_num", "max_edad_a_ap_top_num")], factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr", "time_to_off_from_adm", "time_to_drop_from_adm", "age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "age_at_death", "n_post_off_vio", "n_post_off_acq", "n_post_off_sud", "n_post_off_oth", "n_post_off", "edad_a_ap_top_num", "edad_b_ap_top_num", "min_edad_a_ap_top_num", "max_edad_a_ap_top_num")), smd=T, strata="policonsumo", addOverall = T, includeNA=T, test=T)
+
+# 
+# mes <- c( "date_ap_top", "Hurto", "Robo", "Venta.Drogas", "Riña",   "Total.VIF", "Otro", "tot_off_top", "edad_a_ap_top_num",   "edad_b_ap_top_num", "na_top_count", "min_fech_ap_top",   "max_fech_ap_top", "min_edad_a_ap_top_num",   "max_edad_a_ap_top_num", "n_top_records" )
 ```
 
 ::: center-table
@@ -1201,12 +1561,12 @@ as.data.frame.TableOne(tbone_desc_merge5_grant_23_24, smd=T, nonnormal= T)%>%
 ```
 :::
 
-We show the distribution of dates 
+We show the distribution of dates
 
 ```{r, "bring-db3-add-survival-vars-dates",echo=T}
 rbind(
   cbind.data.frame(cat="Date of admission to baseline treatment",
-        Base_fiscalia_v15c_grant_23_24 %>% 
+        Base_fiscalia_v16_grant_23_24 %>% 
           dplyr::summarise(min = as.Date(min(unclass(fech_ing_num_1), na.rm=T), origin = "1970-01-01"),
            p025=as.Date(quantile(unclass(fech_ing_num_1), .025, na.rm=T), origin = "1970-01-01"),
            p25=as.Date(quantile(unclass(fech_ing_num_1), .25, na.rm=T), origin = "1970-01-01"),
@@ -1215,7 +1575,7 @@ rbind(
            p975=as.Date(quantile(unclass(fech_ing_num_1), .975, na.rm=T), origin = "1970-01-01"),
            max = as.Date(max(unclass(fech_ing_num_1), na.rm=T), origin = "1970-01-01"))),
   cbind.data.frame(cat="Date of discharge of baseline treatment",
-        Base_fiscalia_v15c_grant_23_24 %>% 
+        Base_fiscalia_v16_grant_23_24 %>% 
           dplyr::summarise(min = as.Date(min(unclass(fech_egres_num_1), na.rm=T), origin = "1970-01-01"),
            p025=as.Date(quantile(unclass(fech_egres_num_1), .025, na.rm=T), origin = "1970-01-01"),
            p25=as.Date(quantile(unclass(fech_egres_num_1), .25, na.rm=T), origin = "1970-01-01"),
@@ -1224,7 +1584,7 @@ rbind(
            p975=as.Date(quantile(unclass(fech_egres_num_1), .975, na.rm=T), origin = "1970-01-01"),
            max = as.Date(max(unclass(fech_egres_num_1), na.rm=T), origin = "1970-01-01"))),
   cbind.data.frame(cat="Date of commission of offense after admission",
-        Base_fiscalia_v15c_grant_23_24 %>% 
+        Base_fiscalia_v16_grant_23_24 %>% 
           dplyr::summarise(min = as.Date(min(unclass(fech_egres_num_1), na.rm=T), origin = "1970-01-01"),
            p025=as.Date(quantile(unclass(fech_egres_num_1), .025, na.rm=T), origin = "1970-01-01"),
            p25=as.Date(quantile(unclass(fech_egres_num_1), .25, na.rm=T), origin = "1970-01-01"),
@@ -1233,7 +1593,7 @@ rbind(
            p975=as.Date(quantile(unclass(fech_egres_num_1), .975, na.rm=T), origin = "1970-01-01"),
            max = as.Date(max(unclass(fech_egres_num_1), na.rm=T), origin = "1970-01-01"))),
   cbind.data.frame(cat="Date of death after admission",
-        Base_fiscalia_v15c_grant_23_24 %>% 
+        Base_fiscalia_v16_grant_23_24 %>% 
           dplyr::summarise(min = as.Date(min(unclass(date_death), na.rm=T), origin = "1970-01-01"),
            p025=as.Date(quantile(unclass(date_death), .025, na.rm=T), origin = "1970-01-01"),
            p25=as.Date(quantile(unclass(date_death), .25, na.rm=T), origin = "1970-01-01"),
@@ -1241,8 +1601,35 @@ rbind(
            p75=as.Date(quantile(unclass(date_death), .75, na.rm=T), origin = "1970-01-01"),
            p975=as.Date(quantile(unclass(date_death), .975, na.rm=T), origin = "1970-01-01"),
            max = as.Date(max(unclass(date_death), na.rm=T), origin = "1970-01-01"))),
+  cbind.data.frame(cat="Date of TOP application",
+        Base_fiscalia_v16_grant_23_24 %>% 
+          dplyr::summarise(min = as.Date(min(unclass(date_ap_top), na.rm=T), origin = "1970-01-01"),
+           p025=as.Date(quantile(unclass(date_ap_top), .025, na.rm=T), origin = "1970-01-01"),
+           p25=as.Date(quantile(unclass(date_ap_top), .25, na.rm=T), origin = "1970-01-01"),
+           p50=as.Date(quantile(unclass(date_ap_top), .5, na.rm=T), origin = "1970-01-01"),
+           p75=as.Date(quantile(unclass(date_ap_top), .75, na.rm=T), origin = "1970-01-01"),
+           p975=as.Date(quantile(unclass(date_ap_top), .975, na.rm=T), origin = "1970-01-01"),
+           max = as.Date(max(unclass(date_ap_top), na.rm=T), origin = "1970-01-01"))),
+  cbind.data.frame(cat="Minimum date of TOP application",
+        Base_fiscalia_v16_grant_23_24 %>% 
+          dplyr::summarise(min = as.Date(min(unclass(min_fech_ap_top), na.rm=T), origin = "1970-01-01"),
+           p025=as.Date(quantile(unclass(min_fech_ap_top), .025, na.rm=T), origin = "1970-01-01"),
+           p25=as.Date(quantile(unclass(min_fech_ap_top), .25, na.rm=T), origin = "1970-01-01"),
+           p50=as.Date(quantile(unclass(min_fech_ap_top), .5, na.rm=T), origin = "1970-01-01"),
+           p75=as.Date(quantile(unclass(min_fech_ap_top), .75, na.rm=T), origin = "1970-01-01"),
+           p975=as.Date(quantile(unclass(min_fech_ap_top), .975, na.rm=T), origin = "1970-01-01"),
+           max = as.Date(max(unclass(min_fech_ap_top), na.rm=T), origin = "1970-01-01"))),  
+  cbind.data.frame(cat="Maximum date of TOP application",
+        Base_fiscalia_v16_grant_23_24 %>% 
+          dplyr::summarise(min = as.Date(min(unclass(max_fech_ap_top), na.rm=T), origin = "1970-01-01"),
+           p025=as.Date(quantile(unclass(max_fech_ap_top), .025, na.rm=T), origin = "1970-01-01"),
+           p25=as.Date(quantile(unclass(max_fech_ap_top), .25, na.rm=T), origin = "1970-01-01"),
+           p50=as.Date(quantile(unclass(max_fech_ap_top), .5, na.rm=T), origin = "1970-01-01"),
+           p75=as.Date(quantile(unclass(max_fech_ap_top), .75, na.rm=T), origin = "1970-01-01"),
+           p975=as.Date(quantile(unclass(max_fech_ap_top), .975, na.rm=T), origin = "1970-01-01"),
+           max = as.Date(max(unclass(max_fech_ap_top), na.rm=T), origin = "1970-01-01"))),  
   cbind.data.frame(cat="Date of birth (corrected)",
-        Base_fiscalia_v15c_grant_23_24 %>% 
+        Base_fiscalia_v16_grant_23_24 %>% 
           dplyr::summarise(min = as.Date(min(unclass(fech_nac_rec), na.rm=T), origin = "1970-01-01"),
            p025=as.Date(quantile(unclass(fech_nac_rec), .025, na.rm=T), origin = "1970-01-01"),
            p25=as.Date(quantile(unclass(fech_nac_rec), .25, na.rm=T), origin = "1970-01-01"),
@@ -1258,12 +1645,17 @@ rbind(
 
 # GLCA
 
+- We replaced NA values in multiple columns of `mydata_preds1` with the string "none"
+
+- We grouped by three substance-related columns and then counted the number of rows for each group
+
+
 ::: controlly
 ```{r, "glca00"}
 require(glca)
 
 mydata_preds1<- 
-  Base_fiscalia_v15c_grant_23_24 %>% 
+  Base_fiscalia_v16_grant_23_24 %>% 
   dplyr::select(sus_principal_mod,
       dg_trs_cons_sus_or,
       freq_cons_sus_prin,
@@ -1273,6 +1665,7 @@ mydata_preds1<-
 
 mydata_preds2 <- mydata_preds1%>% dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(is.na(.)~ "none", T~ .)))
 
+#Count of substances
 dplyr::group_by(mydata_preds2,sus_principal_mod, otras_sus1_mod, otras_sus2_mod) %>%  count() %>% dplyr::ungroup() %>%  arrange(desc(n)) %>% dplyr::mutate(perc= scales::percent(round(n/sum(n),2))) %>% dplyr::filter(n>0) %>% knitr::kable("markdown", caption="Combinations of substances", col.names= c("Primary substance", "Other substances (1)", "Other substances (2)","n", "%"))
 ```
 :::
@@ -1286,12 +1679,18 @@ paste0("The first four (there is one that is exchangeable) make the ",
        " of the sample")
 ```
 
+- We made a latent class analysis with only substances. Then we added other drug patterns (frequency of use and drug dependence status). Now, we dropped missing values in drug dependence diagnosis and substance use frequency (~250 patients) (2023-08-20).
+
 ::: controlly
-```{r, "glca02"}
+```{r, "glca02", results="hold"}
 dplyr::group_by(mydata_preds2,sus_principal_mod, otras_sus1_mod, otras_sus2_mod, dg_trs_cons_sus_or, freq_cons_sus_prin) %>%  count() %>% dplyr::ungroup() %>%  arrange(desc(n)) %>% dplyr::mutate(perc= scales::percent(round(n/sum(n),2))) %>% dplyr::filter(n>0) %>% knitr::kable("markdown", caption="Combinations of substances", col.names= c("Primary substance", "Other substances (1)", "Other substances (2)", "ICD 10 SUD Dg", "Subs.Use.Freq.", "n", "%"))
 
 mydata_preds3 <- mydata_preds2%>% 
-dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ as.numeric(factor(.))+1))%>% dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(.=="none"~ 1, T~ .)))%>%   
+  dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(.=="none"~ "__none", T~ .)))%>%
+dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ as.numeric(factor(.))))%>% 
+  #2023-08-20. We cannot discard none categories for drug use patterns, but we can do it for drug dependence diagnosis and drug use frequency
+  dplyr::filter(!dg_trs_cons_sus_or==1) %>%  
+  dplyr::filter(!freq_cons_sus_prin==1) %>%  
   data.table::data.table()
 ```
 :::
@@ -1307,7 +1706,7 @@ f_preds2<- item(sus_principal_mod, otras_sus1_mod, otras_sus2_mod, dg_trs_cons_s
 
 seed<-2125
 
-testiter <- 250
+testiter <- 500
 
 old <- Sys.time()
 print(old)
@@ -1372,7 +1771,7 @@ It does not seem viable a latent class analysis given the relative fit and the a
 
 # MCA
 
-::: controlly 
+::: controlly
 ```{r mca-1, echo=T, fig.align='center', message=T, error=T, eval=T}
 #https://cran.r-project.org/web/packages/factoextra/factoextra.pdf
 # http://www.sthda.com/english/wiki/factoextra-r-package-easy-multivariate-data-analyses-and-elegant-visualization
@@ -1387,7 +1786,6 @@ MCA(mydata_preds2[,1:(ncol(mydata_preds2)-1)],
 
 fviz_mca_var(res.mca, repel = TRUE)
 ```
-
 
 ```{r mca-15, echo=T, fig.align='center', message=T, error=T, eval=T}
 cats = apply(mydata_preds2[,1:(ncol(mydata_preds2)-1)], 2, function(x) nlevels(as.factor(x)))
@@ -1407,7 +1805,7 @@ ggplot(data = mca1_vars_df, aes(x = Dim.1, y = Dim.2, label = rownames(mca1_vars
 
 Another analysis of heterogeneity
 
-::: controlly 
+::: controlly
 ```{r mca-2, echo=T, fig.align='center', message=T, error=T, eval=T}
 require(homals)
 
@@ -1417,7 +1815,7 @@ mca5$eigenvalues
 ```
 :::
 
-::: controlly 
+::: controlly
 ```{r mca-251, echo=T, fig.align='center', message=T, error=T, eval=T , fig.cap= "Homals Dimensiones 1 y 2"}
 # homogeneity analysis, aka a multiple correspondence analysis, but with many additional options.
 
@@ -1444,7 +1842,7 @@ ggplot(data = mca5_vars_df, aes(x = D1, y = D2, label = rownames(mca5_vars_df)))
 ```
 :::
 
-::: controlly 
+::: controlly
 ```{r mca-252, echo=T, fig.align='center', message=T, error=T, eval=T , fig.cap= "Homals Dimensiones 3 y 4"}
 # MCA plot of variable categories
 
@@ -1458,17 +1856,15 @@ ggplot(data = mca5_vars_df2, aes(x = D3, y = D4, label = rownames(mca5_vars_df2)
 
 # Imputation and export
 
-
-:::controlly
-
+::: controlly
 ```{r miss, warning=FALSE, echo=T, error=T, eval=T}
 require(missRanger)
 
-Base_fiscalia_v15c_grant_23_24_miss <-
-Base_fiscalia_v15c_grant_23_24 #%>% 
+Base_fiscalia_v16_grant_23_24_miss <-
+Base_fiscalia_v16_grant_23_24 #%>% 
 if(exists("no_mostrar")){
   set.seed(2125)
-  Base_fiscalia_v15c_grant_23_24 %>% 
+  Base_fiscalia_v16_grant_23_24 %>% 
     dplyr::arrange(hash_key, edad_al_ing_1) %>% 
     dplyr::select() %>% 
      missRanger::missRanger(
@@ -1495,7 +1891,7 @@ if(exists("no_mostrar")){
 #cont_vars_desc[1]<-ifelse(cont_vars_desc[1]=="edad_al_ing_fmt","edad_al_ing_1",cont_vars_desc[1])
 
 
-Base_fiscalia_v15c_grant_23_24 %>% 
+Base_fiscalia_v16_grant_23_24 %>% 
   dplyr::arrange(hash_key, fech_ing_num_1)  %>% 
   data.table::data.table() %>% 
   rio::export(file = paste0("an_grant_23_24.dta"))
@@ -1506,7 +1902,7 @@ Base_fiscalia_v15c_grant_23_24 %>%
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 
-Base_fiscalia_v15c_grant_23_24_miss %>% 
+Base_fiscalia_v16_grant_23_24_miss %>% 
   dplyr::arrange(hash_key, fech_ing_num_1)  %>% 
   data.table::data.table() %>% 
   rio::export(file = paste0("an_grant_23_24_miss.dta"))
@@ -1514,7 +1910,7 @@ Base_fiscalia_v15c_grant_23_24_miss %>%
 
 <br>
 
-# Survival Mediation
+# Mediation
 
 ```{r, eval=F}
 
@@ -1529,7 +1925,7 @@ variables_vector <- c("sex", "edad_ini_cons", "escolaridad_rec", "condicion_ocup
 
 #get a matched cohort of people by polysubstance use
 m.out3 <- matchit(policonsumo ~ rcs(edad_al_ing_1, 4) + sex + edad_ini_cons + escolaridad_rec + condicion_ocupacional_corr + num_hijos_mod_joel_bin + tenencia_de_la_vivienda_mod + macrozona + n_off_vio + n_off_acq + n_off_sud + n_off_oth + dg_cie_10_rec + dg_trs_cons_sus_or + clas_r + porc_pobr + sus_ini_mod_mvv + ano_nac_corr + con_quien_vive_joel + fis_comorbidity_icd_10+ n_off_vict, 
-                  data = Base_fiscalia_v15c_grant_23_24[complete.cases(Base_fiscalia_v15c_grant_23_24[,..variables_vector]),], 
+                  data = Base_fiscalia_v16_grant_23_24[complete.cases(Base_fiscalia_v16_grant_23_24[,..variables_vector]),], 
                   method = "nearest", 
                   discard = "both",
                   caliper = .05, 
@@ -1542,7 +1938,7 @@ cobalt::bal.tab(m.out3, un = TRUE, m.threshold = .1,
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #install.packages("MatchThem")
 # require(MatchThem)
-# imputed.datasets <- mice::mice(dplyr::select(Base_fiscalia_v15c_grant_23_24,c(variables_vector,"edad_al_ing_1","policonsumo","time_to_off_from_adm","time_to_drop_from_adm","event_death","event_comp","event_offense")), m = 5)
+# imputed.datasets <- mice::mice(dplyr::select(Base_fiscalia_v15f_grant_23_24,c(variables_vector,"edad_al_ing_1","policonsumo","time_to_off_from_adm","time_to_drop_from_adm","event_death","event_comp","event_offense")), m = 5)
 # 
 # #Currently, "within" (performing matching within each dataset) and "across" (estimating propensity scores within each dataset, averaging them across datasets, and performing matching using the averaged propensity scores in each dataset) approaches are available. The default is "within", which has been shown to have superior performance in most cases
 #   #Matching the multiply imputed datasets
@@ -1596,13 +1992,13 @@ require(mets)
 #Klaus K. Holst and Thomas H. Scheike Jacob B. Hjelmborg (2015). The Liability Threshold Model for Censored Twin Data. Computational Statistics and Data Analysis. http://dx.doi.org/10.1016/j.csda.2015.01.014
 
 
-# comp_cases_Base_fiscalia_v15c_grant_23_24<-
-# Base_fiscalia_v15c_grant_23_24[complete.cases(Base_fiscalia_v15c_grant_23_24[,..variables_vector]),] %>% dplyr::mutate(policonsumo=factor(policonsumo), event_comp=factor(event_comp))
+# comp_cases_Base_fiscalia_v15f_grant_23_24<-
+# Base_fiscalia_v15f_grant_23_24[complete.cases(Base_fiscalia_v15f_grant_23_24[,..variables_vector]),] %>% dplyr::mutate(policonsumo=factor(policonsumo), event_comp=factor(event_comp))
 # 
 # weightmodel <- fit <- glm(event_comp ~ policonsumo, 
-#                   data = comp_cases_Base_fiscalia_v15c_grant_23_24, family=binomial)
+#                   data = comp_cases_Base_fiscalia_v15f_grant_23_24, family=binomial)
 # 
-# wdata <- medweight(fit,data= comp_cases_Base_fiscalia_v15c_grant_23_24)
+# wdata <- medweight(fit,data= comp_cases_Base_fiscalia_v15f_grant_23_24)
 # 
 # aaMss2 <- binreg(Event(time,status)~gp+dnr+preauto+ttt24+cluster(id),data=dat,time=50,cause=2)
 # summary(aaMss2)
@@ -1669,6 +2065,11 @@ summary(aaMss)
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3204669/
 ```
+
+```{r, "mediation", echo=T, error=T, message=TRUE, paged.print=TRUE, results="hold"}
+
+```
+
 
 <br>
 
