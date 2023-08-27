@@ -66,4 +66,6 @@ output:
 
 **Update of the C1 Agreement**
 
-- [Step 1](import_c1_deduplication.html)
+- [Step 1: C1 & TOP](import_c1_deduplication.html)
+
+- [Step 2: C2 to C6](import_c2_c6)

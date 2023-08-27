@@ -1441,10 +1441,8 @@ Some patients reported different crimes across multiple applications, indicating
 
 ## Descriptives
 
-We generated the event dates and time to events. As of August 20, 2023, we decided to discard observations of patients admitted to treatment before 2015 (TOP applications)
-
 ```{r, "filter-date-top",echo=T, results="hold"}
-Base_fiscalia_v16_grant_23_24<-Base_fiscalia_v15f_grant_23_24[which(as.numeric(as.character(Base_fiscalia_v15f_grant_23_24$anio_ing_tr))>=2015),] #2022-08-22: changed anio_ing_tr for the previous ano_bd_first, because it gave some aberrant treatments
+Base_fiscalia_v16_grant_23_24<-Base_fiscalia_v15f_grant_23_24[which(as.numeric(as.character(Base_fiscalia_v15f_grant_23_24$anio_ing_tr))>=2010),] #2022-08-22: changed anio_ing_tr for the previous ano_bd_first, because it gave some aberrant treatments
 ```
 
 We ended with `r format(length(unique(Base_fiscalia_v16_grant_23_24$hash_key)),big.mark=",")` individuals.
@@ -1563,55 +1561,6 @@ CreateTableOne(vars=c(setdiff(vars_cov, "policonsumo"), "offense_after_adm"), da
 "age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "offense_after_adm","age_at_death", "event_death","n_post_off_vio", "n_post_off_acq", "n_post_off_sud", "n_post_off_oth", "n_post_off", "hurto", "robo", "venta_drogas", "rina", "total_vif", "otro", "tot_off_top", "edad_a_ap_top_num", "edad_b_ap_top_num", "na_top_count")], factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr", "time_to_off_from_adm", "time_to_drop_from_adm", "age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "age_at_death", "n_post_off_vio", "n_post_off_acq", "n_post_off_sud", "n_post_off_oth", "n_post_off", "edad_a_ap_top_num", "edad_b_ap_top_num", "min_edad_a_ap_top_num", "max_edad_a_ap_top_num")), smd=T, strata="policonsumo", addOverall = T, includeNA=T, test=T)
 #"min_edad_a_ap_top_num", "max_edad_a_ap_top_num"
 
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-invisible("Contrast people in and out of study")
-
-tbone_desc_merge52_grant_23_24<-
-CreateTableOne(vars=c(setdiff(vars_cov, "policonsumo"), "offense_after_adm"), data=  Base_fiscalia_v16_grant_23_24[,c("motivodeegreso_mod_imp_rec", "edad_al_ing_1", "sex", "edad_ini_cons", 
-"escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", 
-"condicion_ocupacional_corr", "policonsumo", "otras_sus1_mod", 
-"otras_sus2_mod", "otras_sus3_mod", "num_hijos_mod_joel_bin", 
-"tenencia_de_la_vivienda_mod", "macrozona", "n_off_vio", "n_off_acq", 
-"n_off_sud", "n_off_oth", "dg_cie_10_rec", "dg_trs_cons_sus_or", 
-"clas_r", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", 
-"fis_comorbidity_icd_10", "time_to_off_from_adm", "time_to_drop_from_adm", 
-"age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "offense_after_adm","age_at_death", "event_death","n_post_off_vio", "n_post_off_acq", "n_post_off_sud", "n_post_off_oth", "n_post_off", "hurto", "robo", "venta_drogas", "rina", "total_vif", "otro", "tot_off_top", "edad_a_ap_top_num", "edad_b_ap_top_num", "na_top_count", "motivodeegreso_mod_imp_1", "date_ap_top")] %>% dplyr::mutate(in_study= dplyr::case_when( !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(date_ap_top)~1,T~0)), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr", "time_to_off_from_adm", "time_to_drop_from_adm", "age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "age_at_death", "n_post_off_vio", "n_post_off_acq", "n_post_off_sud", "n_post_off_oth", "n_post_off", "edad_a_ap_top_num", "edad_b_ap_top_num")), smd=T, strata="in_study", addOverall = T, includeNA=T, test=T)
-#, "min_edad_a_ap_top_num", "max_edad_a_ap_top_num"
-
-
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-invisible("Weight main differences")
-
-
-#get a matched cohort of people by polysubstance use
-#based on : La submuestra (grupo 2= 1,730) no es representativa del grupo general:
-require(MatchIt)
-require(optmatch)
-m.out3 <- MatchIt::matchit(in_study ~ edad_al_ing_1 + sex + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + policonsumo + condicion_ocupacional_corr + num_hijos_mod_joel_bin + tenencia_de_la_vivienda_mod + sus_ini_mod_mvv, 
-                  data = Base_fiscalia_v16_grant_23_24[complete.cases(Base_fiscalia_v16_grant_23_24[,c("edad_al_ing_1", "sex", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "policonsumo", "condicion_ocupacional_corr", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "sus_ini_mod_mvv")]),] %>% 
-  dplyr::mutate(in_study= dplyr::case_when( !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(date_ap_top)~1,T~0),in_study= factor(in_study)),
-                  method = "optimal", 
-                  discard = "both",
-                  #caliper = .05, 
-                  standardize = T)
-
-#https://cran.rstudio.com/web/packages/MatchIt/vignettes/matching-methods.html#optimal-pair-matching-method-optimal
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-invisible("Restrict comparison to only people in study")
-
-tbone_desc_merge5_grant_23_24_in_study<-
-CreateTableOne(vars=c(setdiff(vars_cov, "policonsumo"), "offense_after_adm"), data=  Base_fiscalia_v16_grant_23_24[,c("motivodeegreso_mod_imp_rec", "edad_al_ing_1", "sex", "edad_ini_cons", 
-"escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", 
-"condicion_ocupacional_corr", "policonsumo", "otras_sus1_mod", 
-"otras_sus2_mod", "otras_sus3_mod", "num_hijos_mod_joel_bin", 
-"tenencia_de_la_vivienda_mod", "macrozona", "n_off_vio", "n_off_acq", 
-"n_off_sud", "n_off_oth", "dg_cie_10_rec", "dg_trs_cons_sus_or", 
-"clas_r", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", 
-"fis_comorbidity_icd_10", "time_to_off_from_adm", "time_to_drop_from_adm", 
-"age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "offense_after_adm","age_at_death", "event_death","n_post_off_vio", "n_post_off_acq", "n_post_off_sud", "n_post_off_oth", "n_post_off", "hurto", "robo", "venta_drogas", "rina", "total_vif", "otro", "tot_off_top", "edad_a_ap_top_num", "edad_b_ap_top_num", "na_top_count", "motivodeegreso_mod_imp_1", "date_ap_top")] %>% dplyr::mutate(in_study= dplyr::case_when( !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(date_ap_top)~1,T~0))%>% dplyr::filter(in_study==1), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr", "time_to_off_from_adm", "time_to_drop_from_adm", "age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "age_at_death", "n_post_off_vio", "n_post_off_acq", "n_post_off_sud", "n_post_off_oth", "n_post_off", "edad_a_ap_top_num", "edad_b_ap_top_num")), smd=T, strata="policonsumo", addOverall = T, includeNA=T, test=T)
 ```
 
 -   We compared the characteristics of people who used multiple substances and those who did not in the total database between 2015 and 2019.
@@ -1627,69 +1576,6 @@ as.data.frame.TableOne(tbone_desc_merge5_grant_23_24, smd=T, nonnormal= T)%>%
   format_cells(1, 1:length(names(.)), "bold") %>%
   dplyr::select(-1) %>% 
   knitr::kable(size=10, format="markdown",caption= "Summary descriptives, Polysubstance(1) and no Polysubstance use (0)", escape=T)
-#kable(size=10, format="html",caption= "Summary descriptives, by Baseline Treatment Status") %>%     kableExtra::kable_classic()
-```
-:::
-
--   Contrasting patients in study (no ongoing or referred treatments outside SENDAs network \[n= `r length(unique(subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso"))$hash_key)) %>% format(big.mark=",")`\] and with TOP applications after treatment \[n= `r length(unique(subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top))$hash_key)) %>% format(big.mark=",")`\]) vs. all people in SENDA between 2015-2019 (n= `r length(unique(Base_fiscalia_v16_grant_23_24$hash_key))`).
-
-::: center-table
-```{r, "bring-db2-label-variables-tab-2",echo=T, results="hold"}
-as.data.frame.TableOne(tbone_desc_merge52_grant_23_24, smd=T, nonnormal= T)%>% 
-  dplyr::mutate(char2=characteristic) %>% 
-  tidyr::fill(char2) %>% 
-  dplyr::select(char2,everything()) %>% 
-  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
-  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
-  format_cells(1, 1:length(names(.)), "bold") %>%
-  dplyr::select(-1) %>% 
-  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, Inside study(1) outside study (0)", escape=T)
-#kable(size=10, format="html",caption= "Summary descriptives, by Baseline Treatment Status") %>%     kableExtra::kable_classic()
-
-#SMD>0.20
-#Primary Substance (admission to treatment) 
-#Count of TOP transgression to norms reports: any # --> is too high but not infinite because the rest of the database still contains a few cases with ongoing treatments of referrals
-#Count of missing TOP transgression to norms report # --> is too high but not infinite because the rest of the database still contains a few cases with ongoing treatments of referrals
-#Corrected Occupational Status
-#Primary Substance (initial diagnosis)
-#Time to dropout from admission (median [IQR])
-
-#SMD>0.15
-#treatment completion
-#sex
-#Frequency of Substance Use (Primary Substance) 
-#Committing an offense after admission (binary) # it not longer can be used
-
-#_#_#_#_#_#_
-
-#SMD >0.2
-#sus_ini_mod_mvv
-#sus_principal_mod 
-#condicion_ocupacional_corr 
-#tot_off_top
-
-#SMD 0.11-0.19
-#motivodeegreso_mod_imp_rec 
-#escolaridad_rec  
-#freq_cons_sus_prin 
-#dg_cie_10_rec 
-#dg_trs_cons_sus_or 
-```
-:::
-
--   Selected patients in study and contrasted those patients with and without polysubstance use at admission.
-
-::: center-table
-```{r, "bring-db2-label-variables-tab-3",echo=T}
-as.data.frame.TableOne(tbone_desc_merge5_grant_23_24_in_study, smd=T, nonnormal= T)%>% 
-  dplyr::mutate(char2=characteristic) %>% 
-  tidyr::fill(char2) %>% 
-  dplyr::select(char2,everything()) %>% 
-  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
-  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
-  format_cells(1, 1:length(names(.)), "bold") %>%
-  dplyr::select(-1) %>% 
-  knitr::kable(size=10, format="markdown",caption= "Summary descriptives, Polysubstance use(1) no polysubstance use (0)", escape=T)
 #kable(size=10, format="html",caption= "Summary descriptives, by Baseline Treatment Status") %>%     kableExtra::kable_classic()
 ```
 :::
@@ -1763,7 +1649,8 @@ rbind(
 ```{r, "bring-db3-add-survival-vars-dates-in-study",echo=T}
 rbind(
   cbind.data.frame(cat="Date of admission to baseline treatment",
-        subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)) %>% 
+        #2023-08-26: updated to only polyusers
+        subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>% 
           dplyr::summarise(min = as.Date(min(unclass(fech_ing_num_1), na.rm=T), origin = "1970-01-01"),
            p025=as.Date(quantile(unclass(fech_ing_num_1), .025, na.rm=T), origin = "1970-01-01"),
            p25=as.Date(quantile(unclass(fech_ing_num_1), .25, na.rm=T), origin = "1970-01-01"),
@@ -1772,7 +1659,8 @@ rbind(
            p975=as.Date(quantile(unclass(fech_ing_num_1), .975, na.rm=T), origin = "1970-01-01"),
            max = as.Date(max(unclass(fech_ing_num_1), na.rm=T), origin = "1970-01-01"))),
   cbind.data.frame(cat="Date of discharge of baseline treatment",
-        subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)) %>% 
+                #2023-08-26: updated to only polyusers
+        subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>% 
           dplyr::summarise(min = as.Date(min(unclass(fech_egres_num_1), na.rm=T), origin = "1970-01-01"),
            p025=as.Date(quantile(unclass(fech_egres_num_1), .025, na.rm=T), origin = "1970-01-01"),
            p25=as.Date(quantile(unclass(fech_egres_num_1), .25, na.rm=T), origin = "1970-01-01"),
@@ -1781,7 +1669,8 @@ rbind(
            p975=as.Date(quantile(unclass(fech_egres_num_1), .975, na.rm=T), origin = "1970-01-01"),
            max = as.Date(max(unclass(fech_egres_num_1), na.rm=T), origin = "1970-01-01"))),
   cbind.data.frame(cat="Date of commission of offense after admission",
-        subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)) %>% 
+                #2023-08-26: updated to only polyusers
+        subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>% 
           dplyr::summarise(min = as.Date(min(unclass(fech_egres_num_1), na.rm=T), origin = "1970-01-01"),
            p025=as.Date(quantile(unclass(fech_egres_num_1), .025, na.rm=T), origin = "1970-01-01"),
            p25=as.Date(quantile(unclass(fech_egres_num_1), .25, na.rm=T), origin = "1970-01-01"),
@@ -1790,7 +1679,8 @@ rbind(
            p975=as.Date(quantile(unclass(fech_egres_num_1), .975, na.rm=T), origin = "1970-01-01"),
            max = as.Date(max(unclass(fech_egres_num_1), na.rm=T), origin = "1970-01-01"))),
   cbind.data.frame(cat="Date of death after admission",
-        subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)) %>% 
+                #2023-08-26: updated to only polyusers
+        subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>% 
           dplyr::summarise(min = as.Date(min(unclass(date_death), na.rm=T), origin = "1970-01-01"),
            p025=as.Date(quantile(unclass(date_death), .025, na.rm=T), origin = "1970-01-01"),
            p25=as.Date(quantile(unclass(date_death), .25, na.rm=T), origin = "1970-01-01"),
@@ -1808,7 +1698,8 @@ rbind(
            p975=as.Date(quantile(unclass(date_ap_top), .975, na.rm=T), origin = "1970-01-01"),
            max = as.Date(max(unclass(date_ap_top), na.rm=T), origin = "1970-01-01"))),
   cbind.data.frame(cat="Date of birth (corrected)",
-        subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)) %>% 
+                #2023-08-26: updated to only polyusers
+        subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>% 
           dplyr::summarise(min = as.Date(min(unclass(fech_nac_rec), na.rm=T), origin = "1970-01-01"),
            p025=as.Date(quantile(unclass(fech_nac_rec), .025, na.rm=T), origin = "1970-01-01"),
            p25=as.Date(quantile(unclass(fech_nac_rec), .25, na.rm=T), origin = "1970-01-01"),
@@ -1822,19 +1713,23 @@ rbind(
 
 ### Registered deaths
 
-We checked whether there were any deaths before the application of TOP.
+We checked whether there were any deaths in people in study.
 
 ::: center-table
 ```{r, "deaths-selected-database",echo=T}
 Base_fiscalia_v16_grant_23_24 %>% 
   #restrict to cases in study
-  dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F)) %>% 
+  #2023-08-26: updated to only polyusers
+  #dplyr::filter(dplyr::case_when(!is.na(otras_sus1_mod)~T,T~F)) %>% 
   #explore patients that had recorded deaths
   dplyr::filter(hash_key %in% unlist(cause_of_adm_discharge_ndp_23_2_filt$hash_key)) %>% 
   #select dates
   dplyr::select(hash_key, fech_egres_imp_1, date_ap_top) %>%  
+  #2023-08-26, 
   #linked with data of deceased patients to contrast deaths when decease was notified
   dplyr::left_join(distinct(cause_of_adm_discharge_ndp_23_2_filt, hash_key, fecha_egreso_de_tratamiento_fmt)) %>% 
+  #dplyr::filter(dplyr::case_when(as.numeric(as.Date(fech_egres_imp_1))>as.numeric(fecha_egreso_de_tratamiento_fmt)~T,T~F)) %>% 
+  dplyr::select(-hash_key) %>% 
     knitr::kable(size=10, format="markdown",caption= "Summary descriptives, Inside study(1) outside study (0)", col.names = c("ID", "Date of discharge/dropout", "Date of TOP aplication", "Date of administrative termination (due to death)") , escape=F)
 ```
 :::
@@ -1857,7 +1752,8 @@ require(glca)
 
 mydata_preds1<- 
   #Base_fiscalia_v16_grant_23_24 %>% 
-  subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)) %>% 
+  #2023-08-26
+  subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>% 
   dplyr::select(sus_principal_mod,
       dg_trs_cons_sus_or,
       freq_cons_sus_prin,
@@ -1914,8 +1810,8 @@ f_preds2<- item(sus_principal_mod, otras_sus1_mod, otras_sus2_mod) ~ 1 #, dg_trs
 
 seed<-2125
 
-testiter <- 5000
-n_bootstrap  <- 500
+testiter <- 500
+n_bootstrap  <- 200
 
 old <- Sys.time()
 print(old)
@@ -2498,7 +2394,6 @@ CreateTableOne(vars= variables_comp,
 ```
 
 ::: center-table
-
 ```{r, "bring-db2-label-variables-tab",echo=T, results="hold"}
 as.data.frame.TableOne(tbone_desc_merge_grant_23_24, smd=T, nonnormal= T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -2546,7 +2441,6 @@ as.data.frame.TableOne(tbone_desc_merge_grant_23_24, smd=T, nonnormal= T)%>%
 # - **Reported offenses (TOP)**: Less, Class 2; More, Class 3 & 5
 ```
 :::
-
 
 **1. Class 1 Alcohol Primary, Diverse Secondary (n=160):** Primarily urban (77.5%), with a mixed representation (urban-rural setting) at 14.4%. Physical Comorbidity (ICD-10): The majority (64.4%) have a diagnosis that is under study, while 28.7% have no physical comorbidity. Age: Median age at TOP application is 36.00 years. Slightly older than the rest of groups. Substance Use Disorder (SUD) Severity: Most (76.2%) show drug dependence. Cohabitation Status: Most live with their couple or children (40.6%) or with their family of origin (36.9%). Substance Initiated With: The majority started with Alcohol (75.0%), which is higher than the rest. Also, less patients initiated with paste base. Frequency of Substance Use: Most (46.2%) use the primary substance daily. Marital Status: The majority are single (60.6%). Edducational attainment: Higher educational attainment (more than highschool).
 
