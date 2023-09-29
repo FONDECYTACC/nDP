@@ -587,10 +587,11 @@ Load the C1 data
 ```{r import-c1, message=F, error=T, eval=T, echo=T}
 path<-dirname(rstudioapi::getActiveDocumentContext()$path)
 path<-paste0(getwd())
-dir_c1<-paste0(gsub("22","19",path),"/Encriptado c1/Personas tratadas C1/")
+dir_c1<-paste0(gsub("22","19",path),"/Encriptados c1 - Minsal/")
 
 #matches a string that starts with the number 2, followed by any number of characters, followed by a space, followed by the word "txt".
-SISTRAT23_c1<-list.files(path=toString(dir_c1), pattern="202353")
+SISTRAT23_c1<-list.files(path=toString(dir_c1), pattern="^(202[0-2]_encrip\\.csv|2019oct.*\\.csv)$")
+
 
 #Import datasets from May 3, 2022
 for (i in 1:length(SISTRAT23_c1)) {
@@ -600,13 +601,13 @@ for (i in 1:length(SISTRAT23_c1)) {
                     guess_max = min(1e5, Inf)) %>% 
     janitor::clean_names() %>% 
     as.data.frame() %>% 
-    dplyr::rename("HASH_KEY"="rut") %>% 
+    dplyr::rename("HASH_KEY"="run") %>% 
     dplyr::select(HASH_KEY, everything()) %>% 
     assign(paste0("SISTRAT23_c1_",stringr::str_sub(x, 1, 4)),.,envir = .GlobalEnv)
 }
 
 #Estimate previous databases (November 13, 2019)
-SISTRAT23_c1_pre_oct19<-list.files(path=toString(dir_c1), pattern="20191113")
+SISTRAT23_c1_pre_oct19<-list.files(path=toString(dir_c1), pattern="^(201[0-8]_encrip\\.csv|2019_ene.*\\.csv)$")
 
 #Import datasets
 for (i in 1:length(SISTRAT23_c1_pre_oct19)) {
@@ -619,7 +620,7 @@ for (i in 1:length(SISTRAT23_c1_pre_oct19)) {
                     skip=0) %>% 
     janitor::clean_names() %>% 
     as.data.frame() %>% 
-    dplyr::rename("HASH_KEY" = !!names(.[92]))%>%
+    dplyr::rename("HASH_KEY" = "run")%>%
     dplyr::mutate(TABLE= rep(x,)) %>% 
     dplyr::select(TABLE, HASH_KEY, everything()) %>%       
     assign(paste0("SISTRAT23_c1_pre_",stringr::str_sub(x, 1, 4)),.,envir = .GlobalEnv)
@@ -630,7 +631,7 @@ for (i in 1:length(SISTRAT23_c1_pre_oct19)) {
                     skip=0) %>% 
     janitor::clean_names() %>% 
     as.data.frame() %>% 
-    dplyr::rename("HASH_KEY" = !!names(.[91]))%>%
+    dplyr::rename("HASH_KEY" = "run")%>%
     dplyr::mutate(TABLE= rep(x,)) %>% 
     dplyr::select(TABLE, HASH_KEY, everything()) %>%       
     assign(paste0("SISTRAT23_c1_pre_",stringr::str_sub(x, 1, 4)),.,envir = .GlobalEnv)    
@@ -643,6 +644,78 @@ CONS_C1_2019_22=data.table::rbindlist(mget(paste0("SISTRAT23_c1_",c(2019:2022)))
  dplyr::mutate(TABLE = sub(".+(....)$", "\\1", TABLE))
 
 CONS_C1_2010_19=plyr::rbind.fill(mget(paste0("SISTRAT23_c1_pre_",c(2010:2019)))) %>% 
+  data.table::data.table() %>% 
+ dplyr::mutate(TABLE = sub("^(\\d{4}).*", "\\1", TABLE))
+# data.table::rbindlist(mget(paste0("SISTRAT23_c1_pre_",c(2010:2019))), idcol="TABLE", fill=T)%>% 
+#  dplyr::mutate(TABLE = sub(".+(....)$", "\\1", TABLE))
+
+#2023-09-03: Test link with mortality data
+data<-
+  rio::import("___datos_minsal/2023-08-11 DatosDefuncionesEncrip.csv")
+ CONS_C1_2019_22 %>% 
+     dplyr::filter(HASH_KEY %in% unlist(data$HASHKEY)) %>% dplyr::filter(!HASH_KEY == "1bad6b8cf97131fceab8543e81f7757195fbb1d36b376ee994ad1cf17699c464") %>% View()
+
+```
+
+```{r import-c1-original, message=F, error=T, eval=T, echo=T}
+path<-dirname(rstudioapi::getActiveDocumentContext()$path)
+path<-paste0(getwd())
+dir_c12<-paste0(gsub("22","19",path),"/Encriptado c1/Personas tratadas C1/")
+
+#matches a string that starts with the number 2, followed by any number of characters, followed by a space, followed by the word "txt".
+SISTRAT23_c12<-list.files(path=toString(dir_c12), pattern="202353")
+
+#Import datasets from May 3, 2022
+for (i in 1:length(SISTRAT23_c12)) {
+  x<-SISTRAT23_c12[i]
+  readr::read_delim(paste0(dir_c12, x),
+                    na = c("", "NA","null"),
+                    guess_max = min(1e5, Inf)) %>% 
+    janitor::clean_names() %>% 
+    as.data.frame() %>% 
+    dplyr::rename("HASH_KEY"="rut") %>% 
+    dplyr::select(HASH_KEY, everything()) %>% 
+    assign(paste0("SISTRAT232_c1_",stringr::str_sub(x, 1, 4)),.,envir = .GlobalEnv)
+}
+
+#Estimate previous databases (November 13, 2019)
+SISTRAT23_c1_pre_oct192<-list.files(path=toString(dir_c12), pattern="20191113")
+
+#Import datasets
+for (i in 1:length(SISTRAT23_c1_pre_oct192)) {
+  x<-SISTRAT23_c1_pre_oct192[i]
+  #2019 have a special treatment because it has another registry
+  if(grepl("EneOct",x)){
+  readr::read_delim(paste0(dir_c12, x),
+                    na = c("", "NA","null"),
+                    guess_max = min(1e5, Inf),
+                    skip=0) %>% 
+    janitor::clean_names() %>% 
+    as.data.frame() %>% 
+    dplyr::rename("HASH_KEY" = !!names(.[92]))%>%
+    dplyr::mutate(TABLE= rep(x,)) %>% 
+    dplyr::select(TABLE, HASH_KEY, everything()) %>%       
+    assign(paste0("SISTRAT232_c1_pre_",stringr::str_sub(x, 1, 4)),.,envir = .GlobalEnv)
+  } else {
+  readr::read_delim(paste0(dir_c12, x),
+                    na = c("", "NA","null"),
+                    guess_max = min(1e5, Inf),
+                    skip=0) %>% 
+    janitor::clean_names() %>% 
+    as.data.frame() %>% 
+    dplyr::rename("HASH_KEY" = !!names(.[91]))%>%
+    dplyr::mutate(TABLE= rep(x,)) %>% 
+    dplyr::select(TABLE, HASH_KEY, everything()) %>%       
+    assign(paste0("SISTRAT232_c1_pre_",stringr::str_sub(x, 1, 4)),.,envir = .GlobalEnv)    
+  }
+}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#MERGE DATABASES
+CONS_C1_2019_222=data.table::rbindlist(mget(paste0("SISTRAT232_c1_",c(2019:2022))), idcol="TABLE", fill=T) %>% 
+ dplyr::mutate(TABLE = sub(".+(....)$", "\\1", TABLE))
+
+CONS_C1_2010_192=plyr::rbind.fill(mget(paste0("SISTRAT232_c1_pre_",c(2010:2019)))) %>% 
   data.table::data.table() %>% 
  dplyr::mutate(TABLE = sub("^(\\d{4}).*", "\\1", TABLE))
 # data.table::rbindlist(mget(paste0("SISTRAT23_c1_pre_",c(2010:2019))), idcol="TABLE", fill=T)%>% 

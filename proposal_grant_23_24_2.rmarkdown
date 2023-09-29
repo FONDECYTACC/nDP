@@ -1,0 +1,1951 @@
+---
+title: "Data explore & construction"
+description: |
+  Explore and construct data, descriptives, several tests of patterns of polysubstance use, and imputation of missing variables
+date: "`r format(Sys.time(),'%B %d, %Y')`"
+author: "Andrés González Santa Cruz"
+format: 
+  html:
+    code-fold: true
+editor: visual
+---
+
+```{css}
+#| echo: false
+
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+
+```
+
+```{js zoom-jquery, echo = FALSE}
+$(document).ready(function() {
+
+$('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+
+// onClick function for all plots (img's)
+
+$('img:not(.zoomImg)').click(function() {
+$('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+$('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+});
+
+// onClick function for zoomImg
+
+$('img.zoomImg').click(function() {
+$('.zoomDiv').css({opacity: '0', width: '0%'});
+});
+});
+```
+
+```{css hideOutput-lib-src, echo = FALSE}
+<script src="https://github.com/AGSCL/gine_brechas_pandemia/blob/main/hideOutput.js"></script>
+```
+
+```{js hideOutput, echo = FALSE}
+$(document).ready(function() {
+
+\$chunks = \$('.fold');
+
+\$chunks.each(function () { // add button to source code chunks
+if ( \$(this).hasClass('s') ) {
+    \$('pre.r', this).prepend("\<div class=\\"showopt\\"\>Show Source\</div\>\<br style=\\"line-height:22px;\\"/\>");
+    \$('pre.r', this).children('code').attr('class', 'folded');
+    } // add button to output chunks
+
+    if ( \$(this).hasClass('o') ) {
+        \$('pre:not(.r)', this).has('code').prepend("\<div class=\\"showopt\\"\>Show Output\</div\>\<br style=\\"line-height:22px;\\"/\>");
+        \$('pre:not(.r)', this).children('code:not(r)').addClass('folded'); // add button to plots
+        \$(this).find('img').wrap('\<pre class=\\"plot\\"\>\</pre\>');
+        \$('pre.plot', this).prepend("\<div class=\\"showopt\\"\>Show Plot\</div\>\<br style=\\"line-height:22px;\\"/\>");
+        \$('pre.plot', this).children('img').addClass('folded');
+        }
+}); // hide all chunks when document is loaded
+
+\$('.folded').css('display', 'none') // function to toggle the visibility
+\$('.showopt').click(function() {
+        var label = \$(this).html();
+        if (label.indexOf("Show") \>= 0) {
+            \$(this).html(label.replace("Show", "Hide"));
+        } else {
+        \$(this).html(label.replace("Hide", "Show"));
+        }
+
+\$(this).siblings('code, img').slideToggle('fast', 'swing');
+});
+});
+```
+
+```{=html}
+<style type="text/css">
+
+.showopt {
+
+background-color: #004c93; color: #FFFFFF; width: 100px; height: 20px; text-align: center; vertical-align: middle !important; float: right; font-family: sans-serif; border-radius: 8px;
+
+}
+
+.showopt:hover {
+background-color: #dfe4f2;
+color: #004c93;
+
+}
+
+pre.plot {
+background-color: white !important;
+}
+
+.tablelines table, .tablelines td, .tablelines th {
+border: 1px solid black;
+}
+
+.centrado {
+text-align: center;
+}
+
+.table.center {
+margin-left:auto;
+margin-right:auto;
+}
+
+/* https://vivekjaiskumar.medium.com/css-is-and-not-selector-17c942ec83f :is()*/
+
+/* Applies to outputs that are not code other than R*/
+
+pre {
+overflow-x: auto !important;
+}
+
+pre code {
+word-wrap: normal !important;
+white-space: pre !important;
+}
+
+/*
+pre:not(.sourceCode) {
+white-space: nowrap !important;
+}
+*/
+.sourceCode { /* Important gives precedence */
+font-size: 10px !important;
+line-height: 50% !important;
+}
+body{ /* Normal */
+text-align: justify;
+}
+.superbigimage{
+overflow-y:scroll;
+height:350px;
+white-space: nowrap;
+overflow-x: auto;
+width:100%;
+}
+.superbigimage img{
+overflow-y: scroll;
+overflow-x: hidden;
+}
+.message { color:#446C6E; font-family: monospace;font-size: 10px; line-height: 110%; font-weight: bold;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
+div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
+.pandoc-table { /* Should add !important; but it seems no necessary */
+margin-left:auto; /* To center */
+margin-right:auto;
+border-collapse: collapse;
+table-layout: auto;
+font-size: 11px;
+overflow-y: auto;
+max-height:450px !important;
+white-space: nowrap;
+overflow-x: auto;
+width:450px;
+}
+.pandoc-table th {/* header */
+text-align: center !important;
+font-size: 10px;
+padding: 0px;
+}
+.pandoc-table td {
+text-align: left !important;
+font-size: 9px;
+padding: 0px;
+}
+.pandoc-table caption {
+text-align: left !important;
+font-size: 11px !important;
+}
+
+.center-table {
+text-align: left !important;
+font-size: 9px;
+padding: 0px;
+overflow-y:scroll;
+height:400px;
+overflow-x: scroll;
+}
+
+.controlly{
+overflow-y:scroll;
+height:350px;
+overflow-x: scroll;
+
+}
+</style>
+```
+
+```{=html}
+<!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
+
+<script>
+function myFunction1() {
+var x = document.getElementById("myDIV");
+if (x.style.display === "none") {
+x.style.display = "block";
+} else {
+x.style.display = "none";
+}
+}
+</script>
+
+<script>
+function myFunction2() {
+var x = document.getElementById("myDIV2");
+if (x.style.display === "none") {
+x.style.display = "block";
+} else {
+x.style.display = "none";
+}
+}
+</script>
+```
+
+```{r entorno-python}
+rm(list = ls()) 
+unlink("proposal_grant_23_24_files", recursive=T)
+#fuentes: 
+#https://rpubs.com/georgy_makarov/897844
+path<-paste0(getwd(),'/env')
+
+#Sys.setenv(RETICULATE_PYTHON =  "")
+
+#Sys.setenv(RETICULATE_PYTHON =  Sys.which("python"))
+
+#reticulate::py_config()
+#use_python(paste0(path,"/Scripts/python.exe"))
+
+#Sys.setenv(LD_LIBRARY_PATH =  paste0(path,"/Lib"))
+#Sys.setenv(LD_LIBRARY_PATH_64 =  paste0(path,"/Lib"))
+#instalar paquetes de funcionalidades básicas para tener ubicaciones relativas y acceso a python (reticulate)
+if(!require(reticulate)){install.packages("reticulate")}
+if(!require(rstudioapi)){install.packages("rstudioapi")}
+
+
+invisible("Create env")
+#https://stackoverflow.com/questions/54043607/how-to-set-pyenv-python-for-reticulate
+#Directory H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/env is not a Python virtualenv
+#virtualenv_create(envname  = path, packages = c("pip", "statsmodels", "matplotlib", "numpy", "pandas", "scipy"))
+# "C:/Users/andre/anaconda3/python.exe" -m venv "H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/9_Computacion_Estadistica/env"
+
+#FUENTES:
+#https://rstudio.github.io/reticulate/articles/versions.html
+#Virtual environment functions are not supported on Windows (the use of conda environments is recommended on Windows).
+
+invisible("Use environment")
+#https://ugoproto.github.io/ugo_r_doc/pdf/reticulate.pdf
+
+
+# tx  <- readLines(paste0(path,"/pyvenv.cfg"))
+# tx[[1]] <- paste0("home = ",gsub('/', '\\', paste0(path,"/Scripts/python.exe"), fixed=T))
+# tx[[3]] <- "version = 3.8.0"
+
+#writeLines(tx, con=paste0(path,"/pyvenv.cfg"))
+
+#H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/env/Scripts/python.exe"
+#use_virtualenv(path)
+
+#usar entorno virtual ya creado
+#información sobre entorno virtual
+#py_discover_config()
+#conda_python(envname =  "r-scrublet")
+
+
+# FUENTES
+#https://akrabat.com/creating-virtual-environments-with-pyenv/
+#https://rstudio.github.io/reticulate/reference/install_python.html
+#https://github.com/pyenv/pyenv/wiki#suggested-build-environment
+#https://github.com/pyenv/pyenv
+#https://stackoverflow.com/questions/56755156/reticulate-not-setting-python-path
+#https://github.com/rstudio/reticulate/issues/291#issuecomment-437143751
+#https://github.com/pyenv/pyenv
+#https://github.com/pyenv-win/pyenv-win#installation
+#https://stackoverflow.com/questions/52060867/how-to-use-pip-for-pyenv
+#https://github.com/pyenv/pyenv/issues/2417
+```
+
+```{python, eval=F}
+!pyenv install -l | findstr 3.8
+!pip install --upgrade pyenv-win
+!env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install
+!env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.7.5
+!pyenv build
+```
+
+```{r, "load-data", eval=T}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+# `r format(Sys.time(),'%B %d, %Y')`
+
+# Data import
+
+#Load the data from Mariel Fiscalia Merge 4, created on 2023-05-26
+#load("14.Rdata", data_mariel_fisc_merge4 <- new.env() )
+load("an_grant_23_24.RData")
+
+# List all of the objects names in RData:
+#ls(.GlobalEnv)
+#ls(new_environment)
+#rm(new_environment)
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+```
+
+
+<br>
+
+## Packages
+
+
+```{r}
+#| message: false
+#| include: false
+#| warning: false
+
+# limpiar completamente el entorno global environment
+
+#Para importar bases
+if(!require(rio)){install.packages("rio")}
+#Para manipular bases de datos
+if(!require(tidyverse)){install.packages("tidyverse")}
+if(!require(tidylog)){install.packages("tidylog")}
+if(!require(sqldf)){install.packages("sqldf")}
+
+#Para tabla 1
+if(!require(tableone)){install.packages("tableone")}
+if(!require(compareGroups)){install.packages("compareGroups")}
+if(!require(Hmisc)){install.packages("Hmisc")}
+if(!require(kableExtra)){install.packages("kableExtra")}
+if(!require(DT)){install.packages("DT")}
+#Para modelos de regresión
+if(!require(jtools)){install.packages("jtools")}
+#Para cargar paquetes
+if(!require(pacman)){install.packages("pacman")}
+#Para imputar, cargo los paqeutes con la función p_load, y en caso que no encuentre dicho paquete, instalo
+pacman::p_load(missRanger, missForest, install=T)
+#glca
+if(!require(glca)){install.packages("glca")}
+if(!require(poLCA)){install.packages("poLCA")}
+#plots
+if(!require(plotly)){install.packages("plotly")}
+if(!require(easyalluvial)){install.packages("easyalluvial")}
+if(!require(parcats)){install.packages("parcats")}
+
+######0.C. functions------------------
+
+read_excel_mult <- function(dir, filename) {
+  assign(paste0(substr(filename, 1, 7)),read.delim(paste0(dir, filename),
+        na.strings="null", header = T, fileEncoding="UTF-8"),envir = .GlobalEnv)
+  }
+
+#function to copy names
+copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,...) {
+  write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+  return(x)}
+
+#function to save datasets in excel files (x=object to change; y=name of the excel file)
+guardar_tablas <- function (x,y) {writexl::write_xlsx(as.data.frame(x, keeprownames= T),paste0(y,".xlsx"))}
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#to format rows in bold
+format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethrough")){
+
+  # select the correct markup
+  # one * for italics, two ** for bold
+  map <- setNames(c("*", "**", "~~"), c("italics", "bold", "strikethrough"))
+  markup <- map[value]  
+
+  for (r in rows){
+    for(c in cols){
+
+      # Make sure values are not factors
+      df[[c]] <- as.character( df[[c]])
+
+      # Update formatting
+      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, gsub(" ", "", df[r, c]), markup))
+    }
+  }
+
+  return(df)
+}
+#To produce line breaks in messages and warnings
+knitr::knit_hooks$set(
+   error = function(x, options) {
+     paste('\n\n<div class="alert alert-danger">',
+           gsub('##', '\n', gsub('^##\ Error', '**Error**', x)),
+           '</div>', sep = '\n')
+   },
+   warning = function(x, options) {
+     paste('\n\n<div class="alert alert-warning">',
+           gsub('##', '\n', gsub('^##\ Warning:', '**Warning**', x)),
+           '</div>', sep = '\n')
+   },
+   message = function(x, options) {
+     paste('<div class="message">',
+           gsub('##', '\n', x),
+           '</div>', sep = '\n')
+   }
+)
+```
+
+
+<br>
+
+# GLCA
+
+-   We omitted individuals who used only one substance.
+
+-   We categorized each reported substance as licit (e.g., Alcohol), illicit (all other substances), or none (not reported).
+
+-   We discarded substances labeled as "Other" because they could not be distinguished between licit and illicit substances.
+
+-   Frequency of use were classified into no weekly use (Less than 1 day a week), non-daily use (1 to 3 days a week), and daily/near daily use or the equivalent of 4 or more times a week (+4 days a week and Daily) (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7984420/ & https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8855705/).
+
+::: controlly
+
+```{r, "glca00"}
+require(glca)
+
+mydata_preds1a<- 
+  #2023-09-03
+  subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>% 
+  dplyr::select(sus_principal_mod,
+      dg_trs_cons_sus_or,
+      freq_cons_sus_prin,
+      otras_sus1_mod,
+      otras_sus2_mod) %>%  
+  data.table::data.table()
+
+mydata_preds2a_pre <- mydata_preds1a%>% dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(is.na(.)~ "none", T~ .))) %>% 
+  #2023-09-03: Elminated Other substances
+  dplyr::filter(!sus_principal_mod=="Other",  !otras_sus1_mod=="Other", !otras_sus2_mod=="Other")%>% 
+  #2023-09-03: licit / illicit
+  dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod"), ~ dplyr::case_when(.=="Alcohol"~ 2, . %in% c("Cocaine hydrochloride", "Cocaine paste", "Marijuana")~ 3, .=="none"~ 1,  T~ 0))) 
+
+mydata_preds2a <-mydata_preds2a_pre %>% 
+    #2023-09-04: frequency and diagnosis
+dplyr::mutate(freq_cons_sus_prin= dplyr::case_when(freq_cons_sus_prin== "none"~1, grepl("Less than 1 day a week",freq_cons_sus_prin)~2, grepl("1 day a week or more|2 to 3 days a week",freq_cons_sus_prin)~3, grepl("Daily|4 to 6 days a week",freq_cons_sus_prin)~ 4,  T~ 0)) %>%
+dplyr::mutate(dg_trs_cons_sus_or= dplyr::case_when(dg_trs_cons_sus_or== "none"~1, grepl("Hazardous consumption",dg_trs_cons_sus_or)~2, grepl("Drug dependence",dg_trs_cons_sus_or)~3, T~ 0))
+    
+#test
+#table(mydata_preds2a_pre$dg_trs_cons_sus_or, mydata_preds2a$dg_trs_cons_sus_or, exclude=NULL)
+#table(mydata_preds2a_pre$freq_cons_sus_prin, mydata_preds2a$freq_cons_sus_prin, exclude=NULL)
+
+#Count of substances
+dplyr::group_by(mydata_preds2a,sus_principal_mod, otras_sus1_mod, otras_sus2_mod) %>%  
+  count() %>%
+  dplyr::ungroup() %>%  
+  arrange(desc(n)) %>% 
+  dplyr::mutate(perc= scales::percent(round(n/sum(n),2))) %>% 
+  dplyr::filter(n>0) %>% 
+    dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod"), ~ dplyr::case_when(.==1~"None (1)", .==2~ "Licit (2)", .==3~ "Illicit (3)"))) %>% 
+  knitr::kable("markdown", caption="Combinations of substances", col.names= c("Primary substance", "Other substances (1)", "Other substances (2)","n", "%"))
+```
+
+:::
+
+
+```{r, "glca01-licit"}
+first_five_a<-
+dplyr::group_by(mydata_preds2a,sus_principal_mod, otras_sus1_mod, otras_sus2_mod) %>%  count() %>% dplyr::ungroup() %>%  arrange(desc(n)) %>%  dplyr::filter(n>0, !"none"==otras_sus1_mod) %>% slice(1:5) %>% summarise(sum(n))/nrow(mydata_preds2a) %>% unlist() %>% as.numeric(.)
+
+paste0("The first four (there is one that is exchangeable) make the ", 
+       as.character(scales::percent(unlist(first_five_a))),
+       " of the sample")
+```
+
+
+-   We made a latent class analysis with only substances.
+
+::: controlly
+
+```{r, "glca02-licit", results="hold"}
+dplyr::group_by(mydata_preds2a,sus_principal_mod, otras_sus1_mod, otras_sus2_mod) %>%  count() %>% dplyr::ungroup() %>%  arrange(desc(n)) %>% dplyr::mutate(perc= scales::percent(round(n/sum(n),2))) %>% dplyr::filter(n>0) %>% knitr::kable("markdown", caption="Combinations of substances", col.names= c("Primary substance", "Other substances (1)", "Other substances (2)", "n", "%")) 
+
+mydata_preds3a <- mydata_preds2a%>% 
+    data.table::data.table()
+  #2023-08-20. We cannot discard none categories for drug use patterns, but we can do it for drug dependence diagnosis and drug use frequency
+  #dplyr::filter(!dg_trs_cons_sus_or==1) %>%  
+  #dplyr::filter(!freq_cons_sus_prin==1) %>%  
+  
+```
+
+:::
+
+
+```{r, "glca1-licit"}
+invisible("glca format")
+# We excluded otras_sus3_mod because it had only one value
+f_preds3<- item(sus_principal_mod, otras_sus1_mod, otras_sus2_mod, dg_trs_cons_sus_or, freq_cons_sus_prin) ~ 1 #, 
+
+seed<-2125
+
+testiter <- 500*1.5
+n_bootstrap  <- 200
+max_lca3   <- 8
+
+old <- Sys.time()
+print(old)
+
+lca302 <- glca(f_preds3, data = mydata_preds3a, nclass = 2, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+#43 minutes each more or less
+lca303 <- glca(f_preds3, data = mydata_preds3a, nclass = 3, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca304 <- glca(f_preds3, data = mydata_preds3a, nclass = 4, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca305 <- glca(f_preds3, data = mydata_preds3a, nclass = 5, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca306 <- glca(f_preds3, data = mydata_preds3a, nclass = 6, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca307 <- glca(f_preds3, data = mydata_preds3a, nclass = 7, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca308 <- glca(f_preds3, data = mydata_preds3a, nclass = 8, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+
+gof3<-
+  gofglca(lca302, lca303, lca304, lca305, lca306, lca307, lca308, test = "chisq")
+
+bootlrt3<-
+gofglca(lca302, lca303, lca304, lca305, lca306, lca307, lca308, test = "boot", nboot= n_bootstrap, seed=2125) 
+
+best_model_lca3<-
+as.numeric(cbind.data.frame(rn=2:max_lca3,gof3$gtable) %>% dplyr::summarise(which.min(BIC)+1))
+
+new_med<-(Sys.time())
+paste0("The model took ",round(new_med-old,2)," until every LCA was computed")
+print(new_med)
+```
+
+```{r, "glca2-licit", fig.cap= "Elbow plot of the information criteria"}
+# https://agscl.github.io/IVE/
+sabic<-c()
+for( i in seq(2,max_lca3)){
+  
+  sabic<-c(sabic,
+(-2 * get(paste0("lca3",sprintf("%02.f", i)))$gof$loglik)+ get(paste0("lca3",sprintf("%02.f", i)))$gof$df *log(  (nrow(mydata_preds3) +2)/24    )
+)
+}
+manualcolors <- c('indianred1', 'cornflowerblue', 'gray50', 'darkolivegreen4', 'slateblue2', 
+                  'firebrick4', 'goldenrod4')
+levels4 <- c("logLik", "AIC", "CAIC", "BIC", "entropy", "Res.Df", "Gsq", "SABIC")
+labels4 <- c('Log-Likelihood', 'Akaike Information\nCriteria(AIC)','Corrected AIC','Bayesian Information\nCriteria (BIC)', 'Entropy', 'Residual degrees of freedom', 'Deviance', "SABIC")
+
+fig_lca_fit3<- cbind.data.frame(rn=2:max_lca3,gof3$gtable,SABIC=sabic) %>%
+  data.frame() %>% 
+  dplyr::mutate_if(is.character, as.numeric) %>%  # convert character columns to numeric
+  tidyr::pivot_longer(cols = -rn,names_to = "indices", values_to = "value", values_drop_na = F) %>%
+  dplyr::mutate(indices = factor(indices, levels = levels4, labels = labels4)) %>%
+  dplyr::filter(grepl("(AIC|BIC)",indices, ignore.case=T))%>%
+  dplyr::mutate(ModelIndex= factor(rn, levels=2:max_lca3)) %>% 
+  ggplot(aes(x = ModelIndex, y = value, group = indices, color = indices, linetype = indices)) +
+  geom_line(linewidth = 1.5) +
+  scale_color_manual(values = manualcolors) +
+  #scale_linetype_manual(values = c("solid", "dashed", "dotted")) +
+  labs(x = "Number of classes", y="Value", color="Measure", linetype="Measure")+
+  #facet_wrap(.~indices, scales = "free_y", nrow = 4, ncol = 1) +
+  theme_bw()
+
+fig_lca_fit3
+```
+
+
+The best fit was obtained by the `r which.min(gof3$gtable[,4])+1` class solution
+
+::: controlly
+
+```{r, "glca3-licit", echo=FALSE}
+summary(eval(parse(text = paste0("lca30",best_model_lca3)))) #
+
+best_model_glca3<- eval(parse(text = paste0("lca30",best_model_lca3))) 
+
+#rm(list = ls());gc()
+cbind.data.frame(rn=2:max_lca3,gof3$gtable,SABIC=sabic) %>%
+    data.frame() %>% 
+    dplyr::mutate_if(is.character, as.numeric) %>%#
+  dplyr::left_join(cbind.data.frame(rn=2:max_lca3,dplyr::select(data.frame(bootlrt3$gtable),  Boot.p.value)), by=c("rn")) %>% 
+  janitor::clean_names() %>% 
+  dplyr::mutate_if(is.numeric, ~round(.,2)) %>% 
+  # convert character columns to numeric
+    knitr::kable(format="markdown", caption="Medidas de ajuste (dividir por 1000 gsq_2)")
+```
+
+:::
+
+::: controlly
+
+```{r glca4-licit-fig1-details, echo=T, fig.align='center', fig.pos='H', fig.cap= "Selected Model", message=FALSE, error=T, eval=T}
+#https://rdrr.io/cran/glca/src/R/plot.glca.R
+plot(eval(parse(text = paste0("lca30",best_model_lca3))), ask=F)
+```
+
+:::
+
+The following steps were involved in the following code:
+
+-   Analysis of the best LCA model's parameter estimates.
+-   Visualization of the probabilities of different responses across categories.
+-   Extract the parameter 'rho' from the best model.
+-   Transform and format the extracted data for visualization.
+-   Read a correction table (`traductor_cats3`) for categories.
+-   Merge the model data with the correction table.
+-   The data is visualized using a ggplot2 stacked bar chart.
+-   Categories are represented with varying shades of grey.
+-   Each bar represents a variable from the model, and the sections of the bar represent the probability of each category for that variable.
+-   The bars are split by 'class' with the use of facets.
+-   The processed data (`lcmodel_glca3`) containing variables and their probabilities across different categories is saved to an Excel file named `variables_probabilities_in_category_glca_licit_ilicit.xlsx`
+-   The model's parameters allow a deeper understanding of the probabilities across categories for different variables. The visualization provides a holistic view of the data for quick insights. The processed data is readily available for any further analysis or sharing.
+
+
+```{r glca4-licit-fig2-Comparison, echo=T, fig.align='center', fig.pos='H', fig.cap= "Selected Model", message=FALSE, error=T, eval=T}
+#table(mydata_preds3a$sus_principal_mod)
+rho_glca3<- 
+do.call("bind_rows",best_model_glca3$param$rho$ALL) %>% 
+  t() %>% 
+  round(2) %>% 
+  data.table::data.table(keep.rownames = T) %>% 
+  magrittr::set_colnames(c("variables", paste0("Class",1:length(best_model_glca3$param$gamma)))) %>% 
+  tidyr::separate(variables, into=c("var", "prob"), sep=".Y =")
+
+lcmodel_glca3 <- reshape2::melt(rho_glca3, level=2) %>% dplyr::rename("class"="variable")
+
+#test the number of categories
+#table(mydata_preds3a$sus_principal_mod)
+#table(mydata_preds3a$otras_sus1_mod)
+
+traductor_cats3 <-
+cbind.data.frame(
+var= c(rep("sus_principal_mod",3), rep("otras_sus1_mod",3), rep("otras_sus2_mod",3), rep("freq_cons_sus_prin",4), rep("dg_trs_cons_sus_or",3)),
+lvl= c(rep(c(1, 2, 3),3),1:4,1:3),
+label= c(rep(c("none","Licit", "Illicit"),3), c("none", "Less than one day a week", "1 to 3 days a week", "4+ days a week"), c("none", "Hazardous consumption", "Drug dependence"))
+) %>% 
+  dplyr::group_by(var) %>% 
+  dplyr::mutate(n=n()) %>% 
+  dplyr::ungroup() %>% 
+  #restricted the levels of the manifest variables to those that were available
+  dplyr::filter(dplyr::case_when(var=="sus_principal_mod" & !lvl %in% as.numeric(attr(table(mydata_preds3a$sus_principal_mod),"dimnames")[[1]])~ F, T~T )) %>% 
+  dplyr::filter(dplyr::case_when(var=="otras_sus1_mod" & !lvl %in% as.numeric(attr(table(mydata_preds3a$otras_sus1_mod),"dimnames")[[1]])~ F, T~T )) %>% 
+  dplyr::filter(dplyr::case_when(var=="otras_sus2_mod" & !lvl %in% as.numeric(attr(table(mydata_preds3a$otras_sus2_mod),"dimnames")[[1]])~ F, T~T )) %>% 
+  dplyr::filter(dplyr::case_when(var=="freq_cons_sus_prin" & !lvl %in% as.numeric(attr(table(mydata_preds3a$freq_cons_sus_prin),"dimnames")[[1]])~ F, T~T )) %>% 
+  dplyr::filter(dplyr::case_when(var=="dg_trs_cons_sus_or" & !lvl %in% as.numeric(attr(table(mydata_preds3a$dg_trs_cons_sus_or),"dimnames")[[1]])~ F, T~T )) %>% 
+  dplyr::group_by(var) %>% 
+  dplyr::mutate(lvl2=row_number()) %>% 
+  dplyr::ungroup()
+  
+lcmodel_glca3<- lcmodel_glca3 %>% 
+  dplyr::mutate(pr=as.numeric(gsub("[^0-9.]+", "", prob))) %>% 
+  dplyr::left_join(traductor_cats3[,c("var", "lvl2", "label")], by= c("var"="var", "pr"="lvl2"))  
+  #dplyr::mutate(CATEGORIA= dplyr::case_when(var=="AÑO" & prob==" 1"~"Perdidos", T~CATEGORIA))
+
+lcmodel_glca3$text_label<-paste0("",lcmodel_glca3$label,"<br>%: ",scales::percent(lcmodel_glca3$value))
+
+lcmodel_glca3$text_label2<-paste0("",lcmodel_glca3$label,"\n ",scales::percent(lcmodel_glca3$value))
+
+zp33 <- ggplot(lcmodel_glca3,aes(x = factor(var, levels=c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","freq_cons_sus_prin","dg_trs_cons_sus_or"), labels= c("Primary\nsubstance", "Other\nsubs(1)", "Other\nsubs(2)","Freq.Subs.Use","Dg.Subs.Dep")), y = value, fill = factor(pr), label=text_label))
+zp33 <- zp33 + geom_bar(stat = "identity", position = "stack")
+zp33 <- zp33 + facet_grid(class ~ .) 
+zp33 <- zp33 + scale_fill_brewer(type="seq", palette="Greys", na.value = "white") +theme_bw()
+zp33 <- zp33 + labs(y = "Response probabilities", 
+                  x = "",
+                  fill ="Respone/ncategories")
+zp33 <- zp33 + theme( axis.text.y=element_blank(),
+                    axis.ticks.y=element_blank(),                    
+                    panel.grid.major.y=element_blank())
+zp33 <- zp33 + guides(fill = guide_legend(reverse=TRUE))
+zp33 <- zp33 + theme(axis.text.x = element_text(angle = 30, hjust = 1))+
+    theme(legend.position= "none")
+
+ggplotly(zp33, tooltip = c("text_label"))%>% plotly::layout(xaxis= list(showticklabels = T),height=600, width=800)
+
+ggsave("_fig3_LCA_distribuciones_glca_licit_ilicit.png",zp33, dpi= 600)
+
+lcmodel_glca3 %>% rio::export("variables_probabilities_in_category_glca_licit_ilicit.xlsx")
+
+
+zp33b <- ggplot(lcmodel_glca3,aes(x = factor(var, levels=c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","freq_cons_sus_prin","dg_trs_cons_sus_or"), labels= c("Primary\nsubstance", "Other\nsubs(1)", "Other\nsubs(2)","Freq.Subs.Use","Dg.Subs.Dep")), y = value, fill = factor(pr), label=text_label2))
+zp33b <- zp33b + geom_bar(stat = "identity", position = "stack")
+zp33b <- zp33b + facet_grid(class ~ .) 
+zp33b <- zp33b + scale_fill_brewer(type="seq", palette="Greys", na.value = "white") +theme_bw()
+zp33b <- zp33b + labs(y = "Response probabilities", 
+                  x = "",
+                  fill ="Respone/ncategories")
+zp33b <- zp33b + scale_fill_manual(values=paste0("grey",seq(20,80, by=60/6))) +theme_bw()
+zp33b <- zp33b + theme( axis.text.y=element_blank(),
+                    axis.ticks.y=element_blank(),                    
+                    panel.grid.major.y=element_blank())
+zp33b <- zp33b + guides(fill = guide_legend(reverse=TRUE))
+zp33b <- zp33b + theme(axis.text.x = element_text(angle = 30, hjust = 1))+
+    theme(legend.position= "none")
+ggsave("zp33b.png", 
+       zp33b+ ggrepel::geom_label_repel(#aes(#y=half, label=lab),
+            position = position_stack(vjust = 0.5),
+              size = 3,
+            max.iter = 1e6,
+            colour = "white", fontface = "bold")+ theme(legend.position= "none"), 
+  height=13)#, fill = "white" --> dentro de label repel
+
+
+lcmodel_glca3 %>% dplyr::select( class, var, label, value) %>% rio::export("tab_cond_pr_licit_illicit.xlsx")
+```
+
+
+For ease of interpretation, we summarized the main characteristics of each class based on the probabilities provided:
+
+-   **1. Hazardous, Frequent Primary Licit Substance Use with Secondary Illicit Substance**: Patients who primarily use a legal or licit substance in a manner that is considered hazardous and also consumes an illicit drug.
+
+-   **2. Dependence on, and Very Frequent Licit Substance Use with Secondary Illicit Substance**: Individuals dependent on a legal substance which they use very frequently, and they also use an illicit substance.
+
+-   **3. Mixed Dependence, Frequent Broad-Spectrum Illicit Substance Use**: Patients with mixed dependence symptoms and use a wide range of illegal drugs frequently.
+
+-   **4. Dependence on, and Very Frequent Illicit Substance Use with Secondary and Tertiary Mixed Substance Use**: Patients dependent on and frequently use an illicit substance and also use another illicit drug. Additionally, they have a mixed pattern of using a third set of substances.
+
+-   **5. Dependence on, and Very Frequent Illicit Substance Use with Secondary Licit and Tertiary Mixed (Illicit vs. Absence) Substance Use**: Patients who are dependent on an illicit drug which they use very often. They also use a licit substance and have a mixed pattern of using a third set of substances, alternating between illicit use and absence of use.
+
+-   **6. Hazardous, Frequent Illicit Substance Use with Secondary Licit Substance**: Patients who use an illegal drug frequently in a hazardous manner and also use a legal substance.
+
+(For more info, see this [link](https://chat.openai.com/share/ca7a6658-7bbc-4d43-972a-1fc0a20179b3))
+
+
+```{r, "glca4-licit-posterior-probs"}
+#_#_#_#_#_#_#_#_#_#_#_
+
+#Classifying by posterior probs.
+posterior_glca3_05_final<-
+best_model_glca3$posterior$ALL %>% 
+    dplyr::mutate_all(~ifelse(.>.5,1,0)) %>% 
+  dplyr::mutate(final_05=dplyr::case_when(`Class 1`==1~1,`Class 2`==1~2, `Class 3`==1~3,`Class 4`==1~4, `Class 5`==1~5, `Class 6`==1~6))
+
+posterior_glca3_07_final<-
+best_model_glca3$posterior$ALL %>% 
+    dplyr::mutate_all(~ifelse(.>.7,1,0)) %>% 
+  dplyr::mutate(final_07=dplyr::case_when(`Class 1`==1~1,`Class 2`==1~2, `Class 3`==1~3,`Class 4`==1~4, `Class 5`==1~5, `Class 6`==1~6))
+
+#Unite the posterior probabilities with the original database
+bd_mydata_preds3_posterior3<-
+cbind.data.frame(mydata_preds3a,final_07=posterior_glca3_07_final$final_07,final_05=posterior_glca3_05_final$final_05)
+
+sum_prob_post<-
+table(bd_mydata_preds3_posterior3$final_05, 
+      bd_mydata_preds3_posterior3$final_07,exclude=NULL) %>%
+    data.frame() %>%
+    dplyr::filter(Freq>0) %>% 
+    dplyr::mutate(Perc= scales::percent(Freq/sum(Freq))) %>% 
+    dplyr::arrange(desc(Var2), Var1,desc(Freq)) %>% 
+    dplyr::filter(!is.na(Var2)) %>% 
+  summarise(sum=sum(parse_number(Perc)))
+
+#Determining misclassification
+table(bd_mydata_preds3_posterior3$final_05, 
+      bd_mydata_preds3_posterior3$final_07,exclude=NULL) %>%
+  data.frame() %>%
+  dplyr::filter(Freq>0) %>% 
+  dplyr::mutate(Perc= scales::percent(Freq/sum(Freq))) %>% 
+  dplyr::arrange(desc(Var2), Var1,desc(Freq)) %>% 
+knitr::kable("markdown", caption="Posterior probabilities of Classification", 
+             col.names= c("Classifying w/ .5", "Classifying w/ .7", "Frequency", "%"))
+```
+
+
+When using classification criteria based on the model output, if at least 50% of an observation's posterior probability is accounted for by a particular class, only 1.52% of the patients remain unclassified. However, if we raise this threshold to 70%, then `r 100-sum_prob_post`% of the patients would not be assigned to any latent class. This observation aligns with relative entropy principles.
+
+
+```{r glca5-alluvial, echo=T, error=T, paged.print=TRUE, fig.height=9, error=T, dpi=500, fig.cap="Figure 2. Sankey Plot of Transitions by Treatment Modality"}
+require(easyalluvial)
+require(parcats)
+
+p_alluvial3<-
+  cbind.data.frame(subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>%  dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(is.na(.)~ "none", T~ .))) %>% dplyr::filter(!sus_principal_mod=="Other",  !otras_sus1_mod=="Other", !otras_sus2_mod=="Other"),
+final_07=posterior_glca3_07_final$final_07, final_05=posterior_glca3_05_final$final_05) %>%
+  dplyr::mutate(event_comp= factor(event_comp, levels=c(1,0), labels=c("Completion", "Non-completion"))) %>% 
+  dplyr::mutate(final_05=factor(final_05, labels=c("C1: Hazardous Licit Usen\n+ Secondary Illicit", "C2: Dependent Frequent Licit\n+ Secondary Illicit", "C3: Mixed Dependence\n+ Broad Illicit Use", "C4: Dependent Frequent Illicit\n+ Mixed Secondary/Tertiary", "C5: Dependent Frequent Illicit\n+ Secondary Licit\n& Mixed Tertiary", "C6: Hazardous Frequent Illicit\n+ Secondary Licit"))) %>% 
+  dplyr::select(
+    #sus_principal_mod,
+    #  otras_sus1_mod,
+    #  otras_sus2_mod,
+    final_05,
+      event_comp) %>%  
+      easyalluvial::alluvial_wide(
+                  bin=2,
+                  bin_labels = c("ambulatory", "residential"),
+                  order_levels= c("ambulatory", "residential","censored"),
+                  fill_by = 'first_variable',
+                  NA_label = "non-classified",
+                  auto_rotate_xlabs = T,
+                  stratum_label_size = 3,
+                   colorful_fill_variable_stratum = F)+
+  theme_void()
+p_alluvial3
+ggsave("glca_res_comp_off_licit_illicit.png", 
+       p_alluvial3, 
+  height=13)#, fill = "white" --> dentro de label repel
+```
+
+
+#### Covariate: Tr. completion
+
+-   Adjusting by treatment completion status
+
+
+```{r, "glca6-licit-regressed"}
+mydata_preds323<-
+    cbind.data.frame(subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>%  dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(is.na(.)~ "none", T~ .))) %>% dplyr::filter(!sus_principal_mod=="Other",  !otras_sus1_mod=="Other", !otras_sus2_mod=="Other"),
+    final_07=posterior_glca3_07_final$final_07, final_05=posterior_glca3_05_final$final_05,
+    mydata_preds3a) %>%
+  janitor::clean_names() %>% 
+      dplyr::mutate(event_comp= factor(event_comp, levels=c(1,0), labels=c("Completion", "Non-completion"))) %>% 
+      dplyr::mutate(final_05=factor(final_05, labels=c("C1: Hazardous Licit Usen\n+ Secondary Illicit", "C2: Dependent Frequent Licit\n+ Secondary Illicit", "C3: Mixed Dependence\n+ Broad Illicit Use", "C4: Dependent Frequent Illicit\n+ Mixed Secondary/Tertiary", "C5: Dependent Frequent Illicit\n+ Secondary Licit\n& Mixed Tertiary", "C6: Hazardous Frequent Illicit\n+ Secondary Licit")))
+
+
+f_preds23_adj<- item(sus_principal_mod_2, otras_sus1_mod_2, otras_sus2_mod_2, dg_trs_cons_sus_or_2, freq_cons_sus_prin_2) ~ event_comp 
+
+lca3062 <- glca(f_preds23_adj, data = mydata_preds323, nclass = 6, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4, testiter = testiter)
+
+gof_lca_adj<- gofglca(lca3062, test="boot", nboot=n_bootstrap, seed=2125)
+
+
+df_lca3062<-
+  data.frame(coef(lca3062)) %>% rownames_to_column("term") %>% janitor::clean_names() %>% 
+    rownames_to_column("rowname") %>%
+    gather(key = "key", value = "value", -rowname) %>%
+    spread(key = "rowname", value = "value") %>% 
+    set_names(as.character(unlist(tail(., 1)))) %>% 
+    slice(-n()) %>% 
+    dplyr::mutate(term=strsplit(sub('^(.*?_.*?_.*?)_(.*)$', '\\1,\\2', term), ',')) %>% 
+separate(col=term,into = c("prefix", "suffix"),  sep = ", ", extra = "merge") %>% 
+  dplyr::mutate(across(c("prefix", "suffix"), ~gsub('\\(|"|\\)', "", .)))
+
+
+df_lca30622<-
+df_lca3062%>%
+  dplyr::filter(suffix == "coefficient" | suffix == "std_error") %>%
+  pivot_wider(names_from=suffix, values_from = c("(Intercept)", "event_compNon-completion")) %>%
+  dplyr::mutate_at(2:5, ~as.numeric(.)) %>% 
+  dplyr::mutate(
+    lower_log_or_int = `(Intercept)_coefficient` - 1.96 * `(Intercept)_std_error`,
+    upper_log_or_int = `(Intercept)_coefficient` + 1.96 * `event_compNon-completion_std_error`,
+    lower_log_or_comp = `event_compNon-completion_coefficient` - 1.96 * `event_compNon-completion_std_error`,
+    upper_log_or_comp = `event_compNon-completion_coefficient` + 1.96 * `event_compNon-completion_std_error`) %>%
+  dplyr::rename("int_coef"="(Intercept)_coefficient", "int_std_error"="(Intercept)_std_error", "comp_coef"="event_compNon-completion_coefficient","comp_std_error"="event_compNon-completion_std_error") %>% 
+  dplyr::select(prefix,#t_coef int_std_error comp_coef comp_std_error 
+                int_coef, int_std_error, comp_coef, comp_std_error, 
+                lower_log_or_int, upper_log_or_int, lower_log_or_comp, upper_log_or_comp)
+
+# List of call classes
+call_classes <- c("call_class1_6", "call_class2_6", "call_class3_6", "call_class4_6", "call_class5_6")
+# Use map_df to loop through each call class and apply the summarise logic
+#Long, S. and Freese, J. (2014) Regression Models for Categorical Dependent Variables Using Stata. 3rd Edition, Stata Press, College Station.
+#https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9041638/ #eq 3
+#$\frac{exp(\alpha+\sum_{k=1}^{K}\beta_{mk}X_{ik})}{1+exp(\alpha+\sum_{k=1}^{K}\beta_{mk}X_{ik})}$
+#https://www3.nd.edu/~rwilliam/stats3/Mlogit1.pdf
+result <- map_df(call_classes, ~ {
+  df_lca30622 %>%
+    dplyr::mutate(int_comp_coef=int_coef+comp_coef) %>% 
+    dplyr::summarise(call_class = .x,
+                     nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                     den = sum(exp(int_comp_coef)),
+                     prob = nom/(1+den))
+})
+
+result_lo <- map_df(call_classes, ~ {
+    df_lca30622 %>%
+        dplyr::mutate(int_comp_coef=lower_log_or_int+lower_log_or_comp) %>% 
+        dplyr::summarise(call_class = .x,
+                         nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                         den = sum(exp(int_comp_coef)),
+                         prob = nom/(1+den))
+})
+
+result_hi <- map_df(call_classes, ~ {
+    df_lca30622 %>%
+        dplyr::mutate(int_comp_coef=upper_log_or_int+upper_log_or_comp) %>% 
+        dplyr::summarise(call_class = .x,
+                         nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                         den = sum(exp(int_comp_coef)),
+                         prob = nom/(1+den))
+})
+
+result_int <- map_df(call_classes, ~ {
+  df_lca30622 %>%
+    dplyr::mutate(int_comp_coef=int_coef) %>% 
+    dplyr::summarise(call_class = .x,
+                     nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                     den = sum(exp(int_comp_coef)),
+                     prob = nom/(1+den))
+})
+
+result_int_lo <- map_df(call_classes, ~ {
+    df_lca30622 %>%
+        dplyr::mutate(int_comp_coef=lower_log_or_int) %>% 
+        dplyr::summarise(call_class = .x,
+                         nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                         den = sum(exp(int_comp_coef)),
+                         prob = nom/(1+den))
+})
+
+result_int_hi <- map_df(call_classes, ~ {
+    df_lca30622 %>%
+        dplyr::mutate(int_comp_coef=upper_log_or_int) %>% 
+        dplyr::summarise(call_class = .x,
+                         nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                         den = sum(exp(int_comp_coef)),
+                         prob = nom/(1+den))
+})
+
+
+df_lca30622_probs<-
+cbind.data.frame(
+est_int=c(result_int$prob, 1/(1+unique(result_int$den))),
+lo_int=c(result_int_lo$prob, 1/(1+unique(result_int_lo$den))),
+hi_int=c(result_int_hi$prob, 1/(1+unique(result_int_hi$den))),
+est=c(result$prob, 1/(1+unique(result_int$den))),
+lo=c(result_lo$prob, 1/(1+unique(result_int_lo$den))),
+hi=c(result_hi$prob, 1/(1+unique(result_int_hi$den))))*100
+
+
+knitr::kable(df_lca30622_probs, size=10, format="html",caption= "Predicted membership to Latent classes, according to Completion or Non-completion of treatment", digits=2) %>% 
+kableExtra::kable_classic() %>% 
+kableExtra::scroll_box(width = "100%", height = "400px")
+
+
+f <- cbind(sus_principal_mod_2, otras_sus1_mod_2, otras_sus2_mod_2, dg_trs_cons_sus_or_2, freq_cons_sus_prin_2) ~ event_comp 
+gss.lc2 <- poLCA(f,mydata_preds323,nclass=6, nrep= testiter, maxiter= 1e5, verbose=F, calc.se=T)
+gss.lc2$eflag
+invisible("no llegan a lo mismo")
+```
+
+```{r glca7-fig2-Comparison-licit-adj, echo=T, fig.align='center', fig.pos='H', fig.cap= "Selected Model (adjusted)", message=FALSE, error=T, eval=T}
+rho_glca3_adj<- 
+do.call("bind_rows",lca3062$param$rho$ALL) %>% 
+  t() %>% 
+  round(2) %>% 
+  data.table::data.table(keep.rownames = T) %>% 
+  magrittr::set_colnames(c("variables", paste0("Class",1:dim(lca3062$param$gamma[[1]])[[2]]))) %>% 
+  tidyr::separate(variables, into=c("var", "prob"), sep=".Y =")
+
+lcmodel_glca3_adj <- reshape2::melt(rho_glca3_adj, level=2) %>% dplyr::rename("class"="variable")
+
+
+lcmodel_glca3_adj<- lcmodel_glca3_adj %>% 
+  dplyr::mutate(pr=as.numeric(gsub("[^0-9.]+", "", prob))) %>% 
+  dplyr::left_join(traductor_cats3[,c("var", "lvl2", "label")] %>% dplyr::mutate(var= paste0(var, "_2")), by= c("var"="var", "pr"="lvl2"))  
+  #dplyr::mutate(CATEGORIA= dplyr::case_when(var=="AÑO" & prob==" 1"~"Perdidos", T~CATEGORIA))
+
+lcmodel_glca3_adj$text_label<-paste0("",lcmodel_glca3_adj$label,"<br>%: ",scales::percent(lcmodel_glca3_adj$value))
+
+lcmodel_glca3_adj$text_label2<-paste0("",lcmodel_glca3_adj$label,"\n ",scales::percent(lcmodel_glca3_adj$value))
+
+zp332 <- ggplot(lcmodel_glca3_adj,aes(x = factor(var, levels=c("sus_principal_mod_2", "otras_sus1_mod_2", "otras_sus2_mod_2","freq_cons_sus_prin_2","dg_trs_cons_sus_or_2"), labels= c("Primary\nsubstance", "Other\nsubs(1)", "Other\nsubs(2)","Freq.Subs.Use","Dg.Subs.Dep")), y = value, fill = factor(pr), label=text_label))
+zp332 <- zp332 + geom_bar(stat = "identity", position = "stack")
+zp332 <- zp332 + facet_grid(class ~ .) 
+zp332 <- zp332 + scale_fill_brewer(type="seq", palette="Greys", na.value = "white") +theme_bw()
+zp332 <- zp332 + labs(y = "Response probabilities", 
+                  x = "",
+                  fill ="Respone/ncategories")
+zp332 <- zp332 + theme( axis.text.y=element_blank(),
+                    axis.ticks.y=element_blank(),                    
+                    panel.grid.major.y=element_blank())
+zp332 <- zp332 + guides(fill = guide_legend(reverse=TRUE))
+zp332 <- zp332 + theme(axis.text.x = element_text(angle = 30, hjust = 1))+
+    theme(legend.position= "none")
+
+ggplotly(zp332, tooltip = c("text_label"))%>% plotly::layout(xaxis= list(showticklabels = T),height=600, width=800)
+
+ggsave("_fig3_adj_LCA_distribuciones_glca_licit_illicit_adj.png",zp32, dpi= 600)
+
+lcmodel_glca %>% rio::export("variables_probabilities_in_category_glca_licit_illicit_adj.xlsx")
+
+
+zp32b <- ggplot(lcmodel_glca3_adj,aes(x = factor(var, levels=c("sus_principal_mod_2", "otras_sus1_mod_2", "otras_sus2_mod_2","freq_cons_sus_prin_2","dg_trs_cons_sus_or_2"), labels= c("Primary\nsubstance", "Other\nsubs(1)", "Other\nsubs(2)","Freq.Subs.Use","Dg.Subs.Dep")), y = value, fill = factor(pr), label=text_label2))
+zp32b <- zp32b + geom_bar(stat = "identity", position = "stack")
+zp32b <- zp32b + facet_grid(class ~ .) 
+zp32b <- zp32b + scale_fill_brewer(type="seq", palette="Greys", na.value = "white") +theme_bw()
+zp32b <- zp32b + labs(y = "Response probabilities", 
+                  x = "",
+                  fill ="Respone/ncategories")
+zp32b <- zp32b + scale_fill_manual(values=paste0("grey",seq(20,80, by=60/6))) +theme_bw()
+zp32b <- zp32b + theme( axis.text.y=element_blank(),
+                    axis.ticks.y=element_blank(),                    
+                    panel.grid.major.y=element_blank())
+zp32b <- zp32b + guides(fill = guide_legend(reverse=TRUE))
+zp32b <- zp32b + theme(axis.text.x = element_text(angle = 30, hjust = 1))+
+    theme(legend.position= "none")
+ggsave("zp23.png", 
+       zp32b+ ggrepel::geom_label_repel(#aes(#y=half, label=lab),
+            position = position_stack(vjust = 0.5),
+              size = 3,
+            max.iter = 1e6,
+            colour = "white", fontface = "bold")+ theme(legend.position= "none"), 
+  height=13)#, fill = "white" --> dentro de label repel
+
+
+lcmodel_glca3_adj %>% dplyr::select( class, var, label, value) %>% rio::export("tab_cond_pr_licit_illicit_adj.xlsx")
+```
+
+
+<br>
+
+#### Bivariate
+
+
+```{r}
+
+variables_comp3 <- c("porc_pobr",
+                     "clas_r",
+               "fis_comorbidity_icd_10",
+               "edad_b_ap_top_num",
+               "comorbidity_icd_10",
+               "con_quien_vive_joel",
+               "sus_ini_mod",
+               "estado_conyugal_2",
+               "compromiso_biopsicosocial",
+               "macrozona",
+               "escolaridad_rec",
+               "event_comp"
+               )     
+
+tbone_desc_merge_grant_23_24_licit_illicit<-
+CreateTableOne(vars= variables_comp3, 
+               data=  cbind.data.frame(subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>%  dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(is.na(.)~ "none", T~ .))) %>% dplyr::filter(!sus_principal_mod=="Other",  !otras_sus1_mod=="Other", !otras_sus2_mod=="Other"),
+final_07=posterior_glca3_07_final$final_07, final_05=posterior_glca3_05_final$final_05) %>%
+  dplyr::mutate(event_comp= factor(event_comp, levels=c(1,0), labels=c("Completion", "Non-completion"))) %>% 
+  dplyr::mutate(final_05=factor(final_05, labels=c("C1: Hazardous Licit Usen\n+ Secondary Illicit", "C2: Dependent Frequent Licit\n+ Secondary Illicit", "C3: Mixed Dependence\n+ Broad Illicit Use", "C4: Dependent Frequent Illicit\n+ Mixed Secondary/Tertiary", "C5: Dependent Frequent Illicit\n+ Secondary Licit\n& Mixed Tertiary", "C6: Hazardous Frequent Illicit\n+ Secondary Licit"))), 
+               factorVars = setdiff(variables_comp3, c("edad_b_ap_top_num", "porc_pobr")), 
+               smd=T, 
+               strata="final_05", 
+               addOverall = T, 
+               includeNA=T, 
+               test=T)#
+```
+
+```{r, "bring-db2-label-variables-tab0",echo=T, results="hold"}
+#define a table
+as.data.frame.TableOne <- function(x, ...) {capture.output(print(x,
+                          showAllLevels = TRUE, ...) -> x)
+  y <- as.data.frame(x)
+  y$characteristic <- dplyr::na_if(rownames(x), "")
+  y <- y %>%
+  fill(characteristic, .direction = "down") %>%
+  dplyr::select(characteristic, everything())
+  rownames(y) <- NULL
+  y}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+
+as.data.frame.TableOne(tbone_desc_merge_grant_23_24_licit_illicit, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+knitr::kable(size=10, format="html",caption= "Summary descriptives, Latent classes", escape=T) %>% 
+  kableExtra::kable_classic() %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+```{r, "bring-db2-label-variables-tab2",echo=T, results="hold"}
+as.data.frame.TableOne(tbone_desc_merge_grant_23_24_licit_illicit, smd=T, nonnormal= T)%>% 
+    dplyr::mutate(char2=characteristic) %>% 
+    tidyr::fill(char2) %>% 
+    dplyr::select(char2,everything()) %>% 
+    dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+    dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,T~as.character(characteristic))) %>% 
+    format_cells(1, 1:length(names(.)), "bold") %>%
+    dplyr::select(-1) %>% rio::export("tab_car_licit_illicit.xlsx")
+#RUral: +c1, - c4 y c3; com fis: c2 + 1o>; edad: c3 <; c2 >; com psi: +c3, c6 y c1, -c4 y c5; con quien vive: -c3 y c6 , +c2 alone, c4+ con fam origen, c1+ con pareja e hijos; sus ini mod: c1 y c2, +alcohol, coc + c6, mar -c1 y c2, +c4, pbc- c1 y c2; casado -c4, +c1 y c6, separado +c2, soltero -c1 y c2 y c6, +c4 y c3; biopsicosocial: severo -c1 y c6 y c3, leve +c1 y c6 y c3; macrozona: norte -c2 sur +c1 y c2; escolaridad: + media +c1 y c2, -primaria -c3 y media completa +c3; completa + c1 y c2, -c4, no completa -c1
+```
+
+```{=html}
+<!---
+#https://chat.openai.com/share/5849496c-2bd7-447f-9820-7ebfdeb0de3c 
+--->
+```
+
+**C1: Hazardous Licit Use + Secondary Illicit**: Highest percentage of individuals from mixed (Mixta) areas at 15.5% and rural areas at 12.7%; Physical Comorbidity: 37.4% without physical comorbidity; Age: Median age of 35.64; Psychiatric Comorbidity: 40.9% without psychiatric comorbidity; Living Arrangement: 10.2% living alone; Substance Initiation: 84.0% initiated with alcohol; Marital Status: 37.2% in married/shared living arrangements; Biopsychosocial Commitment: 19.1% with mild commitment and 70.7% with moderate commitment; Region: 71.5% from the center region; Education Level: 21.4% with more than high school education; Event Completion: 26.2% completion. Simply put, C1 seems to represent a group with hazardous licit use, living in mixed or rural areas, and having a higher educational background.
+
+**C2: Dependent Frequent Licit + Secondary Illicit**: Residential Area: 9.6% from mixed areas. Living Arrangement: 12.3% living alone. Substance Initiation: 81.4% initiated with alcohol. Age: Median age of 37.72. Biopsychosocial Commitment: 58.6% with moderate commitment. In summary, C1 seems to represent a group with hazardous licit use, living in mixed or rural areas, and having a higher educational background. Summarizing, C2 is characterized by dependent frequent licit use, living alone, and predominantly initiating with alcohol.
+
+**C3: Mixed Dependence + Broad Illicit Use**: Physical Comorbidity: 59.3% with diagnosis unknown (under study) and 8.4% with one or more physical comorbidities. Psychiatric Comorbidity: 43.6% with one psychiatric comorbidity. Age: Median age of 27.80. Substance Initiation: 46.3% initiated with marijuana. Education Level: 61.6% completed high school or less. C3 represents an older group with mixed dependence and broad illicit use, having multiple comorbidities.
+
+**C4: Dependent Frequent Illicit + Mixed Secondary/Tertiary**: Residential Area: 85.6% urban. Psychiatric Comorbidity: 24.9% with diagnosis unknown (under study). Living Arrangement: 52.8% live with their family of origin. Substance Initiation: 55.8% initiated with marijuana. Marital Status: 68.2% singles. Biopsychosocial Commitment: 44.3% with severe commitment. Region: 79.0% from the center region. Poverty index of the municipallity/commune of residence: Median of 0.10. C4 is characterized by dependent frequent illicit use, urban living, initiation with marijuana, and severe biopsychosocial commitment.
+
+**C5: Dependent Frequent Illicit + Secondary Licit & Mixed Tertiary**: Residential Area: 84.9% urban. Substance Initiation: 60.2% initiated with alcohol and 29.0% with marijuana. Biopsychosocial Commitment: 54.4% with moderate commitment. Region: 77.2% from the center region. C5 represents a group with dependent frequent illicit use, urban living, and moderate biopsychosocial commitment.
+
+**C6: Hazardous Frequent Illicit + Secondary Licit**: Physical Comorbidity: 39.5% without physical comorbidity. Psychiatric Comorbidity: 41.8% without psychiatric comorbidity. Living Arrangement: 45.2% living with a couple/children. Marital Status: 36.0% in married/shared living arrangements. Biopsychosocial Commitment: 69.7% with moderate commitment. Region: 79.0% from the center region. C6 is characterized by hazardous frequent illicit use, living with a partner or children, and having no comorbidities.
+
+Rural location was more prevalent in C1 than in the overall sample, while less prevalent in C4 and C3. C2 had more individuals with one or more physical comorbidities than in the overall sample. C3 had a younger median age, while C2 had an older median age than in the overall sample. C3, C6, and C1 have more individuals with psychiatric comorbidity than the overall population.
+
+<br>
+
+
+# GLCA (2)
+
+-   We omitted individuals who used only one substance.
+
+-   We categorized the second substance as licit (e.g., Alcohol), illicit (all other substances), or none (not reported).
+
+-   We discarded substances labeled as "Other" because they could not be distinguished between licit and illicit substances.
+
+-   Frequency of use were classified into no weekly use (Less than 1 day a week), non-daily use (1 to 3 days a week), and daily/near daily use or the equivalent of 4 or more times a week (+4 days a week and Daily) (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7984420/ & https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8855705/).
+
+::: controlly
+
+```{r, "glca200"}
+mydata_preds21a<- 
+  #2023-09-25
+  subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>% 
+  dplyr::select(sus_principal_mod,
+      dg_trs_cons_sus_or,
+      freq_cons_sus_prin,
+      otras_sus1_mod,
+      otras_sus2_mod) %>%  
+  data.table::data.table()
+
+mydata_preds22a_pre <- mydata_preds21a%>% dplyr::mutate(across(c("otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(is.na(as.character(.))~ "none", TRUE~ as.character(.)))) %>% 
+  #2023-09-03: Eliminated Other substances
+  dplyr::filter(!sus_principal_mod=="Other",  !otras_sus1_mod=="Other", !otras_sus2_mod=="Other")%>% 
+  #2023-09-03: licit / illicit
+  dplyr::mutate(across(c("otras_sus1_mod", "otras_sus2_mod"), ~ dplyr::case_when(.=="Alcohol"~ 2, . %in% c("Cocaine hydrochloride", "Cocaine paste", "Marijuana")~ 3, .=="none"~ 1,  TRUE~ as.numeric(.)))) 
+
+mydata_preds22a <-mydata_preds22a_pre %>% 
+    #2023-09-04: frequency and diagnosis
+dplyr::mutate(freq_cons_sus_prin= dplyr::case_when(freq_cons_sus_prin== "none"~1, grepl("Less than 1 day a week",freq_cons_sus_prin)~2, grepl("1 day a week or more|2 to 3 days a week",freq_cons_sus_prin)~3, grepl("Daily|4 to 6 days a week",freq_cons_sus_prin)~ 4,  TRUE~ 0)) %>%
+dplyr::mutate(dg_trs_cons_sus_or= dplyr::case_when(dg_trs_cons_sus_or== "none"~1, grepl("Hazardous consumption",dg_trs_cons_sus_or)~2, grepl("Drug dependence",dg_trs_cons_sus_or)~3, TRUE~ 0))
+    
+#Count of substances
+dplyr::group_by(mydata_preds22a, sus_principal_mod, otras_sus1_mod, otras_sus2_mod) %>%  
+  count() %>%
+  dplyr::ungroup() %>%  
+  arrange(desc(n)) %>% 
+  dplyr::mutate(perc= scales::percent(round(n/sum(n),2))) %>% 
+  dplyr::filter(n>0) %>% 
+    dplyr::mutate(across(c("otras_sus1_mod", "otras_sus2_mod"), ~ dplyr::case_when(.==1~"None (1)", .==2~ "Licit (2)", .==3~ "Illicit (3)"))) %>% 
+  knitr::kable("markdown", caption="Combinations of substances", col.names= c("Primary substance", "Other substances (1)", "Other substances (2)","n", "%"))
+```
+
+:::
+
+
+```{r, "glca201-licit"}
+first_five_a2<-
+dplyr::group_by(mydata_preds22a,sus_principal_mod, otras_sus1_mod, otras_sus2_mod) %>%  count() %>% dplyr::ungroup() %>%  arrange(desc(n)) %>%  dplyr::filter(n>0, !"none"==otras_sus1_mod) %>% slice(1:5) %>% summarise(sum(n))/nrow(mydata_preds2a) %>% unlist() %>% as.numeric(.)
+
+paste0("The first four (there is one that is exchangeable) make the ", 
+       as.character(scales::percent(unlist(first_five_a2))),
+       " of the sample")
+```
+
+
+-   We made a latent class analysis with only substances.
+
+::: controlly
+
+```{r, "glca202-licit", results="hold"}
+dplyr::group_by(mydata_preds22a,sus_principal_mod, otras_sus1_mod, otras_sus2_mod) %>%  count() %>% dplyr::ungroup() %>%  arrange(desc(n)) %>% dplyr::mutate(perc= scales::percent(round(n/sum(n),2))) %>% dplyr::filter(n>0) %>% knitr::kable("markdown", caption="Combinations of substances", col.names= c("Primary substance", "Other substances (1)", "Other substances (2)", "n", "%")) 
+
+mydata_preds23a <- mydata_preds22a%>% 
+    data.table::data.table()
+  #2023-08-20. We cannot discard none categories for drug use patterns, but we can do it for drug dependence diagnosis and drug use frequency
+  #dplyr::filter(!dg_trs_cons_sus_or==1) %>%  
+  #dplyr::filter(!freq_cons_sus_prin==1) %>%  
+  
+```
+
+:::
+
+
+```{r, "glca21-licit"}
+invisible("glca format")
+# We excluded otras_sus3_mod because it had only one value
+f_preds4<- item(sus_principal_mod, otras_sus1_mod, dg_trs_cons_sus_or, freq_cons_sus_prin) ~ 1 #, 
+
+seed<-2125
+
+testiter <- 500*1.5
+n_bootstrap  <- 200
+max_lca4   <- 8
+
+old <- Sys.time()
+print(old)
+
+lca402 <- glca(f_preds4, data = mydata_preds23a, nclass = 2, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+#43 minutes each more or less
+lca403 <- glca(f_preds4, data = mydata_preds23a, nclass = 3, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca404 <- glca(f_preds4, data = mydata_preds23a, nclass = 4, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca405 <- glca(f_preds4, data = mydata_preds23a, nclass = 5, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca406 <- glca(f_preds4, data = mydata_preds23a, nclass = 6, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca407 <- glca(f_preds4, data = mydata_preds23a, nclass = 7, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+lca408 <- glca(f_preds4, data = mydata_preds23a, nclass = 8, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
+
+gof4<-
+  gofglca(lca402, lca403, lca404, lca405, lca406, lca407, lca408, test = "chisq")
+
+bootlrt4<-
+gofglca(lca402, lca403, lca404, lca405, lca406, lca407, lca408, test = "boot", nboot= n_bootstrap, seed=2125) 
+
+best_model_lca4<-
+as.numeric(cbind.data.frame(rn=2:max_lca4,gof4$gtable) %>% dplyr::summarise(which.min(BIC)+1))
+
+new_med<-(Sys.time())
+paste0("The model took ",round(new_med-old,2)," until every LCA was computed")
+print(new_med)
+```
+
+```{r, "glca22-licit", fig.cap= "Elbow plot of the information criteria"}
+# https://agscl.github.io/IVE/
+sabic<-c()
+for( i in seq(2,max_lca4)){
+  
+  sabic<-c(sabic,
+(-2 * get(paste0("lca4",sprintf("%02.f", i)))$gof$loglik)+ get(paste0("lca4",sprintf("%02.f", i)))$gof$df *log(  (nrow(mydata_preds23a) +2)/24    )
+)
+}
+manualcolors <- c('indianred1', 'cornflowerblue', 'gray50', 'darkolivegreen4', 'slateblue2', 
+                  'firebrick4', 'goldenrod4')
+levels5 <- c("logLik", "AIC", "CAIC", "BIC", "entropy", "Res.Df", "Gsq", "SABIC")
+labels5 <- c('Log-Likelihood', 'Akaike Information\nCriteria(AIC)','Corrected AIC','Bayesian Information\nCriteria (BIC)', 'Entropy', 'Residual degrees of freedom', 'Deviance', "SABIC")
+
+fig_lca_fit4<- cbind.data.frame(rn=2:max_lca4,gof4$gtable,SABIC=sabic) %>%
+  data.frame() %>% 
+  dplyr::mutate_if(is.character, as.numeric) %>%  # convert character columns to numeric
+  tidyr::pivot_longer(cols = -rn,names_to = "indices", values_to = "value", values_drop_na = F) %>%
+  dplyr::mutate(indices = factor(indices, levels = levels5, labels = labels5)) %>%
+  dplyr::filter(grepl("(AIC|BIC)",indices, ignore.case=T))%>%
+  dplyr::mutate(ModelIndex= factor(rn, levels=2:max_lca4)) %>% 
+  ggplot(aes(x = ModelIndex, y = value, group = indices, color = indices, linetype = indices)) +
+  geom_line(linewidth = 1.5) +
+  scale_color_manual(values = manualcolors) +
+  #scale_linetype_manual(values = c("solid", "dashed", "dotted")) +
+  labs(x = "Number of classes", y="Value", color="Measure", linetype="Measure")+
+  #facet_wrap(.~indices, scales = "free_y", nrow = 4, ncol = 1) +
+  theme_bw()
+
+fig_lca_fit4
+```
+
+
+The best fit was obtained by the `r which.min(gof4$gtable[,4])+1` class solution
+
+::: controlly
+
+```{r, "glca23-licit", echo=FALSE}
+summary(eval(parse(text = paste0("lca40",best_model_lca4)))) #
+
+best_model_glca4<- eval(parse(text = paste0("lca40",best_model_lca4))) 
+
+#rm(list = ls());gc()
+cbind.data.frame(rn=2:max_lca4,gof4$gtable,SABIC=sabic) %>%
+    data.frame() %>% 
+    dplyr::mutate_if(is.character, as.numeric) %>%#
+  dplyr::left_join(cbind.data.frame(rn=2:max_lca4,dplyr::select(data.frame(bootlrt4$gtable),  Boot.p.value)), by=c("rn")) %>% 
+  janitor::clean_names() %>% 
+  dplyr::mutate_if(is.numeric, ~round(.,2)) %>% 
+  # convert character columns to numeric
+    knitr::kable(format="markdown", caption="Medidas de ajuste (dividir por 1000 gsq_2)")
+```
+
+:::
+
+::: controlly
+
+```{r glca24-licit-fig1-details, echo=T, fig.align='center', fig.pos='H', fig.cap= "Selected Model", message=FALSE, error=T, eval=T}
+#https://rdrr.io/cran/glca/src/R/plot.glca.R
+plot(eval(parse(text = paste0("lca40",best_model_lca4))), ask=F)
+```
+
+:::
+
+The following steps were involved in the following code:
+
+-   Analysis of the best LCA model's parameter estimates.
+-   Visualization of the probabilities of different responses across categories.
+-   Extract the parameter 'rho' from the best model.
+-   Transform and format the extracted data for visualization.
+-   Read a correction table (`traductor_cats4`) for categories.
+-   Merge the model data with the correction table.
+-   The data is visualized using a ggplot2 stacked bar chart.
+-   Categories are represented with varying shades of grey.
+-   Each bar represents a variable from the model, and the sections of the bar represent the probability of each category for that variable.
+-   The bars are split by 'class' with the use of facets.
+-   The processed data (`lcmodel_glca4`) containing variables and their probabilities across different categories is saved to an Excel file named `variables_probabilities_in_category_glca_licit_ilicit_2.xlsx`
+-   The model's parameters allow a deeper understanding of the probabilities across categories for different variables. The visualization provides a holistic view of the data for quick insights. The processed data is readily available for any further analysis or sharing.
+
+
+```{r glca24-licit-fig2-Comparison, echo=T, fig.align='center', fig.pos='H', fig.cap= "Selected Model", message=FALSE, error=T, eval=T}
+#table(mydata_preds3a$sus_principal_mod)
+rho_glca4<- 
+do.call("bind_rows",best_model_glca4$param$rho$ALL) %>% 
+  t() %>% 
+  round(2) %>% 
+  data.table::data.table(keep.rownames = T) %>% 
+  magrittr::set_colnames(c("variables", paste0("Class",1:length(best_model_glca4$param$gamma)))) %>% 
+  tidyr::separate(variables, into=c("var", "prob"), sep=".Y =")
+
+lcmodel_glca4 <- reshape2::melt(rho_glca4, level=2) %>% dplyr::rename("class"="variable")
+
+#test the number of categories
+#table(mydata_preds23a$sus_principal_mod)
+#table(mydata_preds23a$otras_sus1_mod)
+
+traductor_cats4 <-
+cbind.data.frame(
+var= c(rep("sus_principal_mod",4), rep("otras_sus1_mod",3), rep("freq_cons_sus_prin",4), rep("dg_trs_cons_sus_or",3)),
+lvl= c(rep(c(1, 2, 3, 4),1),1:3,1:4,1:3),
+label= c(c("Alcohol", "Cocaine hydrochloride","Cocaine paste", "Marijuana"),rep(c("none","Licit", "Illicit"),1), c("none", "Less than one day a week", "1 to 3 days a week", "4+ days a week"), c("none", "Hazardous consumption", "Drug dependence"))
+) %>% 
+  dplyr::group_by(var) %>% 
+  dplyr::mutate(n=n()) %>% 
+  dplyr::ungroup() %>% 
+  #restricted the levels of the manifest variables to those that were available
+  #dplyr::filter(dplyr::case_when(var=="sus_principal_mod" & !lvl %in% as.numeric(attr(table(mydata_preds23a$sus_principal_mod),"dimnames")[[1]])~ FALSE, TRUE~TRUE ))%>% 
+  dplyr::filter(dplyr::case_when(var=="otras_sus1_mod" & !lvl %in% as.numeric(attr(table(mydata_preds23a$otras_sus1_mod),"dimnames")[[1]])~ FALSE, TRUE~TRUE ))%>% 
+  dplyr::filter(dplyr::case_when(var=="otras_sus2_mod" & !lvl %in% as.numeric(attr(table(mydata_preds23a$otras_sus2_mod),"dimnames")[[1]])~ FALSE, TRUE~TRUE ))%>% 
+  dplyr::filter(dplyr::case_when(var=="freq_cons_sus_prin" & !lvl %in% as.numeric(attr(table(mydata_preds23a$freq_cons_sus_prin),"dimnames")[[1]])~ FALSE, TRUE~TRUE))%>%
+  dplyr::filter(dplyr::case_when(var=="dg_trs_cons_sus_or" & !lvl %in% as.numeric(attr(table(mydata_preds23a$dg_trs_cons_sus_or),"dimnames")[[1]])~ FALSE, TRUE~TRUE))%>% 
+  dplyr::group_by(var) %>% 
+  dplyr::mutate(lvl2=row_number()) %>% 
+  dplyr::ungroup()
+  
+lcmodel_glca4<- lcmodel_glca4 %>% 
+  dplyr::mutate(pr=as.numeric(gsub("[^0-9.]+", "", prob))) %>% 
+  dplyr::left_join(traductor_cats4[,c("var", "lvl2", "label")], by= c("var"="var", "pr"="lvl2"))  
+  #dplyr::mutate(CATEGORIA= dplyr::case_when(var=="AÑO" & prob==" 1"~"Perdidos", T~CATEGORIA))
+
+lcmodel_glca4$text_label<-paste0("",lcmodel_glca4$label,"<br>%: ",scales::percent(lcmodel_glca4$value))
+
+lcmodel_glca4$text_label2<-paste0("",lcmodel_glca4$label,"\n ",scales::percent(lcmodel_glca4$value))
+
+zp43 <- ggplot(lcmodel_glca4,aes(x = factor(var, levels=c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","freq_cons_sus_prin","dg_trs_cons_sus_or"), labels= c("Primary\nsubstance", "Other\nsubs(1)", "Other\nsubs(2)","Freq.Subs.Use","Dg.Subs.Dep")), y = value, fill = factor(pr), label=text_label))
+zp43 <- zp43 + geom_bar(stat = "identity", position = "stack")
+zp43 <- zp43 + facet_grid(class ~ .) 
+zp43 <- zp43 + scale_fill_brewer(type="seq", palette="Greys", na.value = "white") +theme_bw()
+zp43 <- zp43 + labs(y = "Response probabilities", 
+                  x = "",
+                  fill ="Respone/ncategories")
+zp43 <- zp43 + theme( axis.text.y=element_blank(),
+                    axis.ticks.y=element_blank(),                    
+                    panel.grid.major.y=element_blank())
+zp43 <- zp43 + guides(fill = guide_legend(reverse=TRUE))
+zp43 <- zp43 + theme(axis.text.x = element_text(angle = 30, hjust = 1))+
+    theme(legend.position= "none")
+
+ggplotly(zp43, tooltip = c("text_label"),height=600, width=800)%>% plotly::layout(xaxis= list(showticklabels = T))
+
+ggsave("_fig3_LCA_distribuciones_glca_licit_ilicit_2.png",zp43, dpi= 600)
+
+lcmodel_glca4 %>% rio::export("variables_probabilities_in_category_glca_licit_ilicit_2.xlsx")
+
+
+zp43b <- ggplot(lcmodel_glca4,aes(x = factor(var, levels=c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","freq_cons_sus_prin","dg_trs_cons_sus_or"), labels= c("Primary\nsubstance", "Other\nsubs(1)", "Other\nsubs(2)","Freq.Subs.Use","Dg.Subs.Dep")), y = value, fill = factor(pr), label=text_label2))
+zp43b <- zp43b + geom_bar(stat = "identity", position = "stack")
+zp43b <- zp43b + facet_grid(class ~ .) 
+zp43b <- zp43b + scale_fill_brewer(type="seq", palette="Greys", na.value = "white") +theme_bw()
+zp43b <- zp43b + labs(y = "Response probabilities", 
+                  x = "",
+                  fill ="Respone/ncategories")
+zp43b <- zp43b + scale_fill_manual(values=paste0("grey",seq(20,80, by=60/6))) +theme_bw()
+zp43b <- zp43b + theme( axis.text.y=element_blank(),
+                    axis.ticks.y=element_blank(),                    
+                    panel.grid.major.y=element_blank())
+zp43b <- zp43b + guides(fill = guide_legend(reverse=TRUE))
+zp43b <- zp43b + theme(axis.text.x = element_text(angle = 30, hjust = 1))+
+    theme(legend.position= "none")
+ggsave("zp43b.png", 
+       zp43b+ ggrepel::geom_label_repel(#aes(#y=half, label=lab),
+            position = position_stack(vjust = 0.5),
+              size = 3,
+            max.iter = 1e6,
+            colour = "white", fontface = "bold")+ theme(legend.position= "none"), 
+  height=13)#, fill = "white" --> dentro de label repel
+
+
+lcmodel_glca4 %>% dplyr::select( class, var, label, value) %>% rio::export("tab_cond_pr_licit_illicit_2.xlsx")
+```
+
+
+For ease of interpretation, we summarized the main characteristics of each class based on the probabilities provided:
+
+**1)"Hazardous Alcohol Users w/ Illicit Substances"**: This class represents individuals who mainly consume alcohol (0.86) in moderate frequency (1-3 days a week; 0.70) and an illicit secondary substance (1.00). They mostly indulge in hazardous consumption (0.55).
+
+**2)"Intense Illicit Users"**: This class embodies users who are heavily reliant on Alcohol (0.52) or Cocaine paste (0.46) as the primary substance, with a secondary illicit substance (1.00). They exhibit a strong drug dependence (0.89), consuming their preferred substance +4 days a week (0.83).
+
+**3)"Varied Cocaine Consumers"**: Members of this class have a varied cocaine preference, ranging from cocaine paste (0.59) to cocaine hydrochloride (0.31). However, they probably will use licit substances as a secondary substance (0.61). They show consistent drug dependence (1.00) and frequent use of the primary substance (+4 days a week; 0.81).
+
+**4)"Cocaine Hydrochloride Regulars"**: This group is characterized by a preference for cocaine hydrochloride (0.70) with licit secondary substance (0.69), with a balanced profile of hazardous consumption (0.37) and drug dependence (0.63). Their main substance use is regular (1-3 days a week, 0.87; Less than one day a week, 0.12) but not daily.
+
+**5)"Diverse Substance Users"**: This class displays a broader substance usage palette, ranging from cocaine (0.33) and cocaine paste (0.44) to marijuana (0.24) as the primary substance, with a licit secondary substance (0.65). They lean heavily towards hazardous consumption (1.00) with varied frequency patterns, predominantly (+4 days a week; 0.58).
+
+(For more info, see this [link](https://chat.openai.com/c/84e78f89-c680-4d5d-8d81-7b4a88892c3e))
+
+
+```{r, "glca24-licit-posterior-probs"}
+#_#_#_#_#_#_#_#_#_#_#_
+
+#Classifying by posterior probs.
+posterior_glca4_05_final<-
+best_model_glca4$posterior$ALL %>% 
+    dplyr::mutate_all(~ifelse(.>.5,1,0)) %>% 
+  dplyr::mutate(final_05=dplyr::case_when(`Class 1`==1~1,`Class 2`==1~2, `Class 3`==1~3,`Class 4`==1~4, `Class 5`==1~5))
+
+posterior_glca4_07_final<-
+best_model_glca4$posterior$ALL %>% 
+    dplyr::mutate_all(~ifelse(.>.7,1,0)) %>% 
+  dplyr::mutate(final_07=dplyr::case_when(`Class 1`==1~1,`Class 2`==1~2, `Class 3`==1~3,`Class 4`==1~4, `Class 5`==1~5))
+
+#Unite the posterior probabilities with the original database
+bd_mydata_preds4_posterior3<-
+cbind.data.frame(mydata_preds23a,final_07=posterior_glca4_07_final$final_07,final_05=posterior_glca4_05_final$final_05)
+
+sum_prob_post_2<-
+table(bd_mydata_preds4_posterior3$final_05, 
+      bd_mydata_preds4_posterior3$final_07,exclude=NULL) %>%
+    data.frame() %>%
+    dplyr::filter(Freq>0) %>% 
+    dplyr::mutate(Perc= scales::percent(Freq/sum(Freq))) %>% 
+    dplyr::arrange(desc(Var2), Var1,desc(Freq)) %>% 
+    dplyr::filter(!is.na(Var2)) %>% 
+  summarise(sum=sum(parse_number(Perc)))
+
+#Determining misclassification
+table(bd_mydata_preds4_posterior3$final_05, 
+      bd_mydata_preds4_posterior3$final_07,exclude=NULL) %>%
+  data.frame() %>%
+  dplyr::filter(Freq>0) %>% 
+  dplyr::mutate(Perc= scales::percent(Freq/sum(Freq))) %>% 
+  dplyr::arrange(desc(Var2), Var1,desc(Freq)) %>% 
+knitr::kable("markdown", caption="Posterior probabilities of Classification", 
+             col.names= c("Classifying w/ .5", "Classifying w/ .7", "Frequency", "%"))
+```
+
+
+When using classification criteria based on the model output, if at least 50% of an observation's posterior probability is accounted for by a particular class, only 1.52% of the patients remain unclassified. However, if we raise this threshold to 70%, then `r 100-sum_prob_post_2`% of the patients would not be assigned to any latent class. This observation aligns with relative entropy principles.
+
+
+```{r glca25-alluvial, echo=T, error=T, paged.print=TRUE, fig.height=9, error=T, dpi=500, fig.cap="Figure 2. Sankey Plot of Transitions by Treatment Modality"}
+require(easyalluvial)
+require(parcats)
+
+p_alluvial4<-
+  cbind.data.frame(subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>%  dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(is.na(.)~ "none", TRUE~ .))) %>% dplyr::filter(!sus_principal_mod=="Other",  !otras_sus1_mod=="Other", !otras_sus2_mod=="Other"),
+final_07=posterior_glca4_07_final$final_07, final_05=posterior_glca4_05_final$final_05) %>%
+  dplyr::mutate(event_comp= factor(event_comp, levels=c(1,0), labels=c("Completion", "Non-completion"))) %>% 
+  dplyr::mutate(final_05=factor(final_05, labels=c("C1: Hazardous Alcohol\n+ Illicit User", "C2: Alcohol/Cocaine paste\n Frequent Dependence+ Heavy Illicit 2nd use", "C3: Frequent Dependence of Snort Cocaine \n& Cocaine paste +Illicit Secondary Subtance", "C4: Regular cocaine hydrochloride\n+ Licit 2nd Substance Use", "C5: Frequent Hazardous Cocaine paste, Snort\nCocaine & Marijuana Use + Licit 2nd substance"))) %>% 
+  dplyr::select(
+    #sus_principal_mod,
+    #  otras_sus1_mod,
+    #  otras_sus2_mod,
+    final_05,
+      event_comp) %>%  
+      easyalluvial::alluvial_wide(
+                  bin=2,
+                  bin_labels = c("ambulatory", "residential"),
+                  order_levels= c("ambulatory", "residential","censored"),
+                  fill_by = 'first_variable',
+                  NA_label = "non-classified",
+                  auto_rotate_xlabs = T,
+                  stratum_label_size = 3,
+                   colorful_fill_variable_stratum = FALSE)+
+  theme_void()
+p_alluvial4
+ggsave("glca_res_comp_off_licit_illicit_2.png", 
+       p_alluvial4, 
+  height=13)#, fill = "white" --> dentro de label repel
+```
+
+
+#### Covariate: Tr. completion
+
+-   Adjusting by treatment completion status
+
+
+```{r, "glca26-licit-regressed"}
+#2023-10-25, falta completar
+mydata_preds323<-
+    cbind.data.frame(subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>%  dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(is.na(.)~ "none", TRUE~ .))) %>% dplyr::filter(!sus_principal_mod=="Other",  !otras_sus1_mod=="Other", !otras_sus2_mod=="Other"),
+    final_07=posterior_glca4_07_final$final_07, final_05=posterior_glca4_05_final$final_05,
+    mydata_preds3a) %>%
+  janitor::clean_names() %>% 
+      dplyr::mutate(event_comp= factor(event_comp, levels=c(1,0), labels=c("Completion", "Non-completion"))) %>% 
+      dplyr::mutate(final_05=factor(final_05, labels=c("C1: Hazardous Alcohol\n+ Illicit User", "C2: Alcohol/Cocaine paste\n Frequent Dependence+ Heavy Illicit 2nd use", "C3: Frequent Dependence of Snort Cocaine \n& Cocaine paste +Illicit Secondary Subtance", "C4: Regular cocaine hydrochloride\n+ Licit 2nd Substance Use", "C5: Frequent Hazardous Cocaine paste, Snort\nCocaine & Marijuana Use + Licit 2nd substance")))
+
+f_preds23_adj<- item(sus_principal_mod_2, otras_sus1_mod_2, dg_trs_cons_sus_or_2, freq_cons_sus_prin_2) ~ event_comp 
+
+lca4052 <- glca(f_preds23_adj, data = mydata_preds323, nclass = 5, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=TRUE, maxiter = 1e4, testiter = testiter)
+
+gof_lca4_adj<- gofglca(lca4052, test="boot", nboot=n_bootstrap, seed=2125)
+
+
+df_lca4052<-
+  data.frame(coef(lca4052)) %>% rownames_to_column("term") %>% janitor::clean_names() %>% 
+    rownames_to_column("rowname") %>%
+    gather(key = "key", value = "value", -rowname) %>%
+    spread(key = "rowname", value = "value") %>% 
+    set_names(as.character(unlist(tail(., 1)))) %>% 
+    slice(-n()) %>% 
+    dplyr::mutate(term=strsplit(sub('^(.*?_.*?_.*?)_(.*)$', '\\1,\\2', term), ',')) %>% 
+separate(col=term,into = c("prefix", "suffix"),  sep = ", ", extra = "merge") %>% 
+  dplyr::mutate(across(c("prefix", "suffix"), ~gsub('\\(|"|\\)', "", .))) 
+
+df_lca40522<-
+df_lca4052%>%
+  dplyr::filter(suffix == "coefficient" | suffix == "std_error") %>%
+  pivot_wider(names_from=suffix, values_from = c("(Intercept)", "event_compNon-completion")) %>%
+  dplyr::mutate_at(2:5, ~as.numeric(.)) %>% 
+  dplyr::mutate(
+    lower_log_or_int = `(Intercept)_coefficient` - 1.96 * `(Intercept)_std_error`,
+    upper_log_or_int = `(Intercept)_coefficient` + 1.96 * `event_compNon-completion_std_error`,
+    lower_log_or_comp = `event_compNon-completion_coefficient` - 1.96 * `event_compNon-completion_std_error`,
+    upper_log_or_comp = `event_compNon-completion_coefficient` + 1.96 * `event_compNon-completion_std_error`) %>%
+  dplyr::rename("int_coef"="(Intercept)_coefficient", "int_std_error"="(Intercept)_std_error", "comp_coef"="event_compNon-completion_coefficient","comp_std_error"="event_compNon-completion_std_error") %>% 
+  dplyr::select(prefix,#t_coef int_std_error comp_coef comp_std_error 
+                int_coef, int_std_error, comp_coef, comp_std_error, 
+                lower_log_or_int, upper_log_or_int, lower_log_or_comp, upper_log_or_comp)
+
+# List of call classes
+call_classes <- unique(df_lca4052$prefix)
+
+result2 <- map_df(call_classes, ~ {
+  df_lca40522 %>%
+    dplyr::mutate(int_comp_coef=int_coef+comp_coef) %>% 
+    dplyr::summarise(call_class = .x,
+                     nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                     den = sum(exp(int_comp_coef)),
+                     prob = nom/(1+den))
+})
+
+result2_lo <- map_df(call_classes, ~ {
+    df_lca40522 %>%
+        dplyr::mutate(int_comp_coef=lower_log_or_int+lower_log_or_comp) %>% 
+        dplyr::summarise(call_class = .x,
+                         nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                         den = sum(exp(int_comp_coef)),
+                         prob = nom/(1+den))
+})
+
+result2_hi <- map_df(call_classes, ~ {
+    df_lca40522 %>%
+        dplyr::mutate(int_comp_coef=upper_log_or_int+upper_log_or_comp) %>% 
+        dplyr::summarise(call_class = .x,
+                         nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                         den = sum(exp(int_comp_coef)),
+                         prob = nom/(1+den))
+})
+
+result2_int <- map_df(call_classes, ~ {
+  df_lca40522 %>%
+    dplyr::mutate(int_comp_coef=int_coef) %>% 
+    dplyr::summarise(call_class = .x,
+                     nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                     den = sum(exp(int_comp_coef)),
+                     prob = nom/(1+den))
+})
+
+result2_int_lo <- map_df(call_classes, ~ {
+    df_lca40522 %>%
+        dplyr::mutate(int_comp_coef=lower_log_or_int) %>% 
+        dplyr::summarise(call_class = .x,
+                         nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                         den = sum(exp(int_comp_coef)),
+                         prob = nom/(1+den))
+})
+
+result2_int_hi <- map_df(call_classes, ~ {
+    df_lca40522 %>%
+        dplyr::mutate(int_comp_coef=upper_log_or_int) %>% 
+        dplyr::summarise(call_class = .x,
+                         nom = sum(ifelse(prefix == .x, exp(int_comp_coef), 0)),
+                         den = sum(exp(int_comp_coef)),
+                         prob = nom/(1+den))
+})
+
+
+df_lca40522_probs<-
+cbind.data.frame(
+est_int=c(result2_int$prob, 1/(1+unique(result2_int$den))),
+lo_int=c(result2_int_lo$prob, 1/(1+unique(result2_int_lo$den))),
+hi_int=c(result2_int_hi$prob, 1/(1+unique(result2_int_hi$den))),
+est=c(result2$prob, 1/(1+unique(result2_int$den))),
+lo=c(result2_lo$prob, 1/(1+unique(result2_int_lo$den))),
+hi=c(result2_hi$prob, 1/(1+unique(result2_int_hi$den))))*100
+
+
+  knitr::kable(df_lca40522_probs, size=10, format="html",caption= "Predicted membership to Latent classes, according to Completion or Non-completion of treatment", digits=2) %>% 
+  kableExtra::kable_classic() %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+f22 <-cbind(sus_principal_mod_2, otras_sus1_mod_2,dg_trs_cons_sus_or_2, freq_cons_sus_prin_2) ~ event_comp 
+gss.lc22 <-poLCA(f22, mydata_preds323, nclass=5,nrep=testiter, maxiter=1e5, verbose=F, calc.se=T) 
+gss.lc22$eflag
+invisible("no llegan a lo mismo")
+
+df_lca40522_probs
+```
+
+
+Given that 
+
+
+```{r glca27-fig2-Comparison-licit-adj, echo=T, fig.align='center', fig.pos='H', fig.cap= "Selected Model (adjusted)", message=FALSE, error=T, eval=T}
+rho_glca4_adj<- 
+do.call("bind_rows",lca4052$param$rho$ALL) %>% 
+  t() %>% 
+  round(2) %>% 
+  data.table::data.table(keep.rownames = T) %>% 
+  magrittr::set_colnames(c("variables", paste0("Class",1:dim(lca4052$param$gamma[[1]])[[2]]))) %>% 
+  tidyr::separate(variables, into=c("var", "prob"), sep=".Y =")
+
+lcmodel_glca4_adj <- reshape2::melt(rho_glca4_adj, level=2) %>% dplyr::rename("class"="variable")
+
+
+lcmodel_glca4_adj<- lcmodel_glca4_adj %>% 
+  dplyr::mutate(pr=as.numeric(gsub("[^0-9.]+", "", prob))) %>% 
+  dplyr::left_join(traductor_cats4[,c("var", "lvl2", "label")] %>% dplyr::mutate(var= paste0(var, "_2")), by= c("var"="var", "pr"="lvl2"))  
+  #dplyr::mutate(CATEGORIA= dplyr::case_when(var=="AÑO" & prob==" 1"~"Perdidos", T~CATEGORIA))
+
+lcmodel_glca4_adj$text_label<-paste0("",lcmodel_glca4_adj$label,"<br>%: ",scales::percent(lcmodel_glca4_adj$value))
+
+lcmodel_glca4_adj$text_label2<-paste0("",lcmodel_glca4_adj$label,"\n ",scales::percent(lcmodel_glca4_adj$value))
+
+zp332 <- ggplot(lcmodel_glca4_adj,aes(x = factor(var, levels=c("sus_principal_mod_2", "otras_sus1_mod_2", "otras_sus2_mod_2","freq_cons_sus_prin_2","dg_trs_cons_sus_or_2"), labels= c("Primary\nsubstance", "Other\nsubs(1)", "Other\nsubs(2)","Freq.Subs.Use","Dg.Subs.Dep")), y = value, fill = factor(pr), label=text_label))
+zp332 <- zp332 + geom_bar(stat = "identity", position = "stack")
+zp332 <- zp332 + facet_grid(class ~ .) 
+zp332 <- zp332 + scale_fill_brewer(type="seq", palette="Greys", na.value = "white") +theme_bw()
+zp332 <- zp332 + labs(y = "Response probabilities", 
+                  x = "",
+                  fill ="Respone/ncategories")
+zp332 <- zp332 + theme( axis.text.y=element_blank(),
+                    axis.ticks.y=element_blank(),                    
+                    panel.grid.major.y=element_blank())
+zp332 <- zp332 + guides(fill = guide_legend(reverse=TRUE))
+zp332 <- zp332 + theme(axis.text.x = element_text(angle = 30, hjust = 1))+
+    theme(legend.position= "none")
+
+ggplotly(zp332, tooltip = c("text_label"),height=600, width=800)%>% plotly::layout(xaxis= list(showticklabels = T))
+
+ggsave("_fig3_adj_LCA_distribuciones_glca_licit_illicit_adj_2.png",zp332, dpi= 600)
+
+lcmodel_glca4_adj %>% rio::export("variables_probabilities_in_category_glca_licit_illicit_adj_2.xlsx")
+
+
+zp332b <- ggplot(lcmodel_glca4_adj,aes(x = factor(var, levels=c("sus_principal_mod_2", "otras_sus1_mod_2", "otras_sus2_mod_2","freq_cons_sus_prin_2","dg_trs_cons_sus_or_2"), labels= c("Primary\nsubstance", "Other\nsubs(1)", "Other\nsubs(2)","Freq.Subs.Use","Dg.Subs.Dep")), y = value, fill = factor(pr), label=text_label2))
+zp332b <- zp332b + geom_bar(stat = "identity", position = "stack")
+zp332b <- zp332b + facet_grid(class ~ .) 
+zp332b <- zp332b + scale_fill_brewer(type="seq", palette="Greys", na.value = "white") +theme_bw()
+zp332b <- zp332b + labs(y = "Response probabilities", 
+                  x = "",
+                  fill ="Respone/ncategories")
+zp332b <- zp332b + scale_fill_manual(values=paste0("grey",seq(20,80, by=60/6))) +theme_bw()
+zp332b <- zp332b + theme( axis.text.y=element_blank(),
+                    axis.ticks.y=element_blank(),                    
+                    panel.grid.major.y=element_blank())
+zp332b <- zp332b + guides(fill = guide_legend(reverse=TRUE))
+zp332b <- zp332b + theme(axis.text.x = element_text(angle = 30, hjust = 1))+
+    theme(legend.position= "none")
+ggsave("zp323.png", 
+       zp332b+ ggrepel::geom_label_repel(#aes(#y=half, label=lab),
+            position = position_stack(vjust = 0.5),
+              size = 3,
+            max.iter = 1e6,
+            colour = "white", fontface = "bold")+ theme(legend.position= "none"), 
+  height=13)#, fill = "white" --> dentro de label repel
+
+
+lcmodel_glca4_adj %>% dplyr::select( class, var, label, value) %>% rio::export("tab_cond_pr_licit_illicit_adj_2.xlsx")
+```
+
+
+<br>
+
+#### Bivariate
+
+
+```{r}
+variables_comp3 <- c("porc_pobr",
+                     "clas_r",
+               "fis_comorbidity_icd_10",
+               "edad_b_ap_top_num",
+               "comorbidity_icd_10",
+               "con_quien_vive_joel",
+               "sus_ini_mod",
+               "estado_conyugal_2",
+               "compromiso_biopsicosocial",
+               "macrozona",
+               "escolaridad_rec",
+               "event_comp"
+               )     
+
+tbone_desc_merge_grant_23_24_licit_illicit_2<-
+CreateTableOne(vars= variables_comp3, 
+               data=  cbind.data.frame(subset(Base_fiscalia_v16_grant_23_24, !is.na(otras_sus1_mod)) %>%  dplyr::mutate(across(c("sus_principal_mod", "otras_sus1_mod", "otras_sus2_mod","dg_trs_cons_sus_or","freq_cons_sus_prin"), ~ dplyr::case_when(is.na(.)~ "none", TRUE~ .))) %>% dplyr::filter(!sus_principal_mod=="Other",  !otras_sus1_mod=="Other", !otras_sus2_mod=="Other"),
+final_07=posterior_glca4_07_final$final_07, final_05=posterior_glca4_05_final$final_05) %>%
+  dplyr::mutate(event_comp= factor(event_comp, levels=c(1,0), labels=c("Completion", "Non-completion"))) %>% 
+  dplyr::mutate(final_05=factor(final_05, labels=c("C1: Hazardous Alcohol\n+ Illicit User", "C2: Alcohol/Cocaine paste\n Frequent Dependence+ Heavy Illicit 2nd use", "C3: Frequent Dependence of Snort Cocaine \n& Cocaine paste +Illicit Secondary Subtance", "C4: Regular cocaine hydrochloride\n+ Licit 2nd Substance Use", "C5: Frequent Hazardous Cocaine paste, Snort\nCocaine & Marijuana Use + Licit 2nd substance"))), 
+               factorVars = setdiff(variables_comp3, c("edad_b_ap_top_num", "porc_pobr")), 
+               smd=T, 
+               strata="final_05", 
+               addOverall = T, 
+               includeNA=T, 
+               test=T)#
+```
+
+```{r, "2bring-db2-label-variables-tab0",echo=T, results="hold"}
+#define a table
+
+as.data.frame.TableOne(tbone_desc_merge_grant_23_24_licit_illicit_2, smd=TRUE, nonnormal= TRUE)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,TRUE~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  knitr::kable(size=10, format="html",caption= "Summary descriptives, Latent classes", escape=T) %>% 
+  kableExtra::kable_classic() %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+```{r, "2bring-db2-label-variables-tab2",echo=T, results="hold"}
+as.data.frame.TableOne(tbone_desc_merge_grant_23_24_licit_illicit_2, smd=TRUE, nonnormal= TRUE)%>%
+    dplyr::mutate(char2=characteristic) %>% 
+    tidyr::fill(char2) %>% 
+    dplyr::select(char2,everything()) %>% 
+    dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+    dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,TRUE~ as.character(characteristic))) %>% 
+    format_cells(1, 1:length(names(.)), "bold") %>%
+    dplyr::select(-1) %>% rio::export("tab_car_licit_illicit_2.xlsx")
+```
+
+```{=html}
+<!---
+#https://chat.openai.com/share/5849496c-2bd7-447f-9820-7ebfdeb0de3c 
+--->
+```
+
+
+- **C1: Hazardous Alcohol + Illicit User**= Represents a higher proportion of urban dwellers (76.3%). 83% started with alcohol. Majority (69.7%) had moderate biopsychosocial compromise.
+Over half (55.3%) have completed high school or less. 76.1% had not completed treatment.
+
+- **C2: Alcohol/Cocaine paste Frequent Dependence+ Heavy Illicit 2nd use**= High illicit secondary substance use, alongside alcohol and cocaine paste. Majority (82.1%) were urban dwellers.
+More than a half (57.3%) were under study to detect physicial comorbidity. Age tends to be higher with a median of 39.84. 43% had severe biopsychosocial compromise. Majority (52.2%) had completed high school or less.
+
+- **C3: Frequent Dependence of Snort Cocaine & Cocaine paste + Illicit Secondary Substance**= High proportion (85.4%) of urban dwellers. Significant use of snorted cocaine, cocaine paste, and other illicit substances. 46.5% started with alcohol, while 41.8% started with marijuana. Majority (48.9%) had moderate biopsychosocial compromise. High percentage (64.6%) were single. Majority (57.6%) had completed high school or less. 
+
+- **Class C4: Regular cocaine hydrochloride + Licit 2nd Substance Use **= Primarily use cocaine hydrochloride and had a licit second substance of choice. Highest urban dwelling proportion (86.4%). 57.4% started with alcohol. Majority (66.8%) had moderate biopsychosocial compromise.
+Six out of ten (60.2%) had completed high school or less. 80.9% had incomplete treatments.
+
+- **Class C5: Frequent Hazardous Cocaine paste, Snort Cocaine & Marijuana Use + Licit 2nd substance**= Varied substance use, with frequent hazardous consumption patterns for cocaine paste, snorted cocaine, and marijuana. 77.7% urban dwellers. More than half (59.7%) were under study to detect any physical comorbidity. 54.8% started with alcohol. Majority (68.8%) had moderate biopsychosocial compromise. Majority (59.4%) have completed high school or less. 80.6% had not completed treatment.
+
+<br>
+
+# Imputation and export
+
+::: controlly
+
+```{r miss, warning=FALSE, echo=T, error=T, eval=T}
+require(missRanger)
+
+  #dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F))
+#if(exists("no_mostrar")){
+  set.seed(2125)
+Base_fiscalia_v16_grant_23_24_miss <-
+  Base_fiscalia_v16_grant_23_24 %>%
+  #dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F)) %>% 
+    dplyr::arrange(hash_key, edad_al_ing_1) %>% 
+    dplyr::select() %>% 
+     missRanger::missRanger(
+                  formula = porc_pobr+ clas_r + fis_comorbidity_icd_10 + edad_b_ap_top_num + comorbidity_icd_10 + con_quien_vive_joel + sus_ini_mod + estado_conyugal_2 + compromiso_biopsicosocial + macrozona + escolaridad_rec +  ~ . - hash_key -offender_d - age_tr_comp_imp,
+                  num.trees = 200, 
+                  pmm.k = 3,                
+                  returnOOB=T,
+                  maxiter= 50,
+                  verbose = 2, 
+                  seed = 2125)
+  
+  #should drop:
+    # event_offense age_dropout_imp event_comp age_at_censor_date time_to_off_from_adm time_to_drop_from_adm edad_comision_imp fec_comision_simple_2 relacion_vifsaf_2
+  values_pris<- c(0.0013, 0.0053, 0.0000, 0.0000, 0.0000, 0.0158, 0.0000, 0.0000, 0.0000, 0.0000, 6e-04, 0.0024, 0.0024, 5e-04, 0.0285)
+  paste0("Mdn= ",median(values_pris)," Q1= ",quantile(values_pris,.25),", Q3= ", quantile(values_pris, .75))
+
+```
+
+:::
+
+
+```{=html}
+<!---
+Depresores: Retardan el funcionamiento del cerebro, adormeciéndolo, y pueden generar desde inhibición hasta coma. Aquí se incluyen el alcohol, los tranquilizantes y la heroína.
+Estimulantes: Aceleran el funcionamiento del cerebro. Ejemplos: anfetaminas, cocaína, pasta base, cafeína y nicotina.
+Perturbadores: Alteran el funcionamiento del cerebro, provocando alucinaciones y distorsión de la realidad. Entre ellos están la marihuana, el éxtasis y el LSD.
+--->
+```
+
+<br>
+
+# Export
+
+
+```{r export, warning=FALSE, echo=T, error=T, eval=T}
+#2023-01-01 we had a problem with edad_al_ing_fmt. This variable predict better (it had lower amount of missing data and was in wide format)
+
+#cont_vars_desc[1]<-ifelse(cont_vars_desc[1]=="edad_al_ing_fmt","edad_al_ing_1",cont_vars_desc[1])
+
+
+Base_fiscalia_v16_grant_23_24 %>%
+ # dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F)) %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1)  %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("an_grant_23_24.dta"))
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+# IMPUTATION
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+Base_fiscalia_v16_grant_23_24_miss %>% 
+  dplyr::arrange(hash_key, fech_ing_num_1)  %>% 
+  data.table::data.table() %>% 
+  rio::export(file = paste0("an_grant_23_24_miss.dta"))
+```
+
+
+<br>
+
+# Adjusted Logistic regression
+
+
+```{r, eval=F}
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#Our simulation-based approach to the estimation of mediation effects enables users to deal with missing data via standard multiple imputation procedures in a straightforward fashion. The mediation package includes a pair of utility functions – mediations and amelidiate– to facilitate such analysis. First, users simulate multiple data sets using their preferredimputation software. Next, run mediate on each data set by simply passing the data setsthrough mediations. Next, pass the output of mediations to the amelidiate function, which combines the components of the output from mediations into a format that can be analyzed with the standard summary and plot commands.5 Alternatively, users can manually run mediate on their imputed data sets and simply stack the vectors of quantities they are interested in, and use basic functions like quantile to calculate confidence intervals.
+#, sims = 100        Simulations: 100
+require("MatchIt")
+
+#Base_fiscalia_v16_grant_23_24 %>%
+#  dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F))
+
+variables_vector <- c("sex", "edad_ini_cons", "escolaridad_rec", "condicion_ocupacional_corr", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "macrozona", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "dg_cie_10_rec", "dg_trs_cons_sus_or", "clas_r", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", "fis_comorbidity_icd_10", "n_off_vict")
+#edad_ini_cons macrozona estado_conyugal_2  con_quien_vive   numero_de_hijos_mod origen_ingreso_mod  tenencia_de_la_vivienda_mod rubro_trabaja_mod  condicion_ocupacional_corr     
+#mot_egres_mod_imp_rec_num     
+#clasificacion                 
+#porc_pobr
+#numero_de_hijos_mod_joel
+#ano_nac_corr 
+#num_hijos_mod_joel_bin
+#fis_comorbidity_icd_10
+#clas_r
+#tot_off_top
+
+#get a matched cohort of people by polysubstance use
+m.out3 <- matchit(policonsumo ~ rcs(edad_al_ing_1, 4) + sex + edad_ini_cons + escolaridad_rec + condicion_ocupacional_corr + num_hijos_mod_joel_bin + tenencia_de_la_vivienda_mod + macrozona + n_off_vio + n_off_acq + n_off_sud + n_off_oth + dg_cie_10_rec + dg_trs_cons_sus_or + clas_r + porc_pobr + sus_ini_mod_mvv + ano_nac_corr + con_quien_vive_joel + fis_comorbidity_icd_10+ n_off_vict, 
+                  data = Base_fiscalia_v16_grant_23_24 %>% dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F)) %>% dplyr::select(variables_vector),
+                    #Base_fiscalia_v16_grant_23_24[complete.cases(Base_fiscalia_v16_grant_23_24[,..variables_vector]),], 
+                  method = "nearest", 
+                  discard = "both",
+                  caliper = .05, 
+                  standardize = T)
+
+plot(
+cobalt::bal.tab(m.out3, un = TRUE, m.threshold = .1, 
+        v.threshold = 2))
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#install.packages("MatchThem")
+# require(MatchThem)
+#https://cran.r-project.org/web/packages/MatchThem/MatchThem.pdf
+imputed.datasets <- mice::mice(dplyr::select(Base_fiscalia_v15f_grant_23_24,c(variables_vector,"edad_al_ing_1","policonsumo","time_to_off_from_adm","time_to_drop_from_adm","event_death","event_comp","event_offense")), m = 5)
+
+#Currently, "within" (performing matching within each dataset) and "across" (estimating propensity scores within each dataset, averaging them across datasets, and performing matching using the averaged propensity scores in each dataset) approaches are available. The default is "within", which has been shown to have superior performance in most cases
+  #Matching the multiply imputed datasets
+matched.datasets <- matchthem(policonsumo ~  sex + edad_ini_cons + escolaridad_rec + condicion_ocupacional_corr + num_hijos_mod_joel_bin + tenencia_de_la_vivienda_mod + macrozona + n_off_vio + n_off_acq + n_off_sud + n_off_oth + dg_cie_10_rec + dg_trs_cons_sus_or + clas_r + porc_pobr + sus_ini_mod_mvv + ano_nac_corr + con_quien_vive_joel + fis_comorbidity_icd_10+ n_off_vict,
+imputed.datasets, approach = 'within', method = 'nearest')
+#Matching Observations  | dataset: #1Error: Missing values are not allowed in the covariates.
+
+
+#Multiply imputing the missing values
+imputed.datasets <- mice::mice(osteoarthritis, m = 5)
+#Matching the multiply imputed datasets
+matched.datasets <- matchthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
+                              imputed.datasets,
+                              approach = 'within',
+                              method = 'nearest')
+
+#Multiply imputing the missing values
+imputed.datasets <- mice::mice(osteoarthritis, m = 5)
+#Estimating weights of observations in the multiply imputed datasets
+weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
+                              imputed.datasets,
+                              approach = 'within',
+                              method = 'ps',
+                              estimand = "ATT")
+#Analyzing the weighted datasets
+models <- with(data = weighted.datasets,
+exp = svyglm(KOA ~ OSP, family = binomial))
+#Pooling results obtained from analysing the datasets
+results <- pool(models)
+```
+
+```{r, "mediation", echo=T, error=T, message=TRUE, paged.print=TRUE, results="hold"}
+
+```
+
+
+<br>
+
+# Session info
+
+
+```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
+message(paste0("R library: ", Sys.getenv("R_LIBS_USER")))
+message(paste0("Date: ",withr::with_locale(new = c('LC_TIME' = 'C'), code =Sys.time())))
+message(paste0("Editor context: ", path))
+```
+
+
+::: center-table
+
+```{r session-info-r, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
+sesion_info <- devtools::session_info()
+dplyr::select(
+  tibble::as_tibble(sesion_info$packages),
+  c(package, loadedversion, source)
+) %>% 
+ kable(caption = "R packages", format = "markdown",
+      col.names = c("Row number", "Package", "Version"),
+    row.names = FALSE,
+      align = c("c", "l", "r"))
+```
+
+:::
+
+::: center-table
+
+```{r session-info-python, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
+reticulate::py_list_packages()%>% 
+ kable(caption = "Python packages", format = "markdown",
+      col.names = c("Package", "Version", "Requirement", "Channel"),
+    row.names = FALSE,
+      align = c("c", "l", "r", "r"))
+```
+
+:::
+
+Save
+
+
+```{r}
+save.image("an_grant_23_24_2.RData")
+```
+

@@ -1441,10 +1441,12 @@ Some patients reported different crimes across multiple applications, indicating
 
 ## Descriptives
 
-We generated the event dates and time to events. As of August 20, 2023, we decided to discard observations of patients admitted to treatment before 2015 (TOP applications)
+It is important to note that the databases from 2010 to 2012 may contain errors or inconsistencies because they were data migrated from Excel spreadsheets. From 2013 onwards, the system is consolidated.
+
+We generated the event dates and time to events. As of September 3rd, 2023, we decided to discard observations of patients admitted to treatment before 2013.
 
 ```{r, "filter-date-top",echo=T, results="hold"}
-Base_fiscalia_v16_grant_23_24<-Base_fiscalia_v15f_grant_23_24[which(as.numeric(as.character(Base_fiscalia_v15f_grant_23_24$anio_ing_tr))>=2015),] #2022-08-22: changed anio_ing_tr for the previous ano_bd_first, because it gave some aberrant treatments
+Base_fiscalia_v16_grant_23_24<-Base_fiscalia_v15f_grant_23_24[which(as.numeric(as.character(Base_fiscalia_v15f_grant_23_24$anio_ing_tr))>=2013),] #2022-08-22: changed anio_ing_tr for the previous ano_bd_first, because it gave some aberrant treatments
 ```
 
 We ended with `r format(length(unique(Base_fiscalia_v16_grant_23_24$hash_key)),big.mark=",")` individuals.
@@ -1546,7 +1548,7 @@ as.data.frame.TableOne <- function(x, ...) {capture.output(print(x,
   y$characteristic <- dplyr::na_if(rownames(x), "")
   y <- y %>%
   fill(characteristic, .direction = "down") %>%
-  select(characteristic, everything())
+  dplyr::select(characteristic, everything())
   rownames(y) <- NULL
   y}
 #_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -1587,15 +1589,16 @@ invisible("Weight main differences")
 
 #get a matched cohort of people by polysubstance use
 #based on : La submuestra (grupo 2= 1,730) no es representativa del grupo general:
-require(MatchIt)
-require(optmatch)
-m.out3 <- MatchIt::matchit(in_study ~ edad_al_ing_1 + sex + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + policonsumo + condicion_ocupacional_corr + num_hijos_mod_joel_bin + tenencia_de_la_vivienda_mod + sus_ini_mod_mvv, 
-                  data = Base_fiscalia_v16_grant_23_24[complete.cases(Base_fiscalia_v16_grant_23_24[,c("edad_al_ing_1", "sex", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "policonsumo", "condicion_ocupacional_corr", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "sus_ini_mod_mvv")]),] %>% 
-  dplyr::mutate(in_study= dplyr::case_when( !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(date_ap_top)~1,T~0),in_study= factor(in_study)),
-                  method = "optimal", 
-                  discard = "both",
-                  #caliper = .05, 
-                  standardize = T)
+
+# require(MatchIt)
+# require(optmatch)
+# m.out3 <- MatchIt::matchit(in_study ~ edad_al_ing_1 + sex + escolaridad_rec + sus_principal_mod + freq_cons_sus_prin + policonsumo + condicion_ocupacional_corr + num_hijos_mod_joel_bin + tenencia_de_la_vivienda_mod + sus_ini_mod_mvv, 
+#                   data = Base_fiscalia_v16_grant_23_24[complete.cases(Base_fiscalia_v16_grant_23_24[,c("edad_al_ing_1", "sex", "escolaridad_rec", "sus_principal_mod", "freq_cons_sus_prin", "policonsumo", "condicion_ocupacional_corr", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "sus_ini_mod_mvv")]),] %>% 
+#   dplyr::mutate(in_study= dplyr::case_when( !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(date_ap_top)~1,T~0),in_study= factor(in_study)),
+#                   method = "optimal", 
+#                   discard = "both",
+#                   #caliper = .05, 
+#                   standardize = T)
 
 #https://cran.rstudio.com/web/packages/MatchIt/vignettes/matching-methods.html#optimal-pair-matching-method-optimal
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
@@ -1614,7 +1617,7 @@ CreateTableOne(vars=c(setdiff(vars_cov, "policonsumo"), "offense_after_adm"), da
 "age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "offense_after_adm","age_at_death", "event_death","n_post_off_vio", "n_post_off_acq", "n_post_off_sud", "n_post_off_oth", "n_post_off", "hurto", "robo", "venta_drogas", "rina", "total_vif", "otro", "tot_off_top", "edad_a_ap_top_num", "edad_b_ap_top_num", "na_top_count", "motivodeegreso_mod_imp_1", "date_ap_top")] %>% dplyr::mutate(in_study= dplyr::case_when( !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(date_ap_top)~1,T~0))%>% dplyr::filter(in_study==1), factorVars = setdiff(vars_cov, c("motivodeegreso_mod_imp_rec","edad_al_ing_1", "edad_ini_cons","ano_nac_corr", "porc_pobr", "time_to_off_from_adm", "time_to_drop_from_adm", "age_at_censor_date", "age_tr_comp_imp", "age_offending_imp", "age_at_death", "n_post_off_vio", "n_post_off_acq", "n_post_off_sud", "n_post_off_oth", "n_post_off", "edad_a_ap_top_num", "edad_b_ap_top_num")), smd=T, strata="policonsumo", addOverall = T, includeNA=T, test=T)
 ```
 
--   We compared the characteristics of people who used multiple substances and those who did not in the total database between 2015 and 2019.
+-   We compared the characteristics of people who used multiple substances and those who did not in the total database between 2013 and 2019.
 
 ::: center-table
 ```{r, "glca-bivariate-analyses",echo=T}
@@ -1631,7 +1634,7 @@ as.data.frame.TableOne(tbone_desc_merge5_grant_23_24, smd=T, nonnormal= T)%>%
 ```
 :::
 
--   Contrasting patients in study (no ongoing or referred treatments outside SENDAs network \[n= `r length(unique(subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso"))$hash_key)) %>% format(big.mark=",")`\] and with TOP applications after treatment \[n= `r length(unique(subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top))$hash_key)) %>% format(big.mark=",")`\]) vs. all people in SENDA between 2015-2019 (n= `r length(unique(Base_fiscalia_v16_grant_23_24$hash_key))`).
+-   Contrasting patients in study (no ongoing or referred treatments outside SENDAs network \[n= `r length(unique(subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso"))$hash_key)) %>% format(big.mark=",")`\] and with TOP applications after treatment \[n= `r length(unique(subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top))$hash_key)) %>% format(big.mark=",")`\]) vs. all people in SENDA between 2013-2019 (n= `r length(unique(Base_fiscalia_v16_grant_23_24$hash_key))`).
 
 ::: center-table
 ```{r, "bring-db2-label-variables-tab-2",echo=T, results="hold"}
@@ -1696,7 +1699,7 @@ as.data.frame.TableOne(tbone_desc_merge5_grant_23_24_in_study, smd=T, nonnormal=
 
 ### Dates
 
--   We show the distribution of dates of all the observations between 2015-2019.
+-   We show the distribution of dates of all the observations between 2013-2019.
 
 ```{r, "bring-db3-add-survival-vars-dates",echo=T}
 rbind(
@@ -1845,7 +1848,7 @@ Every case had a death reported after treatment.
 
 # GLCA
 
--   We discarded people with unfinished treatments and without TOP after treatment
+-  We discarded records of individuals with unfinished treatments and those without TOP after treatment, restricting the database to entries from 2015 onwards.
 
 -   We replaced NA values in multiple columns of `mydata_preds1` with the string "none"
 
@@ -1857,7 +1860,7 @@ require(glca)
 
 mydata_preds1<- 
   #Base_fiscalia_v16_grant_23_24 %>% 
-  subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)) %>% 
+  subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top) & as.character(anio_ing_tr) %in% paste0("20",15:19)) %>% 
   dplyr::select(sus_principal_mod,
       dg_trs_cons_sus_or,
       freq_cons_sus_prin,
@@ -1939,7 +1942,7 @@ gof2<-
   gofglca(lca202, lca203, lca204, lca205, lca206, lca207, lca208, lca209, lca210, lca211, lca212, lca213, lca214, test = "chisq")
 
 bootlrt2<-
-gofglca(lca202, lca203, lca204, lca205, lca206, lca207, lca208, lca209, test = "boot", nboot= n_bootstrap, seed=2125)
+gofglca(lca202, lca203, lca204, lca205, lca206, lca207, lca208, lca209, test = "boot", nboot= n_bootstrap/20, seed=2125)
 
 best_model_lca<-
 as.numeric(cbind.data.frame(rn=2:14,gof2$gtable) %>% dplyr::summarise(which.min(BIC)+1))
@@ -1948,6 +1951,9 @@ new_med<-(Sys.time())
 paste0("The model took ",round(new_med-old,2)," until every LCA was computed")
 print(new_med)
 ```
+
+We ended using `r n_bootstrap/20` resamples to estimate BLRT.
+
 
 ```{r, "glca2", fig.cap= "Elbow plot of the information criteria"}
 # https://agscl.github.io/IVE/
@@ -2148,7 +2154,7 @@ require(easyalluvial)
 require(parcats)
 
 p_alluvial<-
-  cbind.data.frame(subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)), final_07=posterior_glca_07_final$final_07, final_05=posterior_glca_05_final$final_05) %>% 
+  cbind.data.frame(subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top) & as.character(anio_ing_tr) %in% paste0("20",15:19)), final_07=posterior_glca_07_final$final_07, final_05=posterior_glca_05_final$final_05) %>% 
   dplyr::mutate(tot_off_top_bin= ifelse(tot_off_top>0,1,0)) %>% 
   dplyr::mutate(event_comp= factor(event_comp, levels=c(1,0), labels=c("Completion", "Non-completion"))) %>% 
   dplyr::mutate(tot_off_top_bin= factor(tot_off_top_bin, levels=c(1,0), labels=c("Reported offenses", "No reported offenses"))) %>% 
@@ -2185,7 +2191,7 @@ mydata_preds32<-
 cbind.data.frame(
   mydata_preds3,
   Base_fiscalia_v16_grant_23_24 %>%
-    dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F)) %>% 
+    dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F) & as.character(anio_ing_tr) %in% paste0("20",15:19)) %>% 
     dplyr::select(event_comp)
 )
 
@@ -2193,7 +2199,7 @@ f_preds2_adj<- item(sus_principal_mod, otras_sus1_mod, otras_sus2_mod) ~ event_c
 
 lca2062 <- glca(f_preds2_adj, data = mydata_preds32, nclass = 6, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
 
-gof_lca_adj<- gofglca(lca2062, test="boot", nboot=n_bootstrap, seed=2125)
+gof_lca_adj<- gofglca(lca2062, test="boot", nboot=n_bootstrap/20, seed=2125)
 
 coef(lca2062)
 
@@ -2281,7 +2287,7 @@ mydata_preds33<-
 cbind.data.frame(
   mydata_preds3,
   Base_fiscalia_v16_grant_23_24 %>%
-    dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F)) %>% 
+    dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top) & as.character(anio_ing_tr) %in% paste0("20",15:19)~T,T~F)) %>% 
     dplyr::mutate(tot_off_top_bin= ifelse(tot_off_top>0,1,0)) %>%
     dplyr::select(tot_off_top_bin)
 )
@@ -2290,7 +2296,7 @@ f_preds2_adj2<- item(sus_principal_mod, otras_sus1_mod, otras_sus2_mod) ~ tot_of
 
 lca2063 <- glca(f_preds2_adj2, data = mydata_preds33, nclass = 6, seed = seed, verbose = FALSE, n.init = 5e1, decreasing=T, maxiter = 1e4,testiter = testiter)
 
-gof_lca_adj3<- gofglca(lca2063, test="boot", nboot=n_bootstrap, seed=2125)
+gof_lca_adj3<- gofglca(lca2063, test="boot", nboot=n_bootstrap/20, seed=2125)
 
 coef(lca2063)
 ```
@@ -2429,7 +2435,7 @@ datasim$lq<-c(as.vector(t(lQ[,-1])),rep(0,(n-6)))
 #https://cran.r-project.org/web/packages/flexmix/vignettes/bootstrapping.pdf
 
 Base_fiscalia_v16_grant_23_24_reg<-
-cbind.data.frame(subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)), final_07=posterior_glca_07_final$final_07, final_05=posterior_glca_05_final$final_05, sus_prin= mydata_preds2$sus_principal_mod, otr_sus1= mydata_preds2$otras_sus1_mod, otr_sus2= mydata_preds2$otras_sus2_mod) %>% 
+cbind.data.frame(subset(Base_fiscalia_v16_grant_23_24, !motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top) & as.character(anio_ing_tr) %in% paste0("20",15:19)), final_07=posterior_glca_07_final$final_07, final_05=posterior_glca_05_final$final_05, sus_prin= mydata_preds2$sus_principal_mod, otr_sus1= mydata_preds2$otras_sus1_mod, otr_sus2= mydata_preds2$otras_sus2_mod) %>% 
   dplyr::mutate(success= ifelse(tot_off_top>0,1,0)) %>% 
   dplyr::group_by(sus_prin, otr_sus1, otr_sus2) %>% 
   dplyr::summarise(success=sum(success, na.rm=T),total=n(),failure=total-success) %>% 
@@ -2486,7 +2492,7 @@ variables_comp <- c("clas_r",
 tbone_desc_merge_grant_23_24<-
 CreateTableOne(vars= variables_comp, 
                data= Base_fiscalia_v16_grant_23_24 %>%
-               dplyr::filter(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)) %>% 
+               dplyr::filter(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top) & as.character(anio_ing_tr) %in% paste0("20",15:19)) %>% 
                  tibble::add_column(final_07=posterior_glca_07_final$final_07,final_05=posterior_glca_05_final$final_05) %>% 
                  dplyr::mutate(tot_off_top_bin= ifelse(tot_off_top>0,1,0)), 
                factorVars = setdiff(variables_comp, c("edad_b_ap_top_num")), 
@@ -2498,7 +2504,6 @@ CreateTableOne(vars= variables_comp,
 ```
 
 ::: center-table
-
 ```{r, "bring-db2-label-variables-tab",echo=T, results="hold"}
 as.data.frame.TableOne(tbone_desc_merge_grant_23_24, smd=T, nonnormal= T)%>% 
   dplyr::mutate(char2=characteristic) %>% 
@@ -2546,7 +2551,6 @@ as.data.frame.TableOne(tbone_desc_merge_grant_23_24, smd=T, nonnormal= T)%>%
 # - **Reported offenses (TOP)**: Less, Class 2; More, Class 3 & 5
 ```
 :::
-
 
 **1. Class 1 Alcohol Primary, Diverse Secondary (n=160):** Primarily urban (77.5%), with a mixed representation (urban-rural setting) at 14.4%. Physical Comorbidity (ICD-10): The majority (64.4%) have a diagnosis that is under study, while 28.7% have no physical comorbidity. Age: Median age at TOP application is 36.00 years. Slightly older than the rest of groups. Substance Use Disorder (SUD) Severity: Most (76.2%) show drug dependence. Cohabitation Status: Most live with their couple or children (40.6%) or with their family of origin (36.9%). Substance Initiated With: The majority started with Alcohol (75.0%), which is higher than the rest. Also, less patients initiated with paste base. Frequency of Substance Use: Most (46.2%) use the primary substance daily. Marital Status: The majority are single (60.6%). Edducational attainment: Higher educational attainment (more than highschool).
 
@@ -2647,197 +2651,39 @@ ggplot(data = mca5_vars_df2, aes(x = D3, y = D4, label = rownames(mca5_vars_df2)
 
 <br>
 
-# Imputation and export
-
-::: controlly
-```{r miss, warning=FALSE, echo=T, error=T, eval=T}
-require(missRanger)
-
-Base_fiscalia_v16_grant_23_24_miss <-
-Base_fiscalia_v16_grant_23_24 %>%
-  dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F))
-if(exists("no_mostrar")){
-  set.seed(2125)
-  Base_fiscalia_v16_grant_23_24 %>%
-  dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F)) %>% 
-    dplyr::arrange(hash_key, edad_al_ing_1) %>% 
-    dplyr::select() %>% 
-     missRanger::missRanger(
-                  formula = .  -offender_d - age_tr_comp_imp ~ . - hash_key -offender_d - age_tr_comp_imp,
-                  num.trees = 200, 
-                  pmm.k = 3,                
-                  returnOOB=T,
-                  maxiter= 50,
-                  verbose = 2, 
-                  seed = 2125)
-  #should drop:
-    # event_offense age_dropout_imp event_comp age_at_censor_date time_to_off_from_adm time_to_drop_from_adm edad_comision_imp fec_comision_simple_2 relacion_vifsaf_2
-  values_pris<- c(0.0013, 0.0053, 0.0000, 0.0000, 0.0000, 0.0158, 0.0000, 0.0000, 0.0000, 0.0000, 6e-04, 0.0024, 0.0024, 5e-04, 0.0285)
-  paste0("Mdn= ",median(values_pris)," Q1= ",quantile(values_pris,.25),", Q3= ", quantile(values_pris, .75))
-}
-```
-:::
-
-# Export
-
-```{r export, warning=FALSE, echo=T, error=T, eval=T}
-#2023-01-01 we had a problem with edad_al_ing_fmt. This variable predict better (it had lower amount of missing data and was in wide format)
-
-#cont_vars_desc[1]<-ifelse(cont_vars_desc[1]=="edad_al_ing_fmt","edad_al_ing_1",cont_vars_desc[1])
-
-
-Base_fiscalia_v16_grant_23_24 %>%
-  dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F)) %>% 
-  dplyr::arrange(hash_key, fech_ing_num_1)  %>% 
-  data.table::data.table() %>% 
-  rio::export(file = paste0("an_grant_23_24.dta"))
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-# IMPUTATION
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-
-Base_fiscalia_v16_grant_23_24_miss %>% 
-  dplyr::arrange(hash_key, fech_ing_num_1)  %>% 
-  data.table::data.table() %>% 
-  rio::export(file = paste0("an_grant_23_24_miss.dta"))
-```
-
-<br>
-
-# Explore trajectories
-
-# Adjusted Logistic regression
-
-```{r, eval=F}
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#Our simulation-based approach to the estimation of mediation effects enables users to deal with missing data via standard multiple imputation procedures in a straightforward fashion. The mediation package includes a pair of utility functions – mediations and amelidiate– to facilitate such analysis. First, users simulate multiple data sets using their preferredimputation software. Next, run mediate on each data set by simply passing the data setsthrough mediations. Next, pass the output of mediations to the amelidiate function, which combines the components of the output from mediations into a format that can be analyzed with the standard summary and plot commands.5 Alternatively, users can manually run mediate on their imputed data sets and simply stack the vectors of quantities they are interested in, and use basic functions like quantile to calculate confidence intervals.
-#, sims = 100        Simulations: 100
-require("MatchIt")
-
-#Base_fiscalia_v16_grant_23_24 %>%
-#  dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F))
-
-variables_vector <- c("sex", "edad_ini_cons", "escolaridad_rec", "condicion_ocupacional_corr", "num_hijos_mod_joel_bin", "tenencia_de_la_vivienda_mod", "macrozona", "n_off_vio", "n_off_acq", "n_off_sud", "n_off_oth", "dg_cie_10_rec", "dg_trs_cons_sus_or", "clas_r", "porc_pobr", "sus_ini_mod_mvv", "ano_nac_corr", "con_quien_vive_joel", "fis_comorbidity_icd_10", "n_off_vict")
-#edad_ini_cons macrozona estado_conyugal_2  con_quien_vive   numero_de_hijos_mod origen_ingreso_mod  tenencia_de_la_vivienda_mod rubro_trabaja_mod  condicion_ocupacional_corr     
-#mot_egres_mod_imp_rec_num     
-#clasificacion                 
-#porc_pobr
-#numero_de_hijos_mod_joel
-#ano_nac_corr 
-#num_hijos_mod_joel_bin
-#fis_comorbidity_icd_10
-#clas_r
-#tot_off_top
-
-#get a matched cohort of people by polysubstance use
-m.out3 <- matchit(policonsumo ~ rcs(edad_al_ing_1, 4) + sex + edad_ini_cons + escolaridad_rec + condicion_ocupacional_corr + num_hijos_mod_joel_bin + tenencia_de_la_vivienda_mod + macrozona + n_off_vio + n_off_acq + n_off_sud + n_off_oth + dg_cie_10_rec + dg_trs_cons_sus_or + clas_r + porc_pobr + sus_ini_mod_mvv + ano_nac_corr + con_quien_vive_joel + fis_comorbidity_icd_10+ n_off_vict, 
-                  data = Base_fiscalia_v16_grant_23_24 %>% dplyr::filter(dplyr::case_when(!motivodeegreso_mod_imp_1 %in% c("Derivación","En curso") & !is.na(tot_off_top)~T,T~F)) %>% dplyr::select(variables_vector),
-                    #Base_fiscalia_v16_grant_23_24[complete.cases(Base_fiscalia_v16_grant_23_24[,..variables_vector]),], 
-                  method = "nearest", 
-                  discard = "both",
-                  caliper = .05, 
-                  standardize = T)
-
-plot(
-cobalt::bal.tab(m.out3, un = TRUE, m.threshold = .1, 
-        v.threshold = 2))
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#install.packages("MatchThem")
-# require(MatchThem)
-#https://cran.r-project.org/web/packages/MatchThem/MatchThem.pdf
-imputed.datasets <- mice::mice(dplyr::select(Base_fiscalia_v15f_grant_23_24,c(variables_vector,"edad_al_ing_1","policonsumo","time_to_off_from_adm","time_to_drop_from_adm","event_death","event_comp","event_offense")), m = 5)
-
-#Currently, "within" (performing matching within each dataset) and "across" (estimating propensity scores within each dataset, averaging them across datasets, and performing matching using the averaged propensity scores in each dataset) approaches are available. The default is "within", which has been shown to have superior performance in most cases
-  #Matching the multiply imputed datasets
-matched.datasets <- matchthem(policonsumo ~  sex + edad_ini_cons + escolaridad_rec + condicion_ocupacional_corr + num_hijos_mod_joel_bin + tenencia_de_la_vivienda_mod + macrozona + n_off_vio + n_off_acq + n_off_sud + n_off_oth + dg_cie_10_rec + dg_trs_cons_sus_or + clas_r + porc_pobr + sus_ini_mod_mvv + ano_nac_corr + con_quien_vive_joel + fis_comorbidity_icd_10+ n_off_vict,
-imputed.datasets, approach = 'within', method = 'nearest')
-#Matching Observations  | dataset: #1Error: Missing values are not allowed in the covariates.
-
-
-#Multiply imputing the missing values
-imputed.datasets <- mice::mice(osteoarthritis, m = 5)
-#Matching the multiply imputed datasets
-matched.datasets <- matchthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
-                              imputed.datasets,
-                              approach = 'within',
-                              method = 'nearest')
-
-#Multiply imputing the missing values
-imputed.datasets <- mice::mice(osteoarthritis, m = 5)
-#Estimating weights of observations in the multiply imputed datasets
-weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
-                              imputed.datasets,
-                              approach = 'within',
-                              method = 'ps',
-                              estimand = "ATT")
-#Analyzing the weighted datasets
-models <- with(data = weighted.datasets,
-exp = svyglm(KOA ~ OSP, family = binomial))
-#Pooling results obtained from analysing the datasets
-results <- pool(models)
-```
-
-```{r, "mediation", echo=T, error=T, message=TRUE, paged.print=TRUE, results="hold"}
-
-```
-
-<br>
-
 # Session info
 
-```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE}
+```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
 message(paste0("R library: ", Sys.getenv("R_LIBS_USER")))
-message(paste0("Date: ",Sys.Date()))
-message(paste0("Editor: ", path))
+message(paste0("Date: ",withr::with_locale(new = c('LC_TIME' = 'C'), code =Sys.time())))
+message(paste0("Editor context: ", path))
+```
 
+::: center-table
+```{r session-info-r, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
 sesion_info <- devtools::session_info()
 dplyr::select(
   tibble::as_tibble(sesion_info$packages),
   c(package, loadedversion, source)
 ) %>% 
-  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Package' = 2, 'Version'= 3),
-              caption = htmltools::tags$caption(
-        style = 'caption-side: top; text-align: left;',
-        '', htmltools::em('R packages')),
-      options=list(
-initComplete = htmlwidgets::JS(
-        "function(settings, json) {",
-        "$(this.api().tables().body()).css({
-            'font-family': 'Helvetica Neue',
-            'font-size': '50%', 
-            'code-inline-font-size': '15%', 
-            'white-space': 'nowrap',
-            'line-height': '0.75em',
-            'min-height': '0.5em'
-            });",#;
-        "}")))
-
-
- py_list_packages()%>% 
-  DT::datatable(filter = 'top', colnames = c('Row number' =1,'Package' = 2, 'Version'= 3),
-              caption = htmltools::tags$caption(
-        style = 'caption-side: top; text-align: left;',
-        '', htmltools::em('Python packages')),
-      options=list(
-initComplete = htmlwidgets::JS(
-        "function(settings, json) {",
-        "$(this.api().tables().body()).css({
-            'font-family': 'Helvetica Neue',
-            'font-size': '50%', 
-            'code-inline-font-size': '15%', 
-            'white-space': 'nowrap',
-            'line-height': '0.75em',
-            'min-height': '0.5em'
-            });",#;
-        "}")))
+ kable(caption = "R packages", format = "markdown",
+      col.names = c("Row number", "Package", "Version"),
+    row.names = FALSE,
+      align = c("c", "l", "r"))
 ```
+:::
 
-Guardar avances
+::: center-table
+```{r session-info-python, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
+reticulate::py_list_packages()%>% 
+ kable(caption = "Python packages", format = "markdown",
+      col.names = c("Package", "Version", "Requirement", "Channel"),
+    row.names = FALSE,
+      align = c("c", "l", "r", "r"))
+```
+:::
+
+Save
 
 ```{r}
 save.image("an_grant_23_24.RData")
