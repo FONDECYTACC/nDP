@@ -1687,18 +1687,16 @@ as.data.frame.TableOne(tbone_desc_merge_grant_23_24_licit_illicit_2, smd=TRUE, n
 --->
 ```
 
-- **C1: Hazardous Alcohol + Illicit User**= Represents a higher proportion of urban dwellers (76.3%). 83% started with alcohol. Majority (69.7%) had moderate biopsychosocial compromise.
-Over half (55.3%) have completed high school or less. 76.1% had not completed treatment.
+- **C1: Hazardous Alcohol + Illicit User**= Represents a higher proportion of urban dwellers (76.3%). 83% started with alcohol. More were classified without psychiatric comorbidity (40.1%). Minority (14.6%) had moderate biopsychosocial compromise. A higher group were Married/Sharing living arrangements (36.2%). Over half (55.3%) have completed high school or less. 76.1% had not completed treatment (highest completion).
 
-- **C2: Alcohol/Cocaine paste Frequent Dependence+ Heavy Illicit 2nd use**= High illicit secondary substance use, alongside alcohol and cocaine paste. Majority (82.1%) were urban dwellers.
-More than a half (57.3%) were under study to detect physicial comorbidity. Age tends to be higher with a median of 39.84. 43% had severe biopsychosocial compromise. Majority (52.2%) had completed high school or less.
+- **C2: Alcohol/Cocaine paste Frequent Dependence+ Heavy Illicit 2nd use**= High illicit secondary substance use, alongside alcohol and cocaine paste. Majority (82.1%) were urban dwellers. A higher group were Separated/Divorced (15%). More than a half (57.3%) were under study to detect physicial comorbidity. Age tends to be higher with a median of 39.84. 43% had severe biopsychosocial compromise. Majority (52.2%) had completed high school or less.
 
-- **C3: Frequent Dependence of Snort Cocaine & Cocaine paste + Illicit Secondary Substance**= High proportion (85.4%) of urban dwellers. Significant use of snorted cocaine, cocaine paste, and other illicit substances. 46.5% started with alcohol, while 41.8% started with marijuana. Majority (48.9%) had moderate biopsychosocial compromise. High percentage (64.6%) were single. Majority (57.6%) had completed high school or less. 
+- **C3: Frequent Dependence of Snort Cocaine & Cocaine paste + Illicit Secondary Substance**= High proportion (85.4%) of urban dwellers. Significant use of snorted cocaine, cocaine paste, and other illicit substances. 46.5% started with alcohol, while 41.8% started with marijuana. Majority (46.6%) had severe biopsychosocial compromise. Fewer were classified without psychiatric comorbidity (31.9%). High percentage (64.6%) were single. Majority (57.6%) had completed high school or less. Had the lowest completion (17.2%) 
 
-- **Class C4: Regular cocaine hydrochloride + Licit 2nd Substance Use **= Primarily use cocaine hydrochloride and had a licit second substance of choice. Highest urban dwelling proportion (86.4%). 57.4% started with alcohol. Majority (66.8%) had moderate biopsychosocial compromise.
+- **Class C4: Regular cocaine hydrochloride + Licit 2nd Substance Use **= Primarily use cocaine hydrochloride and had a licit second substance of choice.  A higher group were Married/Sharing living arrangements (37.1%). Highest urban dwelling proportion (86.4%). 57.4% started with alcohol. More were classified without psychiatric comorbidity (40.9%). Majority (66.8%) had moderate biopsychosocial compromise.
 Six out of ten (60.2%) had completed high school or less. 80.9% had incomplete treatments.
 
-- **Class C5: Frequent Hazardous Cocaine paste, Snort Cocaine & Marijuana Use + Licit 2nd substance**= Varied substance use, with frequent hazardous consumption patterns for cocaine paste, snorted cocaine, and marijuana. 77.7% urban dwellers. More than half (59.7%) were under study to detect any physical comorbidity. 54.8% started with alcohol. Majority (68.8%) had moderate biopsychosocial compromise. Majority (59.4%) have completed high school or less. 80.6% had not completed treatment.
+- **Class C5: Frequent Hazardous Cocaine paste, Snort Cocaine & Marijuana Use + Licit 2nd substance**= Varied substance use, with frequent hazardous consumption patterns for cocaine paste, snorted cocaine, and marijuana. 77.7% urban dwellers. More than half (59.7%) were under study to detect any physical comorbidity. 54.8% started with alcohol. Age tends to be lower with a median of 30.77. Minority (14.4%) had severe biopsychosocial compromise. Majority (59.4%) have completed high school or less. 80.6% had not completed treatment.
 
 <br>
 
