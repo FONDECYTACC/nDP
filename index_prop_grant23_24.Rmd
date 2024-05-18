@@ -1,6 +1,6 @@
 ---
 name: "repositorio_ndp_ags_mariel_jrt"
-title: "Poly-substance use, treatment completion, and contact with the justice system: a multistate analysis of treatments for substance use disorders between 2010-2019 in Chile"
+title: "Association between poly-substance use and substance use disorder treatment noncompletion in patients admitted to multiple treatments between 2010-2019 in Chile"
 lang: es-ES
 subject: R Markdown
 author:
@@ -46,6 +46,11 @@ output:
 
 - [Step 1: mediation](an_ser_2023_step_1_aug_23.html)
 
+- [Step 2: latent class analyses of PSU](proposal_grant_23_24_2.html)
+
+- [Step 3: Structure the database, test several models with time-varying coefficients](an_ser_2023_step_1_aug_23.html)
+
+- [Step 4: Present information (Descriptives, Intensity models, IIWs), see the associations w/ Poisson and NB models](an_ser_2023_step_1_aug_23.html)
 
 **Supplemental material**
 
@@ -54,4 +59,10 @@ output:
 - [Material for SER 2023 (step 1: parametric partitioned survival models & multistate models)](an_ser_2023_step_1.html)
 
 - [Material for SER 2023 (step 2: parametric partitioned survival models & multistate models)](an_ser_2023_step_2.html)
+
+**Presentations**
+
+- [To SER 2023 (html)](pres_mar_23_poly_final.html)
+
+- [To SER 2023 (PDF)](pres_mar_23_poly_final.html)
 
