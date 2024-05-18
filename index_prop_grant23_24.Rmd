@@ -48,9 +48,9 @@ output:
 
 - [Step 2: latent class analyses of PSU](proposal_grant_23_24_2.html)
 
-- [Step 3: Structure the database, test several models with time-varying coefficients](an_ser_2023_step_1_aug_23.html)
+- [Step 3: Structure the database, test several models with time-varying coefficients](proposal_grant_23_24_3.html)
 
-- [Step 4: Present information (Descriptives, Intensity models, IIWs), see the associations w/ Poisson and NB models](an_ser_2023_step_1_aug_23.html)
+- [Step 4: Present information (Descriptives, Intensity models, IIWs), see the associations w/ Poisson and NB models](proposal_grant_23_24_4.html)
 
 **Supplemental material**
 
