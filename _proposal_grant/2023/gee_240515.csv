@@ -1,0 +1,101 @@
+"setting"	"model"	"QIC"	"Term"	"Estimates"	"Model SE"	"Robust SE"	"Wald"	"CI.lower"	"CI.upper"	"p.value"	"min_qic_setting"
+"1"	"basic ambulatory"	"No correction"	19452,8554516227	"policonsumo2"	"1.02"	"0.01"	"0.01"	"1.78"	"1.00"	"1.05"	"0.075"	0
+"2"	"basic ambulatory"	"No correction, NB"	19837,6592259833	"policonsumo2"	"1.02"	"0.01"	"0.01"	"1.78"	"1.00"	"1.05"	"0.0759"	0
+"3"	"basic ambulatory"	"No correction, main"	19463,5203799946	"policonsumo2"	"1.02"	"0.01"	"0.02"	"1.38"	"0.99"	"1.05"	"0.1665"	0
+"4"	"basic ambulatory"	"No correction, main, NB"	19463,5242379752	"policonsumo2"	"1.02"	"0.01"	"0.02"	"1.38"	"0.99"	"1.05"	"0.1665"	0
+"5"	"basic ambulatory"	"No correction, alternative"	19457,6422107726	"policonsumo2"	"1.02"	"0.01"	"0.01"	"1.73"	"1.00"	"1.05"	"0.0838"	0
+"6"	"basic ambulatory"	"No correction, alternative, NB"	19457,6460688427	"policonsumo2"	"1.02"	"0.01"	"0.01"	"1.73"	"1.00"	"1.05"	"0.0838"	0
+"7"	"basic ambulatory"	"Correction for PH, no weight"	19452,8554516227	"policonsumo2"	"1.02"	"0.01"	"0.01"	"1.78"	"1.00"	"1.05"	"0.075"	0
+"8"	"basic ambulatory"	"Correction for PH, no weight, NB"	19452,8593106832	"policonsumo2"	"1.02"	"0.01"	"0.01"	"1.78"	"1.00"	"1.05"	"0.075"	0
+"9"	"basic ambulatory"	"Correction for PH, main"	19477,3267584355	"policonsumo2"	"1.03"	"0.01"	"0.02"	"1.50"	"0.99"	"1.06"	"0.1328"	0
+"10"	"basic ambulatory"	"Correction for PH, main, NB"	19477,3306133518	"policonsumo2"	"1.03"	"0.01"	"0.02"	"1.50"	"0.99"	"1.06"	"0.1328"	0
+"11"	"basic ambulatory"	"Correction for PH, alternative"	19514,728060204	"policonsumo2"	"1.03"	"0.02"	"0.02"	"1.22"	"0.98"	"1.07"	"0.2209"	0
+"12"	"basic ambulatory"	"Correction for PH, alternative, NB"	19514,7319076441	"policonsumo2"	"1.03"	"0.02"	"0.02"	"1.22"	"0.98"	"1.07"	"0.2209"	0
+"13"	"basic ambulatory"	"Stratified, no weight"	19452,8554516081	"policonsumo2"	"1.02"	"0.01"	"0.01"	"1.78"	"1.00"	"1.05"	"0.075"	1
+"14"	"basic ambulatory"	"Stratified, no weight, NB"	19452,8593106948	"policonsumo2"	"1.02"	"0.01"	"0.01"	"1.78"	"1.00"	"1.05"	"0.075"	0
+"15"	"basic ambulatory"	"Stratified, main"	19474,6517189554	"policonsumo2"	"1.02"	"0.01"	"0.02"	"1.06"	"0.98"	"1.05"	"0.287"	0
+"16"	"basic ambulatory"	"Stratified, main, NB"	19474,655577274	"policonsumo2"	"1.02"	"0.01"	"0.02"	"1.06"	"0.98"	"1.05"	"0.287"	0
+"17"	"basic ambulatory"	"Stratified, alternative"	19465,2689665043	"policonsumo2"	"1.04"	"0.01"	"0.02"	"2.32"	"1.01"	"1.07"	"0.0202"	0
+"18"	"basic ambulatory"	"Stratified, alternative, NB"	19465,2728251309	"policonsumo2"	"1.04"	"0.01"	"0.02"	"2.32"	"1.01"	"1.07"	"0.0202"	0
+"19"	"basic ambulatory"	"Stratified, 2nd alternative"	19502,7878360859	"policonsumo2"	"1.03"	"0.01"	"0.02"	"1.40"	"0.99"	"1.07"	"0.1613"	0
+"20"	"basic ambulatory"	"Stratified, 2nd alternative, NB"	19502,7916927594	"policonsumo2"	"1.03"	"0.01"	"0.02"	"1.40"	"0.99"	"1.07"	"0.1613"	0
+"21"	"GP intensive ambulatory"	"No correction"	22259,099499589	"policonsumo2"	"1.04"	"0.01"	"0.01"	"2.61"	"1.01"	"1.07"	"0.009"	1
+"22"	"GP intensive ambulatory"	"No correction, NB"	22683,9532642466	"policonsumo2"	"1.04"	"0.01"	"0.01"	"2.61"	"1.01"	"1.07"	"0.0089"	0
+"23"	"GP intensive ambulatory"	"No correction, main"	22272,102720407	"policonsumo2"	"1.04"	"0.01"	"0.02"	"2.54"	"1.01"	"1.08"	"0.0112"	0
+"24"	"GP intensive ambulatory"	"No correction, main, NB"	22272,1069756166	"policonsumo2"	"1.04"	"0.01"	"0.02"	"2.54"	"1.01"	"1.08"	"0.0112"	0
+"25"	"GP intensive ambulatory"	"No correction, alternative"	22268,1159856419	"policonsumo2"	"1.04"	"0.01"	"0.02"	"2.49"	"1.01"	"1.07"	"0.0127"	0
+"26"	"GP intensive ambulatory"	"No correction, alternative, NB"	22268,1202411717	"policonsumo2"	"1.04"	"0.01"	"0.02"	"2.49"	"1.01"	"1.07"	"0.0127"	0
+"27"	"GP intensive ambulatory"	"Correction for PH, no weight"	22259,099499589	"policonsumo2"	"1.04"	"0.01"	"0.01"	"2.61"	"1.01"	"1.07"	"0.009"	1
+"28"	"GP intensive ambulatory"	"Correction for PH, no weight, NB"	22259,1037571787	"policonsumo2"	"1.04"	"0.01"	"0.01"	"2.61"	"1.01"	"1.07"	"0.009"	0
+"29"	"GP intensive ambulatory"	"Correction for PH, main"	22280,5015467007	"policonsumo2"	"1.05"	"0.01"	"0.02"	"2.92"	"1.02"	"1.09"	"0.0035"	0
+"30"	"GP intensive ambulatory"	"Correction for PH, main, NB"	22280,5058003832	"policonsumo2"	"1.05"	"0.01"	"0.02"	"2.92"	"1.02"	"1.09"	"0.0035"	0
+"31"	"GP intensive ambulatory"	"Correction for PH, alternative"	22318,7962425971	"policonsumo2"	"1.05"	"0.01"	"0.02"	"1.99"	"1.00"	"1.09"	"0.0463"	0
+"32"	"GP intensive ambulatory"	"Correction for PH, alternative, NB"	22318,800489493	"policonsumo2"	"1.05"	"0.01"	"0.02"	"1.99"	"1.00"	"1.09"	"0.0463"	0
+"33"	"GP intensive ambulatory"	"Stratified, no weight"	22259,0994996028	"policonsumo2"	"1.04"	"0.01"	"0.01"	"2.61"	"1.01"	"1.07"	"0.009"	0
+"34"	"GP intensive ambulatory"	"Stratified, no weight, NB"	22259,1037572036	"policonsumo2"	"1.04"	"0.01"	"0.01"	"2.61"	"1.01"	"1.07"	"0.009"	0
+"35"	"GP intensive ambulatory"	"Stratified, main"	22278,5041573926	"policonsumo2"	"1.04"	"0.01"	"0.02"	"2.35"	"1.01"	"1.08"	"0.019"	0
+"36"	"GP intensive ambulatory"	"Stratified, main, NB"	22278,5084146449	"policonsumo2"	"1.04"	"0.01"	"0.02"	"2.35"	"1.01"	"1.08"	"0.019"	0
+"37"	"GP intensive ambulatory"	"Stratified, alternative"	22265,4641710102	"policonsumo2"	"1.02"	"0.01"	"0.02"	"1.42"	"0.99"	"1.05"	"0.1547"	0
+"38"	"GP intensive ambulatory"	"Stratified, alternative, NB"	22265,4684282519	"policonsumo2"	"1.02"	"0.01"	"0.02"	"1.42"	"0.99"	"1.05"	"0.1547"	0
+"39"	"GP intensive ambulatory"	"Stratified, 2nd alternative"	22276,0729686209	"policonsumo2"	"1.01"	"0.01"	"0.02"	"0.80"	"0.98"	"1.05"	"0.4255"	0
+"40"	"GP intensive ambulatory"	"Stratified, 2nd alternative, NB"	22276,0772255803	"policonsumo2"	"1.01"	"0.01"	"0.02"	"0.80"	"0.98"	"1.05"	"0.4255"	0
+"41"	"GP residential"	"No correction"	9817,17309460809	"policonsumo2"	"0.97"	"0.03"	"0.03"	"-1.31"	"0.92"	"1.02"	"0.1904"	1
+"42"	"GP residential"	"No correction, NB"	9978,17679674614	"policonsumo2"	"0.97"	"0.03"	"0.03"	"-1.31"	"0.91"	"1.02"	"0.1902"	0
+"43"	"GP residential"	"No correction, main"	9832,03977207491	"policonsumo2"	"0.97"	"0.03"	"0.03"	"-1.14"	"0.92"	"1.02"	"0.2528"	0
+"44"	"GP residential"	"No correction, main, NB"	9832,04137805276	"policonsumo2"	"0.97"	"0.03"	"0.03"	"-1.14"	"0.92"	"1.02"	"0.2528"	0
+"45"	"GP residential"	"No correction, alternative"	9826,11607213315	"policonsumo2"	"0.95"	"0.03"	"0.03"	"-1.65"	"0.90"	"1.01"	"0.0991"	0
+"46"	"GP residential"	"No correction, alternative, NB"	9826,11767926652	"policonsumo2"	"0.95"	"0.03"	"0.03"	"-1.65"	"0.90"	"1.01"	"0.0991"	0
+"47"	"GP residential"	"Correction for PH, no weight"	9817,17309460809	"policonsumo2"	"0.97"	"0.03"	"0.03"	"-1.31"	"0.92"	"1.02"	"0.1904"	1
+"48"	"GP residential"	"Correction for PH, no weight, NB"	9817,17470347596	"policonsumo2"	"0.97"	"0.03"	"0.03"	"-1.31"	"0.92"	"1.02"	"0.1904"	0
+"49"	"GP residential"	"Correction for PH, main"	9828,76971505465	"policonsumo2"	"0.98"	"0.03"	"0.03"	"-0.77"	"0.92"	"1.03"	"0.4442"	0
+"50"	"GP residential"	"Correction for PH, main, NB"	9828,77132260838	"policonsumo2"	"0.98"	"0.03"	"0.03"	"-0.77"	"0.92"	"1.03"	"0.4442"	0
+"51"	"GP residential"	"Correction for PH, alternative"	9865,6577235547	"policonsumo2"	"1.00"	"0.02"	"0.03"	"-0.05"	"0.93"	"1.07"	"0.9636"	0
+"52"	"GP residential"	"Correction for PH, alternative, NB"	9865,65932601954	"policonsumo2"	"1.00"	"0.02"	"0.03"	"-0.05"	"0.93"	"1.07"	"0.9636"	0
+"53"	"GP residential"	"Stratified, no weight"	9817,17309461725	"policonsumo2"	"0.97"	"0.03"	"0.03"	"-1.31"	"0.92"	"1.02"	"0.1904"	0
+"54"	"GP residential"	"Stratified, no weight, NB"	9817,17470347607	"policonsumo2"	"0.97"	"0.03"	"0.03"	"-1.31"	"0.92"	"1.02"	"0.1904"	0
+"55"	"GP residential"	"Stratified, main"	9836,89449273905	"policonsumo2"	"0.95"	"0.03"	"0.03"	"-1.60"	"0.89"	"1.01"	"0.1097"	0
+"56"	"GP residential"	"Stratified, main, NB"	9836,89610123203	"policonsumo2"	"0.95"	"0.03"	"0.03"	"-1.60"	"0.89"	"1.01"	"0.1097"	0
+"57"	"GP residential"	"Stratified, alternative"	9836,56750646176	"policonsumo2"	"0.97"	"0.03"	"0.03"	"-0.82"	"0.91"	"1.04"	"0.4096"	0
+"58"	"GP residential"	"Stratified, alternative, NB"	9836,56911401498	"policonsumo2"	"0.97"	"0.03"	"0.03"	"-0.82"	"0.91"	"1.04"	"0.4096"	0
+"59"	"GP residential"	"Stratified, 2nd alternative"	9883,78403124678	"policonsumo2"	"1.01"	"0.03"	"0.05"	"0.11"	"0.92"	"1.10"	"0.9098"	0
+"60"	"GP residential"	"Stratified, 2nd alternative, NB"	9883,78563417341	"policonsumo2"	"1.01"	"0.03"	"0.05"	"0.11"	"0.92"	"1.10"	"0.9098"	0
+"61"	"WO intensive ambulatory"	"No correction"	3420,67739247018	"policonsumo2"	"0.99"	"0.03"	"0.03"	"-0.38"	"0.92"	"1.05"	"0.7075"	0
+"62"	"WO intensive ambulatory"	"No correction, NB"	3484,23906006641	"policonsumo2"	"0.99"	"0.03"	"0.03"	"-0.37"	"0.92"	"1.05"	"0.7101"	0
+"63"	"WO intensive ambulatory"	"No correction, main"	3431,11854174454	"policonsumo2"	"0.99"	"0.04"	"0.04"	"-0.17"	"0.92"	"1.07"	"0.8688"	0
+"64"	"WO intensive ambulatory"	"No correction, main, NB"	3431,11917785795	"policonsumo2"	"0.99"	"0.04"	"0.04"	"-0.17"	"0.92"	"1.07"	"0.8688"	0
+"65"	"WO intensive ambulatory"	"No correction, alternative"	3426,64951420459	"policonsumo2"	"0.99"	"0.03"	"0.04"	"-0.33"	"0.92"	"1.06"	"0.7381"	0
+"66"	"WO intensive ambulatory"	"No correction, alternative, NB"	3426,65015089069	"policonsumo2"	"0.99"	"0.03"	"0.04"	"-0.33"	"0.92"	"1.06"	"0.7381"	0
+"67"	"WO intensive ambulatory"	"Correction for PH, no weight"	3420,67739247018	"policonsumo2"	"0.99"	"0.03"	"0.03"	"-0.38"	"0.92"	"1.05"	"0.7075"	0
+"68"	"WO intensive ambulatory"	"Correction for PH, no weight, NB"	3420,67802923801	"policonsumo2"	"0.99"	"0.03"	"0.03"	"-0.38"	"0.92"	"1.05"	"0.7075"	0
+"69"	"WO intensive ambulatory"	"Correction for PH, main"	3441,00581302834	"policonsumo2"	"1.01"	"0.04"	"0.05"	"0.22"	"0.92"	"1.10"	"0.8228"	0
+"70"	"WO intensive ambulatory"	"Correction for PH, main, NB"	3441,00644905485	"policonsumo2"	"1.01"	"0.04"	"0.05"	"0.22"	"0.92"	"1.10"	"0.8228"	0
+"71"	"WO intensive ambulatory"	"Correction for PH, alternative"	3463,57722763565	"policonsumo2"	"1.01"	"0.04"	"0.05"	"0.16"	"0.91"	"1.12"	"0.8719"	0
+"72"	"WO intensive ambulatory"	"Correction for PH, alternative, NB"	3463,57786078129	"policonsumo2"	"1.01"	"0.04"	"0.05"	"0.16"	"0.91"	"1.12"	"0.8719"	0
+"73"	"WO intensive ambulatory"	"Stratified, no weight"	3420,67739246581	"policonsumo2"	"0.99"	"0.03"	"0.03"	"-0.38"	"0.92"	"1.05"	"0.7075"	1
+"74"	"WO intensive ambulatory"	"Stratified, no weight, NB"	3420,67802924947	"policonsumo2"	"0.99"	"0.03"	"0.03"	"-0.38"	"0.92"	"1.05"	"0.7075"	0
+"75"	"WO intensive ambulatory"	"Stratified, main"	3447,96565771766	"policonsumo2"	"0.98"	"0.04"	"0.04"	"-0.44"	"0.90"	"1.07"	"0.6603"	0
+"76"	"WO intensive ambulatory"	"Stratified, main, NB"	3447,9662934195	"policonsumo2"	"0.98"	"0.04"	"0.04"	"-0.44"	"0.90"	"1.07"	"0.6603"	0
+"77"	"WO intensive ambulatory"	"Stratified, alternative"	3434,32814118763	"policonsumo2"	"0.98"	"0.03"	"0.04"	"-0.62"	"0.91"	"1.05"	"0.5343"	0
+"78"	"WO intensive ambulatory"	"Stratified, alternative, NB"	3434,32877741127	"policonsumo2"	"0.98"	"0.03"	"0.04"	"-0.62"	"0.91"	"1.05"	"0.5343"	0
+"79"	"WO intensive ambulatory"	"Stratified, 2nd alternative"	3464,95519769889	"policonsumo2"	"0.94"	"0.03"	"0.04"	"-1.42"	"0.87"	"1.02"	"0.1571"	0
+"80"	"WO intensive ambulatory"	"Stratified, 2nd alternative, NB"	3464,95583318889	"policonsumo2"	"0.94"	"0.03"	"0.04"	"-1.42"	"0.87"	"1.02"	"0.1571"	0
+"81"	"WO residential"	"No correction"	4823,86202628703	"policonsumo2"	"1.14"	"0.04"	"0.04"	"3.45"	"1.06"	"1.23"	"6e-04"	0
+"82"	"WO residential"	"No correction, NB"	4906,75727323548	"policonsumo2"	"1.14"	"0.04"	"0.04"	"3.45"	"1.06"	"1.23"	"6e-04"	0
+"83"	"WO residential"	"No correction, main"	4836,38506365986	"policonsumo2"	"1.15"	"0.03"	"0.04"	"3.31"	"1.06"	"1.26"	"9e-04"	0
+"84"	"WO residential"	"No correction, main, NB"	4836,38589160946	"policonsumo2"	"1.15"	"0.03"	"0.04"	"3.31"	"1.06"	"1.26"	"9e-04"	0
+"85"	"WO residential"	"No correction, alternative"	4831,90128745999	"policonsumo2"	"1.13"	"0.04"	"0.04"	"3.00"	"1.04"	"1.22"	"0.0027"	0
+"86"	"WO residential"	"No correction, alternative, NB"	4831,90211609986	"policonsumo2"	"1.13"	"0.04"	"0.04"	"3.00"	"1.04"	"1.22"	"0.0027"	0
+"87"	"WO residential"	"Correction for PH, no weight"	4823,86202628703	"policonsumo2"	"1.14"	"0.04"	"0.04"	"3.45"	"1.06"	"1.23"	"6e-04"	0
+"88"	"WO residential"	"Correction for PH, no weight, NB"	4823,86285555317	"policonsumo2"	"1.14"	"0.04"	"0.04"	"3.45"	"1.06"	"1.23"	"6e-04"	0
+"89"	"WO residential"	"Correction for PH, main"	4837,09471030494	"policonsumo2"	"1.11"	"0.03"	"0.04"	"2.50"	"1.02"	"1.21"	"0.0125"	0
+"90"	"WO residential"	"Correction for PH, main, NB"	4837,09553859614	"policonsumo2"	"1.11"	"0.03"	"0.04"	"2.50"	"1.02"	"1.21"	"0.0125"	0
+"91"	"WO residential"	"Correction for PH, alternative"	4857,47194688445	"policonsumo2"	"1.13"	"0.03"	"0.05"	"2.53"	"1.03"	"1.25"	"0.0115"	0
+"92"	"WO residential"	"Correction for PH, alternative, NB"	4857,47277446025	"policonsumo2"	"1.13"	"0.03"	"0.05"	"2.53"	"1.03"	"1.25"	"0.0115"	0
+"93"	"WO residential"	"Stratified, no weight"	4823,86202627674	"policonsumo2"	"1.14"	"0.04"	"0.04"	"3.45"	"1.06"	"1.23"	"6e-04"	1
+"94"	"WO residential"	"Stratified, no weight, NB"	4823,86285554968	"policonsumo2"	"1.14"	"0.04"	"0.04"	"3.45"	"1.06"	"1.23"	"6e-04"	0
+"95"	"WO residential"	"Stratified, main"	4846,88712501649	"policonsumo2"	"1.12"	"0.04"	"0.04"	"2.58"	"1.03"	"1.22"	"0.0098"	0
+"96"	"WO residential"	"Stratified, main, NB"	4846,88795397959	"policonsumo2"	"1.12"	"0.04"	"0.04"	"2.58"	"1.03"	"1.22"	"0.0098"	0
+"97"	"WO residential"	"Stratified, alternative"	4839,32767257756	"policonsumo2"	"1.11"	"0.03"	"0.04"	"2.55"	"1.02"	"1.20"	"0.0108"	0
+"98"	"WO residential"	"Stratified, alternative, NB"	4839,32850134844	"policonsumo2"	"1.11"	"0.03"	"0.04"	"2.55"	"1.02"	"1.20"	"0.0108"	0
+"99"	"WO residential"	"Stratified, 2nd alternative"	4869,98481785608	"policonsumo2"	"1.09"	"0.04"	"0.05"	"1.80"	"0.99"	"1.20"	"0.0718"	0
+"100"	"WO residential"	"Stratified, 2nd alternative, NB"	4869,98564595641	"policonsumo2"	"1.09"	"0.04"	"0.05"	"1.80"	"0.99"	"1.20"	"0.0718"	0

@@ -1,103 +1,97 @@
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
-<<<<<<< HEAD
+# R-related project files
+**.Rproj.user
+**.Rhistory
+**.RData 
+**.Ruserdata
+**.Rapp.history
+**.RDataTmp
+
+#Python
+**.spyproject/*
+
+# Windows files
 desktop.ini
-.Rproj
-=======
-desktop.ini
-**/desktop.ini
-*.ini
-**.ini
-# SublimeText project files
-*.sublime-workspace
-# mercurial dev
-/.hg/*
-*/.hg/*
-.hgignore
-# svn dev
-.svn/
-# Windows image file caches
+**desktop.ini
 Thumbs.db
 ehthumbs.db
-# Folder config file
-Desktop.ini
-# Recycle Bin used on file shares
 $RECYCLE.BIN/
-# project files
+
+# IDE project files
+*.sublime-workspace
+
+# Version control system folders
+.hg/* 
+.svn/
+
+# Build / temp folders and files
 /build/*
-/tmp/*
+/tmp/* 
 /docs/*
-# History files
-.Rhistory
-.Rapp.history
-# Output files from R CMD build
-/*.tar.gz
-# Output files from R CMD check
-/*.Rcheck/
-# produced vignettes
+*.tar.gz
+*.Rcheck/
+
+# R output files 
 vignettes/*.html
 vignettes/*.pdf
-# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
-.httr-oauth
-# knitr and R markdown default cache directories
-/*_cache/
-/cache/
-# Temporary files created by R markdown
-*.utf8.md
+*.utf8.md 
 *.knit.md
-# Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
+*_cache/
+**_cache/ 
+/cache/
+**_cache
+
+# OAuth2 token
+.httr-oauth
+
+# Shiny token
 rsconnect/
->>>>>>> 90dc9833b7a051530628d488b50a759bfbcc08c4
-#dejar fuera
-_CONS_C1_df_dup.csv
-_CONS_C1_df_dup
+
+# Exclude specific files 
+_CONS_C1_df_dup.csv 
 _CONS_C1_df_dup_ENE_2020.csv
-'~$reunion con Maureen.xlsx'
+'~$reunion con Maureen.xlsx' 
 'reunion con Maureen.xlsx'
-/*.Rdata/
-.RData
-3.RData
-3.Rdata
-2.RData
-CONS_C1_df_dup_ENE_2020.csv
-CONS_TOP_df_dup_ENE_2020.csv
-# exclude everything IN CHECKPOINT
+# ... (add other specific files)
+
+# Enhanced exclusions
+**.RData  # Cover potential .RData variants
+**.dta
+**.txt
+**.rar 
+**.rda
+**.sters
+**.rds
+**.gz.parquet
+
+#Exclude google docs
+**.gdoc
+*.gdoc
+**.gslides
+*.gslides
+Reuniones nDP 2023-2024*
+*.gsheet
+**.gsheet
+mariel_clus_cor*
+
+# Exclude folders
 dedup/*
-_matches_feb_2020
-_overlaps_feb_2020
-_matches_feb_2020
-CONS_C1_df_dup_FEB_2020.csv
-_CONS_C1_df_match70_2020_02_20.dta
-CONS_C1_df_dup_FEB_2020.dta
-CONS_C1_df_dup_FEB_2020.*
-_outputs/*
-*.RData
-*cache*
-renv/*
-*docx
-renv.lock
-*.dta
-*.txt
+_outputs/* 
+renv/* 
+_bibs/*
+__prueba/*
+___prueba/*
+___datos_minsal/* 
+_lit_rev/*
+*_files/*
+# Other sensitive data
 *ssh*
 *id_rsa_*
-*.rar
-*.rda
-*.RDataTmp
-*prueba_g_methods.xlsx
-*.sters
-parmodels_m2_nov_22.sters
-*.rds
-_bibs/*
-*2012_2_encrip.csv
-_proposal_grant/2023/_lit_rev/*
-__prueba/*
 
-#exclude MINSAL data
-DatosDefuncionesEncrip.csv
-___datos_minsal/2023-08-11 DatosDefuncionesEncrip.csv
+#Ignore files that start with ~
+~*
+# Comment: Exclude MINSAL data 
+# DatosDefuncionesEncrip.csv
+.Rproj.user
+
+# IG
+_ig_borquez/*

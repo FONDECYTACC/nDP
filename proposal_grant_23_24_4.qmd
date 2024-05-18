@@ -1,0 +1,3240 @@
+---
+title: "Polysubstance and tr. completion"
+description: |
+  Analyze the association between polysubstance at admission and tr. compleiton longitudinally along treatments, accounting for irregular observations.
+date: "`r format(Sys.time(),'%B %d, %Y')`"
+author: "Andrés González Santa Cruz"
+format: 
+  html:
+    code-fold: true
+---
+
+```{css}
+#| echo: false
+
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+
+```
+
+```{js zoom-jquery, echo = FALSE}
+$(document).ready(function() {
+
+$('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+
+// onClick function for all plots (img's)
+
+$('img:not(.zoomImg)').click(function() {
+$('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+$('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+});
+
+// onClick function for zoomImg
+
+$('img.zoomImg').click(function() {
+$('.zoomDiv').css({opacity: '0', width: '0%'});
+});
+});
+```
+
+```{css hideOutput-lib-src, echo = FALSE}
+<script src="https://github.com/AGSCL/gine_brechas_pandemia/blob/main/hideOutput.js"></script>
+```
+
+```{js hideOutput, echo = FALSE}
+$(document).ready(function() {
+
+\$chunks = \$('.fold');
+
+\$chunks.each(function () { // add button to source code chunks
+if ( \$(this).hasClass('s') ) {
+    \$('pre.r', this).prepend("\<div class=\\"showopt\\"\>Show Source\</div\>\<br style=\\"line-height:22px;\\"/\>");
+    \$('pre.r', this).children('code').attr('class', 'folded');
+    } // add button to output chunks
+
+    if ( \$(this).hasClass('o') ) {
+        \$('pre:not(.r)', this).has('code').prepend("\<div class=\\"showopt\\"\>Show Output\</div\>\<br style=\\"line-height:22px;\\"/\>");
+        \$('pre:not(.r)', this).children('code:not(r)').addClass('folded'); // add button to plots
+        \$(this).find('img').wrap('\<pre class=\\"plot\\"\>\</pre\>');
+        \$('pre.plot', this).prepend("\<div class=\\"showopt\\"\>Show Plot\</div\>\<br style=\\"line-height:22px;\\"/\>");
+        \$('pre.plot', this).children('img').addClass('folded');
+        }
+}); // hide all chunks when document is loaded
+
+\$('.folded').css('display', 'none') // function to toggle the visibility
+\$('.showopt').click(function() {
+        var label = \$(this).html();
+        if (label.indexOf("Show") \>= 0) {
+            \$(this).html(label.replace("Show", "Hide"));
+        } else {
+        \$(this).html(label.replace("Hide", "Show"));
+        }
+
+\$(this).siblings('code, img').slideToggle('fast', 'swing');
+});
+});
+```
+
+```{=html}
+<style type="text/css">
+
+.showopt {
+
+background-color: #004c93; color: #FFFFFF; width: 100px; height: 20px; text-align: center; vertical-align: middle !important; float: right; font-family: sans-serif; border-radius: 8px;
+
+}
+
+.showopt:hover {
+background-color: #dfe4f2;
+color: #004c93;
+
+}
+
+pre.plot {
+background-color: white !important;
+}
+
+.tablelines table, .tablelines td, .tablelines th {
+border: 1px solid black;
+}
+
+.centrado {
+text-align: center;
+}
+
+.table.center {
+margin-left:auto;
+margin-right:auto;
+}
+
+/* https://vivekjaiskumar.medium.com/css-is-and-not-selector-17c942ec83f :is()*/
+
+/* Applies to outputs that are not code other than R*/
+
+pre {
+overflow-x: auto !important;
+}
+
+pre code {
+word-wrap: normal !important;
+white-space: pre !important;
+}
+
+/*
+pre:not(.sourceCode) {
+white-space: nowrap !important;
+}
+*/
+.sourceCode { /* Important gives precedence */
+font-size: 10px !important;
+line-height: 50% !important;
+}
+body{ /* Normal */
+text-align: justify;
+}
+.superbigimage{
+overflow-y:scroll;
+height:350px;
+white-space: nowrap;
+overflow-x: auto;
+width:100%;
+}
+.superbigimage img{
+overflow-y: scroll;
+overflow-x: hidden;
+}
+.message { color:#446C6E; font-family: monospace;font-size: 10px; line-height: 110%; font-weight: bold;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
+div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
+.pandoc-table { /* Should add !important; but it seems no necessary */
+margin-left:auto; /* To center */
+margin-right:auto;
+border-collapse: collapse;
+table-layout: auto;
+font-size: 11px;
+overflow-y: auto;
+max-height:450px !important;
+white-space: nowrap;
+overflow-x: auto;
+width:450px;
+}
+.pandoc-table th {/* header */
+text-align: center !important;
+font-size: 10px;
+padding: 0px;
+}
+.pandoc-table td {
+text-align: left !important;
+font-size: 9px;
+padding: 0px;
+}
+.pandoc-table caption {
+text-align: left !important;
+font-size: 11px !important;
+}
+
+.center-table {
+text-align: left !important;
+font-size: 9px;
+padding: 0px;
+overflow-y:scroll;
+height:400px;
+overflow-x: scroll;
+}
+
+.controlly{
+overflow-y:scroll;
+height:350px;
+overflow-x: scroll;
+
+}
+</style>
+```
+```{=html}
+<!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
+
+<script>
+function myFunction1() {
+var x = document.getElementById("myDIV");
+if (x.style.display === "none") {
+x.style.display = "block";
+} else {
+x.style.display = "none";
+}
+}
+</script>
+
+<script>
+function myFunction2() {
+var x = document.getElementById("myDIV2");
+if (x.style.display === "none") {
+x.style.display = "block";
+} else {
+x.style.display = "none";
+}
+}
+</script>
+```
+```{r entorno-python}
+rm(list = ls()) 
+unlink("proposal_grant_23_24_files", recursive=T)
+#fuentes: 
+#https://rpubs.com/georgy_makarov/897844
+path<-paste0(getwd(),'/env')
+
+#Sys.setenv(RETICULATE_PYTHON =  "")
+
+#Sys.setenv(RETICULATE_PYTHON =  Sys.which("python"))
+
+#reticulate::py_config()
+#use_python(paste0(path,"/Scripts/python.exe"))
+
+#Sys.setenv(LD_LIBRARY_PATH =  paste0(path,"/Lib"))
+#Sys.setenv(LD_LIBRARY_PATH_64 =  paste0(path,"/Lib"))
+#instalar paquetes de funcionalidades básicas para tener ubicaciones relativas y acceso a python (reticulate)
+if(!require(reticulate)){install.packages("reticulate")}
+if(!require(rstudioapi)){install.packages("rstudioapi")}
+
+
+invisible("Create env")
+#https://stackoverflow.com/questions/54043607/how-to-set-pyenv-python-for-reticulate
+#Directory H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/env is not a Python virtualenv
+#virtualenv_create(envname  = path, packages = c("pip", "statsmodels", "matplotlib", "numpy", "pandas", "scipy"))
+# "C:/Users/andre/anaconda3/python.exe" -m venv "H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/9_Computacion_Estadistica/env"
+
+#FUENTES:
+#https://rstudio.github.io/reticulate/articles/versions.html
+#Virtual environment functions are not supported on Windows (the use of conda environments is recommended on Windows).
+
+invisible("Use environment")
+#https://ugoproto.github.io/ugo_r_doc/pdf/reticulate.pdf
+
+
+# tx  <- readLines(paste0(path,"/pyvenv.cfg"))
+# tx[[1]] <- paste0("home = ",gsub('/', '\\', paste0(path,"/Scripts/python.exe"), fixed=T))
+# tx[[3]] <- "version = 3.8.0"
+
+#writeLines(tx, con=paste0(path,"/pyvenv.cfg"))
+
+#H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/env/Scripts/python.exe"
+#use_virtualenv(path)
+
+#usar entorno virtual ya creado
+#información sobre entorno virtual
+#py_discover_config()
+#conda_python(envname =  "r-scrublet")
+
+
+# FUENTES
+#https://akrabat.com/creating-virtual-environments-with-pyenv/
+#https://rstudio.github.io/reticulate/reference/install_python.html
+#https://github.com/pyenv/pyenv/wiki#suggested-build-environment
+#https://github.com/pyenv/pyenv
+#https://stackoverflow.com/questions/56755156/reticulate-not-setting-python-path
+#https://github.com/rstudio/reticulate/issues/291#issuecomment-437143751
+#https://github.com/pyenv/pyenv
+#https://github.com/pyenv-win/pyenv-win#installation
+#https://stackoverflow.com/questions/52060867/how-to-use-pip-for-pyenv
+#https://github.com/pyenv/pyenv/issues/2417
+```
+
+```{python, eval=F}
+!pyenv install -l | findstr 3.8
+!pip install --upgrade pyenv-win
+!env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install
+!env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.7.5
+!pyenv build
+```
+
+```{r, "load-data", eval=T}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+# `r format(Sys.time(),'%B %d, %Y')`
+
+# Data import
+rm(list = ls()) 
+folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/"),
+                      "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/",
+                      "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
+load(paste0(folder_path,"an_grant_23_24_3.RData"))
+
+# List all of the objects names in RData:
+#ls(.GlobalEnv)
+#ls(new_environment)
+#rm(new_environment)
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+```
+
+<br>
+
+# Packages
+
+::: center-table
+```{r}
+#| message: false
+#| include: true
+#| warning: false
+
+pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando paquetes
+
+
+if (getRversion() != "4.1.2") { stop("Requires R version 4.1.2. Actual: ", getRversion()) }
+
+
+if(!require(geepack)){install.packages("geepack");library(geepack)}
+if(!require(geeM)){install.packages("geeM");library(geeM)}
+if(!require(tidyverse)){install.packages("tidyverse");library(tidyverse)}
+if(!require(MASS)){install.packages("MASS");library(MASS)}
+if(!require(geeasy)){install.packages("geeasy");library(geeasy)}
+if(!require(MuMIn)){remotes::install_version("MuMIn", "1.46.0");library(MuMIn)}
+if(!require(tableone)){install.packages("tableone");library(tableone)}
+if(!require(knitr)){install.packages("knitr");library(knitr)}
+if(!require(emmeans)){install.packages("emmeans");library(emmeans)}
+if(!require(biostat3)){install.packages("biostat3");library(biostat3)}
+if(!require(rms)){install.packages("rms");library(rms)}
+
+#https://gist.github.com/avallecam/56af06f46e5544c3af0f46344df20989 
+#https://stackoverflow.com/questions/49089476/any-updates-to-model-negative-binomial-distribution-data-with-gee-in-r
+#https://www.rdocumentation.org/packages/geepack/versions/1.3.4/topics/geese
+#https://stackoverflow.com/questions/13946540/negative-binomial-in-gee?rq=1
+
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+summary2.geem <- function(object, exponentiate = FALSE, digits = 2, ...) {
+  if (!is.list(object) || !"beta" %in% names(object)) {
+    stop("Invalid object: Expected a model object with beta coefficients.")
+  }
+  
+  # Initialize coefficients matrix
+  Coefs <- matrix(NA, nrow = length(object$beta), ncol = 8)
+  rownames(Coefs) <- object$coefnames
+  colnames(Coefs) <- c("Term", "Estimates", "Model SE", "Robust SE", "Wald", "CI.lower", "CI.upper", "p.value")
+  
+  Coefs[, "Estimates"] <- object$beta
+  
+  # Handling the variance calculations
+  naive <- is.null(object$var) || is.character(object$var) || any(diag(object$var) < 0)
+  if (naive) {
+    warning("Robust variance estimate not available or invalid. Using model-based SE.")
+    Coefs[, "Robust SE"] <- sqrt(diag(object$naiv.var))
+  } else {
+    Coefs[, "Robust SE"] <- sqrt(diag(object$var))
+  }
+  
+  Coefs[, "Model SE"] <- sqrt(diag(object$naiv.var))  # Model-based SE
+  
+  # Calculate Wald statistics
+  Coefs[, "Wald"] <- Coefs[, "Estimates"] / Coefs[, "Robust SE"]
+  
+  # 95% CI calculations
+  z_value <- qnorm((1 + 0.95) / 2)
+  Coefs[, "CI.lower"] <- Coefs[, "Estimates"] - z_value * Coefs[, "Robust SE"]
+  Coefs[, "CI.upper"] <- Coefs[, "Estimates"] + z_value * Coefs[, "Robust SE"]
+  
+  # P-value calculation
+  Coefs[, "p.value"] <- round(2 * pnorm(-abs(Coefs[, "Wald"])), digits = 4)
+  
+  # Exponentiate estimates and CIs if specified
+  if (exponentiate) {
+    Coefs[, c("Estimates", "CI.lower", "CI.upper")] <- exp(Coefs[, c("Estimates", "CI.lower", "CI.upper")])
+  }
+  
+  # Round numerical output
+  decimal_format <- sprintf("%%1.%df", digits)
+  
+  Coefs[, c("Estimates", "Model SE", "Robust SE", "Wald", "CI.lower", "CI.upper")] <- round(Coefs[, c("Estimates", "Model SE", "Robust SE", "Wald", "CI.lower", "CI.upper")], digits = digits)
+  Coefs[, c("Estimates", "Model SE", "Robust SE", "Wald", "CI.lower", "CI.upper")] <- sapply(Coefs[, c("Estimates", "Model SE", "Robust SE", "Wald", "CI.lower", "CI.upper")], function(col) {
+    as.character(sprintf(decimal_format, as.numeric(col)))
+  })
+  # Convert matrix to data frame and keep row names
+  result_df <- as.data.frame(Coefs)
+  result_df[, "Term"] <- rownames(Coefs)
+  row.names(result_df) <- NULL
+  return(result_df)
+}
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+tidy_geese_model <- function(geese_model, conf.level = 0.95) {
+  # Extract coefficients and their names
+  coefficients <- geese_model$beta
+  coefficient_names <- names(coefficients)
+  
+  # Extract variance of beta coefficients and compute standard errors
+  variance_beta <- geese_model$vbeta
+  std_errors <- sqrt(diag(variance_beta))
+  
+  # Calculate z-values and p-values
+  z_values <- coefficients / std_errors
+  p_values <- 2 * pnorm(-abs(z_values), lower.tail = TRUE)
+  
+  # Calculate confidence intervals
+  alpha <- 1 - conf.level
+  z <- qnorm(1 - alpha / 2)
+  lower_ci <- coefficients - z * std_errors
+  upper_ci <- coefficients + z * std_errors
+  
+  # Exponentiate coefficients and confidence intervals for odds ratios
+  exp_coefficients <- exp(coefficients)
+  exp_lower_ci <- exp(lower_ci)
+  exp_upper_ci <- exp(upper_ci)
+  
+  # Create a tidy data frame
+  tidy_data <- tibble::tibble(
+    Term = coefficient_names,
+    Estimate = exp_coefficients,
+    Std.Error = std_errors,
+    z.value = z_values,
+    p.value = p_values,
+    CI.Lower = exp_lower_ci,
+    CI.Upper = exp_upper_ci
+  ) %>% dplyr::mutate_at(c("Estimate", "Std.Error", "z.value", "CI.Lower","CI.Upper"),~sprintf("%1.2f",.))%>% dplyr::mutate_at(c("p.value"),~sprintf("%1.4f",.))
+  
+  return(tidy_data)
+}
+
+options(knitr.kable.NA = '')
+
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      # record the current time before each chunk
+      now <<- Sys.time()
+    } else {
+      # calculate the time difference after a chunk
+      res <- ifelse(difftime(Sys.time(), now)>(60^2),difftime(Sys.time(), now)/(60^2),difftime(Sys.time(), now)/(60^1))
+      # return a character string to show the time
+      x<-ifelse(difftime(Sys.time(), now)>(60^2),paste("Time for this code chunk to run:", round(res,1), "hours"),paste("Time for this code chunk to run:", round(res,1), "minutes"))
+      paste('<div class="message">', gsub('##', '\n', x),'</div>', sep = '\n')
+    }
+  }
+}))
+knitr::opts_chunk$set(time_it = TRUE)
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethrough")){
+  
+  # select the correct markup
+  # one * for italics, two ** for bold
+  map <- setNames(c("*", "**", "~~"), c("italics", "bold", "strikethrough"))
+  markup <- map[value]  
+  
+  for (r in rows){
+    for(c in cols){
+      
+      # Make sure values are not factors
+      df[[c]] <- as.character( df[[c]])
+      
+      # Update formatting
+      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, gsub(" ", "", df[r, c]), markup))
+    }
+  }
+  
+  return(df)
+}
+#To produce line breaks in messages and warnings
+knitr::knit_hooks$set(
+  error = function(x, options) {
+    paste('\n\n<div class="alert alert-danger">',
+          gsub('##', '\n', gsub('^##\ Error', '**Error**', x)),
+          '</div>', sep = '\n')
+  },
+  warning = function(x, options) {
+    paste('\n\n<div class="alert alert-warning">',
+          gsub('##', '\n', gsub('^##\ Warning:', '**Warning**', x)),
+          '</div>', sep = '\n')
+  },
+  message = function(x, options) {
+    paste('<div class="message">',
+          gsub('##', '\n', x),
+          '</div>', sep = '\n')
+  }
+)
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_
+invisible("Function to format CreateTableOne into a database")
+
+as.data.frame.TableOne <- function(x, ...) {capture.output(print(x,
+                                                                 showAllLevels = TRUE, varLabels = T,...) -> x)
+  y <- as.data.frame(x)
+  y$characteristic <- dplyr::na_if(rownames(x), "")
+  y <- y %>%
+    fill(characteristic, .direction = "down") %>%
+    dplyr::select(characteristic, everything())
+  rownames(y) <- NULL
+  y}
+#_#_#_#_#_#_#_#_#_#_#_#_#_
+# Austin, P. C. (2009). The Relative Ability of Different Propensity 
+# Score Methods to Balance Measured Covariates Between 
+# Treated and Untreated Subjects in Observational Studies. Medical 
+# Decision Making. https://doi.org/10.1177/0272989X09341755
+smd_bin <- function(x,y){
+  z <- x*(1-x)
+  t <- y*(1-y)
+  k <- sum(z,t)
+  l <- k/2
+  
+  return((x-y)/sqrt(l))
+  
+}
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+counting_process_output<-
+  function(object=NULL){
+    broom::tidy(object$m, exponentiate=T, conf.int=T) %>% 
+      dplyr::mutate(across(c("estimate","std.error","robust.se","statistic","conf.low","conf.high"),~sprintf("%1.2f",.))) %>% 
+      dplyr::mutate(p.value= sprintf("%1.4f",p.value))
+  }
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+
+if(.Platform$OS.type == "windows") withAutoprint({
+  memory.size()
+  memory.size(TRUE)
+  memory.limit()
+})
+memory.limit(size=56000)
+```
+:::
+
+## 0.a. Descriptives
+
+```{r label-variables-desc}
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+
+invisible("To account for variability by treatment setting, we stratified the analysis by setting: basic ambulatory GP intensive ambulatory GP residential WO intensive ambulatory WO residential")
+table(subset(Base_fiscalia_v15f_grant_23_24_long2_miss_proc_multtr, is_first_occurrence==1, select= "tipo_de_plan_2_mod"))
+
+data_mine_miss_restr_proc2 %>% 
+  group_by(hash_key) %>% 
+  summarise(min(fech_ing_num)) %>% nrow()
+#13317
+subset(data_mine_miss_restr_proc2 , is_first_occurrence==1) %>% nrow()
+#13317
+data_mine_miss_restr_proc2_baseline<-
+  subset(data_mine_miss_restr_proc2 , is_first_occurrence==1) 
+
+variables_vector <- c("tr_outcome", "policonsumo2", "comp_bpsc_y3_severe",
+                      "less_90d_tr1", "log_dias_treat_imp_sin_na",
+                      "edad_al_ing_1", "ano_nac_corr", "susinidum_oh", 
+                      "susinidum_coc", "susinidum_pbc", "susinidum_mar", 
+                      "psycom_dum_study", "psycom_dum_with", "freq_cons_dum_5day", 
+                      "cond_oc_dum_2inact", "cond_oc_dum_3unemp", "susprindum_coc", 
+                      "susprindum_pbc", "susprindum_mar", "susprindum_oh")#,"lag_comp_bpsc_y3_severe", "lag_less_90d_tr1", "log_lag_dias_treat_imp_sin_na", "lag_policonsumo2", "lag_tr_outcome")
+```
+
+::: center-table
+```{r label-variables-desc2}
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+
+attr(data_mine_miss_restr_proc2_baseline$tr_outcome,"label") <- "Complete status of treatment (binary)"
+attr(data_mine_miss_restr_proc2_baseline$tr_outcome,"label") <- "Complete status of treatment (binary)"
+attr(data_mine_miss_restr_proc2_baseline$policonsumo2,"label") <- "Polysubstance use"
+attr(data_mine_miss_restr_proc2_baseline$comp_bpsc_y3_severe,"label") <- "Biopsychosocial compromise (Severe)"
+attr(data_mine_miss_restr_proc2_baseline$less_90d_tr1,"label") <- "Treatment duration (binary) (<90 days)"
+attr(data_mine_miss_restr_proc2_baseline$log_dias_treat_imp_sin_na,"label") <- "Treatment duration (log-scaled days)"
+attr(data_mine_miss_restr_proc2_baseline$edad_al_ing_1,"label") <- "Age at admission to treatment"
+attr(data_mine_miss_restr_proc2_baseline$ano_nac_corr,"label") <- "Birth year"
+attr(data_mine_miss_restr_proc2_baseline$susinidum_oh,"label") <- "Primary substance (initial diagnosis): alcohol"
+attr(data_mine_miss_restr_proc2_baseline$susinidum_coc,"label") <- "Primary substance (initial diagnosis): cocaine hydrochloride"
+attr(data_mine_miss_restr_proc2_baseline$susinidum_pbc,"label") <- "Primary substance (initial diagnosis): cocaine base paste"
+attr(data_mine_miss_restr_proc2_baseline$susinidum_mar,"label") <- "Primary substance (initial diagnosis): marijuana"
+attr(data_mine_miss_restr_proc2_baseline$psycom_dum_study,"label") <- "Psychiatric comorbidity (ICD-10): In study"
+attr(data_mine_miss_restr_proc2_baseline$psycom_dum_with,"label") <- "Psychiatric comorbidity (ICD-10): Diagnosed"
+attr(data_mine_miss_restr_proc2_baseline$freq_cons_dum_5day,"label") <- "Daily frequence of primary substance use at admission"
+attr(data_mine_miss_restr_proc2_baseline$cond_oc_dum_2inact,"label") <- "Occupational Status: Inactive"
+attr(data_mine_miss_restr_proc2_baseline$cond_oc_dum_3unemp,"label") <- "Occupational Status: Unemployed"
+attr(data_mine_miss_restr_proc2_baseline$susprindum_oh,"label") <- "Primary substance at admission to treatment: alcohol"
+attr(data_mine_miss_restr_proc2_baseline$susprindum_coc,"label") <- "Primary substance at admission to treatment: cocaine hydrochloride"
+attr(data_mine_miss_restr_proc2_baseline$susprindum_pbc,"label") <- "Primary substance at admission to treatment: cocaine base paste"
+attr(data_mine_miss_restr_proc2_baseline$susprindum_mar,"label") <- "Primary substance at admission to treatment: marijuana"
+attr(data_mine_miss_restr_proc2_baseline$tipo_de_plan_2_mod,"label") <- "Treatment setting"
+
+invisible("Table for imputed dataset with selected covariates")
+
+library(tableone)
+
+vars <- setdiff(c(variables_vector,"tipo_de_plan_2_mod"), "policonsumo2")
+factorVars <- setdiff(variables_vector, c("policonsumo2", "edad_al_ing_1", "log_dias_treat_imp_sin_na", "ano_nac_corr"))
+
+tableOne <- CreateTableOne(vars = vars, data = data_mine_miss_restr_proc2_baseline,
+                           factorVars = factorVars, strata = "policonsumo2", 
+                           addOverall = TRUE,  # <-- This is the key addition
+                           includeNA = TRUE,
+                           test = TRUE) # Remove statistical tests for speed
+
+print(tableOne, smd = TRUE) # Calculate SMD separately if needed
+
+
+folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/"),
+                      "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/",
+                      "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
+
+as.data.frame.TableOne(tableOne, smd=T, nonnormal= T)%>% 
+  dplyr::mutate(char2=characteristic) %>% 
+  tidyr::fill(char2) %>% 
+  dplyr::select(char2,everything()) %>% 
+  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,TRUE~as.character(characteristic))) %>% 
+  format_cells(1, 1:length(names(.)), "bold") %>%
+  dplyr::select(-1) %>% 
+  dplyr::mutate_all(~ str_replace_all(., pattern = "\\( ", replacement = "\\(")) %>% 
+  dplyr::mutate_all(~ str_trim(.)) %>% 
+  {
+    knitr::kable(.,size=10, format="markdown",caption= "Summary descriptives, Polysubstance(1) and no Polysubstance use (0)", escape=T)
+    write.table(.,paste0(folder_path,"baseline_psu_desc_subsamp_smd.csv"), dec=",", sep="\t")
+  }
+```
+:::
+
+::: center-table
+```{r exp-surv1}
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+
+
+  rbind.data.frame(
+    cbind.data.frame(
+      type= "PSU at admission and at least one dropout from the first admission",
+    biostat3::survRate(Surv(cens_time, sum_tr_outcomes>0) ~ policonsumo2, 
+                       data= data_mine_miss_restr_proc2 %>% 
+                        dplyr::group_by(hash_key) %>% 
+                        dplyr::mutate(sum_tr_outcomes=sum(tr_outcome==1,na.rm=T)) %>% 
+                        dplyr::filter(is_first_occurrence==1) %>% 
+                        dplyr::ungroup())  %>% 
+      dplyr::mutate(across(c("rate", "lower", "upper"),~sprintf("%1.2f",.*1000)))
+    ),
+    cbind.data.frame(
+      type= "PSU at admission and first dropout",
+    biostat3::survRate(Surv(cens_time, tr_outcome==1) ~ policonsumo2, 
+                       data= data_mine_miss_restr_proc2 %>% 
+                        dplyr::group_by(hash_key) %>% 
+                        dplyr::mutate(sum_tr_outcomes=sum(tr_outcome==1,na.rm=T)) %>% 
+                        dplyr::filter(is_first_occurrence==1) %>% 
+                        dplyr::ungroup())  %>% 
+      dplyr::mutate(across(c("rate", "lower", "upper"),~sprintf("%1.2f",.*1000))) 
+    ),
+    cbind.data.frame(
+      type= "At least one treatment reporting PSU and at least one dropout from the first admission",
+    biostat3::survRate(Surv(cens_time, sum_tr_outcomes>0) ~ policonsumo2, 
+                       data= data_mine_miss_restr_proc2 %>% 
+                        dplyr::group_by(hash_key) %>% 
+                        dplyr::mutate(sum_tr_outcomes=sum(tr_outcome==1,na.rm=T),
+                                      sum_policonsumo2=sum(policonsumo2==1,na.rm=T)) %>% 
+                        dplyr::filter(is_first_occurrence==1) %>% 
+                        dplyr::ungroup() %>% dplyr::mutate(policonsumo2=ifelse(sum_policonsumo2>0,1,0)))  %>% 
+      dplyr::mutate(across(c("rate", "lower", "upper"),~sprintf("%1.2f",.*1000))) 
+    ),
+    cbind.data.frame(
+      type= "At least one treatment reporting PSU and first dropout",
+    biostat3::survRate(Surv(cens_time, tr_outcome==1) ~ policonsumo2, 
+                       data= data_mine_miss_restr_proc2 %>% 
+                        dplyr::group_by(hash_key) %>% 
+                        dplyr::mutate(sum_tr_outcomes=sum(tr_outcome==1,na.rm=T),
+                                      sum_policonsumo2=sum(policonsumo2==1,na.rm=T)) %>% 
+                        dplyr::filter(is_first_occurrence==1) %>% 
+                        dplyr::ungroup() %>% dplyr::mutate(policonsumo2=ifelse(sum_policonsumo2>0,1,0)))  %>% 
+      dplyr::mutate(across(c("rate", "lower", "upper"),~sprintf("%1.2f",.*1000))) 
+    )    
+  ) %>%  
+  {
+    copiar_nombres2(.)
+    write.table(.,paste0(folder_path,"person_time_irrs.csv"), dec=",", sep="\t")
+    knitr::kable(.,"markdown", caption= "Glimpse of the survival analysis, person-time")
+  }
+```
+:::
+
+## 0.b. IIWs
+
+```{r iiw-summary}
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+
+rbind.data.frame(
+  cbind.data.frame(model= "Primary (no corrections, lag=0)", t(matrix(summary(data_mine_miss_restr_proc2$iiw_nocorr_st)))),
+  cbind.data.frame(model= "Alternative (no corrections, lag=1)", t(matrix(summary(data_mine_miss_restr_proc2$iiw_nocorr_alt_st)))),
+  cbind.data.frame(model= "Primary (after PH, lag=0)", t(matrix(summary(data_mine_miss_restr_proc2_iiw_after_ph$iiw_after_ph_st)))),
+  cbind.data.frame(model= "Alternative (after PH, lag=1)", t(matrix(summary(data_mine_miss_restr_proc2_iiw_after_ph_alt$iiw_after_ph_st)))),
+  cbind.data.frame(model= "Primary (strata, lag=0)", t(matrix(summary(data_mine_miss_proc2_iiw_strata_alt$iiw_strata_st)))),
+  cbind.data.frame(model= "Alternative (strata, lag=1)", t(matrix(summary(data_mine_miss_proc2_iiw_strata_alt_alt$iiw_strata_st))))
+) %>%  #Min.	First quartile	Median	Mean	Third quartile	Max.
+  dplyr::mutate_if(is.numeric, ~sprintf("%1.2f",.)) %>% 
+  {
+    copiar_nombres2(.)
+    write.table(.,paste0(folder_path,"iiws_20240516.csv"), dec=",", sep="\t")
+    knitr::kable(.,size=10, format="markdown",caption= "Summary descriptives, Polysubstance(1) and no Polysubstance use (0)", escape=T)
+  }
+```
+
+
+## 0.c. Intensity model
+::: center-table
+```{r intensity-model}
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+#Cox Counting process
+
+
+#https://rdrr.io/github/gforge/Greg/src/R/tidy.rms.R
+source(paste0(folder_path,"tidy_rms.R"))
+
+term_mapping <- data.frame(
+  term = c("lag_tr_outcome", "lag_comp_bpsc_y3_severe", "lag_less_90d_tr1", 
+           "log_lag_dias_treat_imp_sin_na", "lag_policonsumo2", "edad_al_ing_1", 
+           "ano_nac_corr", "susinidum_oh", "susinidum_coc", "susinidum_pbc", 
+           "susinidum_mar", "psycom_dum_study", "psycom_dum_with", "freq_cons_dum_5day", 
+           "cond_oc_dum_2inact", "cond_oc_dum_3unemp", "susprindum_oh", "susprindum_coc", 
+           "susprindum_pbc", "susprindum_mar", "lag_tr_outcome_rec", "lag_less_90d_tr1_rec", 
+           "lag_comp_bpsc_y3_severe_rec", "susinidum_coc_rec2", "psycom_dum_with_rec2"),
+  term_label = c("Treatment outcome of the previous treatment", "Previous biopsychosocial compromise (severe)", 
+                 "Previous treatment duration (<90 days)", "Previous treatment duration (in logarithmic scaled days)", 
+                 "Polysubstance use status of the previous treatment", "Age at admission to treatment", "Birth year", 
+                 "Primary substance (initial diagnosis), alcohol", "Primary substance (initial diagnosis), cocaine", 
+                 "Primary substance (initial diagnosis), cocaine base paste", "Primary substance (initial diagnosis), marijuana", 
+                 "Psychiatric comorbidity (diagnosis unknown or under study)", "Psychiatric comorbidity (confirmed comorbidity)", 
+                 "Daily frequence of primary substance use at admission", "Occupational status (inactive)", "Occupational status (unemployed)", 
+                 "Primary substance at admission to treatment (alcohol)", "Primary substance at admission to treatment (cocaine hydrochloride)", 
+                 "Primary substance at admission to treatment (cocaine base paste)", "Primary substance at admission to treatment (marijuana)", 
+                 "Treatment outcome of the previous treatment (recoded for interaction with time)", 
+                 "Previous biopsychosocial compromise (severe, recoded for interaction with time)", 
+                 "Previous treatment duration (<90 days, recoded for interaction with time)", 
+                 "Primary substance (initial diagnosis), cocaine (recoded for interaction with time)", 
+                 "Psychiatric comorbidity (confirmed comorbidity, recoded for interaction with time)")
+)
+
+
+cph_nocorr<-
+  cph(Surv(lag_time,time,event)~
+        cluster(id)+ 
+        lag_tr_outcome+
+        lag_comp_bpsc_y3_severe+
+        lag_less_90d_tr1+
+        log_lag_dias_treat_imp_sin_na +
+        lag_policonsumo2 + 
+        edad_al_ing_1 + 
+        ano_nac_corr + 
+        susinidum_oh +
+        susinidum_coc +
+        susinidum_pbc +
+        susinidum_mar +
+        psycom_dum_study +
+        psycom_dum_with +
+        freq_cons_dum_5day +
+        cond_oc_dum_2inact +
+        cond_oc_dum_3unemp +
+        susprindum_oh +
+        susprindum_coc +
+        susprindum_pbc +
+        susprindum_mar +
+        strat(tipo_de_plan_2_mod),
+      data= data_mine_miss_restr_proc2 %>% data.table::as.data.table() %>% data.frame(), 
+      x=TRUE, y=TRUE, surv=TRUE, iter.max = 250*4, tol = 1e-6)
+
+cph_after_ph<-
+cph(Surv(lag_time,time,event==1)~ 
+                  cluster(id)+ 
+                  lag_tr_outcome_rec +
+                  log_lag_dias_treat_imp_sin_na +
+                  lag_less_90d_tr1_rec+
+                  lag_comp_bpsc_y3_severe_rec + 
+                  lag_policonsumo2 + 
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidum_coc_rec2 +
+                  susinidum_oh +
+                  susinidum_pbc +
+                  susinidum_mar +
+                  psycom_dum_with_rec2 +
+                  psycom_dum_study + 
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindum_oh +
+                  susprindum_coc +
+                  susprindum_pbc +
+                  susprindum_mar+
+                  strat(tipo_de_plan_2_mod), 
+                data=data_mine_miss_restr_proc2, 
+                x=TRUE, y=TRUE, surv=TRUE, iter.max = 250*4, tol = 1e-6)
+
+invisible("Problemático")
+# broom::tidy(coxph(Surv(lag_time,time,event==1)~ 
+#         cluster(id)+ 
+#         lag_tr_outcome_rec +
+#         log_lag_dias_treat_imp_sin_na +
+#         lag_less_90d_tr1_rec+
+#         lag_comp_bpsc_y3_severe_rec + 
+#         lag_policonsumo2 + 
+#         edad_al_ing_1 + 
+#         ano_nac_corr + 
+#         susinidum_coc_rec2 +
+#         susinidum_oh +
+#         susinidum_pbc +
+#         susinidum_mar +
+#         psycom_dum_with_rec2 +
+#         psycom_dum_study + 
+#         freq_cons_dum_5day +
+#         cond_oc_dum_2inact +
+#         cond_oc_dum_3unemp +
+#         susprindum_oh +
+#         susprindum_coc +
+#         susprindum_pbc +
+#         susprindum_mar+
+#         strata(tipo_de_plan_2_mod), 
+#     data=data_mine_miss_restr_proc2), exponentiate=T, conf.int=T)
+
+models_hr_table2<-
+rbind.data.frame(
+cbind.data.frame(model="No correction", tidy.rms(cph_nocorr, conf.int=T, exponentiate=T)[, c("term","estimate", "conf.low", "conf.high")]%>% 
+  dplyr::mutate_if(is.numeric, ~sprintf("%1.2f",.))),
+cbind.data.frame(model="After PH", tidy.rms(cph_after_ph, conf.int=T, exponentiate=T)[, c("term","estimate", "conf.low", "conf.high")]%>% 
+  dplyr::mutate_if(is.numeric, ~sprintf("%1.2f",.))),
+cbind.data.frame(model="Stratifying", tidy.rms(model_after_time_strat, conf.int=T, exponentiate=T)[, c("term","estimate", "conf.low", "conf.high")]%>% 
+  dplyr::mutate_if(is.numeric, ~sprintf("%1.2f",.))),
+cbind.data.frame(model="Stratifying, alt strata", tidy.rms(model_after_time_strat_alt, conf.int=T, exponentiate=T)[, c("term","estimate", "conf.low", "conf.high")] %>% 
+  dplyr::mutate_if(is.numeric, ~sprintf("%1.2f",.)))
+)
+
+models_hr_table2$term_label <- term_mapping$term_label[match(models_hr_table2$term, term_mapping$term)]
+
+models_hr_table2%>%
+  dplyr::select(term_label, everything()) %>% 
+  {
+    #copiar_nombres2(.)
+    write.table(.,paste0(folder_path,"coxph_intensity_model_prev.csv"), dec=",", sep="\t")
+    knitr::kable(.,size=10, format="markdown",caption= "Intensity model", escape=T)
+  }
+
+```
+:::
+
+<br>
+
+# GEE
+
+## 1. No correction
+
+```{r}
+plan_names <- attr(table(data_mine_miss_restr_proc2$tipo_de_plan_2_mod),"dimnames")[[1]]
+```
+
+### 1.1. No correciton, no weight 
+
+Initialize a list to store models
+
+```{r}
+nocorr_nowgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee11, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- geese(tr_outcome ~ policonsumo2 +
+                   comp_bpsc_y3_severe+
+                   edad_al_ing_1 + 
+                   ano_nac_corr + 
+                   susinidum_oh +
+                   susinidum_coc +
+                   susinidum_pbc +
+                   susinidum_mar +
+                   psycom_dum_study +
+                   psycom_dum_with +
+                   freq_cons_dum_5day +
+                   cond_oc_dum_2inact +
+                   cond_oc_dum_3unemp +
+                   susprindum_coc +
+                   susprindum_pbc +
+                   susprindum_mar, #origen_ingreso_mod fis_comorbidity_icd_10 dg_trs_cons_sus_or
+                 id = id, 
+                 data = current_data,
+                 family = poisson(), 
+                 corstr = "independence", 
+                 jack = T)
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  nocorr_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+
+#### 1.1.1 No correction, no weight, GEEM Poisson 
+
+Initialize a list to store models
+
+```{r}
+geem_nocorr_nowgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee111, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset using geem
+  model <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidum_oh +
+                  susinidum_coc +
+                  susinidum_pbc +
+                  susinidum_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindum_coc +
+                  susprindum_pbc +
+                  susprindum_mar, # Include relevant predictors
+                id = id, 
+                data = current_data,
+                family = poisson("log"), 
+                corstr = "independence")
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  if(model$converged==FALSE){stop("model did not coverge")}
+  cat(sprintf("QIC for plan %s = %.1f\n", plan_names[i], as.numeric(MuMIn::QIC(model))))
+  geem_nocorr_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+#### 1.1.2 No correction, no weight, GEEM Negative binomial 
+
+Define a sequence of x values
+
+```{r}
+x_values <- seq(0.2, 16, by = 0.1)
+```
+
+Initialize a list to store models and their QICs
+
+```{r}
+geem2_nocorr_nowgt_list <- list()
+```
+
+Loop over each unique plan name to fit models
+
+
+::: center-table
+```{r gee112, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Initialize variable to store the best QIC and associated model
+  best_qic <- Inf
+  best_model <- NULL
+  best_x <- NA
+  
+  # Loop through each x value to find the one with the lowest QIC
+  for (x in x_values) {
+    # Fit the GEE model for the current subset using geem with negative binomial
+    model <- geem(tr_outcome ~ policonsumo2 +
+                    comp_bpsc_y3_severe+
+                    edad_al_ing_1 + 
+                    ano_nac_corr + 
+                    susinidum_oh +
+                    susinidum_coc +
+                    susinidum_pbc +
+                    susinidum_mar +
+                    psycom_dum_study +
+                    psycom_dum_with +
+                    freq_cons_dum_5day +
+                    cond_oc_dum_2inact +
+                    cond_oc_dum_3unemp +
+                    susprindum_coc +
+                    susprindum_pbc +
+                    susprindum_mar, # Include relevant predictors
+                  id = id, 
+                  data = current_data,
+                  family = MASS::negative.binomial(x),
+                  corstr = "independence")
+    
+    if (model$converged) {
+      # Calculate QIC for the model
+      model_qic <- MuMIn::QIC(model)
+      
+      # Check if this model has a better QIC
+      if (model_qic < best_qic) {
+        best_qic <- model_qic
+        best_model <- model
+        best_x <- x
+      }
+    }
+  }
+  
+  # Store the best model and its details in the list
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  geem2_nocorr_nowgt_list[[paste("model", model_name, sep = "_")]] <- list(best_model = best_model, best_x = best_x, best_qic = best_qic)
+  
+  # Optional: Print out some information on progress
+  cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
+}
+```
+:::
+
+### 1.2. No correction, weight 
+
+Initialize a list to store models
+
+```{r}
+nocorr_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+
+::: center-table
+```{r gee12, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- geese(tr_outcome ~ policonsumo2 +
+                   comp_bpsc_y3_severe+
+                   edad_al_ing_1 + 
+                   ano_nac_corr + 
+                   susinidum_oh +
+                   susinidum_coc +
+                   susinidum_pbc +
+                   susinidum_mar +
+                   psycom_dum_study +
+                   psycom_dum_with +
+                   freq_cons_dum_5day +
+                   cond_oc_dum_2inact +
+                   cond_oc_dum_3unemp +
+                   susprindum_coc +
+                   susprindum_pbc +
+                   susprindum_mar, 
+                 id = id, 
+                 data = current_data,
+                 family = poisson(), 
+                 weight= current_data$iiw_nocorr_st,
+                 corstr = "independence", 
+                 jack = T)
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  nocorr_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+#### 1.2.1 No correction, no weight, GEEM Poisson 
+
+Initialize a list to store models
+
+```{r}
+geem_nocorr_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee121, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset using geem
+  model <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidum_oh +
+                  susinidum_coc +
+                  susinidum_pbc +
+                  susinidum_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindum_coc +
+                  susprindum_pbc +
+                  susprindum_mar, # Include relevant predictors
+                id = id, 
+                data = current_data,
+                weight= current_data$iiw_nocorr_st,
+                family = poisson("log"), 
+                corstr = "independence")
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  if(model$converged==FALSE){stop("model did not coverge")}
+  cat(sprintf("QIC for plan %s = %.1f\n", plan_names[i], as.numeric(MuMIn::QIC(model))))
+  geem_nocorr_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+#### 1.2.2 No correction, no weight, GEEM Negative binomial 
+
+Define a sequence of x values
+
+```{r}
+x_values <- seq(158e4, 159e4, by = 100)
+```
+
+Initialize a list to store models and their QICs
+
+```{r}
+geem2_nocorr_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit models
+
+::: center-table
+```{r gee122, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Initialize variable to store the best QIC and associated model
+  best_qic <- Inf
+  best_model <- NULL
+  best_x <- NA
+  
+  # Loop through each x value to find the one with the lowest QIC
+  for (x in x_values) {
+    # Fit the GEE model for the current subset using geem with negative binomial
+    model <- geem(tr_outcome ~ policonsumo2 +
+                    comp_bpsc_y3_severe+
+                    edad_al_ing_1 + 
+                    ano_nac_corr + 
+                    susinidum_oh +
+                    susinidum_coc +
+                    susinidum_pbc +
+                    susinidum_mar +
+                    psycom_dum_study +
+                    psycom_dum_with +
+                    freq_cons_dum_5day +
+                    cond_oc_dum_2inact +
+                    cond_oc_dum_3unemp +
+                    susprindum_coc +
+                    susprindum_pbc +
+                    susprindum_mar, # Include relevant predictors
+                  id = id, 
+                  data = current_data,
+                  weight= current_data$iiw_nocorr_st,
+                  family = MASS::negative.binomial(x),
+                  corstr = "independence")
+    
+    if (model$converged) {
+      # Calculate QIC for the model
+      model_qic <- MuMIn::QIC(model)
+      
+      # Check if this model has a better QIC
+      if (model_qic < best_qic) {
+        best_qic <- model_qic
+        best_model <- model
+        best_x <- x
+      }
+    }
+  }
+  
+  # Store the best model and its details in the list
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  geem2_nocorr_wgt_list[[paste("model", model_name, sep = "_")]] <- list(best_model = best_model, best_x = best_x, best_qic = best_qic)
+  
+  # Optional: Print out some information on progress
+  cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
+}
+```
+:::
+
+Check the result for a particular plan
+
+::: center-table
+```{r}
+print(geem2_nocorr_wgt_list[[1]])
+```
+:::
+
+### 1.3. No correction, alt. weight 
+
+Initialize a list to store models
+
+```{r}
+nocorr_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee13, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- geese(tr_outcome ~ policonsumo2 +
+                   comp_bpsc_y3_severe+
+                   edad_al_ing_1 + 
+                   ano_nac_corr + 
+                   susinidum_oh +
+                   susinidum_coc +
+                   susinidum_pbc +
+                   susinidum_mar +
+                   psycom_dum_study +
+                   psycom_dum_with +
+                   freq_cons_dum_5day +
+                   cond_oc_dum_2inact +
+                   cond_oc_dum_3unemp +
+                   susprindum_coc +
+                   susprindum_pbc +
+                   susprindum_mar, 
+                 id = id, 
+                 data = current_data,
+                 family = poisson(), 
+                 weight= current_data$iiw_nocorr_alt_st,
+                 corstr = "independence", 
+                 jack = T)
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  nocorr_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+#### 1.3.1 No correction, alt weight, GEEM Poisson 
+
+Initialize a list to store models
+
+```{r}
+geem_nocorr_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee131, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset using geem
+  model <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidum_oh +
+                  susinidum_coc +
+                  susinidum_pbc +
+                  susinidum_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindum_coc +
+                  susprindum_pbc +
+                  susprindum_mar, # Include relevant predictors
+                id = id, 
+                data = current_data,
+                weight= current_data$iiw_nocorr_alt_st,
+                family = poisson("log"), 
+                corstr = "independence")
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  if(model$converged==FALSE){stop("model did not coverge")}
+  cat(sprintf("QIC for plan %s = %.1f\n", plan_names[i], as.numeric(MuMIn::QIC(model))))
+  geem_nocorr_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+#### 1.3.2 No correction, alt weight, GEEM Negative binomial 
+
+
+```{r}
+x_values <- seq(158e4, 159e4, by = 100)
+```
+
+Initialize a list to store models and their QICs
+
+```{r}
+geem2_nocorr_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit models
+
+::: center-table
+```{r gee132, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Initialize variable to store the best QIC and associated model
+  best_qic <- Inf
+  best_model <- NULL
+  best_x <- NA
+  
+  # Loop through each x value to find the one with the lowest QIC
+  for (x in x_values) {
+    # Fit the GEE model for the current subset using geem with negative binomial
+    model <- geem(tr_outcome ~ policonsumo2 +
+                    comp_bpsc_y3_severe+
+                    edad_al_ing_1 + 
+                    ano_nac_corr + 
+                    susinidum_oh +
+                    susinidum_coc +
+                    susinidum_pbc +
+                    susinidum_mar +
+                    psycom_dum_study +
+                    psycom_dum_with +
+                    freq_cons_dum_5day +
+                    cond_oc_dum_2inact +
+                    cond_oc_dum_3unemp +
+                    susprindum_coc +
+                    susprindum_pbc +
+                    susprindum_mar, # Include relevant predictors
+                  id = id, 
+                  data = current_data,
+                  weight= current_data$iiw_nocorr_alt_st,
+                  family = MASS::negative.binomial(x),
+                  corstr = "independence")
+    
+    if (model$converged) {
+      # Calculate QIC for the model
+      model_qic <- MuMIn::QIC(model)
+      
+      # Check if this model has a better QIC
+      if (model_qic < best_qic) {
+        best_qic <- model_qic
+        best_model <- model
+        best_x <- x
+      }
+    }
+  }
+  
+  # Store the best model and its details in the list
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  geem2_nocorr_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- list(best_model = best_model, best_x = best_x, best_qic = best_qic)
+  
+  # Optional: Print out some information on progress
+  cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
+}
+```
+:::
+
+Check the result for a particular plan
+
+::: center-table
+```{r}
+print(geem2_nocorr_alt_wgt_list[[1]])
+```
+:::
+
+## 2. After PH
+
+### 2.1. After PH, no weight 
+
+Initialize a list to store models
+
+```{r}
+afterph_nowgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee21, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- geese(tr_outcome ~ policonsumo2 +
+                   comp_bpsc_y3_severe+
+                   edad_al_ing_1 + 
+                   ano_nac_corr + 
+                   susinidum_oh +
+                   susinidum_coc +
+                   susinidum_pbc +
+                   susinidum_mar +
+                   psycom_dum_study +
+                   psycom_dum_with +
+                   freq_cons_dum_5day +
+                   cond_oc_dum_2inact +
+                   cond_oc_dum_3unemp +
+                   susprindum_coc +
+                   susprindum_pbc +
+                   susprindum_mar, 
+                 id = id, 
+                 data = current_data,
+                 family = poisson(), 
+                 #weight= current_data$iiw_nocorr_alt_st,
+                 corstr = "independence", 
+                 jack = T)
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  afterph_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+##### 2.1.1 After PH, no weight, GEEM Poisson 
+
+Initialize a list to store models
+
+```{r}
+geem_afterph_nowgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee211, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset using geem
+  model <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidum_oh +
+                  susinidum_coc +
+                  susinidum_pbc +
+                  susinidum_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindum_coc +
+                  susprindum_pbc +
+                  susprindum_mar, # Include relevant predictors
+                id = id, 
+                data = current_data,
+                family = poisson("log"), 
+                corstr = "independence")
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  if(model$converged==FALSE){stop("model did not coverge")}
+  cat(sprintf("QIC for plan %s = %.1f\n", plan_names[i], as.numeric(MuMIn::QIC(model))))
+  geem_afterph_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+##### 2.1.2 After PH, no weight, GEEM Negative binomial 
+
+Define a sequence of x values
+
+```{r}
+x_values <- seq(158e4, 159e4, by = 100)
+```
+
+Initialize a list to store models and their QICs
+
+```{r}
+geem2_afterph_nowgt_list <- list()
+```
+
+Loop over each unique plan name to fit models
+
+::: center-table
+```{r gee212, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Initialize variable to store the best QIC and associated model
+  best_qic <- Inf
+  best_model <- NULL
+  best_x <- NA
+  
+  # Loop through each x value to find the one with the lowest QIC
+  for (x in x_values) {
+    # Fit the GEE model for the current subset using geem with negative binomial
+    model <- geem(tr_outcome ~ policonsumo2 +
+                    comp_bpsc_y3_severe+
+                    edad_al_ing_1 + 
+                    ano_nac_corr + 
+                    susinidum_oh +
+                    susinidum_coc +
+                    susinidum_pbc +
+                    susinidum_mar +
+                    psycom_dum_study +
+                    psycom_dum_with +
+                    freq_cons_dum_5day +
+                    cond_oc_dum_2inact +
+                    cond_oc_dum_3unemp +
+                    susprindum_coc +
+                    susprindum_pbc +
+                    susprindum_mar, # Include relevant predictors
+                  id = id, 
+                  data = current_data,
+                  family = MASS::negative.binomial(x),
+                  corstr = "independence")
+    
+    if (model$converged) {
+      # Calculate QIC for the model
+      model_qic <- MuMIn::QIC(model)
+      
+      # Check if this model has a better QIC
+      if (model_qic < best_qic) {
+        best_qic <- model_qic
+        best_model <- model
+        best_x <- x
+      }
+    }
+  }
+  
+  # Store the best model and its details in the list
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  geem2_afterph_nowgt_list[[paste("model", model_name, sep = "_")]] <- list(best_model = best_model, best_x = best_x, best_qic = best_qic)
+  
+  # Optional: Print out some information on progress
+  cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
+}
+```
+:::
+
+Check the result for a particular plan
+
+::: center-table
+```{r}
+print(geem2_nocorr_nowgt_list[[1]])
+```
+:::
+
+As expected, QIC is equal, because the covariates and observations were the same
+
+#### 2.2. After PH, weight 
+
+Initialize a list to store models
+
+```{r}
+afterph_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee22, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- geese(tr_outcome ~ policonsumo2 +
+                   comp_bpsc_y3_severe+
+                   edad_al_ing_1 + 
+                   ano_nac_corr + 
+                   susinidum_oh +
+                   susinidum_coc +
+                   susinidum_pbc +
+                   susinidum_mar +
+                   psycom_dum_study +
+                   psycom_dum_with +
+                   freq_cons_dum_5day +
+                   cond_oc_dum_2inact +
+                   cond_oc_dum_3unemp +
+                   susprindum_coc +
+                   susprindum_pbc +
+                   susprindum_mar, 
+                 id = id, 
+                 data = current_data,
+                 family = poisson(), 
+                 weight= current_data$iiw_after_ph_st,
+                 corstr = "independence", 
+                 jack = T)
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  afterph_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+##### 2.2.1 After PH, weight, GEEM Poisson 
+
+Initialize a list to store models
+
+```{r}
+geem_afterph_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee221, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset using geem
+  model <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidum_oh +
+                  susinidum_coc +
+                  susinidum_pbc +
+                  susinidum_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindum_coc +
+                  susprindum_pbc +
+                  susprindum_mar, # Include relevant predictors
+                id = id, 
+                data = current_data,
+                weight= current_data$iiw_after_ph_st,
+                family = poisson("log"), 
+                corstr = "independence")
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  if(model$converged==FALSE){stop("model did not coverge")}
+  cat(sprintf("QIC for plan %s = %.1f\n", plan_names[i], as.numeric(MuMIn::QIC(model))))
+  geem_afterph_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+##### 2.2.2 After PH, weight, GEEM Negative binomial 
+
+Define a sequence of x values
+
+```{r}
+x_values <- seq(158e4, 159e4, by = 100)
+```
+
+Initialize a list to store models and their QICs
+
+```{r}
+geem2_afterph_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit models
+
+::: center-table
+```{r gee222, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Initialize variable to store the best QIC and associated model
+  best_qic <- Inf
+  best_model <- NULL
+  best_x <- NA
+  
+  # Loop through each x value to find the one with the lowest QIC
+  for (x in x_values) {
+    # Fit the GEE model for the current subset using geem with negative binomial
+    model <- geem(tr_outcome ~ policonsumo2 +
+                    comp_bpsc_y3_severe+
+                    edad_al_ing_1 + 
+                    ano_nac_corr + 
+                    susinidum_oh +
+                    susinidum_coc +
+                    susinidum_pbc +
+                    susinidum_mar +
+                    psycom_dum_study +
+                    psycom_dum_with +
+                    freq_cons_dum_5day +
+                    cond_oc_dum_2inact +
+                    cond_oc_dum_3unemp +
+                    susprindum_coc +
+                    susprindum_pbc +
+                    susprindum_mar, # Include relevant predictors
+                  id = id, 
+                  data = current_data,
+                  weight= current_data$iiw_after_ph_st,
+                  family = MASS::negative.binomial(x),
+                  corstr = "independence")
+    
+    if (model$converged) {
+      # Calculate QIC for the model
+      model_qic <- MuMIn::QIC(model)
+      
+      # Check if this model has a better QIC
+      if (model_qic < best_qic) {
+        best_qic <- model_qic
+        best_model <- model
+        best_x <- x
+      }
+    }
+  }
+  
+  # Store the best model and its details in the list
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  geem2_afterph_wgt_list[[paste("model", model_name, sep = "_")]] <- list(best_model = best_model, best_x = best_x, best_qic = best_qic)
+  
+  # Optional: Print out some information on progress
+  cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
+}
+```
+:::
+
+Check the result for a particular plan
+
+::: center-table
+```{r}
+print(geem2_afterph_wgt_list[[1]])
+```
+:::
+
+#### 2.3. After PH, alt. weight 
+
+Initialize a list to store models
+
+```{r}
+afterph_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee23, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- geese(tr_outcome ~ policonsumo2 +
+                   comp_bpsc_y3_severe+
+                   edad_al_ing_1 + 
+                   ano_nac_corr + 
+                   susinidum_oh +
+                   susinidum_coc +
+                   susinidum_pbc +
+                   susinidum_mar +
+                   psycom_dum_study +
+                   psycom_dum_with +
+                   freq_cons_dum_5day +
+                   cond_oc_dum_2inact +
+                   cond_oc_dum_3unemp +
+                   susprindum_coc +
+                   susprindum_pbc +
+                   susprindum_mar, 
+                 id = id, 
+                 data = current_data,
+                 family = poisson(), 
+                 weight= current_data$iiw_after_ph_st,
+                 corstr = "independence", 
+                 jack = T)
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  afterph_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+##### 2.3.1 After PH, alt weight, GEEM Poisson 
+
+Initialize a list to store models
+
+```{r}
+geem_afterph_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee231, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset using geem
+  model <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidum_oh +
+                  susinidum_coc +
+                  susinidum_pbc +
+                  susinidum_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindum_coc +
+                  susprindum_pbc +
+                  susprindum_mar, # Include relevant predictors
+                id = id, 
+                data = current_data,
+                weight= current_data$iiw_after_ph_st,
+                family = poisson("log"), 
+                corstr = "independence")
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  if(model$converged==FALSE){stop("model did not coverge")}
+  cat(sprintf("QIC for plan %s = %.1f\n", plan_names[i], as.numeric(MuMIn::QIC(model))))
+  geem_afterph_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+##### 2.3.2 After PH, alt weight, GEEM Negative binomial 
+
+Define a sequence of x values
+
+```{r}
+x_values <- seq(158e4, 159e4, by = 100)
+```
+
+Initialize a list to store models and their QICs
+
+```{r}
+geem2_afterph_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit models
+
+::: center-table
+```{r gee232, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Initialize variable to store the best QIC and associated model
+  best_qic <- Inf
+  best_model <- NULL
+  best_x <- NA
+  
+  # Loop through each x value to find the one with the lowest QIC
+  for (x in x_values) {
+    # Fit the GEE model for the current subset using geem with negative binomial
+    model <- geem(tr_outcome ~ policonsumo2 +
+                    comp_bpsc_y3_severe+
+                    edad_al_ing_1 + 
+                    ano_nac_corr + 
+                    susinidum_oh +
+                    susinidum_coc +
+                    susinidum_pbc +
+                    susinidum_mar +
+                    psycom_dum_study +
+                    psycom_dum_with +
+                    freq_cons_dum_5day +
+                    cond_oc_dum_2inact +
+                    cond_oc_dum_3unemp +
+                    susprindum_coc +
+                    susprindum_pbc +
+                    susprindum_mar, # Include relevant predictors
+                  id = id, 
+                  data = current_data,
+                  weight= current_data$iiw_after_ph_st,
+                  family = MASS::negative.binomial(x),
+                  corstr = "independence")
+    
+    if (model$converged) {
+      # Calculate QIC for the model
+      model_qic <- MuMIn::QIC(model)
+      
+      # Check if this model has a better QIC
+      if (model_qic < best_qic) {
+        best_qic <- model_qic
+        best_model <- model
+        best_x <- x
+      }
+    }
+  }
+  
+  # Store the best model and its details in the list
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  geem2_afterph_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- list(best_model = best_model, best_x = best_x, best_qic = best_qic)
+  
+  # Optional: Print out some information on progress
+  cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
+}
+```
+:::
+
+Check the result for a particular plan
+
+::: center-table
+```{r}
+print(geem2_afterph_alt_wgt_list[[1]])
+```
+:::
+
+## 3. Stratifying
+
+### 3.1. Stratifying, no weight 
+
+Initialize a list to store models
+
+```{r}
+strata_nowgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+
+::: center-table
+```{r gee31, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- geese(tr_outcome ~ policonsumo2 +
+                   comp_bpsc_y3_severe+
+                   edad_al_ing_1 + 
+                   ano_nac_corr + 
+                   susinidum_oh +
+                   susinidum_coc +
+                   susinidum_pbc +
+                   susinidum_mar +
+                   psycom_dum_study +
+                   psycom_dum_with +
+                   freq_cons_dum_5day +
+                   cond_oc_dum_2inact +
+                   cond_oc_dum_3unemp +
+                   susprindum_coc +
+                   susprindum_pbc +
+                   susprindum_mar, 
+                 id = id, 
+                 data = current_data,
+                 family = poisson(), 
+                 #weight= current_data$iiw_nocorr_alt_st,
+                 corstr = "independence", 
+                 jack = T)
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  strata_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+#### 3.1.1 Stratifying, no weight, GEEM Poisson 
+
+Initialize a list to store models
+
+```{r}
+geem_strata_nowgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+
+::: center-table
+```{r gee311, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset using geem
+  model <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidum_oh +
+                  susinidum_coc +
+                  susinidum_pbc +
+                  susinidum_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindum_coc +
+                  susprindum_pbc +
+                  susprindum_mar, # Include relevant predictors
+                id = id, 
+                data = current_data,
+                family = poisson("log"), 
+                corstr = "independence")
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  if(model$converged==FALSE){stop("model did not coverge")}
+  cat(sprintf("QIC for plan %s = %.1f\n", plan_names[i], as.numeric(MuMIn::QIC(model))))
+  geem_strata_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+#### 3.1.2 Stratifying, no weight, GEEM Negative binomial 
+
+Define a sequence of x values
+
+```{r}
+x_values <- seq(158e4, 159e4, by = 100)
+```
+
+Initialize a list to store models and their QICs
+
+```{r}
+geem2_strata_nowgt_list <- list()
+```
+
+Loop over each unique plan name to fit models
+
+::: center-table
+```{r gee312, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Initialize variable to store the best QIC and associated model
+  best_qic <- Inf
+  best_model <- NULL
+  best_x <- NA
+  
+  # Loop through each x value to find the one with the lowest QIC
+  for (x in x_values) {
+    # Fit the GEE model for the current subset using geem with negative binomial
+    model <- geem(tr_outcome ~ policonsumo2 +
+                    comp_bpsc_y3_severe+
+                    edad_al_ing_1 + 
+                    ano_nac_corr + 
+                    susinidum_oh +
+                    susinidum_coc +
+                    susinidum_pbc +
+                    susinidum_mar +
+                    psycom_dum_study +
+                    psycom_dum_with +
+                    freq_cons_dum_5day +
+                    cond_oc_dum_2inact +
+                    cond_oc_dum_3unemp +
+                    susprindum_coc +
+                    susprindum_pbc +
+                    susprindum_mar, # Include relevant predictors
+                  id = id, 
+                  data = current_data,
+                  family = MASS::negative.binomial(x),
+                  corstr = "independence")
+    
+    if (model$converged) {
+      # Calculate QIC for the model
+      model_qic <- MuMIn::QIC(model)
+      
+      # Check if this model has a better QIC
+      if (model_qic < best_qic) {
+        best_qic <- model_qic
+        best_model <- model
+        best_x <- x
+      }
+    }
+  }
+  
+  # Store the best model and its details in the list
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  geem2_strata_nowgt_list[[paste("model", model_name, sep = "_")]] <- list(best_model = best_model, best_x = best_x, best_qic = best_qic)
+  
+  # Optional: Print out some information on progress
+  cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
+}
+```
+:::
+
+Check the result for a particular plan
+
+::: center-table
+```{r}
+print(geem2_nocorr_nowgt_list[[1]])
+```
+:::
+
+### 3.2. Stratifying, weight 
+
+Initialize a list to store models
+
+```{r}
+strata_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee32, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- geese(tr_outcome ~ policonsumo2 +
+                   comp_bpsc_y3_severe+
+                   edad_al_ing_1 + 
+                   ano_nac_corr + 
+                   susinidum_oh +
+                   susinidum_coc +
+                   susinidum_pbc +
+                   susinidum_mar +
+                   psycom_dum_study +
+                   psycom_dum_with +
+                   freq_cons_dum_5day +
+                   cond_oc_dum_2inact +
+                   cond_oc_dum_3unemp +
+                   susprindum_coc +
+                   susprindum_pbc +
+                   susprindum_mar, 
+                 id = id, 
+                 data = current_data,
+                 family = poisson(), 
+                 weight= current_data$iiw_strata_st,
+                 corstr = "independence", 
+                 jack = T)
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  strata_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+#### 3.2.1 Stratifying, weight, GEEM Poisson 
+
+Initialize a list to store models
+
+```{r}
+geem_strata_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee321, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset using geem
+  model <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidum_oh +
+                  susinidum_coc +
+                  susinidum_pbc +
+                  susinidum_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindum_coc +
+                  susprindum_pbc +
+                  susprindum_mar, # Include relevant predictors
+                id = id, 
+                data = current_data,
+                weight= current_data$iiw_strata_st,
+                family = poisson("log"), 
+                corstr = "independence")
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  if(model$converged==FALSE){stop("model did not coverge")}
+  cat(sprintf("QIC for plan %s = %.1f\n", plan_names[i], as.numeric(MuMIn::QIC(model))))
+  geem_strata_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+#### 3.2.2 Stratifying, weight, GEEM Negative binomial 
+
+Define a sequence of x values
+
+```{r}
+x_values <- seq(158e4, 159e4, by = 100)
+```
+
+Initialize a list to store models and their QICs
+
+```{r}
+geem2_strata_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit models
+
+::: center-table
+```{r gee322, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Initialize variable to store the best QIC and associated model
+  best_qic <- Inf
+  best_model <- NULL
+  best_x <- NA
+  
+  # Loop through each x value to find the one with the lowest QIC
+  for (x in x_values) {
+    # Fit the GEE model for the current subset using geem with negative binomial
+    model <- geem(tr_outcome ~ policonsumo2 +
+                    comp_bpsc_y3_severe+
+                    edad_al_ing_1 + 
+                    ano_nac_corr + 
+                    susinidum_oh +
+                    susinidum_coc +
+                    susinidum_pbc +
+                    susinidum_mar +
+                    psycom_dum_study +
+                    psycom_dum_with +
+                    freq_cons_dum_5day +
+                    cond_oc_dum_2inact +
+                    cond_oc_dum_3unemp +
+                    susprindum_coc +
+                    susprindum_pbc +
+                    susprindum_mar, # Include relevant predictors
+                  id = id, 
+                  data = current_data,
+                  weight= current_data$iiw_strata_st,
+                  family = MASS::negative.binomial(x),
+                  corstr = "independence")
+    
+    if (model$converged) {
+      # Calculate QIC for the model
+      model_qic <- MuMIn::QIC(model)
+      
+      # Check if this model has a better QIC
+      if (model_qic < best_qic) {
+        best_qic <- model_qic
+        best_model <- model
+        best_x <- x
+      }
+    }
+  }
+  
+  # Store the best model and its details in the list
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  geem2_strata_wgt_list[[paste("model", model_name, sep = "_")]] <- list(best_model = best_model, best_x = best_x, best_qic = best_qic)
+  
+  # Optional: Print out some information on progress
+  cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
+}
+```
+:::
+
+Check the result for a particular plan
+
+::: center-table
+```{r}
+print(geem2_strata_wgt_list[[1]])
+```
+:::
+
+### 3.3. Stratifying, alt. weight 
+
+Initialize a list to store models
+
+```{r}
+strata_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee33, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- geese(tr_outcome ~ policonsumo2 +
+                   comp_bpsc_y3_severe+
+                   edad_al_ing_1 + 
+                   ano_nac_corr + 
+                   susinidum_oh +
+                   susinidum_coc +
+                   susinidum_pbc +
+                   susinidum_mar +
+                   psycom_dum_study +
+                   psycom_dum_with +
+                   freq_cons_dum_5day +
+                   cond_oc_dum_2inact +
+                   cond_oc_dum_3unemp +
+                   susprindum_coc +
+                   susprindum_pbc +
+                   susprindum_mar, 
+                 id = id, 
+                 data = current_data,
+                 family = poisson(), 
+                 weight= current_data$iiw_strata_st,
+                 corstr = "independence", 
+                 jack = T)
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  strata_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+#### 3.3.1 Stratifying, alt weight, GEEM Poisson 
+
+Initialize a list to store models
+
+```{r}
+geem_strata_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee331, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset using geem
+  model <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidum_oh +
+                  susinidum_coc +
+                  susinidum_pbc +
+                  susinidum_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindum_coc +
+                  susprindum_pbc +
+                  susprindum_mar, # Include relevant predictors
+                id = id, 
+                data = current_data,
+                weight= current_data$iiw_strata_st,
+                family = poisson("log"), 
+                corstr = "independence")
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  if(model$converged==FALSE){stop("model did not coverge")}
+  cat(sprintf("QIC for plan %s = %.1f\n", plan_names[i], as.numeric(MuMIn::QIC(model))))
+  geem_strata_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+#Alternative, better than main
+```
+:::
+
+::: center-table
+```{r}
+print(geem_strata_alt_wgt_list[[1]])
+```
+:::
+
+#### 3.3.2 No correction, alt weight, GEEM Negative binomial 
+
+Define a sequence of x values
+
+```{r}
+x_values <- seq(158e4, 159e4, by = 100)
+```
+
+Initialize a list to store models and their QICs
+
+```{r}
+geem2_strata_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit models
+
+::: center-table
+```{r gee332, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Initialize variable to store the best QIC and associated model
+  best_qic <- Inf
+  best_model <- NULL
+  best_x <- NA
+  
+  # Loop through each x value to find the one with the lowest QIC
+  for (x in x_values) {
+    # Fit the GEE model for the current subset using geem with negative binomial
+    model <- geem(tr_outcome ~ policonsumo2 +
+                    comp_bpsc_y3_severe+
+                    edad_al_ing_1 + 
+                    ano_nac_corr + 
+                    susinidum_oh +
+                    susinidum_coc +
+                    susinidum_pbc +
+                    susinidum_mar +
+                    psycom_dum_study +
+                    psycom_dum_with +
+                    freq_cons_dum_5day +
+                    cond_oc_dum_2inact +
+                    cond_oc_dum_3unemp +
+                    susprindum_coc +
+                    susprindum_pbc +
+                    susprindum_mar, # Include relevant predictors
+                  id = id, 
+                  data = current_data,
+                  weight= current_data$iiw_strata_st,
+                  family = MASS::negative.binomial(x),
+                  corstr = "independence")
+    
+    if (model$converged) {
+      # Calculate QIC for the model
+      model_qic <- MuMIn::QIC(model)
+      
+      # Check if this model has a better QIC
+      if (model_qic < best_qic) {
+        best_qic <- model_qic
+        best_model <- model
+        best_x <- x
+      }
+    }
+  }
+  
+  # Store the best model and its details in the list
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  geem2_strata_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- list(best_model = best_model, best_x = best_x, best_qic = best_qic)
+  
+  # Optional: Print out some information on progress
+  cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
+}
+```
+:::
+
+Check the result for a particular plan
+
+::: center-table
+```{r}
+print(geem2_strata_alt_wgt_list[[1]])
+```
+:::
+
+### 3.4. Stratifying, 2nd alt. weight 
+
+Initialize a list to store models
+
+```{r}
+strata_alt_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee34, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- geese(tr_outcome ~ policonsumo2 +
+                   comp_bpsc_y3_severe+
+                   edad_al_ing_1 + 
+                   ano_nac_corr + 
+                   susinidum_oh +
+                   susinidum_coc +
+                   susinidum_pbc +
+                   susinidum_mar +
+                   psycom_dum_study +
+                   psycom_dum_with +
+                   freq_cons_dum_5day +
+                   cond_oc_dum_2inact +
+                   cond_oc_dum_3unemp +
+                   susprindum_coc +
+                   susprindum_pbc +
+                   susprindum_mar, 
+                 id = id, 
+                 data = current_data,
+                 family = poisson(), 
+                 weight= current_data$iiw_strata_st,
+                 corstr = "independence", 
+                 jack = T)
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  strata_alt_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+#### 3.4.1 Stratifying, alt weight, GEEM Poisson 
+
+Initialize a list to store models
+
+```{r}
+geem_strata_alt_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit a model
+
+::: center-table
+```{r gee341, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset using geem
+  model <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidum_oh +
+                  susinidum_coc +
+                  susinidum_pbc +
+                  susinidum_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindum_coc +
+                  susprindum_pbc +
+                  susprindum_mar, # Include relevant predictors
+                id = id, 
+                data = current_data,
+                weight= current_data$iiw_strata_st,
+                family = poisson("log"), 
+                corstr = "independence")
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  if(model$converged==FALSE){stop("model did not coverge")}
+  cat(sprintf("QIC for plan %s = %.1f\n", plan_names[i], as.numeric(MuMIn::QIC(model))))
+  geem_strata_alt_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
+}
+```
+:::
+
+```{r}
+invisible("Alternative, worst model of strata")
+```
+
+#### 3.4.2 Stratifying, alt weight, GEEM Negative binomial 
+
+Define a sequence of x values
+
+```{r}
+x_values <- seq(158e4, 159e4, by = 100)
+```
+
+Initialize a list to store models and their QICs
+
+```{r}
+geem2_strata_alt_alt_wgt_list <- list()
+```
+
+Loop over each unique plan name to fit models
+
+::: center-table
+```{r gee342, warning=T, echo=T, error=F, eval=T}
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Initialize variable to store the best QIC and associated model
+  best_qic <- Inf
+  best_model <- NULL
+  best_x <- NA
+  
+  # Loop through each x value to find the one with the lowest QIC
+  for (x in x_values) {
+    # Fit the GEE model for the current subset using geem with negative binomial
+    model <- geem(tr_outcome ~ policonsumo2 +
+                    comp_bpsc_y3_severe+
+                    edad_al_ing_1 + 
+                    ano_nac_corr + 
+                    susinidum_oh +
+                    susinidum_coc +
+                    susinidum_pbc +
+                    susinidum_mar +
+                    psycom_dum_study +
+                    psycom_dum_with +
+                    freq_cons_dum_5day +
+                    cond_oc_dum_2inact +
+                    cond_oc_dum_3unemp +
+                    susprindum_coc +
+                    susprindum_pbc +
+                    susprindum_mar, # Include relevant predictors
+                  id = id, 
+                  data = current_data,
+                  weight= current_data$iiw_strata_st,
+                  family = MASS::negative.binomial(x),
+                  corstr = "independence")
+    
+    if (model$converged) {
+      # Calculate QIC for the model
+      model_qic <- MuMIn::QIC(model)
+      
+      # Check if this model has a better QIC
+      if (model_qic < best_qic) {
+        best_qic <- model_qic
+        best_model <- model
+        best_x <- x
+      }
+    }
+  }
+  
+  # Store the best model and its details in the list
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  geem2_strata_alt_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- list(best_model = best_model, best_x = best_x, best_qic = best_qic)
+  
+  # Optional: Print out some information on progress
+  cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
+}
+```
+:::
+
+Check the result for a particular plan
+
+::: center-table
+```{r}
+print(geem2_strata_alt_alt_wgt_list[[1]])
+```
+:::
+
+<br>
+
+# Model output
+
+::: center-table
+```{r output-gee}
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+
+
+types_of_model<-
+  c("No correction",
+    "No correction, main",
+    "No correction, alternative",
+    "Correction for PH, no weight",
+    "Correction for PH, main",
+    "Correction for PH, alternative",
+    "Stratifying, no weight",
+    "Stratifying, main",
+    "Stratifying, alternative",
+    "Stratifying, 2nd alternative, main"
+)
+types_of_model2<-
+  c("No correction",
+    "No correction, NB",
+    "No correction, main",
+    "No correction, main, NB",
+    "No correction, alternative",
+    "No correction, alternative, NB",
+    "Correction for PH, no weight",
+    "Correction for PH, no weight, NB",
+    "Correction for PH, main",
+    "Correction for PH, main, NB",
+    "Correction for PH, alternative",
+    "Correction for PH, alternative, NB",
+    "Stratified, no weight",
+    "Stratified, no weight, NB",
+    "Stratified, main",
+    "Stratified, main, NB",
+    "Stratified, alternative",
+    "Stratified, alternative, NB",
+    "Stratified, 2nd alternative",
+    "Stratified, 2nd alternative, NB"    
+  )
+
+plan_names[1]
+cbind.data.frame(model= types_of_model,
+rbind.data.frame(
+dplyr::filter(tidy_geese_model(nocorr_nowgt_list[[1]]), Term=="policonsumo2"),
+dplyr::filter(tidy_geese_model(nocorr_wgt_list[[1]]), Term=="policonsumo2"),
+dplyr::filter(tidy_geese_model(nocorr_alt_wgt_list[[1]]), Term=="policonsumo2"),
+dplyr::filter(tidy_geese_model(afterph_nowgt_list[[1]]), Term=="policonsumo2"),
+dplyr::filter(tidy_geese_model(afterph_wgt_list[[1]]), Term=="policonsumo2"),
+dplyr::filter(tidy_geese_model(afterph_alt_wgt_list[[1]]), Term=="policonsumo2"),
+dplyr::filter(tidy_geese_model(strata_nowgt_list[[1]]), Term=="policonsumo2"),
+dplyr::filter(tidy_geese_model(strata_wgt_list[[1]]), Term=="policonsumo2"),
+dplyr::filter(tidy_geese_model(strata_alt_wgt_list[[1]]), Term=="policonsumo2"),
+dplyr::filter(tidy_geese_model(strata_alt_alt_wgt_list[[1]]), Term=="policonsumo2")))%>% 
+  {
+    copiar_nombres2(.)
+    assign(paste0("result_data_geese_", gsub(" ","_",plan_names[1])), ., envir = .GlobalEnv)
+    print(.)
+  }
+
+cbind.data.frame(model= types_of_model2,
+     QIC= c(as.numeric(QIC(geem_nocorr_nowgt_list[[1]])),
+            as.numeric(geem2_nocorr_nowgt_list[[1]]$best_qic),
+            as.numeric(QIC(geem_nocorr_wgt_list[[1]])),
+            as.numeric(geem2_nocorr_wgt_list[[1]]$best_qic),
+            as.numeric(QIC(geem_nocorr_alt_wgt_list[[1]])),
+            as.numeric(geem2_nocorr_alt_wgt_list[[1]]$best_qic),
+            as.numeric(QIC(geem_afterph_nowgt_list[[1]])),
+            as.numeric(geem2_afterph_nowgt_list[[1]]$best_qic),
+            as.numeric(QIC(geem_afterph_wgt_list[[1]])),
+            as.numeric(geem2_afterph_wgt_list[[1]]$best_qic),
+            as.numeric(QIC(geem_afterph_alt_wgt_list[[1]])),
+            as.numeric(geem2_afterph_alt_wgt_list[[1]]$best_qic),
+            
+            as.numeric(QIC(geem_strata_nowgt_list[[1]])),
+            as.numeric(geem2_strata_nowgt_list[[1]]$best_qic),
+            as.numeric(QIC(geem_strata_wgt_list[[1]])),
+            as.numeric(geem2_strata_wgt_list[[1]]$best_qic),
+            as.numeric(QIC(geem_strata_alt_wgt_list[[1]])),
+            as.numeric(geem2_strata_alt_wgt_list[[1]]$best_qic),
+            as.numeric(QIC(geem_strata_alt_alt_wgt_list[[1]])),
+            as.numeric(geem2_strata_alt_alt_wgt_list[[1]]$best_qic)                        
+            ),
+     rbind.data.frame(
+       dplyr::filter(summary2.geem(geem_nocorr_nowgt_list[[1]],exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem2_nocorr_nowgt_list[[1]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem_nocorr_wgt_list[[1]],exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem2_nocorr_wgt_list[[1]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem_nocorr_alt_wgt_list[[1]],exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem2_nocorr_alt_wgt_list[[1]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem_afterph_nowgt_list[[1]],exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem2_afterph_nowgt_list[[1]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem_afterph_wgt_list[[1]],exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem2_afterph_wgt_list[[1]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem_afterph_alt_wgt_list[[1]],exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem2_afterph_alt_wgt_list[[1]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+       
+       dplyr::filter(summary2.geem(geem_strata_nowgt_list[[1]],exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem2_strata_nowgt_list[[1]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),                   
+       dplyr::filter(summary2.geem(geem_strata_wgt_list[[1]],exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem2_strata_wgt_list[[1]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem_strata_alt_wgt_list[[1]],exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem2_strata_alt_wgt_list[[1]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem_strata_alt_alt_wgt_list[[1]],exponentiate=T, digits=2),Term=="policonsumo2"),
+       dplyr::filter(summary2.geem(geem2_strata_alt_alt_wgt_list[[1]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2")
+       ))%>% 
+  {
+    copiar_nombres2(.)
+    assign(paste0("result_data_geem_", gsub(" ","_",plan_names[1])), ., envir = .GlobalEnv)
+    print(.)
+  }
+
+i=2
+plan_names[i]
+cbind.data.frame(model= types_of_model,
+rbind.data.frame(
+  dplyr::filter(tidy_geese_model(nocorr_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(nocorr_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(nocorr_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_alt_alt_wgt_list[[i]]), Term=="policonsumo2")))%>% 
+  {
+    copiar_nombres2(.)  
+    print(.)
+  }
+
+#[1] "GP intensive ambulatory". significativo
+cbind.data.frame(model= types_of_model2,
+         QIC= c(as.numeric(QIC(geem_nocorr_nowgt_list[[i]])),
+                as.numeric(geem2_nocorr_nowgt_list[[i]]$best_qic),
+                as.numeric(QIC(geem_nocorr_wgt_list[[i]])),
+                as.numeric(geem2_nocorr_wgt_list[[i]]$best_qic),
+                as.numeric(QIC(geem_nocorr_alt_wgt_list[[i]])),
+                as.numeric(geem2_nocorr_alt_wgt_list[[i]]$best_qic),
+                as.numeric(QIC(geem_afterph_nowgt_list[[i]])),
+                as.numeric(geem2_afterph_nowgt_list[[i]]$best_qic),
+                as.numeric(QIC(geem_afterph_wgt_list[[i]])),
+                as.numeric(geem2_afterph_wgt_list[[i]]$best_qic),
+                as.numeric(QIC(geem_afterph_alt_wgt_list[[i]])),
+                as.numeric(geem2_afterph_alt_wgt_list[[i]]$best_qic),
+                
+                as.numeric(QIC(geem_strata_nowgt_list[[i]])),
+                as.numeric(geem2_strata_nowgt_list[[i]]$best_qic),
+                as.numeric(QIC(geem_strata_wgt_list[[i]])),
+                as.numeric(geem2_strata_wgt_list[[i]]$best_qic),
+                as.numeric(QIC(geem_strata_alt_wgt_list[[i]])),
+                as.numeric(geem2_strata_alt_wgt_list[[i]]$best_qic),
+                as.numeric(QIC(geem_strata_alt_alt_wgt_list[[i]])),
+                as.numeric(geem2_strata_alt_alt_wgt_list[[i]]$best_qic)                        
+         ),
+         rbind.data.frame(
+           dplyr::filter(summary2.geem(geem_nocorr_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem2_nocorr_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem_nocorr_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem2_nocorr_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem_nocorr_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem2_nocorr_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem_afterph_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem2_afterph_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem_afterph_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem2_afterph_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem_afterph_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem2_afterph_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+           
+           dplyr::filter(summary2.geem(geem_strata_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem2_strata_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),                   
+           dplyr::filter(summary2.geem(geem_strata_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem2_strata_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem_strata_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem2_strata_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem_strata_alt_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+           dplyr::filter(summary2.geem(geem2_strata_alt_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2")
+         ))%>% 
+  {
+    copiar_nombres2(.)
+    assign(paste0("result_data_geem_", gsub(" ","_",plan_names[i])), ., envir = .GlobalEnv)
+    print(.)
+  }
+
+
+i=3
+plan_names[i]
+cbind.data.frame(model= types_of_model,
+rbind.data.frame(
+  dplyr::filter(tidy_geese_model(nocorr_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(nocorr_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(nocorr_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_alt_alt_wgt_list[[i]]), Term=="policonsumo2"))) %>% 
+  {
+    copiar_nombres2(.)  
+    print(.)
+  }
+cbind.data.frame(model= types_of_model2,
+           QIC= c(as.numeric(QIC(geem_nocorr_nowgt_list[[i]])),
+                  as.numeric(geem2_nocorr_nowgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_nocorr_wgt_list[[i]])),
+                  as.numeric(geem2_nocorr_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_nocorr_alt_wgt_list[[i]])),
+                  as.numeric(geem2_nocorr_alt_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_afterph_nowgt_list[[i]])),
+                  as.numeric(geem2_afterph_nowgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_afterph_wgt_list[[i]])),
+                  as.numeric(geem2_afterph_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_afterph_alt_wgt_list[[i]])),
+                  as.numeric(geem2_afterph_alt_wgt_list[[i]]$best_qic),
+                  
+                  as.numeric(QIC(geem_strata_nowgt_list[[i]])),
+                  as.numeric(geem2_strata_nowgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_strata_wgt_list[[i]])),
+                  as.numeric(geem2_strata_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_strata_alt_wgt_list[[i]])),
+                  as.numeric(geem2_strata_alt_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_strata_alt_alt_wgt_list[[i]])),
+                  as.numeric(geem2_strata_alt_alt_wgt_list[[i]]$best_qic)                        
+           ),
+           rbind.data.frame(
+             dplyr::filter(summary2.geem(geem_nocorr_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_nocorr_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_nocorr_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_nocorr_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_nocorr_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_nocorr_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_afterph_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_afterph_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_afterph_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_afterph_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_afterph_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_afterph_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             
+             dplyr::filter(summary2.geem(geem_strata_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),                   
+             dplyr::filter(summary2.geem(geem_strata_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_strata_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_strata_alt_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_alt_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2")
+           ))%>% 
+  {
+    copiar_nombres2(.)
+    assign(paste0("result_data_geem_", gsub(" ","_",plan_names[i])), ., envir = .GlobalEnv)
+    print(.)
+  }
+
+
+i=4
+plan_names[i]
+cbind.data.frame(model= types_of_model,
+rbind.data.frame(
+  dplyr::filter(tidy_geese_model(nocorr_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(nocorr_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(nocorr_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_alt_alt_wgt_list[[i]]), Term=="policonsumo2"))) %>% 
+  {
+    copiar_nombres2(.)  
+    print(.)
+  }
+cbind.data.frame(model= types_of_model2,
+           QIC= c(as.numeric(QIC(geem_nocorr_nowgt_list[[i]])),
+                  as.numeric(geem2_nocorr_nowgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_nocorr_wgt_list[[i]])),
+                  as.numeric(geem2_nocorr_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_nocorr_alt_wgt_list[[i]])),
+                  as.numeric(geem2_nocorr_alt_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_afterph_nowgt_list[[i]])),
+                  as.numeric(geem2_afterph_nowgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_afterph_wgt_list[[i]])),
+                  as.numeric(geem2_afterph_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_afterph_alt_wgt_list[[i]])),
+                  as.numeric(geem2_afterph_alt_wgt_list[[i]]$best_qic),
+                  
+                  as.numeric(QIC(geem_strata_nowgt_list[[i]])),
+                  as.numeric(geem2_strata_nowgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_strata_wgt_list[[i]])),
+                  as.numeric(geem2_strata_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_strata_alt_wgt_list[[i]])),
+                  as.numeric(geem2_strata_alt_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_strata_alt_alt_wgt_list[[i]])),
+                  as.numeric(geem2_strata_alt_alt_wgt_list[[i]]$best_qic)                        
+           ),
+           rbind.data.frame(
+             dplyr::filter(summary2.geem(geem_nocorr_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_nocorr_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_nocorr_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_nocorr_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_nocorr_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_nocorr_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_afterph_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_afterph_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_afterph_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_afterph_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_afterph_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_afterph_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             
+             dplyr::filter(summary2.geem(geem_strata_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),                   
+             dplyr::filter(summary2.geem(geem_strata_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_strata_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_strata_alt_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_alt_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2")
+           ))%>% 
+  {
+    copiar_nombres2(.)
+    assign(paste0("result_data_geem_", gsub(" ","_",plan_names[i])), ., envir = .GlobalEnv)
+    print(.)
+  }
+
+i=5
+plan_names[i]
+cbind.data.frame(model= types_of_model,
+rbind.data.frame(
+  dplyr::filter(tidy_geese_model(nocorr_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(nocorr_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(nocorr_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(afterph_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_nowgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_alt_wgt_list[[i]]), Term=="policonsumo2"),
+  dplyr::filter(tidy_geese_model(strata_alt_alt_wgt_list[[i]]), Term=="policonsumo2"))) %>% 
+  {
+        copiar_nombres2(.)  
+        print(.)
+  }
+  
+cbind.data.frame(model= types_of_model2,
+           QIC= c(as.numeric(QIC(geem_nocorr_nowgt_list[[i]])),
+                  as.numeric(geem2_nocorr_nowgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_nocorr_wgt_list[[i]])),
+                  as.numeric(geem2_nocorr_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_nocorr_alt_wgt_list[[i]])),
+                  as.numeric(geem2_nocorr_alt_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_afterph_nowgt_list[[i]])),
+                  as.numeric(geem2_afterph_nowgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_afterph_wgt_list[[i]])),
+                  as.numeric(geem2_afterph_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_afterph_alt_wgt_list[[i]])),
+                  as.numeric(geem2_afterph_alt_wgt_list[[i]]$best_qic),
+                  
+                  as.numeric(QIC(geem_strata_nowgt_list[[i]])),
+                  as.numeric(geem2_strata_nowgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_strata_wgt_list[[i]])),
+                  as.numeric(geem2_strata_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_strata_alt_wgt_list[[i]])),
+                  as.numeric(geem2_strata_alt_wgt_list[[i]]$best_qic),
+                  as.numeric(QIC(geem_strata_alt_alt_wgt_list[[i]])),
+                  as.numeric(geem2_strata_alt_alt_wgt_list[[i]]$best_qic)                        
+           ),
+           rbind.data.frame(
+             dplyr::filter(summary2.geem(geem_nocorr_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_nocorr_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_nocorr_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_nocorr_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_nocorr_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_nocorr_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_afterph_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_afterph_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_afterph_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_afterph_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_afterph_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_afterph_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             
+             dplyr::filter(summary2.geem(geem_strata_nowgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_nowgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),                   
+             dplyr::filter(summary2.geem(geem_strata_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_strata_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem_strata_alt_alt_wgt_list[[i]],exponentiate=T, digits=2),Term=="policonsumo2"),
+             dplyr::filter(summary2.geem(geem2_strata_alt_alt_wgt_list[[i]]$best_model,exponentiate=T, digits=2),Term=="policonsumo2")
+           ))%>% 
+  {
+    copiar_nombres2(.)
+    assign(paste0("result_data_geem_", gsub(" ","_",plan_names[i])), ., envir = .GlobalEnv)
+    print(.)
+  }
+
+
+rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_ambulatory),
+                 cbind.data.frame(setting=plan_names[2],result_data_geem_GP_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[3],result_data_geem_GP_residential),
+                 cbind.data.frame(setting=plan_names[4],result_data_geem_WO_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[5],result_data_geem_WO_residential)
+                 ) %>% 
+  dplyr::group_by(setting) %>% 
+  dplyr::mutate(min_qic_setting=ifelse(QIC==min(QIC),1,0)) %>% 
+  dplyr::ungroup() %>% 
+  {
+  #copiar_nombres2()
+    write.table(., file = paste0(folder_path,"gee_240515.csv"), dec=",", sep="\t")
+    knitr::kable(., size=10, format="markdown", caption="GEE Models, Association between PSU and Treatment outcome") 
+  }
+```
+:::
+
+<br>
+
+# Marginal probabilities
+
+Loop over each unique plan name to fit a model. We used an interaction of PSU and treatment setting to capture the heterogeneity of PSU by treatment setting.
+
+```{r output-marginal-emmeans}
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+
+
+df_marginal_plots<-
+  cbind.data.frame(wgt= c("wgt", "iiw_nocorr_st", "iiw_nocorr_alt_st", "wgt", "iiw_after_ph_st", "iiw_after_ph_st"), 
+        df= c("data_mine_miss_restr_proc2","data_mine_miss_restr_proc2","data_mine_miss_restr_proc2","data_mine_miss_restr_proc2_iiw_after_ph","data_mine_miss_restr_proc2_iiw_after_ph","data_mine_miss_restr_proc2_iiw_after_ph_alt"),
+        model= c("no corr no wgt","no corr main","no corr alt", "after ph no wgt", "after ph main", "after ph alt"))
+
+# Loop over each unique plan name to fit a model
+for (i in seq_along(df_marginal_plots$wgt)) {
+  # Subset the data for the current plan type
+  #current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  geeglm( tr_outcome  ~ policonsumo2 * tipo_de_plan_2_mod +
+                        edad_al_ing_1 + 
+                        ano_nac_corr + 
+                        susinidum_oh +
+                        susinidum_coc +
+                        susinidum_pbc +
+                        susinidum_mar +
+                        psycom_dum_study +
+                        psycom_dum_with +
+                        freq_cons_dum_5day +
+                        cond_oc_dum_2inact +
+                        cond_oc_dum_3unemp +
+                        susprindum_coc +
+                        susprindum_pbc +
+                        susprindum_mar,
+                    id= id, 
+                    data= get(df_marginal_plots$df[i]) %>% dplyr::mutate(wgt=1), 
+                    weight= get(df_marginal_plots$df[i]) %>% dplyr::mutate(wgt=1) %>% pull(df_marginal_plots$wgt[i]), 
+                    family= poisson, 
+                    corstr= "independence") %>% 
+  assign(paste0("geeglm_", gsub(" ","_",df_marginal_plots$model[i])), ., envir = .GlobalEnv)
+  print(message(paste0("Models: ",paste0("geeglm_", gsub(" ","_",df_marginal_plots$model[i])))))
+  emmeans_response <- emmeans(get(paste0("geeglm_", gsub(" ","_",df_marginal_plots$model[i]))), ~policonsumo2+tipo_de_plan_2_mod,  rg.limit=2e5, type = "response")%>% assign(paste0("emmeans_response_", gsub(" ","_",df_marginal_plots$model[i])), ., envir = .GlobalEnv)
+  print(message(paste0("Emmeans: ",paste0("emmeans_response_", gsub(" ","_",df_marginal_plots$model[i])))))
+}
+```
+
+::: center-table
+```{r output-marginal-emmeans-plot, fig.align="center", dpi=300}
+#| message: false
+#| include: true
+#| warning: true
+#| error: false
+#| eval: true
+
+plot(emmeans_response_no_corr_no_wgt)+ ggtitle("No corr, no weights")#+ geom_point(aes(x = percent, y = conc), data = pigs, pch = 2, color = "blue")
+plot(emmeans_response_no_corr_main)+ ggtitle("No corr, main weights")
+plot(emmeans_response_no_corr_alt)+ ggtitle("No corr, alt weights")
+plot(emmeans_response_after_ph_no_wgt)+ ggtitle("After PH, no weights")
+plot(emmeans_response_after_ph_main)+ ggtitle("After PH, main weights")
+plot(emmeans_response_after_ph_alt)+ ggtitle("After PH, alt weights")
+```
+:::
+
+<br>
+
+# Session info
+
+```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
+message(paste0("R library: ", Sys.getenv("R_LIBS_USER")))
+message(paste0("Date: ",withr::with_locale(new = c('LC_TIME' = 'C'), code =Sys.time())))
+message(paste0("Editor context: ", path))
+```
+
+::: center-table
+```{r session-info-r, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
+sesion_info <- devtools::session_info()
+dplyr::select(
+  tibble::as_tibble(sesion_info$packages),
+  c(package, loadedversion, source)
+) %>% 
+ kable(caption = "R packages", format = "markdown",
+      col.names = c("Row number", "Package", "Version"),
+    row.names = FALSE,
+      align = c("c", "l", "r"))
+```
+:::
+
+::: center-table
+```{r session-info-python, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
+reticulate::py_list_packages()%>% 
+ kable(caption = "Python packages", format = "markdown",
+      col.names = c("Package", "Version", "Requirement"),
+    row.names = FALSE,
+      align = c("c", "l", "r", "r"))
+```
+:::
+
+# Output 
+
+```{r}
+folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/"),
+                      "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/",
+                      "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
+save.image(paste0(folder_path,"an_grant_23_24_4.RData"))
+```
+

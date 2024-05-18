@@ -1,0 +1,466 @@
+StataFileTM:00001:01000:LiveGPH:                       :
+00007:00007:
+*! classname: twowaygraph_g
+*! family: twoway
+*! command: twoway (rcap sdiff_24_tr_comp_early_drop_lci sdiff_24_tr_comp_early_drop_uci times, color(gs2%75) lcolor(gs2%75) legend(label(1 "Early dropout vs. Tr. completion")))                 (rcap sdiff_v_tr_comp_early_drop_lci sdiff_v_tr_comp_early_drop_uci times4, color(gs2%75) lcolor(gs2%75) lpattern(dash) legend(label(3 "Late dropout vs. Tr. completion")))         (rcap sdiff_24_tr_comp_late_drop_lci sdiff_24_tr_comp_late_drop_uci times2, color(gs6%75) lcolor(gs6%75) legend(label(5 "Early vs. Late dropout")))                 (rcap sdiff_v_tr_comp_late_drop_lci sdiff_v_tr_comp_late_drop_uci times5, color(gs6%75) lcolor(gs6%75) lpattern(dash) legend(label(2 "Original: Early dropout vs. Tr. completion")))                 (rcap sdiff_24_early_late_drop_lci sdiff_24_early_late_drop_uci times3, color(gs10%75) lcolor(gs10%75) legend(label(4 "Original: Late dropout vs. Tr. completion")))                 (rcap neg_sdiff_v_early_late_drop_lci neg_sdiff_v_early_late_drop_uci times6, color(gs10%75) lcolor(gs10%75) lpattern(dash) legend(label(6 "Original: Early vs. Late dropout")))                  (connect  sdiff_24_tr_comp_early_drop times, mcolor(gs2) msymbol(O) mlcolor(gs2) legend(label(1 "Early dropout vs. Tr. completion")))                  (connect  sdiff_v_tr_comp_early_drop times4, mcolor(gs2) msymbol(O) mlcolor(gs2) msymbol(diamond) legend(label(3 "Late dropout vs. Tr. completion")))                  (connect  sdiff_24_tr_comp_late_drop times2, mcolor(gs6) msymbol(O) mlcolor(gs2) legend(label(5 "Early vs. Late dropout")))                  (connect  sdiff_v_tr_comp_late_drop times5, mcolor(gs6) msymbol(O) mlcolor(gs2) msymbol(diamond) legend(label(2 "Original: Early dropout vs. Tr. completion")))                                  (connect  sdiff_24_early_late_drop times3, mcolor(gs10) msymbol(O) mlcolor(gs2)  legend(label(4 "Original: Late dropout vs. Tr. completion")))                                  (connect  neg_sdiff_v_early_late_drop times6, mcolor(gs10) msymbol(O) mlcolor(gs2) msymbol(diamond) legend(label(6 "Original: Early vs. Late dropout")))                                           (line zero times, lcolor(black%20) lwidth(thick) legend(label(6 "")))                  ,xtitle("Years from baseline substance use treatment completion¬†status")                                  legend(order( 1 "Early dropout vs. Tr. completion" 2 "Original: Early dropout vs. Tr. completion" 3 "Late dropout vs. Tr. completion" 4 "Original: Late dropout vs. Tr. completion" 5 "Early vs. Late dropout" 6 "Original: Early vs. Late dropout" ) ring(0) pos(7) cols(2) region(lstyle(none)) region(c(none)) nobox  size(2.5))                  ytitle("Difference in survival¬†probabilities")                                  graphregion(color(white) lwidth(large)) bgcolor(white)                                  plotregion(fcolor(white)) graphregion(fcolor(white) )                  name(s_diff_cjs_clus_corr_idcen, replace)
+*! command_date: 30 Jan 2024
+*! command_time: 17:00:54
+*! datafile: 
+*! datafile_date: 
+*! scheme: s2color
+*! naturallywhite: 1
+*! xsize: 5.5
+*! ysize: 4
+*! end
+<BeginItem> serset K177ad8998 
+<BeginSerset>
+<BeginSeries>
+.name = `"sdiff_24_tr_comp_early_drop_lci"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.0998906221641381
+.max =  -.064057109692383
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_24_tr_comp_early_drop_uci"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.124328726632753
+.max =  -.078909256623888
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"times"'
+.label = `""'
+.format = `"%9.0g"'
+.type.set numeric
+.min =  1
+.max =  5
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_v_tr_comp_early_drop_lci"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.1233799383783846
+.max =  -.0781031699770303
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_v_tr_comp_early_drop_uci"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.1012896946401705
+.max =  -.0646324213552702
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"times4"'
+.label = `""'
+.format = `"%9.0g"'
+.type.set numeric
+.min =  1.100000023841858
+.max =  5.099999904632568
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_24_tr_comp_late_drop_lci"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.0857222857093049
+.max =  -.0494905028052927
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_24_tr_comp_late_drop_uci"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.1041330070580798
+.max =  -.060310838005363
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"times2"'
+.label = `""'
+.format = `"%9.0g"'
+.type.set numeric
+.min =  .9300000071525574
+.max =  4.929999828338623
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_v_tr_comp_late_drop_lci"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.1033000025128961
+.max =  -.0598730746405794
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_v_tr_comp_late_drop_uci"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.0868578140412517
+.max =  -.0497507903286525
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"times5"'
+.label = `""'
+.format = `"%9.0g"'
+.type.set numeric
+.min =  .8299999833106995
+.max =  4.829999923706055
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_24_early_late_drop_lci"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.0101038268815027
+.max =  -.0067448433728611
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_24_early_late_drop_uci"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.0280122901965725
+.max =  -.0230611986241125
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"times3"'
+.label = `""'
+.format = `"%9.0g"'
+.type.set numeric
+.min =  1.070000052452087
+.max =  5.070000171661377
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"neg_sdiff_v_early_late_drop_lci"'
+.label = `""'
+.format = `"%9.0g"'
+.type.set numeric
+.min =  -.0104953832924366
+.max =  -.0077173528261483
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"neg_sdiff_v_early_late_drop_uci"'
+.label = `""'
+.format = `"%9.0g"'
+.type.set numeric
+.min =  -.0272586867213249
+.max =  -.0227270964533091
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"times6"'
+.label = `""'
+.format = `"%9.0g"'
+.type.set numeric
+.min =  1.170000076293945
+.max =  5.170000076293945
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_24_tr_comp_early_drop"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.1121096743984455
+.max =  -.0714831831581355
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_v_tr_comp_early_drop"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.1123348165092776
+.max =  -.0713677956661503
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_24_tr_comp_late_drop"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.0949276463836923
+.max =  -.0549006704053279
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_v_tr_comp_late_drop"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.0950789082770739
+.max =  -.0548119324846159
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"sdiff_24_early_late_drop"'
+.label = `""'
+.format = `"%10.0g"'
+.type.set numeric
+.min =  -.0188975615439678
+.max =  -.0165825127528076
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"neg_sdiff_v_early_late_drop"'
+.label = `""'
+.format = `"%9.0g"'
+.type.set numeric
+.min =  -.0188770350068808
+.max =  -.0165558625012636
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+<BeginSeries>
+.name = `"zero"'
+.label = `""'
+.format = `"%9.0g"'
+.type.set numeric
+.min =  0
+.max =  0
+.median = (.)
+.pct25 = (.)
+.pct75 = (.)
+.categories = (.)
+<EndSeries>
+.weight_id = (.)
+<BeginSersetData>
+sersetreadwrite       ˇˇ˛ˇˇ˛ˇˇ˛ˇˇ˛ˇˇ˛˛˛˛ˇˇˇˇˇ˛˛sdiff_24_tr_comp_early_drop_lci                                                                                                                       sdiff_24_tr_comp_early_drop_uci                                                                                                                       times                                                                                                                                                 sdiff_v_tr_comp_early_drop_lci                                                                                                                        sdiff_v_tr_comp_early_drop_uci                                                                                                                        times4                                                                                                                                                sdiff_24_tr_comp_late_drop_lci                                                                                                                        sdiff_24_tr_comp_late_drop_uci                                                                                                                        times2                                                                                                                                                sdiff_v_tr_comp_late_drop_lci                                                                                                                         sdiff_v_tr_comp_late_drop_uci                                                                                                                         times5 4_early_late_drop                                                                                                                              sdiff_24_early_late_drop_lci                                                                                                                          sdiff_24_early_late_drop_uci                                                                                                                          times3                                                                                                                                                neg_sdiff_v_early_late_drop_lci                                                                                                                       neg_sdiff_v_early_late_drop_uci                                                                                                                       times6                                                                                                                                                sdiff_24_tr_comp_early_drop                                                                                                                           sdiff_v_tr_comp_early_drop                                                                                                                            sdiff_24_tr_comp_late_drop                                                                                                                            sdiff_v_tr_comp_late_drop                                                                                                                             sdiff_24_early_late_drop                                                                                                                              neg_sdiff_v_early_late_drop                                                                                                                           zero                                                                                                                                                  %10.0g                                                   %10.0g                                                   %9.0g                                                    %10.0g                                                   %10.0g                                                   %9.0g                                                    %10.0g                                                   %10.0g                                                   %9.0g                                                    %10.0g                                                   %10.0g                                                   %9.0g                                                    %10.0g                                                   %10.0g                                                   %9.0g                                                    %9.0g                                                    %9.0g                                                    %9.0g                                                    %10.0g                                                   %10.0g                                                   %10.0g                                                   %10.0g                                                   %10.0g                                                   %9.0g                                                    %9.0g                                                    ∂?_ãníπø™K◊Ê‘øø      ?˙QQ‡”ïøøvøÊÓπø   †ôôÒ?ÃÍ®MÂÒµøî£øÛu®∫ø   `è¬Ì?"8xtﬁq∫øŒèµNP<∂ø    \èÍ?‰˚)∞P±Ñøä˘@Øúø   `∏Ò?   Äö~Öø   Ä≥Èõø    R∏Ú?∞E98≥ºø∏{˘¡ºø0G¥†-M∏ø¯„ñaW∏ø “8„·Yìø   `ÄTìø        s4˜f∞ø ç§e3¥ø      @È√¿ë˛≥ø˙o˚¿ã∞ø   `ff@ŸÃ∂—V©øgüßÈ·Æø   ‡Q∏@‰¸ØßÆø\Ã“ÇÔx©ø   ÄÎQ@Ç—?{†{øéßñ◊Zùóø    ÆG@    ;úø   †≈Eóø   ÄÆ@¿œ‡Õ∏L≤øÄ¨_Ï(E≤ø ∂÷œ¨ø†jÁBO¨ø¿“’ó˚êø    Ùêø        s4˜f∞ø ç§e3¥ø  Ä?È√¿ë˛≥ø˙o˚¿ã∞øÕÃå?ŸÃ∂—V©øgüßÈ·Æø{n?‰¸ØßÆø\Ã“ÇÔx©ø·zT?‰˚)∞P±Ñøéßñ◊Zùóø√ıà?K$*º-.∫ºê¬ï?¿œ‡Õ∏L≤øÄ¨_Ï(E≤ø ∂÷œ¨ø†jÁBO¨ø¿“’ó˚êø)†áº    NÒ˚(∏ø·`’òÂ°Ωø  @@>ˇTŸ@ΩøB∞0ôb∏øffF@¥S@¥øúÚÈü∏øÖ;@èRåû„∆∑øˆ‡πN2¥øπ5@l%•ö	Ñøä˘@Øúø·zD@‘Ù+ºúMﬂºG·J@∞WcJ˛‰∫ø@î◊Bπ—∫ø(#ï—Ö∂øH§6,ô¸µø “8„·Yìø§öº    ∂?_ãníπø™K◊Ê‘øø  †@˙QQ‡”ïøøvøÊÓπø33£@ÃÍ®MÂÒµøî£øÛu®∫øè¬ù@"8xtﬁq∫øŒèµNP<∂ø\èö@Ç—?{†{ø†ˇg¸5Húøq=¢@Ÿ·¸ªÄ€º§p•@∞E98≥ºø∏{˘¡ºø0G¥†-M∏ø¯„ñaW∏ø ˙õa*òëøC\çº          ‡      ‡         ‡      ‡         ‡      ‡         ‡      ‡         ‡      ‡                  ‡      ‡      ‡      ‡      ‡       
+<EndSersetData>
+<EndSerset>
+<EndItem>
+<BeginItem> scheme K17eff1798 
+.setscheme , scheme(s2color) naturallywhite(1)
+<EndItem>
+<BeginItem> twowaygraph_g K177af6718 <UseScheme> K17eff1798
+.style.editstyle boxstyle( linestyle( width(large) color(white)) shadestyle( color(white))) editcopy
+.style.editstyle boxstyle( shadestyle( color(white))) editcopy
+.sersets[1] = .__Map.K177ad8998.ref
+.insert (plotregion1 = .plotregion.new , style(scheme twoway) graph(`.objkey')) at 1 1
+.plotregion1.style.editstyle boxstyle( shadestyle( color(white))) editcopy
+.plotregion1.Declare plot1 = .y2xview_g.new , type(rcap) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof sdiff_24_tr_comp_early_drop_lci') xvariable(`.sersets[1].seriesof times')    plotregion(`.plotregion1.objkey') style(scheme p1) ybvar(`.sersets[1].seriesof sdiff_24_tr_comp_early_drop_uci')
+.plotregion1.plot1.style.editstyle line(color(gs2%75)) area(shadestyle(color(gs2%75))) area(linestyle(color(gs2%75))) marker(fillcolor(gs2%75) linestyle(color(gs2%75))) line(color(gs2%75)) area(linestyle(color(gs2%75))) editcopy
+.plotregion1.plot1.bar_drop_to.setstyle , style(x)
+.plotregion1.Declare plot2 = .y2xview_g.new , type(rcap) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof sdiff_v_tr_comp_early_drop_lci') xvariable(`.sersets[1].seriesof times4')    plotregion(`.plotregion1.objkey') style(scheme p2) ybvar(`.sersets[1].seriesof sdiff_v_tr_comp_early_drop_uci')
+.plotregion1.plot2.style.editstyle line(color(gs2%75)) area(shadestyle(color(gs2%75))) area(linestyle(color(gs2%75))) marker(fillcolor(gs2%75) linestyle(color(gs2%75))) line(color(gs2%75)) area(linestyle(color(gs2%75))) line(pattern(dash)) area(linestyle(pattern(dash))) editcopy
+.plotregion1.plot2.bar_drop_to.setstyle , style(x)
+.plotregion1.Declare plot3 = .y2xview_g.new , type(rcap) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof sdiff_24_tr_comp_late_drop_lci') xvariable(`.sersets[1].seriesof times2')    plotregion(`.plotregion1.objkey') style(scheme p3) ybvar(`.sersets[1].seriesof sdiff_24_tr_comp_late_drop_uci')
+.plotregion1.plot3.style.editstyle line(color(gs6%75)) area(shadestyle(color(gs6%75))) area(linestyle(color(gs6%75))) marker(fillcolor(gs6%75) linestyle(color(gs6%75))) line(color(gs6%75)) area(linestyle(color(gs6%75))) editcopy
+.plotregion1.plot3.bar_drop_to.setstyle , style(x)
+.plotregion1.Declare plot4 = .y2xview_g.new , type(rcap) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof sdiff_v_tr_comp_late_drop_lci') xvariable(`.sersets[1].seriesof times5')    plotregion(`.plotregion1.objkey') style(scheme p4) ybvar(`.sersets[1].seriesof sdiff_v_tr_comp_late_drop_uci')
+.plotregion1.plot4.style.editstyle line(color(gs6%75)) area(shadestyle(color(gs6%75))) area(linestyle(color(gs6%75))) marker(fillcolor(gs6%75) linestyle(color(gs6%75))) line(color(gs6%75)) area(linestyle(color(gs6%75))) line(pattern(dash)) area(linestyle(pattern(dash))) editcopy
+.plotregion1.plot4.bar_drop_to.setstyle , style(x)
+.plotregion1.Declare plot5 = .y2xview_g.new , type(rcap) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof sdiff_24_early_late_drop_lci') xvariable(`.sersets[1].seriesof times3')    plotregion(`.plotregion1.objkey') style(scheme p5) ybvar(`.sersets[1].seriesof sdiff_24_early_late_drop_uci')
+.plotregion1.plot5.style.editstyle line(color(gs10%75)) area(shadestyle(color(gs10%75))) area(linestyle(color(gs10%75))) marker(fillcolor(gs10%75) linestyle(color(gs10%75))) line(color(gs10%75)) area(linestyle(color(gs10%75))) editcopy
+.plotregion1.plot5.bar_drop_to.setstyle , style(x)
+.plotregion1.Declare plot6 = .y2xview_g.new , type(rcap) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof neg_sdiff_v_early_late_drop_lci') xvariable(`.sersets[1].seriesof times6')    plotregion(`.plotregion1.objkey') style(scheme p6) ybvar(`.sersets[1].seriesof neg_sdiff_v_early_late_drop_uci')
+.plotregion1.plot6.style.editstyle line(color(gs10%75)) area(shadestyle(color(gs10%75))) area(linestyle(color(gs10%75))) marker(fillcolor(gs10%75) linestyle(color(gs10%75))) line(color(gs10%75)) area(linestyle(color(gs10%75))) line(pattern(dash)) area(linestyle(pattern(dash))) editcopy
+.plotregion1.plot6.bar_drop_to.setstyle , style(x)
+.plotregion1.Declare plot7 = .yxview.new , type(connected) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof sdiff_24_tr_comp_early_drop') xvariable(`.sersets[1].seriesof times')    plotregion(`.plotregion1.objkey') style(scheme p7) 
+.plotregion1.plot7.style.editstyle marker(symbol(O)) marker(fillcolor(gs2) linestyle(color(gs2))) marker(linestyle(color(gs2))) editcopy
+.plotregion1.Declare plot8 = .yxview.new , type(connected) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof sdiff_v_tr_comp_early_drop') xvariable(`.sersets[1].seriesof times4')    plotregion(`.plotregion1.objkey') style(scheme p8) 
+.plotregion1.plot8.style.editstyle marker(symbol(diamond)) marker(fillcolor(gs2) linestyle(color(gs2))) marker(linestyle(color(gs2))) editcopy
+.plotregion1.Declare plot9 = .yxview.new , type(connected) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof sdiff_24_tr_comp_late_drop') xvariable(`.sersets[1].seriesof times2')    plotregion(`.plotregion1.objkey') style(scheme p9) 
+.plotregion1.plot9.style.editstyle marker(symbol(O)) marker(fillcolor(gs6) linestyle(color(gs6))) marker(linestyle(color(gs2))) editcopy
+.plotregion1.Declare plot10 = .yxview.new , type(connected) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof sdiff_v_tr_comp_late_drop') xvariable(`.sersets[1].seriesof times5')    plotregion(`.plotregion1.objkey') style(scheme p10) 
+.plotregion1.plot10.style.editstyle marker(symbol(diamond)) marker(fillcolor(gs6) linestyle(color(gs6))) marker(linestyle(color(gs2))) editcopy
+.plotregion1.Declare plot11 = .yxview.new , type(connected) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof sdiff_24_early_late_drop') xvariable(`.sersets[1].seriesof times3')    plotregion(`.plotregion1.objkey') style(scheme p11) 
+.plotregion1.plot11.style.editstyle marker(symbol(O)) marker(fillcolor(gs10) linestyle(color(gs10))) marker(linestyle(color(gs2))) editcopy
+.plotregion1.Declare plot12 = .yxview.new , type(connected) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof neg_sdiff_v_early_late_drop') xvariable(`.sersets[1].seriesof times6')    plotregion(`.plotregion1.objkey') style(scheme p12) 
+.plotregion1.plot12.style.editstyle marker(symbol(diamond)) marker(fillcolor(gs10) linestyle(color(gs10))) marker(linestyle(color(gs2))) editcopy
+.plotregion1.Declare plot13 = .yxview.new , type(line) serset(`.sersets[1].objkey') yvariable(`.sersets[1].seriesof zero') xvariable(`.sersets[1].seriesof times')    plotregion(`.plotregion1.objkey') style(scheme p13line) 
+.plotregion1.plot13.style.editstyle line(color(black%20)) area(linestyle(color(black%20))) line(width(thick)) area(linestyle(width(thick))) editcopy
+.plotregion1.clear_scales
+.plotregion1.reset_scales , noclear
+.n_views = 13
+.n_plotregions = 1
+.last_style = 13
+.x_scales = `" "1""'
+.y_scales = `" "1""'
+.create_axes 1 1 "9" "" 9
+.style.editstyle legend_ring(0) editcopy
+.style.editstyle legend_position(7) editcopy
+.insert (legend = .legend_g.new, graphs(`.objkey') style(scheme)) on plotregion1 , ring(0) 
+.legend.style.editstyle box_alignment(SW) editcopy
+.legend.holes = ""
+.legend.holes = ""
+.legend.holes = ""
+.legend.holes = ""
+.legend.holes = ""
+.legend.holes = ""
+.legend.holes = ""
+.legend.holes = ""
+.legend.holes = ""
+.legend.holes = ""
+.legend.holes = ""
+.legend.holes = ""
+.legend.holes = ""
+.legend.style.editstyle boxstyle( linestyle(none)) editcopy
+.legend.style.editstyle boxstyle( linestyle( color(none)) shadestyle( color(none))) editcopy
+.legend.style.editstyle labelstyle( drawbox(no) size(2.5)) editcopy
+.legend.holes = ""
+.legend.style.editstyle  cols(2) editcopy
+.legend.insert (note = .sized_textbox.new, mtextq(`""') style(scheme leg_note) ) below plotregion1 , ring(3) 
+.legend.note.style.editstyle box_alignment(SW) editcopy
+.legend.note.style.editstyle horizontal(left) editcopy
+.legend.insert (caption = .sized_textbox.new, mtextq(`""') style(scheme leg_caption) ) below plotregion1 , ring(5) 
+.legend.caption.style.editstyle box_alignment(SW) editcopy
+.legend.caption.style.editstyle horizontal(left) editcopy
+.legend.insert (subtitle = .sized_textbox.new, mtextq(`""') style(scheme leg_subtitle) ) above plotregion1 , ring(6) 
+.legend.subtitle.style.editstyle box_alignment(N) editcopy
+.legend.subtitle.style.editstyle horizontal(center) editcopy
+.legend.insert (title = .sized_textbox.new, mtextq(`""') style(scheme leg_title) ) above plotregion1 , ring(7) 
+.legend.title.style.editstyle box_alignment(N) editcopy
+.legend.title.style.editstyle horizontal(center) editcopy
+.legend.rebuild
+.legend.labels[1] = `" "Early dropout vs. Tr. completion""'
+.legend.labels[3] = `" "Late dropout vs. Tr. completion""'
+.legend.labels[5] = `" "Early vs. Late dropout""'
+.legend.labels[2] = `" "Original: Early dropout vs. Tr. completion""'
+.legend.labels[4] = `" "Original: Late dropout vs. Tr. completion""'
+.legend.labels[6] = `" "Original: Early vs. Late dropout""'
+.legend.labels[1] = `" "Early dropout vs. Tr. completion""'
+.legend.labels[3] = `" "Late dropout vs. Tr. completion""'
+.legend.labels[5] = `" "Early vs. Late dropout""'
+.legend.labels[2] = `" "Original: Early dropout vs. Tr. completion""'
+.legend.labels[4] = `" "Original: Late dropout vs. Tr. completion""'
+.legend.labels[6] = `" "Original: Early vs. Late dropout""'
+.legend.labels[6] = `" """'
+.legend.parse_order 1 "Early dropout vs. Tr. completion" 2 "Original: Early dropout vs. Tr. completion" 3 "Late dropout vs. Tr. completion" 4 "Original: Late dropout vs. Tr. completion" 5 "Early vs. Late dropout" 6 "Original: Early vs. Late dropout"
+.legend.repositionkeys
+.xaxis1.title.edit , mtextq(`""Years from baseline substance use treatment completion¬†status""')   replace
+.yaxis1.title.edit , mtextq(`""Difference in survival¬†probabilities""')   replace
+.insert (r1title = .sized_textbox.new, mtextq(`""') style(scheme r1title) orientation(vertical)) rightof plotregion1 , ring(1) 
+.insert (r2title = .sized_textbox.new, mtextq(`""') style(scheme r2title) orientation(vertical)) rightof plotregion1 , ring(2) 
+.insert (l1title = .sized_textbox.new, mtextq(`""') style(scheme l1title) orientation(vertical)) leftof plotregion1 , ring(1) 
+.insert (l2title = .sized_textbox.new, mtextq(`""') style(scheme l2title) orientation(vertical)) leftof plotregion1 , ring(2) 
+.insert (t1title = .sized_textbox.new, mtextq(`""') style(scheme t1title) ) above plotregion1 , ring(1) 
+.insert (t2title = .sized_textbox.new, mtextq(`""') style(scheme t2title) ) above plotregion1 , ring(2) 
+.insert (b1title = .sized_textbox.new, mtextq(`""') style(scheme b1title) ) below plotregion1 , ring(1) 
+.insert (b2title = .sized_textbox.new, mtextq(`""') style(scheme b1title) ) below plotregion1 , ring(2) 
+.insert (note = .sized_textbox.new, mtextq(`""') style(scheme note) ) below plotregion1 , ring(4) 
+.note.style.editstyle box_alignment(SW) editcopy
+.note.style.editstyle horizontal(left) editcopy
+.insert (caption = .sized_textbox.new, mtextq(`""') style(scheme caption) ) below plotregion1 , ring(5) 
+.caption.style.editstyle box_alignment(SW) editcopy
+.caption.style.editstyle horizontal(left) editcopy
+.insert (subtitle = .sized_textbox.new, mtextq(`""') style(scheme subtitle) ) above plotregion1 , ring(6) 
+.subtitle.style.editstyle box_alignment(N) editcopy
+.subtitle.style.editstyle horizontal(center) editcopy
+.insert (title = .sized_textbox.new, mtextq(`""') style(scheme title) ) above plotregion1 , ring(7) 
+.title.style.editstyle box_alignment(N) editcopy
+.title.style.editstyle horizontal(center) editcopy
+.insert (spacert = .spacer.new) above plotregion1 , ring(11)
+.insert (spacerb = .spacer.new) below plotregion1 , ring(11)
+.insert (spacerl = .spacer.new) leftof plotregion1 , ring(11)
+.insert (spacerr = .spacer.new) rightof plotregion1 , ring(11)
+.bgcolor.setstyle , style(white)
+.command = `"twoway (rcap sdiff_24_tr_comp_early_drop_lci sdiff_24_tr_comp_early_drop_uci times, color(gs2%75) lcolor(gs2%75) legend(label(1 "Early dropout vs. Tr. completion")))                 (rcap sdiff_v_tr_comp_early_drop_lci sdiff_v_tr_comp_early_drop_uci times4, color(gs2%75) lcolor(gs2%75) lpattern(dash) legend(label(3 "Late dropout vs. Tr. completion")))         (rcap sdiff_24_tr_comp_late_drop_lci sdiff_24_tr_comp_late_drop_uci times2, color(gs6%75) lcolor(gs6%75) legend(label(5 "Early vs. Late dropout")))                 (rcap sdiff_v_tr_comp_late_drop_lci sdiff_v_tr_comp_late_drop_uci times5, color(gs6%75) lcolor(gs6%75) lpattern(dash) legend(label(2 "Original: Early dropout vs. Tr. completion")))                 (rcap sdiff_24_early_late_drop_lci sdiff_24_early_late_drop_uci times3, color(gs10%75) lcolor(gs10%75) legend(label(4 "Original: Late dropout vs. Tr. completion")))                 (rcap neg_sdiff_v_early_late_drop_lci neg_sdiff_v_early_late_drop_uci times6, color(gs10%75) lcolor(gs10%75) lpattern(dash) legend(label(6 "Original: Early vs. Late dropout")))                  (connect  sdiff_24_tr_comp_early_drop times, mcolor(gs2) msymbol(O) mlcolor(gs2) legend(label(1 "Early dropout vs. Tr. completion")))                  (connect  sdiff_v_tr_comp_early_drop times4, mcolor(gs2) msymbol(O) mlcolor(gs2) msymbol(diamond) legend(label(3 "Late dropout vs. Tr. completion")))                  (connect  sdiff_24_tr_comp_late_drop times2, mcolor(gs6) msymbol(O) mlcolor(gs2) legend(label(5 "Early vs. Late dropout")))                  (connect  sdiff_v_tr_comp_late_drop times5, mcolor(gs6) msymbol(O) mlcolor(gs2) msymbol(diamond) legend(label(2 "Original: Early dropout vs. Tr. completion")))                                  (connect  sdiff_24_early_late_drop times3, mcolor(gs10) msymbol(O) mlcolor(gs2)  legend(label(4 "Original: Late dropout vs. Tr. completion")))                                  (connect  neg_sdiff_v_early_late_drop times6, mcolor(gs10) msymbol(O) mlcolor(gs2) msymbol(diamond) legend(label(6 "Original: Early vs. Late dropout")))                                           (line zero times, lcolor(black%20) lwidth(thick) legend(label(6 "")))                  ,xtitle("Years from baseline substance use treatment completion¬†status")                                  legend(order( 1 "Early dropout vs. Tr. completion" 2 "Original: Early dropout vs. Tr. completion" 3 "Late dropout vs. Tr. completion" 4 "Original: Late dropout vs. Tr. completion" 5 "Early vs. Late dropout" 6 "Original: Early vs. Late dropout" ) ring(0) pos(7) cols(2) region(lstyle(none)) region(c(none)) nobox  size(2.5))                  ytitle("Difference in survival¬†probabilities")                                  graphregion(color(white) lwidth(large)) bgcolor(white)                                  plotregion(fcolor(white)) graphregion(fcolor(white) )                  name(s_diff_cjs_clus_corr_idcen, replace)"'
+.date = "30 Jan 2024"
+.time = "17:00:54"
+.dta_file = ""
+.dta_date = ""
+.plotregion1.plot7.style.editstyle line(width(none)) editcopy
+.plotregion1.plot8.style.editstyle line(width(none)) editcopy
+.plotregion1.plot9.style.editstyle line(width(none)) editcopy
+.plotregion1.plot10.style.editstyle line(width(none)) editcopy
+.plotregion1.plot11.style.editstyle line(width(none)) editcopy
+.plotregion1.plot12.style.editstyle line(width(none)) editcopy
+.legend.plotregion1.key[1].xsz.editstyle 9 editcopy
+.legend.plotregion1.key[2].xsz.editstyle 9 editcopy
+.legend.plotregion1.key[3].xsz.editstyle 9 editcopy
+.legend.plotregion1.key[4].xsz.editstyle 9 editcopy
+.legend.plotregion1.key[5].xsz.editstyle 9 editcopy
+.legend.plotregion1.key[6].xsz.editstyle 9 editcopy
+<EndItem>
