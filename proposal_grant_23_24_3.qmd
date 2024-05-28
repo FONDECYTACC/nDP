@@ -7,6 +7,7 @@ author: "Andrés González Santa Cruz"
 format: 
   html:
     code-fold: true
+    embed-resources: true
 ---
 
 ```{css}
