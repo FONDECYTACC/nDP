@@ -7,6 +7,7 @@ author: "Andrés González Santa Cruz"
 format: 
   html:
     code-fold: true
+    embed-resources: true
 ---
 
 ```{css}
@@ -560,6 +561,21 @@ memory.limit(size=56000)
 #| error: false
 #| eval: true
 
+invisible("2024-05-21: test different")
+data_mine_miss_restr_proc2<-
+data_mine_miss_restr_proc2 %>% 
+left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","n_off_acq","n_off_vio","n_off_sud","n_off_oth", "n_prev_off")], by="hash_key") %>% 
+  {if (nrow(.) > nrow(data_mine_miss_restr_proc2)) {message("left join added rows"); .} else .} %>% 
+  dplyr::mutate(n_prev_off_bin= ifelse(n_prev_off>0,1,0))
+  #janitor::tabyl(n_off_acq)
+
+#(Post-Treatment)
+# n_post_off_acq
+# n_post_off_vio
+# n_post_off_sud
+# n_post_off_ot
+# n_post_off
+
 invisible("To account for variability by treatment setting, we stratified the analysis by setting: basic ambulatory GP intensive ambulatory GP residential WO intensive ambulatory WO residential")
 table(subset(Base_fiscalia_v15f_grant_23_24_long2_miss_proc_multtr, is_first_occurrence==1, select= "tipo_de_plan_2_mod"))
 
@@ -627,6 +643,14 @@ tableOne <- CreateTableOne(vars = vars, data = data_mine_miss_restr_proc2_baseli
 
 print(tableOne, smd = TRUE) # Calculate SMD separately if needed
 
+smd_bin(
+  prop.table(table(data_mine_miss_restr_proc2_baseline$susprindum_mar[data_mine_miss_restr_proc2_baseline$policonsumo==0]))[[2]],
+  prop.table(table(data_mine_miss_restr_proc2_baseline$susprindum_mar[data_mine_miss_restr_proc2_baseline$policonsumo==1]))[[2]]
+)
+smd_bin(
+    prop.table(table(data_mine_miss_restr_proc2_baseline$comp_bpsc_y3_severe [data_mine_miss_restr_proc2_baseline$policonsumo==0]))[[2]],
+    prop.table(table(data_mine_miss_restr_proc2_baseline$comp_bpsc_y3_severe [data_mine_miss_restr_proc2_baseline$policonsumo==1]))[[2]]
+)
 
 folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/"),
                       "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/",
@@ -718,6 +742,7 @@ as.data.frame.TableOne(tableOne, smd=T, nonnormal= T)%>%
 #| warning: false
 #| error: false
 #| eval: true
+
 
 rbind.data.frame(
   cbind.data.frame(model= "Primary (no corrections, lag=0)", t(matrix(summary(data_mine_miss_restr_proc2$iiw_nocorr_st)))),
