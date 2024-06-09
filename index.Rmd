@@ -62,7 +62,11 @@ output:
 
 - [step 1](top_vs_po.html)
 
-- [Poster (idea)](pres_2023mar.html)
+**Mortality following substance use disorder treatment: population-based record-linkage retrospective cohort design**
+
+- [Poster page](pres_jun_24_smr.html)
+
+- [Poster PDF](pres_jun_24_smr.pdf)
 
 **Update of the C1 Agreement**
 

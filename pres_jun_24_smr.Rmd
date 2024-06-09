@@ -1,0 +1,1069 @@
+---
+main_topsize: 0.11 #percent coverage of the poster
+main_bottomsize: 0.08 #https://github.com/brentthorne/posterdown/wiki/posterdown_html
+main_width: 1
+#column_numbers: 2
+main_fontfamily: xaringanthemer::google_font('Baloo Bhai 2')
+font_family: "Roboto"
+titlebox_height: "10%" #https://github.com/brentthorne/posterdown/issues/113  The default is "15%"
+title_textsize: "60pt" #poster title fontsize
+primary_colour:  "#21177A60" #mas 2 digitos para la trasparencia
+secondary_colour: "#ff7f50"
+author_textcol:  "#ed4a11" # "#bf846f" #Colour of author text.
+author_textsize: "35pt"
+poster_height: "40in"
+poster_width: "42in"
+column_margins:	"0.15in"
+accent_colour: "#aaaaaa"
+affiliation_textcol: "#bf846f" # "#591F0A"
+affiliation_textsize: "30pt"
+font_size: "30%" #no sirve
+#ESSENTIALS
+sectitle_textsize: "40pt"
+sectitle2_textsize: "30pt"
+sectitle_boxshape: "3mm 0mm" #Changes the shape of the section title box.
+title: '**Mortality following substance use disorder treatment: population-based record-linkage retrospective cohort design**'
+author:
+  - name: '**A. González-Santa Cruz**'
+    affil: 1, 2
+    main: true
+    orcid: '0000-0002-5166-9121'    
+    email: gonzalez.santacruz.andres@gmail.com
+  - name: '**A. Castillo-Carniglia**'
+    affil: 1, 3
+    main: true
+    orcid: '0000-0002-3016-890X'    
+    email: alvacasti@gmail.com
+affiliation:
+  - num: 1
+    address: Millennium Nucleus for the evaluation and analysis of Drug Policies 
+  - num: 2
+    address: Ph.D. student, School of Public Health, Universidad de Chile
+  - num: 3
+    address: Department of Public Health, Facultad de Medicina y Ciencia, Universidad San Sebastián, Chile
+main_findings: "**High mortality** in SUT Patients, particularly among **women**, and **regional variations** in mortality risks"
+logoleft_name: _style/Logo_nDP_monotono_vertical_en.png
+logoright_name: _style/Logo_nDP_color_hz_en.png
+logocenter_name: _figs/qrcode.png #"`r plot(qrcode::qr_code('https://fondecytacc.github.io/nDP/'))`" magick::image_write(magick::image_transparent(magick::image_read("_figs/qrcode.png"), "white"), path = "_figs/qrcode.png", format = "png")
+output: 
+  posterdown::posterdown_betterport:
+    self_contained: true
+    pandoc_args: --mathjax
+    number_sections: false
+    css: xaringan-themer.css
+    csl: ./_bibs/revista-medica-de-chile #american-medical-association-10th-edition.csl
+knit: pagedown::chrome_print
+---
+
+<!---
+knit: pagedown::chrome_print    
+#https://github.com/brentthorne/posterdown/wiki/posterdown_betterport
+#despues de number_section
+#knit: pagedown::chrome_print
+#https://docs.google.com/document/d/1O9_FGXL4jDPn19yp4Pb6y0w0BZtbocMK90ee8Gz3FNg/edit#
+
+https://github.com/brentthorne/posterdown/wiki/posterdown_html
+--->
+
+```{css, echo=FALSE}
+div.title_container{
+   background-image: linear-gradient(#ff7f50 8%, #21177A); /* background-color: #21177A;*/
+}
+
+div.logo_left{
+  background-image: linear-gradient(#ff7f50 8%, #21177A);/* background-color: #ff7f50; */
+}
+div.logo_right{
+  background-image: linear-gradient(#ff7f50 8%, #21177A); /*background-color: #ff7f50; */
+}
+
+:root {
+  --text-bold-color: #21177A;
+}
+
+/* gray #4a4a4a */
+```
+
+```{css, echo=FALSE}
+
+div.logo_left{
+  background-image: linear-gradient(#ff7f50 10%, #21177A);/* background-color: #ff7f50; */
+}
+div.logo_right{
+  background-image: linear-gradient(#ff7f50 10%, #21177A); /*background-color: #ff7f50; */
+}
+
+:root {
+  --text-bold-color: #21177A;
+}
+
+h3 {
+  line-height: .3em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+}
+
+h5 {
+  line-height: .65em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+}
+poster_title h1 {
+  line-height: .75em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+}
+.poster_title h1 {
+  line-height: .75em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+}
+.poster_title h3 > sup {
+  line-height: .65em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+}
+.poster_title h5 {
+  line-height: .65em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+}
+
+poster_title h3 > sup {
+  line-height: .65em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+}
+poster_title h5 {
+  line-height: .65em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+}
+/* gray #4a4a4a */
+```
+
+
+```{=html}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style type="text/css">
+.showopt {   
+  background-color: #004c93;   color: #FFFFFF;    width: 100px;   height: 20px;   text-align: center;   vertical-align: middle !important;   float: right;   font-family: sans-serif;   border-radius: 8px; 
+  }
+
+.showopt:hover {     
+        background-color: #dfe4f2;
+        color: #004c93; 
+        }  
+pre.plot {   
+        background-color: white !important; 
+        } 
+.tablelines table, .tablelines td, .tablelines th {
+        border: 1px solid black;
+        }
+
+.centrado {
+    text-align: center;
+}
+
+.table.center {
+    margin-left:auto; 
+    margin-right:auto;
+  }
+
+/* https://vivekjaiskumar.medium.com/css-is-and-not-selector-17c942ec83f :is()*/
+
+/* Applies to outputs that are not code other than R*/
+
+pre {
+  overflow-x: auto !important;
+}
+pre code {
+  word-wrap: normal !important;
+  white-space: pre !important;
+}
+/*
+pre:not(.sourceCode) { 
+  white-space: nowrap !important;
+}
+*/
+.sourceCode { /* Important gives precedence  */
+  font-size: 10px !important;
+  line-height: 50% !important;
+}
+.text_25 { /* Important gives precedence  */
+  font-size: 25% !important;
+}
+.text_35 { /* Important gives precedence  */
+  font-size: 35% !important;
+  line-height: .85em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.text_38 { /* Important gives precedence  */
+  font-size: 38% !important;
+}
+
+.text_40 { /* Important gives precedence  */
+  font-size: 40% !important;
+}
+
+.text_45 { /* Important gives precedence  */
+  font-size: 45% !important;
+}
+
+.text_50 { /* Important gives precedence  */
+  font-size: 50% !important;
+}
+
+.text_55 { /* Important gives precedence  */
+  font-size: 55% !important;
+}
+
+.text_60 { /* Important gives precedence  */
+  font-size: 60% !important;
+}
+
+.text_65 { /* Important gives precedence  */
+  font-size: 65% !important;
+}
+
+.text_70 { /* Important gives precedence  */
+  font-size: 70% !important;
+}
+
+.text_75 { /* Important gives precedence  */
+  font-size: 75% !important;
+}
+
+.text_50_bib { /* Important gives precedence  */
+  font-size: 55% !important;
+  line-height: .9em !important;
+}
+
+body{ /* Normal  */
+      text-align: justify;
+  }
+
+.superbigimage{
+    overflow-y:scroll;
+    height:350px;
+    white-space: nowrap;
+    overflow-x: auto; 
+    width:100%;
+}
+.superbigimage img{
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.message { color:#446C6E; font-family: monospace;font-size: 10px; line-height: 110%; font-weight: bold;}
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
+div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
+
+.pandoc-table { /* Should add !important; but it seems no necessary  */
+  margin-left:auto; /* To center */
+  margin-right:auto;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-size: 7px;
+  overflow-y: auto;
+  max-height:450px !important;
+  white-space: nowrap;
+  overflow-x: auto; 
+  width:450px;
+}
+
+.pandoc-table th {/* header */
+text-align: center !important;
+font-size: 7px;
+padding: 0px;
+}
+
+.pandoc-table td {
+text-align: left !important;
+font-size: 6px;
+padding: 0px;
+}
+
+.pandoc-table caption {
+    text-align: left !important;
+    font-size: 11px !important;
+}
+
+.controlly{
+    overflow-y:scroll;
+    height:350px;
+    overflow-x: scroll; 
+}
+
+ule {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+</style>
+
+<style>
+p.caption {
+ margin-top: 0;
+ margin-bottom: 0;
+}
+</style>
+
+<style>
+.showopt {
+  background-color: #004c93;
+  color: #FFFFFF; 
+  width: 100px;
+  height: 20px;
+  text-align: center;
+  vertical-align: middle !important;
+  float: right;
+  font-family: sans-serif;
+  border-radius: 8px;
+}
+
+.showopt:hover {
+    background-color: #dfe4f2;
+    color: #004c93;
+}
+
+pre.plot {
+  background-color: white !important;
+}
+</style>
+```
+
+```{js hideOutput, echo=F}
+$(document).ready(function() {    
+	$chunks = $('.fold');    
+	$chunks.each(function () {      // add button to source code chunks     
+	if ( $(this).hasClass('s') ) {       
+		$('pre.r', this).prepend("<div class=\"showopt\">Show Source</div><br style=\"line-height:22px;\"/>");
+       		$('pre.r', this).children('code').attr('class', 'folded');     
+       		}      // add button to output chunks     
+		if ( $(this).hasClass('o') ) {       
+			$('pre:not(.r)', this).has('code').prepend("<div class=\"showopt\">Show Output</div><br style=\"line-height:22px;\"/>");       
+			$('pre:not(.r)', this).children('code:not(r)').addClass('folded');        // add button to plots       
+			$(this).find('img').wrap('<pre class=\"plot\"></pre>');       
+			$('pre.plot', this).prepend("<div class=\"showopt\">Show Plot</div><br style=\"line-height:22px;\"/>");       
+			$('pre.plot', this).children('img').addClass('folded');      
+			}   
+});    // hide all chunks when document is loaded   
+	$('.folded').css('display', 'none')    // function to toggle the visibility   
+	$('.showopt').click(function() {     
+			var label = $(this).html();     
+			if (label.indexOf("Show") >= 0) {       
+				$(this).html(label.replace("Show", "Hide"));     
+			} else {
+			  $(this).html(label.replace("Hide", "Show"));     
+			}     
+	$(this).siblings('code, img').slideToggle('fast', 'swing');   
+	}); 
+}); 
+```
+
+
+```{r prev-setup, include = FALSE, cache=T, error=T}
+rm(list=ls());gc()
+unlink("pres_jun_24_smr_cache", recursive = TRUE)
+try(unlink("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/pres_jun_24_smr_cache", recursive = TRUE))
+#If you render multiple documents from the same script or R session, you should detach("Statamarkdown") in between documents.
+try(detach("Statamarkdown"))
+
+#load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/20240207.RData")
+```
+
+
+```{r setup, include = FALSE, cache=T, error=T, echo=T}
+#Libraries used in the routine. Dont change the order
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+copiar_nombres <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
+  if(class(try(dplyr::ungroup(x)))[1]=="tbl_df"){
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)    
+        }
+  } else {
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)       
+  }
+ }
+}  
+pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando paquetes
+
+if(!require(pacman)){install.packages("pacman")}
+if(!require(devtools)){install.packages("devtools", type = "win.binary", dependencies=T)}
+
+if(!require(ggiraph)){install.packages("ggiraph");library(ggiraph)}
+if(!require(sf)){install.packages("sf");library(sf)}
+if(!require(rnaturalearth)){install.packages("rnaturalearth");library(rnaturalearth)}
+if(!require(rnaturalearthdata)){install.packages("rnaturalearthdata");library(rnaturalearthdata)}
+if(!require(rnaturalearthhires)){install.packages("rnaturalearthhires",repos="http://packages.ropensci.org", type = "source");library(rnaturalearthhires)}
+if(!require(tidyverse)){install.packages("tidyverse");library(tidyverse)}
+if(!require(pagedown)){install.packages("pagedown");library(pagedown)}
+if(!require(posterdown)){install.packages("posterdown");library(posterdown)}
+if(!require(xaringanthemer)){install.packages("xaringanthemer");library(xaringanthemer)}
+if(!require(ggpubr)){install.packages("ggpubr");library(ggpubr)}
+if(!require(plotly)){install.packages("plotly");library(plotly)}
+if(!require(magick)){install.packages("magick");library(magick)}
+if(!require(htmlwidgets)){install.packages("htmlwidgets");library(htmlwidgets)}
+
+options(scipen=2) #display numbers rather scientific number
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+
+if(.Platform$OS.type == "windows") withAutoprint({
+  memory.size()
+  memory.size(TRUE)
+  memory.limit()
+})
+memory.limit(size=56000)
+
+path<-dirname(rstudioapi::getSourceEditorContext()$path)
+
+options(knitr.kable.NA = '')
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+#to format rows in bold
+format_cells <- function(df, rows ,cols, value = c("italics", "bold", "strikethrough")){
+
+  # select the correct markup
+  # one * for italics, two ** for bold
+  map <- setNames(c("*", "**", "~~"), c("italics", "bold", "strikethrough"))
+  markup <- map[value]  
+
+  for (r in rows){
+    for(c in cols){
+
+      # Make sure values are not factors
+      df[[c]] <- as.character( df[[c]])
+
+      # Update formatting
+      df[r, c] <- ifelse(nchar(df[r, c])==0,"",paste0(markup, gsub(" ", "", df[r, c]), markup))
+    }
+  }
+
+  return(df)
+}
+#To produce line breaks in messages and warnings
+knitr::knit_hooks$set(
+   error = function(x, options) {
+     paste('\n\n<div class="alert alert-danger">',
+           gsub('##', '\n', gsub('^##\ Error', '**Error**', x)),
+           '</div>', sep = '\n')
+   },
+   warning = function(x, options) {
+     paste('\n\n<div class="alert alert-warning">',
+           gsub('##', '\n', gsub('^##\ Warning:', '**Warning**', x)),
+           '</div>', sep = '\n')
+   },
+   message = function(x, options) {
+     paste('<div class="message">',
+           gsub('##', '\n', x),
+           '</div>', sep = '\n')
+   }
+)
+
+ 
+irrs<-function(x, y="event", z="person_days",db){
+  #x= variable que agrupa
+  #y= evento explicado
+  #z= person days
+  #db= base de datos
+  fmla <- as.formula(paste0(y,"~",x))
+  fmla2 <- as.formula(paste0(z,"~",x))
+assign(paste0("irr_",y,"_por_",x),
+       rateratio.test::rateratio.test(
+     x=as.numeric(xtabs(fmla, data=get(db)))[c(2,1)],
+     n=as.numeric(xtabs(fmla, data=get(db)))[c(2,1)]
+    )
+   )
+return(
+  rateratio.test::rateratio.test(
+     x=as.numeric(xtabs(fmla, data=get(db)))[c(2,1)],
+     n=as.numeric(xtabs(fmla2, data=get(db)))[c(2,1)]
+      )
+    )
+}
+```
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      tidy = FALSE,
+                      message = FALSE,
+                      fig.align = 'center',
+                      out.width = "100%")
+options(knitr.table.format = "html") 
+```
+
+
+```{r, load_refs, include=F, cache=FALSE}
+library(RefManageR)
+BibOptions(check.entries = FALSE,
+           bib.style = "numeric",
+           cite.style = "numeric",
+           style = "html",
+           super = TRUE,
+           hyperlink = FALSE,
+           dashed = FALSE)
+
+myBib <- ReadBib("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/bib.txt", check = F,  .Encoding="latin1")
+
+
+```
+
+# Background
+<ul>
+<li>Chile has one of the highest alcohol consumption in the continent$`r Cite(myBib, c("vicente_prevalencias_2016"))`$</li>
+<li>In 2016, led in high school cocaine, coca paste, and marijuana use$`r Cite(myBib, c("inter-american_drug_abuse_control_commission_cicad_report_2019"))`$</li>
+<li>Over 170% growth in drug-related mortality, 2000 vs 2019$`r Cite(myBib, c("oecd_health_2023"))`$</li>
+<li>In 2020, 6% of Chileans (12-64) had a problematic substance (alcohol & drug) use $`r Cite(myBib, c("servicio_nacional_para_la_prevencion_y_rehabilitacion_del_consumo_de_drogas_y_alcohol_senda_decimo_2022-1"))`$</li>
+<li>In Chile, the government funds substance use treatments (SUT) for all with public health insurance (~81% of the population)$`r Cite(myBib, c("mateo-pinones_evidence-based_2022"))`$</li>
+<li>There is limited information regarding short-term, medium-term, and long-term mortality risks</li>
+<li>Analyzing mortality among administrative regions may reveal disparities in post-treatment outcomes</li>
+<li>Regional data can inform policy and resource allocation</li>
+</ul>
+
+# Objectives
+To describe the standardized mortality ratios (SMRs) for all adult patients in publicly funded SUT within 2010-2022, along with regional specificities
+
+# Methods
+**Design**: a population-based retrospective cohort of adults enrolled in Chilean SUT programs (18-65) with national mortality data (2010-2020).
+
+**Analysis plan**. We calculated SMRs by comparing the observed deaths vs. the expected within regions, age groups (18-29, 30-44, 45-59 & 60-65), periods (annually), and across sexes. Stratum-specific population estimates were obtained from the Ministry of Health's mortality data, supplemented by population projections from the National Institute of Statistics' open data portal$`r Cite(myBib, c("instituto_nacional_de_estadisticasine_tablas_2023"))`$. Regional data on cocaine, marijuana, and hazardous alcohol use were obtained from the 2020 Chile National Drug Study by the National Drug and Alcohol Prevention and Rehabilitation Service. 95% confidence intervals(CIs) were calculated using Vandenbroucke's method$`r Cite(myBib, c("szklo_epidemiology_2019"))`$.
+
+<br>
+
+# Preliminary Results
+
+```{r res-desc, eval=T, echo=F, include= F, error=T, fig.align='center', warning=FALSE, message=FALSE, results='hide'}
+# Define colors
+colors <- c("#FFCC00", "#FF4500", "#1E40AF", "#FF7F50", "#21177A")
+
+# First plot with magick
+image1 <- magick::image_annotate(
+    magick::image_read("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/people.png"), 
+    text = "100,322 patients", 
+    size = 50, 
+    gravity = "south", 
+    font = "Baloo Bhai 2", 
+    color = "black"
+) %>%
+    magick::image_crop("99%x99%+10+10") %>% # Crop a small portion from the borders
+    magick::image_trim() %>% 
+    magick::image_colorize(opacity = 100, color = "#21177A") %>% 
+    magick::image_border(color = "white", geometry = "0x50")
+
+# Save the first image
+suppressMessages(magick::image_write(image1, path = "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/image1.png"))
+
+# Second plot with plotly
+plot2 <- data.frame(
+    category = c("Male", "Female"),
+    value = c(74, 26)
+) %>%
+    mutate(label = paste0(category, ":\n", round(value, 1), "%")) %>% 
+    plot_ly(
+        labels = ~category, 
+        values = ~value, 
+        type = 'pie',
+        hole = 0.4,
+        textposition = 'outside',
+        textinfo = 'text',
+        text = ~label, 
+        automargin = TRUE,
+        sort = FALSE,
+        direction = "clockwise",
+        textfont = list(size = 48),
+        marker = list(colors = c(gray.colors(4)[2], colors[3]))
+    ) %>%
+    layout(
+        yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = TRUE),
+        showlegend = FALSE
+    )
+
+# Save the second plot as an image
+suppressMessages(htmlwidgets::saveWidget(plot2, "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/plot2.html"))
+suppressMessages(webshot::webshot("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/plot2.html", "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/plot2.png"))
+
+# Third plot with magick
+image3 <- magick::image_annotate(
+    magick::image_transparent(magick::image_read("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/aging.webp") %>% magick::image_trim(), color = "white"), 
+    text = "Average admission age\n39 (stand. deviation=10.5)", 
+    size = 80, 
+    gravity = "south", 
+    font = "Baloo Bhai 2", 
+    color = "#4E5C68"
+) %>%
+    magick::image_trim() %>% 
+  magick::image_transparent("#F0F0F0") %>%
+  magick::image_transparent("#F5F5F5") %>%
+  magick::image_transparent("#FAFAFA") %>%
+  magick::image_transparent("#E8E8E8") %>%
+  magick::image_transparent("#EEEEEE") %>%
+    magick::image_transparent("#FFFFFF") %>%  # white
+  magick::image_transparent("#E6E6E6") %>%  # hsl(0deg 0% 90.2%)
+  magick::image_transparent("#ECF5EC") %>%  # hsl(80deg 14.29% 95.88%)
+  magick::image_transparent("#EFF4EF") %>%  # hsl(90deg 7.14% 94.51%)
+  magick::image_transparent("#F9F9F9") %>%  # hsl(0deg 0% 97.65%)
+  magick::image_transparent("#EFEFEF") %>%  # hsl(0deg 0% 97.65%)
+  magick::image_transparent("lightgray") %>%   # Remove light gray background
+  magick::image_resize("50%") # Resize the third image to make it smaller
+
+# Save the third image
+suppressMessages(magick::image_write(image3, path = "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/image3.png"))
+
+# Combine images horizontally
+combined_image <- magick::image_append(c(
+    magick::image_read("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/image1.png"),
+    magick::image_read("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/plot2.png") %>% magick::image_resize("68%"),
+    magick::image_read("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/image3.png")
+), stack = FALSE)
+```
+
+```{r res-desc-output, eval=T, echo=F, error=F, fig.align='center', fig.cap="Characteristics of SUT patients", fig.retina=2, message=FALSE, warning=FALSE, out.height="88%", out.width="88%"}
+# Display combined image
+
+suppressMessages(combined_image)
+```
+::: text_38
+.
+:::
+```{r smrs-plot, eval=T, echo=F, error=T, fig.align='center', fig.cap="Standardized mortality ratios for people in SUT, by age group and sex",  message=FALSE, warning=FALSE, fig.retina=2, out.height="85%", out.width="85%"}
+
+data_age_sex <- data.frame(
+  AgeGroup = c('18-29', '18-29', '30-44', '30-44', '45-59', '45-59', '60-65', '60-65'),
+  Sex = c('Men', 'Women', 'Men', 'Women', 'Men', 'Women', 'Men', 'Women'),
+  SMD = c(9, 21.69, 16.82, 29.63, 14.74, 22.67, 11.15, 13.27),
+  LowerCI = c(7.42, 15.56, 15.73, 26.02, 13.96, 20.35, 10.01, 10.42),
+  UpperCI = c(10.74, 28.84, 17.95, 33.47, 15.54, 25.11, 12.36, 16.46)
+)
+
+log_breaks <- function(n = 10) {
+  function(x) {
+    exp(seq(log(min(x, na.rm = TRUE)), log(max(x, na.rm = TRUE)), length.out = n))
+  }
+}
+
+plot_smds<-
+ggplot(data_age_sex, aes(x = AgeGroup, y = SMD, color = Sex)) +
+  geom_point(position = position_dodge(width = 0.25), size = 3) +
+  geom_errorbar(aes(ymin = LowerCI, ymax = UpperCI), 
+                width = 0.2,
+                position = position_dodge(width = 0.25)) +
+  scale_color_grey(start = 0.6, end = 0.4) +  # Adjust the grey scale as needed
+  theme_minimal() +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black", linewidth = 1)+  # Horizontal line at y=1
+  labs(y = "Standardized Mortality Ratios (SMR)", x = "Age Group") +
+  scale_y_continuous(trans = scales::log_trans(base = exp(1)),
+                     breaks = log_breaks(10), #scales::trans_breaks("log", function(x) exp(x)),
+                     labels = scales::label_number(accuracy = 0.01), # Round the labels to two decimal places
+                     limits = c(exp(-1), NA)) +
+  theme(axis.text.x = element_text(size = 13),  # Increase x-axis label size
+        axis.title.x= element_text(size = 14),
+        axis.text.y = element_text(size = 13),
+        axis.title.y = element_text(size = 14),
+        legend.title = element_text(size = 15),       # Increase legend title size
+        legend.text = element_text(size = 13))+  # Increase y-axis label size # oob = scales::oob_squish) +
+  labs(caption= "Y-axis was log-transformed. Dashed black lines represent the null value.")
+plot_smds  
+```
+```{r chile-regional-pre, eval=T, echo=F, error=T, fig.align='center'}
+tasa_estandarizada_sex<- 
+  cbind.data.frame(reg_res = c("01", "01", "02", "02", "03", "03", 
+"04", "04", "05", "05", "06", "06", "07", "07", "08", "08", "09", 
+"09", "10", "10", "11", "11", "12", "12", "13", "13", "14", "14", 
+"15", "15", "16", "16"), sexo = c(1, 2, 1, 2, 1, 2, 1, 2, 1, 
+2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 
+1, 2), poblacion_total = c(1208569L, 1155752L, 2282657L, 2172363L, 
+1067726L, 1022902L, 2634681L, 2721765L, 6445669L, 6598427L, 3307829L, 
+3259522L, 3726180L, 3822551L, 5653843L, 5881104L, 3344978L, 3455113L, 
+3052294L, 3008458L, 372754L, 356316L, 630101L, 593235L, 26884923L, 
+27208158L, 1374629L, 1394492L, 819278L, 810905L, 311554L, 335747L
+), tasa_senda_estandarizada = c(0.0341386031443758, 0.0225551299468634, 
+0.0340753975819613, 0.0235352357167638, 0.0390384762961269, 0.0178914725798621, 
+0.0366584330798606, 0.0254597328101934, 0.0334378289619833, 0.0245701099764246, 
+0.0364592220672808, 0.0262581205565652, 0.0477486557285575, 0.0257774636842409, 
+0.0479892718246855, 0.035218954567149, 0.0474139423060398, 0.0382870414116975, 
+0.0508482587854254, 0.0354768721766523, 0.062629411148608, 0.0426613963314532, 
+0.0608419162530538, 0.0345716986803993, 0.0395544492526545, 0.0364437812970375, 
+0.0327783430312416, 0.03476182303447, 0.0322261174499349, 0.0391460851756447, 
+0.0190901001161823, 0), tasa_total_estandarizada = c(0.00306312672259507, 
+0.00158598038333483, 0.00338246175399983, 0.00186340864763394, 
+0.00294551223815848, 0.00169517705508446, 0.00290927060999036, 
+0.00163717293741377, 0.00320897644604462, 0.00182619281837929, 
+0.0033109329412131, 0.00191531150886541, 0.00342039300302186, 
+0.00185164305198282, 0.00436676434064405, 0.00233748629509017, 
+0.00374202760077944, 0.00192613092538507, 0.00391115665791041, 
+0.00181288886200173, 0.00392215777697892, 0.00165864008352137, 
+0.00375495357093545, 0.00183232614393959, 0.00287752358450125, 
+0.00158378968543185, 0.00390287124744204, 0.0019490968754213, 
+0.00332487873469079, 0.0018275876952294, 0.00390301520763656, 
+0.00193598155754184), rme = c(11.1450182235535, 14.2215693106095, 
+10.0741412794, 12.630206340755, 13.25354408323, 10.5543385725987, 
+12.600558007212, 15.5510344865656, 10.4200917408411, 13.4542802540589, 
+11.0117669897362, 13.7095821933007, 13.9599910555227, 13.9214000542044, 
+10.9896637604235, 15.0670207740364, 12.670655421185, 19.8776941417121, 
+13.000823856693, 19.5692482425426, 15.9681009051219, 25.7207074369511, 
+16.2031074695543, 18.8676556271082, 13.7460034960966, 23.0104928907278, 
+8.39852020553452, 17.8348359554761, 9.69241888845367, 21.4195385960568, 
+4.89111599637915, 0), rme_cuartil = structure(c(2L, 3L, 1L, 2L, 
+2L, 1L, 2L, 3L, 1L, 2L, 2L, 3L, 3L, 3L, 1L, 3L, 2L, 4L, 2L, 4L, 
+3L, 4L, 4L, 4L, 3L, 4L, 1L, 4L, 1L, 4L, 1L, 1L), class = "factor", .Label = c("[ 0.0,11.0)", 
+"[11.0,13.7)", "[13.7,16.2)", "[16.2,25.7]")))
+
+tasa_estandarizada_sex2<- 
+cbind.data.frame(GID_0 = c("CHL", "CHL", "CHL", "CHL", "CHL", "CHL", 
+"CHL", "CHL", "CHL", "CHL", "CHL", "CHL", "CHL", "CHL", "CHL", 
+"CHL", "CHL", "CHL", "CHL", "CHL", "CHL", "CHL", "CHL", "CHL", 
+"CHL", "CHL", "CHL", "CHL", "CHL", "CHL", "CHL", "CHL"), NAME_1 = c("Aisén del General Carlos Ibáñez del Campo", 
+"Aisén del General Carlos Ibáñez del Campo", "Antofagasta", "Antofagasta", 
+"Araucanía", "Araucanía", "Arica y Parinacota", "Arica y Parinacota", 
+"Atacama", "Atacama", "Bío-Bío", "Bío-Bío", "Coquimbo", "Coquimbo", 
+"Libertador General Bernardo O'Higgins", "Libertador General Bernardo O'Higgins", 
+"Los Lagos", "Los Lagos", "Los Ríos", "Los Ríos", "Magallanes y Antártica Chilena", 
+"Magallanes y Antártica Chilena", "Maule", "Maule", "Ñuble", 
+"Ñuble", "Región Metropolitana de Santiago", "Región Metropolitana de Santiago", 
+"Tarapacá", "Tarapacá", "Valparaíso", "Valparaíso"), sexo = c(1, 
+2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 
+2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2), rme = c(15.968101, 25.720707, 
+10.074141, 12.630206, 12.670655, 19.877694, 9.692419, 21.419539, 
+13.253544, 10.554339, 10.989664, 15.067021, 12.600558, 15.551034, 
+11.011767, 13.709582, 13.000824, 19.569248, 8.39852, 17.834836, 
+16.203107, 18.867656, 13.959991, 13.9214, 4.891116, 0, 13.746003, 
+23.010493, 11.145018, 14.221569, 10.420092, 13.45428))
+#CONSUMO DE RIESGO DE ALCOHOL
+# marihuana año
+# cocaina total año
+#https://www.senda.gob.cl/wp-content/uploads/2022/03/ENPG-2020-WEB.pdf
+
+# CONSUMO DE RIESGO DE ALCOHOL
+data_enpg2020 <- tribble(
+  ~Región, ~region_code,~`cons_riesgo_oh_2020`,~`mar_anio_2020`, ~`coc_anio_2020`,
+  "Tarapacá", "01","10.0", "7.7", "0.9",
+  "Antofagasta", "02","6.3", "8.5", "0.5",
+  "Atacama", "03", "9.7", "7.2", "0.05",
+  "Coquimbo", "04","7.0", "8.1", "0.1",
+  "Valparaíso", "05","8.6", "10.5", "1.0",
+  "O'Higgins", "06","17.9", "7.5", "0.4",
+  "Maule", "07","8.6", "7.7", "0.05",
+  "Biobío", "08","9.4", "11.1", "1.3",
+  "La Araucanía", "09", "5.5", "7.9", "0.8",
+  "Los Lagos", "10", "6.9", "6.0", "0.7",
+  "Aysén", "11", "16.2", "10.7", "0.9",
+  "Magallanes", "12", "6.1", "6.1", "0.1",
+  "Metropolitana", "13", "10.6", "13.7", "0.7",
+  "Los Ríos", "14", "9.2", "12.0", "0.3",
+  "Arica y Parinacota", "15", "7.5", "7.7", "0.7",
+  "Ñuble", "16", "12.3", "8.5", "1.4"
+)
+data_enpg2020_clean <- data_enpg2020 %>%
+  mutate(across(3:5, ~as.numeric(.)))
+
+data_enpg2020_clean$cons_riesgo_oh_2020_qntl<- Hmisc::cut2(data_enpg2020_clean$cons_riesgo_oh_2020,g=4, minmax=T)#quantile groups
+data_enpg2020_clean$mar_anio_2020_qntl<- Hmisc::cut2(data_enpg2020_clean$mar_anio_2020,g=4, minmax=T)#quantile groups
+data_enpg2020_clean$coc_anio_2020_qntl<- Hmisc::cut2(data_enpg2020_clean$coc_anio_2020,g=4, minmax=T)#quantile groups
+
+est_sex_enpg2020<-
+pivot_wider(tasa_estandarizada_sex, id_cols="reg_res", names_from="sexo", values_from = "rme") %>% dplyr::rename("men"="1","women"="2") %>% 
+    dplyr::left_join(data_enpg2020, by=c("reg_res"="region_code")) %>% dplyr::select("Región", everything())
+```
+::: text_38
+.
+:::
+```{r, include=F}
+#pairs(mutate(est_sex_enpg2020,across(c(men, women, cons_riesgo_oh_2020, mar_anio_2020, coc_anio_2020), as.numeric)) %>% select(men, women, cons_riesgo_oh_2020, mar_anio_2020, coc_anio_2020))
+#cor(mutate(est_sex_enpg2020,across(c(men, women, cons_riesgo_oh_2020, mar_anio_2020, coc_anio_2020), as.numeric)) %>% select(men, women, cons_riesgo_oh_2020, mar_anio_2020, coc_anio_2020)) %>% round(.,2)
+#
+df2<-
+mutate(est_sex_enpg2020,across(c(men, women, cons_riesgo_oh_2020, mar_anio_2020, coc_anio_2020), as.numeric)) %>% select(men, women, cons_riesgo_oh_2020, mar_anio_2020, coc_anio_2020)
+# Function to calculate correlation and p-values
+cor_test <- function(x, y) {
+  test <- cor.test(x, y)
+  return(c(correlation = test$estimate, p_value = test$p.value))
+}
+
+# List of variable pairs to test
+pairs <- list(
+  c("men", "women"),
+  c("men", "cons_riesgo_oh_2020"),
+  c("men", "mar_anio_2020"),
+  c("men", "coc_anio_2020"),
+  c("women", "cons_riesgo_oh_2020"),
+  c("women", "mar_anio_2020"),
+  c("women", "coc_anio_2020")
+)
+
+# Perform tests and collect results
+results <- lapply(pairs, function(pair) {
+  cor_test(df2[[pair[1]]], df2[[pair[2]]])
+})
+
+# Create a data frame for results
+results_df <- do.call(rbind, results)
+colnames(results_df) <- c("Correlation", "p_value")
+results_df <- cbind(pairs = sapply(pairs, function(pair) paste(pair, collapse = " - ")), results_df)
+
+# Print the results
+print(results_df)
+#      pairs                         Correlation           p_value              
+# [1,] "men - women"                 "0.663472993068678"   "0.00507768846530009"
+# [2,] "men - cons_riesgo_oh_2020"   "-0.0635020845887837" "0.815265573981687"  
+# [3,] "men - mar_anio_2020"         "-0.13319348801561"   "0.622890932526641"  
+# [4,] "men - coc_anio_2020"         "-0.466632446636729"  "0.0684401551755361" 
+# [5,] "women - cons_riesgo_oh_2020" "-0.07407171953662"   "0.785140137983475"  
+# [6,] "women - mar_anio_2020"       "0.243655933974581"   "0.36315069904818"   
+# [7,] "women - coc_anio_2020"       "-0.170156724258081"  "0.528670220238986"  
+```
+
+```{r chile-regional, eval=T, echo=F, error=T, fig.align='center', fig.cap="Regional data in quartiles", fig.width=10, fig.height=12, fig.retina=2}
+chile_shapefile <- readRDS("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/gadm36_CHL_1_sf.rds")
+
+region_codes <- data.frame(
+  region_name = c("I", "II", "III", "IV", "IX", "RM", "V", "VI", "VII", "VIII", "X", "XI", "XII", "XIV", "XV", "XVI"),
+  region_code = c("15", "01", "02", "03", "04", "05", "13", "06", "07", "16", "08", "09", "14", "10", "11", "12")
+)
+
+
+region_codes2 <- data.frame(
+region_names= c("Aisén del General Carlos Ibáñez del Campo", 
+                  "Antofagasta", 
+                  "Araucanía", 
+                  "Arica y Parinacota", 
+                  "Atacama", 
+                  "Bío-Bío", 
+                  "Coquimbo", 
+                  "Libertador General Bernardo O'Higgins", 
+                  "Los Lagos", 
+                  "Los Ríos", 
+                  "Magallanes y Antártica Chilena", 
+                  "Maule", 
+                  "Ñuble", 
+                  "Región Metropolitana de Santiago", 
+                  "Tarapacá", 
+                  "Valparaíso"),
+region_codes = c("11", "02", "09", "15", "03", "08", "04", "06", "10", "14", "12", "07", "16", "13", "01", "05")
+)
+
+
+chile_shapefile2 <- chile_shapefile %>% 
+  dplyr::left_join(region_codes2, by=c("NAME_1"="region_names")) %>% 
+  dplyr::mutate(region_code2= region_codes) %>% 
+  dplyr::left_join(tasa_estandarizada_sex, by=c("region_code2"="reg_res"))
+
+chile_shapefile2 <- chile_shapefile2 %>%
+  st_transform(crs = st_crs(4326)) %>%
+  mutate(region_code = as.character(CC_1)) %>% 
+  dplyr::mutate(tooltip=paste0(`NAME_1`,"=",sprintf("%1.4f",`tasa_senda_estandarizada`),",\n ", sprintf("%1.4f",tasa_total_estandarizada), "\nRME:",sprintf("%1.2f",rme)))
+
+chile_shapefile4 <- chile_shapefile2 %>% #porcentaje_pobr_multidim
+  dplyr::filter(sexo==1) %>% #para que no se dupliquen
+  dplyr::left_join(data_enpg2020_clean, by=c("region_code2"="region_code"))
+
+chile_shapefile4_oh <- chile_shapefile4 %>%
+  dplyr::mutate() %>% 
+  st_transform(crs = st_crs(4326)) %>%
+  mutate(region_code = as.character(CC_1)) %>% 
+  dplyr::mutate(tooltip=paste0(`NAME_1`,"= ",sprintf("%1.2f",`cons_riesgo_oh_2020`)))
+
+chile_shapefile4_mar <- chile_shapefile4 %>%
+  dplyr::mutate() %>% 
+  st_transform(crs = st_crs(4326)) %>%
+  mutate(region_code = as.character(CC_1)) %>% 
+  dplyr::mutate(tooltip=paste0(`NAME_1`,"= ",sprintf("%1.2f",`mar_anio_2020_qntl`)))
+
+chile_shapefile4_coc <- chile_shapefile4 %>%
+  dplyr::mutate() %>% 
+  st_transform(crs = st_crs(4326)) %>%
+  mutate(region_code = as.character(CC_1)) %>% 
+  dplyr::mutate(tooltip=paste0(`NAME_1`,"= ",sprintf("%1.2f",`coc_anio_2020_qntl`)))
+
+
+gradient_colors <- c("#21177A", "#ff7f50")
+n <- length(unique(chile_shapefile2$rme_cuartil))
+palette <- colorRampPalette(gradient_colors)(n)
+
+rme_region<-
+ggplot(data = chile_shapefile2) +
+  geom_sf(aes(fill = rme_cuartil)) +
+  theme_minimal() +
+  facet_grid(. ~ sexo, labeller = labeller(sexo = as_labeller(c("1" = "Men", "2" = "Women")))) +
+  labs(title = ' SMRs', 
+       #caption = 'Source: Your data source', 
+       fill = "SMR\n(quantiles)") +
+  coord_sf(xlim = c(-75.6, -67), ylim = c(-55, -19)) +
+  scale_x_continuous(breaks = c(-76, -70)) +
+  scale_fill_manual(values = palette, na.value = "grey80")+
+  #theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))+
+  theme(plot.margin = margin(0, 0, 0, 0))
+haz_use_oh<-
+ggplot(data = chile_shapefile4_oh) +
+    geom_sf(aes(fill = cons_riesgo_oh_2020_qntl)) +
+    theme_minimal() +
+         #caption = 'Source: Your data source', 
+    labs(title = 'Prevalence of alcohol hazardous use',
+         fill = "Quantiles") +
+    coord_sf(xlim = c(-75.6, -67), ylim = c(-55, -19)) +
+    scale_x_continuous(breaks = c(-76, -70)) +
+    scale_fill_manual(values = palette, na.value = "grey80")+
+  #theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))+
+  theme(plot.margin = margin(0, 0, 0, 0))
+use_lst_yr_mar<-
+ggplot(data = chile_shapefile4_mar) +
+    geom_sf(aes(fill = mar_anio_2020_qntl)) +
+    theme_minimal() +
+         #caption = 'Source: Your data source', 
+    labs(title = 'Prevalence of marijuana use', 
+         fill = "Quantiles") +
+    coord_sf(xlim = c(-75.6, -67), ylim = c(-55, -19)) +
+    scale_x_continuous(breaks = c(-76, -70)) +
+    scale_fill_manual(values = palette, na.value = "grey80")+
+  #theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))+
+  theme(plot.margin = margin(0, 0, 0, 0))
+use_lst_yr_coc<-
+ggplot(data = chile_shapefile4_coc) +
+    geom_sf(aes(fill = coc_anio_2020_qntl)) +
+    theme_minimal() +
+         #caption = 'Source: Your data source', 
+    labs(title = 'Prevalence of cocaine use', 
+         fill = "Quantiles") +
+    coord_sf(xlim = c(-75.6, -67), ylim = c(-55, -19)) +
+    scale_x_continuous(breaks = c(-76, -70)) +
+    scale_fill_manual(values = palette, na.value = "grey80")+
+  #theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))+
+  theme(plot.margin = margin(0, 0, 0, 0))
+
+# Combine plots side by side
+combined_plot <- cowplot::plot_grid(rme_region, haz_use_oh, use_lst_yr_mar, use_lst_yr_coc, labels = c("A", "B", "C", "D"))
+
+combined_plot <- cowplot::plot_grid(
+  rme_region, haz_use_oh, use_lst_yr_mar, use_lst_yr_coc,
+  labels = c("A", "B", "C", "D"),
+  ncol = 2,  # Arrange in 2 columns
+  align = 'hv',  # Align horizontally and vertically
+    rel_widths = c(1, 1),  # Relative widths of columns
+  rel_heights = c(1, 1)  # Relative heights of rows
+)
+ggpubr::ggarrange(rme_region, haz_use_oh, use_lst_yr_mar, use_lst_yr_coc, ncol = 2, nrow = 2,  heights = c(1, 1, 1, 1))# labels = c("A", "B", "C", "D"),
+# Display the combined plot
+#print(combined_plot)
+#ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/comb_Ploot.png",combined_plot, dpi=500)
+#
+#image_montage(c(fig1, fig2, fig3, fig4), tile = '2x2', geometry = 'x300+10+10',gravity = "Center")
+# require(cowplot)
+# require(gridExtra)
+# require(coin)
+# require(magick)
+# require(pdftools)
+# fig1 <- image_read_pdf('h_m_ns_rp6_stdif_s2_m1.pdf')%>%
+#     image_border("white", "80x20")%>%
+#     image_annotate("A)", 
+#                    location = "+18+0", 
+#                    size = 32, 
+#                    gravity = "northwest", 
+#                    boxcolor = "transparent", 
+#                    font = "Arial", 
+#                    strokecolor = "black")
+# 
+# fig2 <- image_read_pdf('h_m_ns_rp6_stdif_rmst_m1.pdf')%>%
+#     image_border("white", "80x20")%>%
+#     image_annotate("B)", 
+#                    location = "+18+0", 
+#                    size = 32, 
+#                    gravity = "northwest", 
+#                    boxcolor = "transparent", 
+#                    font = "Arial", 
+#                    strokecolor = "black")
+# fig3 <- image_read_pdf('h_m_ns_rp6_stdif_s2_pris_m1.pdf')%>%
+#     image_border("white", "80x20")%>%
+#     image_annotate("C)", 
+#                    location = "+18+0", 
+#                    size = 32, 
+#                    gravity = "northwest", 
+#                    boxcolor = "transparent", 
+#                    font = "Arial", 
+#                    strokecolor = "black")
+# fig4 <- image_read_pdf('h_m_ns_rp6_stdif_rmst_pris_m1.pdf')%>%
+#     image_border("white", "80x20")%>%
+#     image_annotate("D)", 
+#                    location = "+18+0", 
+#                    size = 35, 
+#                    gravity = "northwest", 
+#                    boxcolor = "transparent", 
+#                    font = "Arial", 
+#                    strokecolor = "black")
+#                    
+```
+The SMR in the SUT population was 15.5 (95%CI 15.0, 16.1) times higher than expected based on the general population. Women aged between 30-44 had a mortality risk up to 29.6 times (95%CI 26.0, 33.5) higher than expected. 
+
+Regions with high SMRs for men also have high SMRs for women. There were also regional variations in mortality risks post-SUT, but the regional prevalence of problematic substance use does not appear to be related to SMRs.
+ <!--- # there are significant regional variations in mortality risks post-SUT. These variations could be influenced by regional differences in healthcare quality, accessibility to treatment, and socio-economic factors.
+# quiero decir además, que parece que no 
+# #mortality ratios vary nationally and regionally in Chile
+# #The factors that explain this excess risk should be analyzed in other studies including designs and methodologies that identify risk factors at the individual and contextual levels and that enable the design and implementation of future prevention programs.
+#https://www.sciencedirect.com/science/article/pii/S0306460314004067?via=ihub
+#Castillo-Carniglia, Á., Kaufman, J. S., & Pino, P. (2015). Geographical distribution of alcohol-attributable mortality in Chile: A Bayesian spatial analysis. Addictive Behaviors, 42, 207-215. https://doi.org/10.1016/j.addbeh.2014.11.025
+#https://www.sciencedirect.com/science/article/pii/0277953683902381?via=ihub
+#Haynes, R. (1983). The geographical distribution of mortality by cause in Chile. Social Science & Medicine, 17(6), 355-364. https://doi.org/10.1016/0277-9536(83)90238-1
+--->
+
+# Discussion
+<ul>
+  <li>High cumulative mortality risk in SUT patients vs. general population</li>
+  <li>Higher risk particularly among women</li>
+  <li>Largest sex gap at younger ages</li>
+  <li>Further exploration of substance use's contribution to elevated risk</li>
+  <li>Mortality risks were higher in areas influenced by ethnic and cultural barriers, discrimination, or geographical isolation, which hinder access to treatment</li>
+</ul>
+
+# References
+::: text_50_bib
+```{r refs1, echo=FALSE, results="asis", warning=F}
+suppressWarnings(PrintBibliography(myBib))
+#https://github.com/ropensci/RefManageR/blob/master/R/rmdCite.R
+#try(unlink("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/pres_jun_24_smr_cache", recursive = TRUE)) 
+```
+:::
+
+# Funding sources
+::: text_65
+- This work was funded by ANID - Millennium Science Initiative Program - N° NCS2021_003 (Castillo-Carniglia) and ANID - Doctoral Scholarship National Doctorate/2023-21230172 (González-Santa Cruz)
+
+- **Correspondence to**: Andrés González-Santa Cruz, gonzalez.santacruz.andres@gmail.com
+:::

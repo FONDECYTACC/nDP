@@ -1,0 +1,134 @@
+/*-- scss:rules --*/
+      
+.showopt {
+    background-color: #004c93;
+    color: #FFFFFF;
+    width: 100px;
+    height: 20px;
+    text-align: center;
+    vertical-align: middle !important;
+    float: right;
+    font-family: sans-serif;
+    border-radius: 8px;
+}
+
+.showopt:hover {
+    background-color: #dfe4f2;
+    color: #004c93;
+}
+
+pre.plot {
+    background-color: white !important;
+}
+
+.tablelines table, .tablelines td, .tablelines th {
+    border: 1px solid black;
+}
+
+.centrado {
+    text-align: center;
+}
+
+.table.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Applies to outputs that are not code other than R */
+pre {
+    overflow-x: auto !important;
+}
+
+pre code {
+    word-wrap: normal !important;
+    white-space: pre !important;
+}
+
+.sourceCode { /* Important gives precedence */
+    font-size: 10px !important;
+    line-height: 50% !important;
+}
+
+body { /* Normal */
+    text-align: justify;
+}
+
+.superbigimage {
+    overflow-y: scroll;
+    height: 350px;
+    white-space: nowrap;
+    overflow-x: auto;
+    width: 100%;
+}
+
+.superbigimage img {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.message {
+    color: #446C6E;
+    font-family: monospace;
+    font-size: 10px;
+    line-height: 110%;
+    font-weight: bold;
+}
+
+div.blue {
+    background-color: #e6f0ff;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: justify;
+}
+
+div.red {
+    background-color: #e6bab1;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: justify;
+}
+
+.pandoc-table { /* Should add !important; but it seems no necessary */
+    margin-left: auto; /* To center */
+    margin-right: auto;
+    border-collapse: collapse;
+    table-layout: auto;
+    font-size: 11px;
+    overflow-y: auto;
+    max-height: 450px !important;
+    white-space: nowrap;
+    overflow-x: auto;
+    width: 450px;
+}
+
+.pandoc-table th { /* header */
+    text-align: center !important;
+    font-size: 10px;
+    padding: 0px;
+}
+
+.pandoc-table td {
+    text-align: left !important;
+    font-size: 9px;
+    padding: 0px;
+}
+
+.pandoc-table caption {
+    text-align: left !important;
+    font-size: 11px !important;
+}
+
+.center-table {
+    text-align: left !important;
+    font-size: 9px;
+    padding: 0px;
+    overflow-y: scroll;
+    height: 400px;
+    overflow-x: scroll;
+}
+
+.controlly {
+    overflow-y: scroll;
+    height: 350px;
+    overflow-x: scroll;
+}

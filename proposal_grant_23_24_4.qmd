@@ -6,76 +6,15 @@ date: "`r format(Sys.time(),'%B %d, %Y')`"
 author: "Andrés González Santa Cruz"
 format: 
   html:
+    css: styles.scss
     code-fold: true
     embed-resources: true
 ---
 
-```{css}
-#| echo: false
+```{html}
+#| include: false
+#| label: design
 
-script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
-
-```
-
-```{js zoom-jquery, echo = FALSE}
-$(document).ready(function() {
-
-$('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
-
-// onClick function for all plots (img's)
-
-$('img:not(.zoomImg)').click(function() {
-$('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
-$('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
-});
-
-// onClick function for zoomImg
-
-$('img.zoomImg').click(function() {
-$('.zoomDiv').css({opacity: '0', width: '0%'});
-});
-});
-```
-
-```{css hideOutput-lib-src, echo = FALSE}
-<script src="https://github.com/AGSCL/gine_brechas_pandemia/blob/main/hideOutput.js"></script>
-```
-
-```{js hideOutput, echo = FALSE}
-$(document).ready(function() {
-
-\$chunks = \$('.fold');
-
-\$chunks.each(function () { // add button to source code chunks
-if ( \$(this).hasClass('s') ) {
-    \$('pre.r', this).prepend("\<div class=\\"showopt\\"\>Show Source\</div\>\<br style=\\"line-height:22px;\\"/\>");
-    \$('pre.r', this).children('code').attr('class', 'folded');
-    } // add button to output chunks
-
-    if ( \$(this).hasClass('o') ) {
-        \$('pre:not(.r)', this).has('code').prepend("\<div class=\\"showopt\\"\>Show Output\</div\>\<br style=\\"line-height:22px;\\"/\>");
-        \$('pre:not(.r)', this).children('code:not(r)').addClass('folded'); // add button to plots
-        \$(this).find('img').wrap('\<pre class=\\"plot\\"\>\</pre\>');
-        \$('pre.plot', this).prepend("\<div class=\\"showopt\\"\>Show Plot\</div\>\<br style=\\"line-height:22px;\\"/\>");
-        \$('pre.plot', this).children('img').addClass('folded');
-        }
-}); // hide all chunks when document is loaded
-
-\$('.folded').css('display', 'none') // function to toggle the visibility
-\$('.showopt').click(function() {
-        var label = \$(this).html();
-        if (label.indexOf("Show") \>= 0) {
-            \$(this).html(label.replace("Show", "Hide"));
-        } else {
-        \$(this).html(label.replace("Hide", "Show"));
-        }
-
-\$(this).siblings('code, img').slideToggle('fast', 'swing');
-});
-});
-```
-
-```{=html}
 <style type="text/css">
 
 .showopt {
@@ -190,7 +129,11 @@ overflow-x: scroll;
 }
 </style>
 ```
-```{=html}
+```{html}
+#| include: false
+#| label: hide-code
+
+
 <!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
 
 <script>
@@ -215,103 +158,23 @@ x.style.display = "none";
 }
 </script>
 ```
-```{r entorno-python}
-rm(list = ls()) 
-unlink("proposal_grant_23_24_files", recursive=T)
-#fuentes: 
-#https://rpubs.com/georgy_makarov/897844
-path<-paste0(getwd(),'/env')
 
-#Sys.setenv(RETICULATE_PYTHON =  "")
+# Setup
 
-#Sys.setenv(RETICULATE_PYTHON =  Sys.which("python"))
-
-#reticulate::py_config()
-#use_python(paste0(path,"/Scripts/python.exe"))
-
-#Sys.setenv(LD_LIBRARY_PATH =  paste0(path,"/Lib"))
-#Sys.setenv(LD_LIBRARY_PATH_64 =  paste0(path,"/Lib"))
-#instalar paquetes de funcionalidades básicas para tener ubicaciones relativas y acceso a python (reticulate)
-if(!require(reticulate)){install.packages("reticulate")}
-if(!require(rstudioapi)){install.packages("rstudioapi")}
-
-
-invisible("Create env")
-#https://stackoverflow.com/questions/54043607/how-to-set-pyenv-python-for-reticulate
-#Directory H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/env is not a Python virtualenv
-#virtualenv_create(envname  = path, packages = c("pip", "statsmodels", "matplotlib", "numpy", "pandas", "scipy"))
-# "C:/Users/andre/anaconda3/python.exe" -m venv "H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/9_Computacion_Estadistica/env"
-
-#FUENTES:
-#https://rstudio.github.io/reticulate/articles/versions.html
-#Virtual environment functions are not supported on Windows (the use of conda environments is recommended on Windows).
-
-invisible("Use environment")
-#https://ugoproto.github.io/ugo_r_doc/pdf/reticulate.pdf
-
-
-# tx  <- readLines(paste0(path,"/pyvenv.cfg"))
-# tx[[1]] <- paste0("home = ",gsub('/', '\\', paste0(path,"/Scripts/python.exe"), fixed=T))
-# tx[[3]] <- "version = 3.8.0"
-
-#writeLines(tx, con=paste0(path,"/pyvenv.cfg"))
-
-#H:/Mi unidad/PERSONAL ANDRES/UCH_salud_publica/asignaturas/env/Scripts/python.exe"
-#use_virtualenv(path)
-
-#usar entorno virtual ya creado
-#información sobre entorno virtual
-#py_discover_config()
-#conda_python(envname =  "r-scrublet")
-
-
-# FUENTES
-#https://akrabat.com/creating-virtual-environments-with-pyenv/
-#https://rstudio.github.io/reticulate/reference/install_python.html
-#https://github.com/pyenv/pyenv/wiki#suggested-build-environment
-#https://github.com/pyenv/pyenv
-#https://stackoverflow.com/questions/56755156/reticulate-not-setting-python-path
-#https://github.com/rstudio/reticulate/issues/291#issuecomment-437143751
-#https://github.com/pyenv/pyenv
-#https://github.com/pyenv-win/pyenv-win#installation
-#https://stackoverflow.com/questions/52060867/how-to-use-pip-for-pyenv
-#https://github.com/pyenv/pyenv/issues/2417
-```
-
-```{python, eval=F}
-!pyenv install -l | findstr 3.8
-!pip install --upgrade pyenv-win
-!env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install
-!env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.7.5
-!pyenv build
-```
-
-```{r, "load-data", eval=T}
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-
-# `r format(Sys.time(),'%B %d, %Y')`
-
-# Data import
+```{r}
 rm(list = ls()) 
 folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/"),
                       "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/",
                       "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
 load(paste0(folder_path,"an_grant_23_24_3.RData"))
-
-# List all of the objects names in RData:
-#ls(.GlobalEnv)
-#ls(new_environment)
-#rm(new_environment)
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 ```
 
-<br>
+
 
 # Packages
 
-::: center-table
 ```{r}
+#| class-output: center-table
 #| message: false
 #| include: true
 #| warning: false
@@ -550,7 +413,7 @@ if(.Platform$OS.type == "windows") withAutoprint({
 })
 memory.limit(size=56000)
 ```
-:::
+
 
 ## 0.a. Descriptives
 
@@ -595,10 +458,11 @@ variables_vector <- c("tr_outcome", "policonsumo2", "comp_bpsc_y3_severe",
                       "psycom_dum_study", "psycom_dum_with", "freq_cons_dum_5day", 
                       "cond_oc_dum_2inact", "cond_oc_dum_3unemp", "susprindum_coc", 
                       "susprindum_pbc", "susprindum_mar", "susprindum_oh")#,"lag_comp_bpsc_y3_severe", "lag_less_90d_tr1", "log_lag_dias_treat_imp_sin_na", "lag_policonsumo2", "lag_tr_outcome")
+
 ```
 
-::: center-table
 ```{r label-variables-desc2}
+#| class-output: center-table
 #| message: false
 #| include: true
 #| warning: false
@@ -671,10 +535,9 @@ as.data.frame.TableOne(tableOne, smd=T, nonnormal= T)%>%
     write.table(.,paste0(folder_path,"baseline_psu_desc_subsamp_smd.csv"), dec=",", sep="\t")
   }
 ```
-:::
 
-::: center-table
 ```{r exp-surv1}
+#| class-output: center-table
 #| message: false
 #| include: true
 #| warning: false
@@ -732,7 +595,7 @@ as.data.frame.TableOne(tableOne, smd=T, nonnormal= T)%>%
     knitr::kable(.,"markdown", caption= "Glimpse of the survival analysis, person-time")
   }
 ```
-:::
+
 
 ## 0.b. IIWs
 
@@ -762,8 +625,9 @@ rbind.data.frame(
 
 
 ## 0.c. Intensity model
-::: center-table
+
 ```{r intensity-model}
+#| class-output: center-table
 #| message: false
 #| include: true
 #| warning: false
@@ -903,11 +767,11 @@ models_hr_table2%>%
   }
 
 ```
-:::
 
-<br>
+
 
 # GEE
+
 
 ## 1. No correction
 
@@ -925,8 +789,9 @@ nocorr_nowgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
 ```{r gee11, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
@@ -960,7 +825,7 @@ for (i in seq_along(plan_names)) {
   nocorr_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 
 #### 1.1.1 No correction, no weight, GEEM Poisson 
@@ -973,8 +838,10 @@ geem_nocorr_nowgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee111, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
@@ -1009,7 +876,6 @@ for (i in seq_along(plan_names)) {
   geem_nocorr_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
 
 #### 1.1.2 No correction, no weight, GEEM Negative binomial 
 
@@ -1028,8 +894,10 @@ geem2_nocorr_nowgt_list <- list()
 Loop over each unique plan name to fit models
 
 
-::: center-table
+
 ```{r gee112, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
@@ -1085,7 +953,7 @@ for (i in seq_along(plan_names)) {
   cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
 }
 ```
-:::
+
 
 ### 1.2. No correction, weight 
 
@@ -1098,8 +966,10 @@ nocorr_wgt_list <- list()
 Loop over each unique plan name to fit a model
 
 
-::: center-table
+
 ```{r gee12, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
@@ -1134,7 +1004,7 @@ for (i in seq_along(plan_names)) {
   nocorr_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 #### 1.2.1 No correction, no weight, GEEM Poisson 
 
@@ -1146,8 +1016,10 @@ geem_nocorr_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee121, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
@@ -1183,7 +1055,6 @@ for (i in seq_along(plan_names)) {
   geem_nocorr_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
 
 #### 1.2.2 No correction, no weight, GEEM Negative binomial 
 
@@ -1201,8 +1072,10 @@ geem2_nocorr_wgt_list <- list()
 
 Loop over each unique plan name to fit models
 
-::: center-table
+
 ```{r gee122, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
@@ -1259,15 +1132,17 @@ for (i in seq_along(plan_names)) {
   cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
 }
 ```
-:::
+
 
 Check the result for a particular plan
 
-::: center-table
+
 ```{r}
+#| class-output: center-table
+
 print(geem2_nocorr_wgt_list[[1]])
 ```
-:::
+
 
 ### 1.3. No correction, alt. weight 
 
@@ -1279,8 +1154,10 @@ nocorr_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee13, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
@@ -1315,7 +1192,6 @@ for (i in seq_along(plan_names)) {
   nocorr_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
 
 #### 1.3.1 No correction, alt weight, GEEM Poisson 
 
@@ -1327,8 +1203,10 @@ geem_nocorr_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee131, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
@@ -1364,7 +1242,7 @@ for (i in seq_along(plan_names)) {
   geem_nocorr_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 #### 1.3.2 No correction, alt weight, GEEM Negative binomial 
 
@@ -1381,8 +1259,10 @@ geem2_nocorr_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit models
 
-::: center-table
+
 ```{r gee132, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
@@ -1439,15 +1319,16 @@ for (i in seq_along(plan_names)) {
   cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
 }
 ```
-:::
+
 
 Check the result for a particular plan
 
-::: center-table
 ```{r}
+#| class-output: center-table
+
 print(geem2_nocorr_alt_wgt_list[[1]])
 ```
-:::
+
 
 ## 2. After PH
 
@@ -1461,8 +1342,10 @@ afterph_nowgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee21, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
@@ -1497,7 +1380,7 @@ for (i in seq_along(plan_names)) {
   afterph_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 ##### 2.1.1 After PH, no weight, GEEM Poisson 
 
@@ -1509,8 +1392,10 @@ geem_afterph_nowgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee211, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
@@ -1545,7 +1430,7 @@ for (i in seq_along(plan_names)) {
   geem_afterph_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 ##### 2.1.2 After PH, no weight, GEEM Negative binomial 
 
@@ -1563,8 +1448,10 @@ geem2_afterph_nowgt_list <- list()
 
 Loop over each unique plan name to fit models
 
-::: center-table
+
 ```{r gee212, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
@@ -1620,15 +1507,17 @@ for (i in seq_along(plan_names)) {
   cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
 }
 ```
-:::
+
 
 Check the result for a particular plan
 
-::: center-table
+
 ```{r}
+#| class-output: center-table
+
 print(geem2_nocorr_nowgt_list[[1]])
 ```
-:::
+
 
 As expected, QIC is equal, because the covariates and observations were the same
 
@@ -1642,8 +1531,10 @@ afterph_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee22, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
@@ -1678,7 +1569,7 @@ for (i in seq_along(plan_names)) {
   afterph_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 ##### 2.2.1 After PH, weight, GEEM Poisson 
 
@@ -1690,8 +1581,10 @@ geem_afterph_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee221, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
@@ -1727,7 +1620,7 @@ for (i in seq_along(plan_names)) {
   geem_afterph_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 ##### 2.2.2 After PH, weight, GEEM Negative binomial 
 
@@ -1745,8 +1638,10 @@ geem2_afterph_wgt_list <- list()
 
 Loop over each unique plan name to fit models
 
-::: center-table
+
 ```{r gee222, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
@@ -1803,15 +1698,17 @@ for (i in seq_along(plan_names)) {
   cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
 }
 ```
-:::
+
 
 Check the result for a particular plan
 
-::: center-table
+
 ```{r}
+#| class-output: center-table
+
 print(geem2_afterph_wgt_list[[1]])
 ```
-:::
+
 
 #### 2.3. After PH, alt. weight 
 
@@ -1823,8 +1720,10 @@ afterph_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee23, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
@@ -1859,7 +1758,7 @@ for (i in seq_along(plan_names)) {
   afterph_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 ##### 2.3.1 After PH, alt weight, GEEM Poisson 
 
@@ -1871,8 +1770,10 @@ geem_afterph_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee231, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
@@ -1908,7 +1809,6 @@ for (i in seq_along(plan_names)) {
   geem_afterph_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
 
 ##### 2.3.2 After PH, alt weight, GEEM Negative binomial 
 
@@ -1926,8 +1826,9 @@ geem2_afterph_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit models
 
-::: center-table
 ```{r gee232, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
@@ -1984,15 +1885,16 @@ for (i in seq_along(plan_names)) {
   cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
 }
 ```
-:::
 
 Check the result for a particular plan
 
-::: center-table
+
 ```{r}
+#| class-output: center-table
+
 print(geem2_afterph_alt_wgt_list[[1]])
 ```
-:::
+
 
 ## 3. Stratifying
 
@@ -2007,8 +1909,9 @@ strata_nowgt_list <- list()
 Loop over each unique plan name to fit a model
 
 
-::: center-table
 ```{r gee31, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
@@ -2043,7 +1946,6 @@ for (i in seq_along(plan_names)) {
   strata_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
 
 #### 3.1.1 Stratifying, no weight, GEEM Poisson 
 
@@ -2056,8 +1958,9 @@ geem_strata_nowgt_list <- list()
 Loop over each unique plan name to fit a model
 
 
-::: center-table
 ```{r gee311, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
@@ -2092,7 +1995,7 @@ for (i in seq_along(plan_names)) {
   geem_strata_nowgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 #### 3.1.2 Stratifying, no weight, GEEM Negative binomial 
 
@@ -2110,8 +2013,10 @@ geem2_strata_nowgt_list <- list()
 
 Loop over each unique plan name to fit models
 
-::: center-table
+
 ```{r gee312, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
@@ -2167,15 +2072,17 @@ for (i in seq_along(plan_names)) {
   cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
 }
 ```
-:::
+
 
 Check the result for a particular plan
 
-::: center-table
+
 ```{r}
+#| class-output: center-table
+
 print(geem2_nocorr_nowgt_list[[1]])
 ```
-:::
+
 
 ### 3.2. Stratifying, weight 
 
@@ -2187,8 +2094,9 @@ strata_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
 ```{r gee32, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
@@ -2223,7 +2131,7 @@ for (i in seq_along(plan_names)) {
   strata_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 #### 3.2.1 Stratifying, weight, GEEM Poisson 
 
@@ -2235,8 +2143,10 @@ geem_strata_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee321, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
@@ -2272,7 +2182,6 @@ for (i in seq_along(plan_names)) {
   geem_strata_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
 
 #### 3.2.2 Stratifying, weight, GEEM Negative binomial 
 
@@ -2290,8 +2199,10 @@ geem2_strata_wgt_list <- list()
 
 Loop over each unique plan name to fit models
 
-::: center-table
+
 ```{r gee322, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
@@ -2348,15 +2259,17 @@ for (i in seq_along(plan_names)) {
   cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
 }
 ```
-:::
+
 
 Check the result for a particular plan
 
-::: center-table
+
 ```{r}
+#| class-output: center-table
+
 print(geem2_strata_wgt_list[[1]])
 ```
-:::
+
 
 ### 3.3. Stratifying, alt. weight 
 
@@ -2368,8 +2281,10 @@ strata_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee33, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
@@ -2404,7 +2319,7 @@ for (i in seq_along(plan_names)) {
   strata_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 #### 3.3.1 Stratifying, alt weight, GEEM Poisson 
 
@@ -2416,8 +2331,10 @@ geem_strata_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee331, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
@@ -2454,13 +2371,15 @@ for (i in seq_along(plan_names)) {
 }
 #Alternative, better than main
 ```
-:::
 
-::: center-table
+
+
 ```{r}
+#| class-output: center-table
+
 print(geem_strata_alt_wgt_list[[1]])
 ```
-:::
+
 
 #### 3.3.2 No correction, alt weight, GEEM Negative binomial 
 
@@ -2478,8 +2397,10 @@ geem2_strata_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit models
 
-::: center-table
+
 ```{r gee332, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
@@ -2536,15 +2457,17 @@ for (i in seq_along(plan_names)) {
   cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
 }
 ```
-:::
+
 
 Check the result for a particular plan
 
-::: center-table
+
 ```{r}
+#| class-output: center-table
+
 print(geem2_strata_alt_wgt_list[[1]])
 ```
-:::
+
 
 ### 3.4. Stratifying, 2nd alt. weight 
 
@@ -2556,8 +2479,10 @@ strata_alt_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
+
 ```{r gee34, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
@@ -2592,7 +2517,7 @@ for (i in seq_along(plan_names)) {
   strata_alt_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 #### 3.4.1 Stratifying, alt weight, GEEM Poisson 
 
@@ -2604,8 +2529,9 @@ geem_strata_alt_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit a model
 
-::: center-table
 ```{r gee341, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
@@ -2641,7 +2567,7 @@ for (i in seq_along(plan_names)) {
   geem_strata_alt_alt_wgt_list[[paste("model", model_name, sep = "_")]] <- model
 }
 ```
-:::
+
 
 ```{r}
 invisible("Alternative, worst model of strata")
@@ -2663,8 +2589,9 @@ geem2_strata_alt_alt_wgt_list <- list()
 
 Loop over each unique plan name to fit models
 
-::: center-table
 ```{r gee342, warning=T, echo=T, error=F, eval=T}
+#| class-output: center-table
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
   current_data <- subset(data_mine_miss_proc2_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
@@ -2721,22 +2648,22 @@ for (i in seq_along(plan_names)) {
   cat(sprintf("Best QIC for plan %s with x = %.1f: %f\n", plan_names[i], best_x, best_qic))
 }
 ```
-:::
+
 
 Check the result for a particular plan
 
-::: center-table
 ```{r}
+#| class-output: center-table
+
 print(geem2_strata_alt_alt_wgt_list[[1]])
 ```
-:::
 
-<br>
+
 
 # Model output
 
-::: center-table
 ```{r output-gee}
+#| class-output: center-table
 #| message: false
 #| include: true
 #| warning: false
@@ -3151,9 +3078,8 @@ rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_a
     knitr::kable(., size=10, format="markdown", caption="GEE Models, Association between PSU and Treatment outcome") 
   }
 ```
-:::
 
-<br>
+
 
 # Marginal probabilities
 
@@ -3203,8 +3129,9 @@ for (i in seq_along(df_marginal_plots$wgt)) {
 }
 ```
 
-::: center-table
+
 ```{r output-marginal-emmeans-plot, fig.align="center", dpi=300}
+#| class-output: center-table
 #| message: false
 #| include: true
 #| warning: true
@@ -3218,9 +3145,7 @@ plot(emmeans_response_after_ph_no_wgt)+ ggtitle("After PH, no weights")
 plot(emmeans_response_after_ph_main)+ ggtitle("After PH, main weights")
 plot(emmeans_response_after_ph_alt)+ ggtitle("After PH, alt weights")
 ```
-:::
 
-<br>
 
 # Session info
 
@@ -3230,8 +3155,10 @@ message(paste0("Date: ",withr::with_locale(new = c('LC_TIME' = 'C'), code =Sys.t
 message(paste0("Editor context: ", path))
 ```
 
-::: center-table
+
 ```{r session-info-r, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
+#| class-output: center-table
+
 sesion_info <- devtools::session_info()
 dplyr::select(
   tibble::as_tibble(sesion_info$packages),
@@ -3242,17 +3169,18 @@ dplyr::select(
     row.names = FALSE,
       align = c("c", "l", "r"))
 ```
-:::
 
-::: center-table
+
 ```{r session-info-python, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
+#| class-output: center-table
+
 reticulate::py_list_packages()%>% 
  kable(caption = "Python packages", format = "markdown",
       col.names = c("Package", "Version", "Requirement"),
     row.names = FALSE,
       align = c("c", "l", "r", "r"))
 ```
-:::
+
 
 # Output 
 
@@ -3262,4 +3190,3 @@ folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_p
                       "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
 save.image(paste0(folder_path,"an_grant_23_24_4.RData"))
 ```
-
