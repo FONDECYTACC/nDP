@@ -1,5 +1,5 @@
 ---
-main_topsize: 0.11 #percent coverage of the poster
+main_topsize: 0.10 #percent coverage of the poster
 main_bottomsize: 0.08 #https://github.com/brentthorne/posterdown/wiki/posterdown_html
 main_width: 1
 #column_numbers: 2
@@ -313,6 +313,11 @@ ule {
   grid-template-columns: repeat(2, 1fr) !important;
 }
 
+ula {
+  display: grid !important;
+  color: #663A36 !important;
+}
+
 </style>
 
 <style>
@@ -438,6 +443,7 @@ if(!require(ggpubr)){install.packages("ggpubr");library(ggpubr)}
 if(!require(plotly)){install.packages("plotly");library(plotly)}
 if(!require(magick)){install.packages("magick");library(magick)}
 if(!require(htmlwidgets)){install.packages("htmlwidgets");library(htmlwidgets)}
+if(!require(ggrepel)){install.packages("ggrepel");library(ggrepel)}
 
 options(scipen=2) #display numbers rather scientific number
 
@@ -550,11 +556,10 @@ myBib <- ReadBib("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/b
 
 # Background
 <ul>
-<li>Chile has one of the highest alcohol consumption in the continent$`r Cite(myBib, c("vicente_prevalencias_2016"))`$</li>
-<li>In 2016, led in high school cocaine, coca paste, and marijuana use$`r Cite(myBib, c("inter-american_drug_abuse_control_commission_cicad_report_2019"))`$</li>
-<li>Over 170% growth in drug-related mortality, 2000 vs 2019$`r Cite(myBib, c("oecd_health_2023"))`$</li>
+<li>Chile has one of the highest alcohol consumption in the continent$`r Cite(myBib, c("vicente_prevalencias_2016"))`$ and one of the highest rates of high school cocaine, coca paste, and marijuana use in the Americas$`r Cite(myBib, c("inter-american_drug_abuse_control_commission_cicad_report_2019"))`$</li>
+<li>Had over 170% growth in drug-related mortality, 2000 vs 2019$`r Cite(myBib, c("oecd_health_2023"))`$</li>
 <li>In 2020, 6% of Chileans (12-64) had a problematic substance (alcohol & drug) use $`r Cite(myBib, c("servicio_nacional_para_la_prevencion_y_rehabilitacion_del_consumo_de_drogas_y_alcohol_senda_decimo_2022-1"))`$</li>
-<li>In Chile, the government funds substance use treatments (SUT) for all with public health insurance (~81% of the population)$`r Cite(myBib, c("mateo-pinones_evidence-based_2022"))`$</li>
+<li>Chilean government funds substance use treatments (SUT) for all with public health insurance (~81% of the population)$`r Cite(myBib, c("mateo-pinones_evidence-based_2022"))`$</li>
 <li>There is limited information regarding short-term, medium-term, and long-term mortality risks</li>
 <li>Analyzing mortality among administrative regions may reveal disparities in post-treatment outcomes</li>
 <li>Regional data can inform policy and resource allocation</li>
@@ -566,7 +571,11 @@ To describe the standardized mortality ratios (SMRs) for all adult patients in p
 # Methods
 **Design**: a population-based retrospective cohort of adults enrolled in Chilean SUT programs (18-65) with national mortality data (2010-2020).
 
-**Analysis plan**. We calculated SMRs by comparing the observed deaths vs. the expected within regions, age groups (18-29, 30-44, 45-59 & 60-65), periods (annually), and across sexes. Stratum-specific population estimates were obtained from the Ministry of Health's mortality data, supplemented by population projections from the National Institute of Statistics' open data portal$`r Cite(myBib, c("instituto_nacional_de_estadisticasine_tablas_2023"))`$. Regional data on cocaine, marijuana, and hazardous alcohol use were obtained from the 2020 Chile National Drug Study by the National Drug and Alcohol Prevention and Rehabilitation Service. 95% confidence intervals(CIs) were calculated using Vandenbroucke's method$`r Cite(myBib, c("szklo_epidemiology_2019"))`$.
+**Analysis plan**: 
+<li>Calculated SMRs by comparing observed vs. expected deaths within regions, age groups, periods, and sexes</li>
+<li>Stratum-specific population estimates obtained from National Institute of Statistics projections$`r Cite(myBib, c("instituto_nacional_de_estadisticasine_tablas_2023"))`$</li>
+<li>Regional data on substance use from 2020 Chile National Drug Study by National Drug and Alcohol Prevention and Rehabilitation Service$`r Cite(myBib, c("servicio_nacional_para_la_prevencion_y_rehabilitacion_del_consumo_de_drogas_y_alcohol_senda_decimo_2022-1"))`$</li>
+<li>Calculated 95% confidence intervals using Vandenbroucke's method$`r Cite(myBib, c("szklo_epidemiology_2019"))`$</li> 
 
 <br>
 
@@ -580,15 +589,38 @@ colors <- c("#FFCC00", "#FF4500", "#1E40AF", "#FF7F50", "#21177A")
 image1 <- magick::image_annotate(
     magick::image_read("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/people.png"), 
     text = "100,322 patients", 
-    size = 50, 
+    size = 65, 
     gravity = "south", 
     font = "Baloo Bhai 2", 
     color = "black"
 ) %>%
-    magick::image_crop("99%x99%+10+10") %>% # Crop a small portion from the borders
+    #magick::image_crop("99%x99%+10+10") %>% # Crop a small portion from the borders
     magick::image_trim() %>% 
     magick::image_colorize(opacity = 100, color = "#21177A") %>% 
     magick::image_border(color = "white", geometry = "0x50")
+# image1 <-magick::image_transparent(magick::image_read("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/people.webp"), "white") %>% magick::image_trim() %>%   magick::image_transparent("#F0F0F0") %>%
+#     magick::image_transparent("#F5F5F5") %>%
+#     magick::image_transparent("#FAFAFA") %>%
+#     magick::image_transparent("#E8E8E8") %>%
+#     magick::image_transparent("#EEEEEE") %>%
+#     magick::image_transparent("#FFFFFF") %>%  # white
+#     magick::image_transparent("#E6E6E6") %>%  # hsl(0deg 0% 90.2%)
+#     magick::image_transparent("#ECF5EC") %>%  # hsl(80deg 14.29% 95.88%)
+#     magick::image_transparent("#EFF4EF") %>%  # hsl(90deg 7.14% 94.51%)
+#     magick::image_transparent("#F9F9F9") %>%  # hsl(0deg 0% 97.65%)
+#     magick::image_transparent("#EFEFEF") %>%  # hsl(0deg 0% 97.65%)
+#     magick::image_transparent("lightgray") %>% 
+#     magick::image_crop("99%x40%+0+0") %>% # Crop a small portion from the borders
+#     magick::image_resize("80%") %>% 
+#     magick::image_border(color = "white", geometry = "0x50") %>% 
+#     magick::image_annotate( # Remove light gray background, color = "white"), 
+#         text = "100,322 patients", 
+#         size = 60, 
+#         gravity = "south", 
+#         location = "+0-10", 
+#         font = "Baloo Bhai 2", 
+#         color = "#21177A") %>% 
+#   magick::image_border(color = "white", geometry = "0x100") 
 
 # Save the first image
 suppressMessages(magick::image_write(image1, path = "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/image1.png"))
@@ -625,8 +657,8 @@ suppressMessages(webshot::webshot("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_
 # Third plot with magick
 image3 <- magick::image_annotate(
     magick::image_transparent(magick::image_read("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/aging.webp") %>% magick::image_trim(), color = "white"), 
-    text = "Average admission age\n39 (stand. deviation=10.5)", 
-    size = 80, 
+    text = "Average admission age\n39 (Std Dev=10.5)", 
+    size = 83, 
     gravity = "south", 
     font = "Baloo Bhai 2", 
     color = "#4E5C68"
@@ -657,7 +689,7 @@ combined_image <- magick::image_append(c(
 ), stack = FALSE)
 ```
 
-```{r res-desc-output, eval=T, echo=F, error=F, fig.align='center', fig.cap="Characteristics of SUT patients", fig.retina=2, message=FALSE, warning=FALSE, out.height="88%", out.width="88%"}
+```{r res-desc-output, eval=T, echo=F, error=F, fig.align='center', fig.cap="Characteristics of SUT patients", fig.retina=2, message=FALSE, warning=FALSE, out.height="78%", out.width="78%", dpi=600}
 # Display combined image
 
 suppressMessages(combined_image)
@@ -665,8 +697,7 @@ suppressMessages(combined_image)
 ::: text_38
 .
 :::
-```{r smrs-plot, eval=T, echo=F, error=T, fig.align='center', fig.cap="Standardized mortality ratios for people in SUT, by age group and sex",  message=FALSE, warning=FALSE, fig.retina=2, out.height="85%", out.width="85%"}
-
+```{r smrs-plot, eval=T, echo=F, error=T, fig.align='center', fig.cap="Standardized mortality ratios for people in SUT, by age group and sex",  message=FALSE, warning=FALSE, fig.retina=2, out.height="81%", out.width="81%", dpi=600}
 data_age_sex <- data.frame(
   AgeGroup = c('18-29', '18-29', '30-44', '30-44', '45-59', '45-59', '60-65', '60-65'),
   Sex = c('Men', 'Women', 'Men', 'Women', 'Men', 'Women', 'Men', 'Women'),
@@ -683,25 +714,25 @@ log_breaks <- function(n = 10) {
 
 plot_smds<-
 ggplot(data_age_sex, aes(x = AgeGroup, y = SMD, color = Sex)) +
-  geom_point(position = position_dodge(width = 0.25), size = 3) +
+  geom_point(position = position_dodge(width = 0.25), size = 3.5) +
   geom_errorbar(aes(ymin = LowerCI, ymax = UpperCI), 
-                width = 0.2,
+                width = 0.25,
                 position = position_dodge(width = 0.25)) +
-  scale_color_grey(start = 0.6, end = 0.4) +  # Adjust the grey scale as needed
+  scale_color_manual(values = c("#5027C5", "#F2421B")) +
   theme_minimal() +
-  geom_hline(yintercept = 1, linetype = "dashed", color = "black", linewidth = 1)+  # Horizontal line at y=1
+  geom_hline(yintercept = 1, linetype = "dashed", color = "#fcb900", linewidth = 1.5)+  # Horizontal line at y=1
   labs(y = "Standardized Mortality Ratios (SMR)", x = "Age Group") +
   scale_y_continuous(trans = scales::log_trans(base = exp(1)),
                      breaks = log_breaks(10), #scales::trans_breaks("log", function(x) exp(x)),
                      labels = scales::label_number(accuracy = 0.01), # Round the labels to two decimal places
-                     limits = c(exp(-1), NA)) +
+                     limits = c(exp(-.5), NA)) +
   theme(axis.text.x = element_text(size = 13),  # Increase x-axis label size
         axis.title.x= element_text(size = 14),
         axis.text.y = element_text(size = 13),
         axis.title.y = element_text(size = 14),
         legend.title = element_text(size = 15),       # Increase legend title size
         legend.text = element_text(size = 13))+  # Increase y-axis label size # oob = scales::oob_squish) +
-  labs(caption= "Y-axis was log-transformed. Dashed black lines represent the null value.")
+  labs(caption= "Y-axis was log-transformed. Dashed yellow lines represent the null value.")
 plot_smds  
 ```
 ```{r chile-regional-pre, eval=T, echo=F, error=T, fig.align='center'}
@@ -852,15 +883,13 @@ print(results_df)
 # [7,] "women - coc_anio_2020"       "-0.170156724258081"  "0.528670220238986"  
 ```
 
-```{r chile-regional, eval=T, echo=F, error=T, fig.align='center', fig.cap="Regional data in quartiles", fig.width=10, fig.height=12, fig.retina=2}
+```{r chile-regional, eval=T, echo=F, error=T, fig.align='center', fig.cap="Regional data in quartiles", fig.width=7.5, fig.height=10, fig.retina=2, out.height="98%", out.width="98%", dpi=600}
 chile_shapefile <- readRDS("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/gadm36_CHL_1_sf.rds")
 
 region_codes <- data.frame(
   region_name = c("I", "II", "III", "IV", "IX", "RM", "V", "VI", "VII", "VIII", "X", "XI", "XII", "XIV", "XV", "XVI"),
   region_code = c("15", "01", "02", "03", "04", "05", "13", "06", "07", "16", "08", "09", "14", "10", "11", "12")
 )
-
-
 region_codes2 <- data.frame(
 region_names= c("Aisén del General Carlos Ibáñez del Campo", 
                   "Antofagasta", 
@@ -880,7 +909,25 @@ region_names= c("Aisén del General Carlos Ibáñez del Campo",
                   "Valparaíso"),
 region_codes = c("11", "02", "09", "15", "03", "08", "04", "06", "10", "14", "12", "07", "16", "13", "01", "05")
 )
-
+region_codes5 <- data.frame(
+region_names= c("Aysén", 
+                  "Antofagasta", 
+                  "Araucanía", 
+                  "Arica", 
+                  "Atacama", 
+                  "Bío-Bío", 
+                  "Coquimbo", 
+                  "O'Higgins", 
+                  "Los Lagos", 
+                  "Los Ríos", 
+                  "Magallanes", 
+                  "Maule", 
+                  "Ñuble", 
+                  "Metropolitana", 
+                  "Tarapacá", 
+                  "Valparaíso"),
+region_codes = c("11", "02", "09", "15", "03", "08", "04", "06", "10", "14", "12", "07", "16", "13", "01", "05")
+)
 
 chile_shapefile2 <- chile_shapefile %>% 
   dplyr::left_join(region_codes2, by=c("NAME_1"="region_names")) %>% 
@@ -897,19 +944,17 @@ chile_shapefile4 <- chile_shapefile2 %>% #porcentaje_pobr_multidim
   dplyr::left_join(data_enpg2020_clean, by=c("region_code2"="region_code"))
 
 chile_shapefile4_oh <- chile_shapefile4 %>%
-  dplyr::mutate() %>% 
   st_transform(crs = st_crs(4326)) %>%
   mutate(region_code = as.character(CC_1)) %>% 
   dplyr::mutate(tooltip=paste0(`NAME_1`,"= ",sprintf("%1.2f",`cons_riesgo_oh_2020`)))
 
 chile_shapefile4_mar <- chile_shapefile4 %>%
-  dplyr::mutate() %>% 
   st_transform(crs = st_crs(4326)) %>%
   mutate(region_code = as.character(CC_1)) %>% 
   dplyr::mutate(tooltip=paste0(`NAME_1`,"= ",sprintf("%1.2f",`mar_anio_2020_qntl`)))
 
 chile_shapefile4_coc <- chile_shapefile4 %>%
-  dplyr::mutate() %>% 
+  dplyr::left_join(region_codes5, by="region_codes") %>% 
   st_transform(crs = st_crs(4326)) %>%
   mutate(region_code = as.character(CC_1)) %>% 
   dplyr::mutate(tooltip=paste0(`NAME_1`,"= ",sprintf("%1.2f",`coc_anio_2020_qntl`)))
@@ -939,8 +984,8 @@ ggplot(data = chile_shapefile4_oh) +
          #caption = 'Source: Your data source', 
     labs(title = 'Prevalence of alcohol hazardous use',
          fill = "Quantiles") +
-    coord_sf(xlim = c(-75.6, -67), ylim = c(-55, -19)) +
-    scale_x_continuous(breaks = c(-76, -70)) +
+    coord_sf(xlim = c(-75.6, -60), ylim = c(-55, -19)) +
+    scale_x_continuous(breaks = c(-76, -60)) +
     scale_fill_manual(values = palette, na.value = "grey80")+
   #theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))+
   theme(plot.margin = margin(0, 0, 0, 0))
@@ -951,89 +996,54 @@ ggplot(data = chile_shapefile4_mar) +
          #caption = 'Source: Your data source', 
     labs(title = 'Prevalence of marijuana use', 
          fill = "Quantiles") +
-    coord_sf(xlim = c(-75.6, -67), ylim = c(-55, -19)) +
-    scale_x_continuous(breaks = c(-76, -70)) +
+    coord_sf(xlim = c(-75.6, -60), ylim = c(-55, -19)) +
+    scale_x_continuous(breaks = c(-76, -60)) +
     scale_fill_manual(values = palette, na.value = "grey80")+
   #theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))+
   theme(plot.margin = margin(0, 0, 0, 0))
+
+# Extract coordinates from the geometry for labeling
+chile_shapefile4_coc_coords <- st_coordinates(st_centroid(chile_shapefile4_coc))
+
+# Add coordinates to the data frame
+chile_shapefile4_coc <- cbind(chile_shapefile4_coc, chile_shapefile4_coc_coords)
+
+# Adjust coordinates for placing labels to the right
+chile_shapefile4_coc$X_label <- chile_shapefile4_coc$X  # Shift labels to the right
+chile_shapefile4_coc$Y_label <- chile_shapefile4_coc$Y      # Keep Y coordinates the same
 use_lst_yr_coc<-
 ggplot(data = chile_shapefile4_coc) +
-    geom_sf(aes(fill = coc_anio_2020_qntl)) +
-    theme_minimal() +
-         #caption = 'Source: Your data source', 
-    labs(title = 'Prevalence of cocaine use', 
-         fill = "Quantiles") +
-    coord_sf(xlim = c(-75.6, -67), ylim = c(-55, -19)) +
-    scale_x_continuous(breaks = c(-76, -70)) +
-    scale_fill_manual(values = palette, na.value = "grey80")+
-  #theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))+
-  theme(plot.margin = margin(0, 0, 0, 0))
+  geom_sf(aes(fill = coc_anio_2020_qntl)) +
+  theme_minimal() +
+  labs(title = 'Prevalence of cocaine use', 
+       fill = "Quantiles") +
+  coord_sf(xlim = c(-75.6, -60), ylim = c(-55, -19)) +
+  scale_x_continuous(breaks = c(-76, -60)) +
+  scale_fill_manual(values = palette, na.value = "grey80") +
+  theme(plot.margin = margin(0, 0, 0, 0))+#, legend.position = "left") +
+  geom_text_repel(aes(x = X_label, y = Y_label, label = region_names), 
+                  nudge_x = 5,  # Increase nudge_x value to move labels further to the right
+                  direction = "y",
+                  vjust = 0.5,
+                  hjust = 0,
+                  size = 2.5,
+                  point.padding = unit(0.5, "cm"),  # Increase point padding
+                  box.padding = unit(0.5, "lines"),  # Increase box padding
+                  data = chile_shapefile4_coc) +
+  theme(axis.title.x = element_blank(), 
+        axis.title.y = element_blank())
 
 # Combine plots side by side
-combined_plot <- cowplot::plot_grid(rme_region, haz_use_oh, use_lst_yr_mar, use_lst_yr_coc, labels = c("A", "B", "C", "D"))
-
-combined_plot <- cowplot::plot_grid(
-  rme_region, haz_use_oh, use_lst_yr_mar, use_lst_yr_coc,
-  labels = c("A", "B", "C", "D"),
-  ncol = 2,  # Arrange in 2 columns
-  align = 'hv',  # Align horizontally and vertically
-    rel_widths = c(1, 1),  # Relative widths of columns
-  rel_heights = c(1, 1)  # Relative heights of rows
-)
-ggpubr::ggarrange(rme_region, haz_use_oh, use_lst_yr_mar, use_lst_yr_coc, ncol = 2, nrow = 2,  heights = c(1, 1, 1, 1))# labels = c("A", "B", "C", "D"),
-# Display the combined plot
-#print(combined_plot)
-#ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/comb_Ploot.png",combined_plot, dpi=500)
-#
-#image_montage(c(fig1, fig2, fig3, fig4), tile = '2x2', geometry = 'x300+10+10',gravity = "Center")
-# require(cowplot)
-# require(gridExtra)
-# require(coin)
-# require(magick)
-# require(pdftools)
-# fig1 <- image_read_pdf('h_m_ns_rp6_stdif_s2_m1.pdf')%>%
-#     image_border("white", "80x20")%>%
-#     image_annotate("A)", 
-#                    location = "+18+0", 
-#                    size = 32, 
-#                    gravity = "northwest", 
-#                    boxcolor = "transparent", 
-#                    font = "Arial", 
-#                    strokecolor = "black")
-# 
-# fig2 <- image_read_pdf('h_m_ns_rp6_stdif_rmst_m1.pdf')%>%
-#     image_border("white", "80x20")%>%
-#     image_annotate("B)", 
-#                    location = "+18+0", 
-#                    size = 32, 
-#                    gravity = "northwest", 
-#                    boxcolor = "transparent", 
-#                    font = "Arial", 
-#                    strokecolor = "black")
-# fig3 <- image_read_pdf('h_m_ns_rp6_stdif_s2_pris_m1.pdf')%>%
-#     image_border("white", "80x20")%>%
-#     image_annotate("C)", 
-#                    location = "+18+0", 
-#                    size = 32, 
-#                    gravity = "northwest", 
-#                    boxcolor = "transparent", 
-#                    font = "Arial", 
-#                    strokecolor = "black")
-# fig4 <- image_read_pdf('h_m_ns_rp6_stdif_rmst_pris_m1.pdf')%>%
-#     image_border("white", "80x20")%>%
-#     image_annotate("D)", 
-#                    location = "+18+0", 
-#                    size = 35, 
-#                    gravity = "northwest", 
-#                    boxcolor = "transparent", 
-#                    font = "Arial", 
-#                    strokecolor = "black")
-#                    
+ggpubr::ggarrange(rme_region, haz_use_oh, use_lst_yr_mar, use_lst_yr_coc, 
+                  ncol = 2, nrow = 2, heights = c(1, 1, 1, 1))#, widths = c(1, 0.05, 1, .05)) #+
 ```
-The SMR in the SUT population was 15.5 (95%CI 15.0, 16.1) times higher than expected based on the general population. Women aged between 30-44 had a mortality risk up to 29.6 times (95%CI 26.0, 33.5) higher than expected. 
-
-Regions with high SMRs for men also have high SMRs for women. There were also regional variations in mortality risks post-SUT, but the regional prevalence of problematic substance use does not appear to be related to SMRs.
- <!--- # there are significant regional variations in mortality risks post-SUT. These variations could be influenced by regional differences in healthcare quality, accessibility to treatment, and socio-economic factors.
+- The SMR in the SUT population was 15.5 (95%CI 15.0, 16.1) times higher than expected based on the general population. 
+- Women aged between 30-44 had a mortality risk up to 29.6 times (95%CI 26.0, 33.5) higher than expected. 
+- Regions with high SMRs for men also have high SMRs for women.
+- Ñuble showed some intervals with zero values due to its establishment in 2018.
+- There were regional variations in mortality risks post-SUT.
+- The regional prevalence of problematic substance use does not appear to be related to SMRs.
+<!--- # there are significant regional variations in mortality risks post-SUT. These variations could be influenced by regional differences in healthcare quality, accessibility to treatment, and socio-economic factors.
 # quiero decir además, que parece que no 
 # #mortality ratios vary nationally and regionally in Chile
 # #The factors that explain this excess risk should be analyzed in other studies including designs and methodologies that identify risk factors at the individual and contextual levels and that enable the design and implementation of future prevention programs.
@@ -1044,13 +1054,14 @@ Regions with high SMRs for men also have high SMRs for women. There were also re
 --->
 
 # Discussion
-<ul>
+<ula>
   <li>High cumulative mortality risk in SUT patients vs. general population</li>
   <li>Higher risk particularly among women</li>
-  <li>Largest sex gap at younger ages</li>
+  <li>Largest sex gap at younger ages $`r Cite(myBib, c("CastilloCarniglia2015"))`$</li>
   <li>Further exploration of substance use's contribution to elevated risk</li>
-  <li>Mortality risks were higher in areas influenced by ethnic and cultural barriers, discrimination, or geographical isolation, which hinder access to treatment</li>
-</ul>
+  <li>Mortality risks were higher in areas influenced by ethnic and cultural barriers, discrimination, or geographical isolation, which hinder access to treatment $`r Cite(myBib, c("Mascayano2016", "Sapag2017"))`$</li>
+  <li>Future studies should address the causes of these disparities beyond aggregated problematic substance use</li>
+</ula>
 
 # References
 ::: text_50_bib
