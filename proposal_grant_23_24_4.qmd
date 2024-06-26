@@ -9,159 +9,18 @@ format:
     css: styles.scss
     code-fold: true
     embed-resources: true
+    # include-in-header:
+    #   - custom-styles.css
+    #   - custom-scripts.js
 ---
-
-```{html}
-#| include: false
-#| label: design
-
-<style type="text/css">
-
-.showopt {
-
-background-color: #004c93; color: #FFFFFF; width: 100px; height: 20px; text-align: center; vertical-align: middle !important; float: right; font-family: sans-serif; border-radius: 8px;
-
-}
-
-.showopt:hover {
-background-color: #dfe4f2;
-color: #004c93;
-
-}
-
-pre.plot {
-background-color: white !important;
-}
-
-.tablelines table, .tablelines td, .tablelines th {
-border: 1px solid black;
-}
-
-.centrado {
-text-align: center;
-}
-
-.table.center {
-margin-left:auto;
-margin-right:auto;
-}
-
-/* https://vivekjaiskumar.medium.com/css-is-and-not-selector-17c942ec83f :is()*/
-
-/* Applies to outputs that are not code other than R*/
-
-pre {
-overflow-x: auto !important;
-}
-
-pre code {
-word-wrap: normal !important;
-white-space: pre !important;
-}
-
-/*
-pre:not(.sourceCode) {
-white-space: nowrap !important;
-}
-*/
-.sourceCode { /* Important gives precedence */
-font-size: 10px !important;
-line-height: 50% !important;
-}
-body{ /* Normal */
-text-align: justify;
-}
-.superbigimage{
-overflow-y:scroll;
-height:350px;
-white-space: nowrap;
-overflow-x: auto;
-width:100%;
-}
-.superbigimage img{
-overflow-y: scroll;
-overflow-x: hidden;
-}
-.message { color:#446C6E; font-family: monospace;font-size: 10px; line-height: 110%; font-weight: bold;}
-div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 5px; text-align: justify;}
-div.red { background-color:#e6bab1; border-radius: 5px; padding: 5px; text-align: justify;}
-.pandoc-table { /* Should add !important; but it seems no necessary */
-margin-left:auto; /* To center */
-margin-right:auto;
-border-collapse: collapse;
-table-layout: auto;
-font-size: 11px;
-overflow-y: auto;
-max-height:450px !important;
-white-space: nowrap;
-overflow-x: auto;
-width:450px;
-}
-.pandoc-table th {/* header */
-text-align: center !important;
-font-size: 10px;
-padding: 0px;
-}
-.pandoc-table td {
-text-align: left !important;
-font-size: 9px;
-padding: 0px;
-}
-.pandoc-table caption {
-text-align: left !important;
-font-size: 11px !important;
-}
-
-.center-table {
-text-align: left !important;
-font-size: 9px;
-padding: 0px;
-overflow-y:scroll;
-height:400px;
-overflow-x: scroll;
-}
-
-.controlly{
-overflow-y:scroll;
-height:350px;
-overflow-x: scroll;
-
-}
-</style>
-```
-```{html}
-#| include: false
-#| label: hide-code
-
-
-<!-- We gotta do each function to hide code and outputs per section, by every ID, we gotta create a different function -->
-
-<script>
-function myFunction1() {
-var x = document.getElementById("myDIV");
-if (x.style.display === "none") {
-x.style.display = "block";
-} else {
-x.style.display = "none";
-}
-}
-</script>
-
-<script>
-function myFunction2() {
-var x = document.getElementById("myDIV2");
-if (x.style.display === "none") {
-x.style.display = "block";
-} else {
-x.style.display = "none";
-}
-}
-</script>
-```
 
 # Setup
 
 ```{r}
+#| message: false
+#| include: true
+#| warning: false
+
 rm(list = ls()) 
 folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/"),
                       "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/",
@@ -196,6 +55,10 @@ if(!require(knitr)){install.packages("knitr");library(knitr)}
 if(!require(emmeans)){install.packages("emmeans");library(emmeans)}
 if(!require(biostat3)){install.packages("biostat3");library(biostat3)}
 if(!require(rms)){install.packages("rms");library(rms)}
+if(!require(meta)){install.packages("meta");library(meta)}
+try(if(!require(dmetar)){install.packages("dmetar");library(dmetar)})
+if(!require(metafor)){install.packages("metafor");library(metafor)}
+
 
 #https://gist.github.com/avallecam/56af06f46e5544c3af0f46344df20989 
 #https://stackoverflow.com/questions/49089476/any-updates-to-model-negative-binomial-distribution-data-with-gee-in-r
@@ -425,11 +288,24 @@ memory.limit(size=56000)
 #| eval: true
 
 invisible("2024-05-21: test different")
-data_mine_miss_restr_proc2<-
+data_mine_miss_restr_proc2exp<-
 data_mine_miss_restr_proc2 %>% 
 left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","n_off_acq","n_off_vio","n_off_sud","n_off_oth", "n_prev_off")], by="hash_key") %>% 
   {if (nrow(.) > nrow(data_mine_miss_restr_proc2)) {message("left join added rows"); .} else .} %>% 
-  dplyr::mutate(n_prev_off_bin= ifelse(n_prev_off>0,1,0))
+  dplyr::mutate(n_prev_off_bin= ifelse(n_prev_off>0,1,0)) %>% 
+  dplyr::mutate(
+    susinidumrec_coc = ifelse(sus_ini_mod_mvv == "Cocaine hydrochloride", 1, 0),
+    susinidumrec_pbc = ifelse(sus_ini_mod_mvv == "Cocaine paste", 1, 0),
+    susinidumrec_mar = ifelse(sus_ini_mod_mvv == "Marijuana", 1, 0),
+    susinidumrec_otr = ifelse(sus_ini_mod_mvv == "Other", 1, 0), #sus_principal_mod
+    susprindumrec_coc = ifelse(sus_principal_mod == "Cocaine hydrochloride", 1, 0),
+    susprindumrec_pbc = ifelse(sus_principal_mod == "Cocaine paste", 1, 0),
+    susprindumrec_mar = ifelse(sus_principal_mod == "Marijuana", 1, 0),
+    susprindumrec_otr = ifelse(sus_principal_mod == "Other", 1, 0) # "susprindum_coc", "susprindum_pbc", "susprindum_mar", "susprindum_oh
+  )
+
+#"susinidumrec_otr", "susinidum_coc", "susinidum_pbc", "susinidum_mar",
+
   #janitor::tabyl(n_off_acq)
 
 #(Post-Treatment)
@@ -442,22 +318,23 @@ left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","n_off_acq","n_off_vio","
 invisible("To account for variability by treatment setting, we stratified the analysis by setting: basic ambulatory GP intensive ambulatory GP residential WO intensive ambulatory WO residential")
 table(subset(Base_fiscalia_v15f_grant_23_24_long2_miss_proc_multtr, is_first_occurrence==1, select= "tipo_de_plan_2_mod"))
 
-data_mine_miss_restr_proc2 %>% 
+data_mine_miss_restr_proc2exp %>% 
   group_by(hash_key) %>% 
   summarise(min(fech_ing_num)) %>% nrow()
 #13317
 subset(data_mine_miss_restr_proc2 , is_first_occurrence==1) %>% nrow()
 #13317
 data_mine_miss_restr_proc2_baseline<-
-  subset(data_mine_miss_restr_proc2 , is_first_occurrence==1) 
+  subset(data_mine_miss_restr_proc2exp , is_first_occurrence==1) 
+
 
 variables_vector <- c("tr_outcome", "policonsumo2", "comp_bpsc_y3_severe",
                       "less_90d_tr1", "log_dias_treat_imp_sin_na",
-                      "edad_al_ing_1", "ano_nac_corr", "susinidum_oh", 
-                      "susinidum_coc", "susinidum_pbc", "susinidum_mar", 
+                      "edad_al_ing_1", "ano_nac_corr", "susinidumrec_coc", 
+                      "susinidumrec_pbc", "susinidumrec_mar", "susinidumrec_otr", 
                       "psycom_dum_study", "psycom_dum_with", "freq_cons_dum_5day", 
-                      "cond_oc_dum_2inact", "cond_oc_dum_3unemp", "susprindum_coc", 
-                      "susprindum_pbc", "susprindum_mar", "susprindum_oh")#,"lag_comp_bpsc_y3_severe", "lag_less_90d_tr1", "log_lag_dias_treat_imp_sin_na", "lag_policonsumo2", "lag_tr_outcome")
+                      "cond_oc_dum_2inact", "cond_oc_dum_3unemp", "susprindumrec_coc", 
+                      "susprindumrec_pbc", "susprindumrec_mar", "susprindumrec_otr")#,"lag_comp_bpsc_y3_severe", "lag_less_90d_tr1", "log_lag_dias_treat_imp_sin_na", "lag_policonsumo2", "lag_tr_outcome")
 
 ```
 
@@ -477,19 +354,19 @@ attr(data_mine_miss_restr_proc2_baseline$less_90d_tr1,"label") <- "Treatment dur
 attr(data_mine_miss_restr_proc2_baseline$log_dias_treat_imp_sin_na,"label") <- "Treatment duration (log-scaled days)"
 attr(data_mine_miss_restr_proc2_baseline$edad_al_ing_1,"label") <- "Age at admission to treatment"
 attr(data_mine_miss_restr_proc2_baseline$ano_nac_corr,"label") <- "Birth year"
-attr(data_mine_miss_restr_proc2_baseline$susinidum_oh,"label") <- "Primary substance (initial diagnosis): alcohol"
-attr(data_mine_miss_restr_proc2_baseline$susinidum_coc,"label") <- "Primary substance (initial diagnosis): cocaine hydrochloride"
-attr(data_mine_miss_restr_proc2_baseline$susinidum_pbc,"label") <- "Primary substance (initial diagnosis): cocaine base paste"
-attr(data_mine_miss_restr_proc2_baseline$susinidum_mar,"label") <- "Primary substance (initial diagnosis): marijuana"
+attr(data_mine_miss_restr_proc2_baseline$susinidumrec_coc,"label") <- "Primary substance (initial diagnosis): cocaine hydrochloride"
+attr(data_mine_miss_restr_proc2_baseline$susinidumrec_pbc,"label") <- "Primary substance (initial diagnosis): cocaine base paste"
+attr(data_mine_miss_restr_proc2_baseline$susinidumrec_mar,"label") <- "Primary substance (initial diagnosis): marijuana"
+attr(data_mine_miss_restr_proc2_baseline$susinidumrec_otr,"label") <- "Primary substance (initial diagnosis): other"
 attr(data_mine_miss_restr_proc2_baseline$psycom_dum_study,"label") <- "Psychiatric comorbidity (ICD-10): In study"
 attr(data_mine_miss_restr_proc2_baseline$psycom_dum_with,"label") <- "Psychiatric comorbidity (ICD-10): Diagnosed"
 attr(data_mine_miss_restr_proc2_baseline$freq_cons_dum_5day,"label") <- "Daily frequence of primary substance use at admission"
 attr(data_mine_miss_restr_proc2_baseline$cond_oc_dum_2inact,"label") <- "Occupational Status: Inactive"
 attr(data_mine_miss_restr_proc2_baseline$cond_oc_dum_3unemp,"label") <- "Occupational Status: Unemployed"
-attr(data_mine_miss_restr_proc2_baseline$susprindum_oh,"label") <- "Primary substance at admission to treatment: alcohol"
-attr(data_mine_miss_restr_proc2_baseline$susprindum_coc,"label") <- "Primary substance at admission to treatment: cocaine hydrochloride"
-attr(data_mine_miss_restr_proc2_baseline$susprindum_pbc,"label") <- "Primary substance at admission to treatment: cocaine base paste"
-attr(data_mine_miss_restr_proc2_baseline$susprindum_mar,"label") <- "Primary substance at admission to treatment: marijuana"
+attr(data_mine_miss_restr_proc2_baseline$susprindumrec_coc,"label") <- "Primary substance at admission to treatment: cocaine hydrochloride"
+attr(data_mine_miss_restr_proc2_baseline$susprindumrec_pbc,"label") <- "Primary substance at admission to treatment: cocaine base paste"
+attr(data_mine_miss_restr_proc2_baseline$susprindumrec_mar,"label") <- "Primary substance at admission to treatment: marijuana"
+attr(data_mine_miss_restr_proc2_baseline$susprindumrec_otr,"label") <- "Primary substance at admission to treatment: other"
 attr(data_mine_miss_restr_proc2_baseline$tipo_de_plan_2_mod,"label") <- "Treatment setting"
 
 invisible("Table for imputed dataset with selected covariates")
@@ -521,17 +398,20 @@ folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_p
                       "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
 
 as.data.frame.TableOne(tableOne, smd=T, nonnormal= T)%>% 
-  dplyr::mutate(char2=characteristic) %>% 
-  tidyr::fill(char2) %>% 
-  dplyr::select(char2,everything()) %>% 
-  dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
-  dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,TRUE~as.character(characteristic))) %>% 
-  format_cells(1, 1:length(names(.)), "bold") %>%
-  dplyr::select(-1) %>% 
-  dplyr::mutate_all(~ str_replace_all(., pattern = "\\( ", replacement = "\\(")) %>% 
-  dplyr::mutate_all(~ str_trim(.)) %>% 
+    dplyr::mutate(char2=characteristic) %>% 
+    tidyr::fill(char2) %>% 
+    dplyr::select(char2,everything()) %>% 
+    dplyr::mutate(level=ifelse(is.na(level),"[Missing]",level)) %>% 
+    dplyr::mutate(char2=dplyr::case_when(characteristic=="NA"~NA_character_,TRUE~as.character(characteristic))) %>% 
+    format_cells(1, 1:length(names(.)), "bold") %>%
+    dplyr::select(-1) %>% 
+    dplyr::mutate_all(~ str_replace_all(., pattern = "\\( ", replacement = "\\(")) %>% 
+    dplyr::mutate_all(~ str_trim(.)) %>% 
+    dplyr::select(characteristic, level, `0`, `1`, Overall, SMD)%>% 
   {
-    knitr::kable(.,size=10, format="markdown",caption= "Summary descriptives, Polysubstance(1) and no Polysubstance use (0)", escape=T)
+    knitr::kable(.,size=10, format="html",caption= "Summary descriptives, Polysubstance(1) and no Polysubstance use (0)", escape=T)%>% 
+     kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
+     kableExtra::scroll_box(width = "100%", height = "375px")  
     write.table(.,paste0(folder_path,"baseline_psu_desc_subsamp_smd.csv"), dec=",", sep="\t")
   }
 ```
@@ -543,7 +423,6 @@ as.data.frame.TableOne(tableOne, smd=T, nonnormal= T)%>%
 #| warning: false
 #| error: false
 #| eval: true
-
 
   rbind.data.frame(
     cbind.data.frame(
@@ -589,10 +468,16 @@ as.data.frame.TableOne(tableOne, smd=T, nonnormal= T)%>%
       dplyr::mutate(across(c("rate", "lower", "upper"),~sprintf("%1.2f",.*1000))) 
     )    
   ) %>%  
+    dplyr::mutate(`IR (95% CI)`= paste0(rate, " (", lower,", ", upper,")")) %>% 
+    dplyr::select(-any_of(c("rate", "lower", "upper"))) %>% 
+    dplyr::mutate(across(c("tstop", "event"),~ format(as.numeric(.), big.mark=","))) %>% 
+    
   {
     copiar_nombres2(.)
     write.table(.,paste0(folder_path,"person_time_irrs.csv"), dec=",", sep="\t")
-    knitr::kable(.,"markdown", caption= "Glimpse of the survival analysis, person-time")
+    knitr::kable(.,"html", caption= "Incidence rates (per 1.000 person-months)")%>% 
+     kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
+     kableExtra::scroll_box(width = "100%", height = "375px")  
   }
 ```
 
@@ -606,7 +491,6 @@ as.data.frame.TableOne(tableOne, smd=T, nonnormal= T)%>%
 #| error: false
 #| eval: true
 
-
 rbind.data.frame(
   cbind.data.frame(model= "Primary (no corrections, lag=0)", t(matrix(summary(data_mine_miss_restr_proc2$iiw_nocorr_st)))),
   cbind.data.frame(model= "Alternative (no corrections, lag=1)", t(matrix(summary(data_mine_miss_restr_proc2$iiw_nocorr_alt_st)))),
@@ -616,10 +500,13 @@ rbind.data.frame(
   cbind.data.frame(model= "Alternative (strata, lag=1)", t(matrix(summary(data_mine_miss_proc2_iiw_strata_alt_alt$iiw_strata_st))))
 ) %>%  #Min.	First quartile	Median	Mean	Third quartile	Max.
   dplyr::mutate_if(is.numeric, ~sprintf("%1.2f",.)) %>% 
+  dplyr::mutate(model= dplyr::case_when(model== "Primary (no corrections, lag=0)"~ "No time-varying coefficients, lagged covariates fixed in 0", model== "Alternative (no corrections, lag=1)"~ "No time-varying coefficients, lagged covariates fixed in 1", model== "Primary (after PH, lag=0)"~ "With time-varying coefficients, lagged covariates fixed in 0", model== "Alternative (after PH, lag=1)"~ "With time-varying coefficients, lagged covariates fixed in 1", model== "Primary (strata, lag=0)"~ "Stratified by follow-up intervals, lagged covariates fixed in 0", model== "Alternative (strata, lag=1)"~ "Stratified by follow-up intervals, lagged covariates fixed in 1")) %>% 
   {
     copiar_nombres2(.)
     write.table(.,paste0(folder_path,"iiws_20240516.csv"), dec=",", sep="\t")
-    knitr::kable(.,size=10, format="markdown",caption= "Summary descriptives, Polysubstance(1) and no Polysubstance use (0)", escape=T)
+    knitr::kable(.,size=10, format="html",caption= "Descriptive characterization of inverse intensity weights", escape=T, col.names= c("Visit intensity model", "Min.",	"First quartile",	"Median",	"Mean",	"Third quartile",	"Max."))%>% 
+     kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
+     kableExtra::scroll_box(width = "100%", height = "375px")  
   }
 ```
 
@@ -640,29 +527,12 @@ rbind.data.frame(
 source(paste0(folder_path,"tidy_rms.R"))
 
 term_mapping <- data.frame(
-  term = c("lag_tr_outcome", "lag_comp_bpsc_y3_severe", "lag_less_90d_tr1", 
-           "log_lag_dias_treat_imp_sin_na", "lag_policonsumo2", "edad_al_ing_1", 
-           "ano_nac_corr", "susinidum_oh", "susinidum_coc", "susinidum_pbc", 
-           "susinidum_mar", "psycom_dum_study", "psycom_dum_with", "freq_cons_dum_5day", 
-           "cond_oc_dum_2inact", "cond_oc_dum_3unemp", "susprindum_oh", "susprindum_coc", 
-           "susprindum_pbc", "susprindum_mar", "lag_tr_outcome_rec", "lag_less_90d_tr1_rec", 
-           "lag_comp_bpsc_y3_severe_rec", "susinidum_coc_rec2", "psycom_dum_with_rec2"),
+  term = c("lag_tr_outcome", "lag_comp_bpsc_y3_severe", "lag_less_90d_tr1", "log_lag_dias_treat_imp_sin_na", "lag_policonsumo2", "edad_al_ing_1", "ano_nac_corr", "susinidumrec_coc", "susinidumrec_pbc", "susinidumrec_mar", "susinidumrec_otr", "psycom_dum_study", "psycom_dum_with", "freq_cons_dum_5day", "cond_oc_dum_2inact", "cond_oc_dum_3unemp", "susprindumrec_coc", "susprindumrec_pbc", "susprindumrec_mar", "susprindumrec_otr",  "lag_tr_outcome_rec", "lag_less_90d_tr1_rec", "lag_comp_bpsc_y3_severe_rec", "susinidum_coc_rec2", "psycom_dum_with_rec2"),
   term_label = c("Treatment outcome of the previous treatment", "Previous biopsychosocial compromise (severe)", 
                  "Previous treatment duration (<90 days)", "Previous treatment duration (in logarithmic scaled days)", 
                  "Polysubstance use status of the previous treatment", "Age at admission to treatment", "Birth year", 
-                 "Primary substance (initial diagnosis), alcohol", "Primary substance (initial diagnosis), cocaine", 
-                 "Primary substance (initial diagnosis), cocaine base paste", "Primary substance (initial diagnosis), marijuana", 
-                 "Psychiatric comorbidity (diagnosis unknown or under study)", "Psychiatric comorbidity (confirmed comorbidity)", 
-                 "Daily frequence of primary substance use at admission", "Occupational status (inactive)", "Occupational status (unemployed)", 
-                 "Primary substance at admission to treatment (alcohol)", "Primary substance at admission to treatment (cocaine hydrochloride)", 
-                 "Primary substance at admission to treatment (cocaine base paste)", "Primary substance at admission to treatment (marijuana)", 
-                 "Treatment outcome of the previous treatment (recoded for interaction with time)", 
-                 "Previous biopsychosocial compromise (severe, recoded for interaction with time)", 
-                 "Previous treatment duration (<90 days, recoded for interaction with time)", 
-                 "Primary substance (initial diagnosis), cocaine (recoded for interaction with time)", 
-                 "Psychiatric comorbidity (confirmed comorbidity, recoded for interaction with time)")
+                  "Primary substance (initial diagnosis), cocaine", "Primary substance (initial diagnosis), cocaine base paste", "Primary substance (initial diagnosis), marijuana", "Primary substance (initial diagnosis), other", "Psychiatric comorbidity (diagnosis unknown or under study)", "Psychiatric comorbidity (confirmed comorbidity)", "Daily frequence of primary substance use at admission", "Occupational status (inactive)", "Occupational status (unemployed)", "Primary substance at admission to treatment (cocaine hydrochloride)", "Primary substance at admission to treatment (cocaine base paste)", "Primary substance at admission to treatment (marijuana)", "Primary substance at admission to treatment (other)", "Treatment outcome of the previous treatment (recoded for interaction with time)", "Previous biopsychosocial compromise (severe, recoded for interaction with time)", "Previous treatment duration (<90 days, recoded for interaction with time)", "Primary substance (initial diagnosis), cocaine (recoded for interaction with time)", "Psychiatric comorbidity (confirmed comorbidity, recoded for interaction with time)")
 )
-
 
 cph_nocorr<-
   cph(Surv(lag_time,time,event)~
@@ -674,21 +544,21 @@ cph_nocorr<-
         lag_policonsumo2 + 
         edad_al_ing_1 + 
         ano_nac_corr + 
-        susinidum_oh +
-        susinidum_coc +
-        susinidum_pbc +
-        susinidum_mar +
+        susinidumrec_otr +
+        susinidumrec_coc +
+        susinidumrec_pbc +
+        susinidumrec_mar +
         psycom_dum_study +
         psycom_dum_with +
         freq_cons_dum_5day +
         cond_oc_dum_2inact +
         cond_oc_dum_3unemp +
-        susprindum_oh +
-        susprindum_coc +
-        susprindum_pbc +
-        susprindum_mar +
+        susprindumrec_coc +
+        susprindumrec_pbc +
+        susprindumrec_mar +
+        susprindumrec_otr +    
         strat(tipo_de_plan_2_mod),
-      data= data_mine_miss_restr_proc2 %>% data.table::as.data.table() %>% data.frame(), 
+      data= data_mine_miss_restr_proc2exp %>% data.table::as.data.table() %>% data.frame(), 
       x=TRUE, y=TRUE, surv=TRUE, iter.max = 250*4, tol = 1e-6)
 
 cph_after_ph<-
@@ -702,21 +572,77 @@ cph(Surv(lag_time,time,event==1)~
                   edad_al_ing_1 + 
                   ano_nac_corr + 
                   susinidum_coc_rec2 +
-                  susinidum_oh +
-                  susinidum_pbc +
-                  susinidum_mar +
+                  susinidumrec_otr +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
                   psycom_dum_with_rec2 +
                   psycom_dum_study + 
                   freq_cons_dum_5day +
                   cond_oc_dum_2inact +
                   cond_oc_dum_3unemp +
-                  susprindum_oh +
-                  susprindum_coc +
-                  susprindum_pbc +
-                  susprindum_mar+
+                  susprindumrec_coc +
+                  susprindumrec_pbc +
+                  susprindumrec_mar +
+                  susprindumrec_otr +    
                   strat(tipo_de_plan_2_mod), 
-                data=data_mine_miss_restr_proc2, 
+                data=data_mine_miss_restr_proc2exp, 
                 x=TRUE, y=TRUE, surv=TRUE, iter.max = 250*4, tol = 1e-6)
+
+model_after_time_strat<-
+cph(Surv(lag_time,time,event)~
+          cluster(id)+ 
+          lag_tr_outcome+
+          lag_comp_bpsc_y3_severe+
+          lag_less_90d_tr1+
+          log_lag_dias_treat_imp_sin_na +
+          lag_policonsumo2 + 
+          edad_al_ing_1 + 
+          ano_nac_corr + 
+          susinidumrec_otr +
+          susinidumrec_coc +
+          susinidumrec_pbc +
+          susinidumrec_mar +
+          psycom_dum_study +
+          psycom_dum_with +
+          freq_cons_dum_5day +
+          cond_oc_dum_2inact +
+          cond_oc_dum_3unemp +
+          susprindumrec_coc +
+          susprindumrec_pbc +
+          susprindumrec_mar +
+          susprindumrec_otr +
+          strat(tipo_de_plan_2_mod)+
+          strat(time_interval3),
+    data= data_mine_miss_restr_proc2exp %>% data.table::as.data.table() %>% data.frame(), 
+    x=TRUE, y=TRUE, surv=TRUE, iter.max = 250*4, tol = 1e-6)
+
+model_after_time_strat_alt<-
+cph(Surv(lag_time,time,event)~
+          cluster(id)+ 
+          lag_tr_outcome+
+          lag_comp_bpsc_y3_severe+
+          lag_less_90d_tr1+
+          log_lag_dias_treat_imp_sin_na +
+          lag_policonsumo2 + 
+          edad_al_ing_1 + 
+          ano_nac_corr + 
+          susinidumrec_otr +
+          susinidumrec_coc +
+          susinidumrec_pbc +
+          susinidumrec_mar +
+          psycom_dum_study +
+          psycom_dum_with +
+          freq_cons_dum_5day +
+          cond_oc_dum_2inact +
+          cond_oc_dum_3unemp +
+          susprindumrec_otr +
+          susprindumrec_coc +
+          susprindumrec_pbc +
+          susprindumrec_mar +
+          strat(tipo_de_plan_2_mod)+
+          strat(time_interval3_alt),
+    data= data_mine_miss_restr_proc2exp %>% data.table::as.data.table() %>% data.frame(), 
+    x=TRUE, y=TRUE, surv=TRUE, iter.max = 250*4, tol = 1e-6)
 
 invisible("Problemático")
 # broom::tidy(coxph(Surv(lag_time,time,event==1)~ 
@@ -729,7 +655,7 @@ invisible("Problemático")
 #         edad_al_ing_1 + 
 #         ano_nac_corr + 
 #         susinidum_coc_rec2 +
-#         susinidum_oh +
+#         susinidumrec_otr +
 #         susinidum_pbc +
 #         susinidum_mar +
 #         psycom_dum_with_rec2 +
@@ -763,7 +689,9 @@ models_hr_table2%>%
   {
     #copiar_nombres2(.)
     write.table(.,paste0(folder_path,"coxph_intensity_model_prev.csv"), dec=",", sep="\t")
-    knitr::kable(.,size=10, format="markdown",caption= "Intensity model", escape=T)
+    knitr::kable(.,size=10, format="html",caption= "Intensity model", escape=T)%>% 
+     kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
+     kableExtra::scroll_box(width = "100%", height = "375px")  
   }
 
 ```
@@ -794,25 +722,26 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset
   model <- geese(tr_outcome ~ policonsumo2 +
                    comp_bpsc_y3_severe+
                    edad_al_ing_1 + 
                    ano_nac_corr + 
-                   susinidum_oh +
-                   susinidum_coc +
-                   susinidum_pbc +
-                   susinidum_mar +
+                   susinidumrec_otr +
+                   susinidumrec_coc +
+                   susinidumrec_pbc +
+                   susinidumrec_mar +
                    psycom_dum_study +
                    psycom_dum_with +
                    freq_cons_dum_5day +
                    cond_oc_dum_2inact +
                    cond_oc_dum_3unemp +
-                   susprindum_coc +
-                   susprindum_pbc +
-                   susprindum_mar, #origen_ingreso_mod fis_comorbidity_icd_10 dg_trs_cons_sus_or
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, #origen_ingreso_mod fis_comorbidity_icd_10 dg_trs_cons_sus_or
                  id = id, 
                  data = current_data,
                  family = poisson(), 
@@ -844,25 +773,26 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset using geem
   model <- geem(tr_outcome ~ policonsumo2 +
                   comp_bpsc_y3_severe+
                   edad_al_ing_1 + 
                   ano_nac_corr + 
-                  susinidum_oh +
-                  susinidum_coc +
-                  susinidum_pbc +
-                  susinidum_mar +
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
                   psycom_dum_study +
                   psycom_dum_with +
                   freq_cons_dum_5day +
                   cond_oc_dum_2inact +
                   cond_oc_dum_3unemp +
-                  susprindum_coc +
-                  susprindum_pbc +
-                  susprindum_mar, # Include relevant predictors
+                  susprindumrec_coc +
+                  susprindumrec_pbc +
+                  susprindumrec_mar+
+                  susprindumrec_otr, # Include relevant predictors
                 id = id, 
                 data = current_data,
                 family = poisson("log"), 
@@ -900,7 +830,7 @@ Loop over each unique plan name to fit models
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp, tipo_de_plan_2_mod == plan_names[i])
   
   # Initialize variable to store the best QIC and associated model
   best_qic <- Inf
@@ -914,18 +844,19 @@ for (i in seq_along(plan_names)) {
                     comp_bpsc_y3_severe+
                     edad_al_ing_1 + 
                     ano_nac_corr + 
-                    susinidum_oh +
-                    susinidum_coc +
-                    susinidum_pbc +
-                    susinidum_mar +
+                    susinidumrec_otr +
+                    susinidumrec_coc +
+                    susinidumrec_pbc +
+                    susinidumrec_mar +
                     psycom_dum_study +
                     psycom_dum_with +
                     freq_cons_dum_5day +
                     cond_oc_dum_2inact +
                     cond_oc_dum_3unemp +
-                    susprindum_coc +
-                    susprindum_pbc +
-                    susprindum_mar, # Include relevant predictors
+                    susprindumrec_coc +
+                    susprindumrec_pbc +
+                    susprindumrec_mar+
+                    susprindumrec_otr, # Include relevant predictors
                   id = id, 
                   data = current_data,
                   family = MASS::negative.binomial(x),
@@ -972,29 +903,30 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset
   model <- geese(tr_outcome ~ policonsumo2 +
                    comp_bpsc_y3_severe+
                    edad_al_ing_1 + 
                    ano_nac_corr + 
-                   susinidum_oh +
-                   susinidum_coc +
-                   susinidum_pbc +
-                   susinidum_mar +
+                   susinidumrec_otr +
+                   susinidumrec_coc +
+                   susinidumrec_pbc +
+                   susinidumrec_mar +
                    psycom_dum_study +
                    psycom_dum_with +
                    freq_cons_dum_5day +
                    cond_oc_dum_2inact +
                    cond_oc_dum_3unemp +
-                   susprindum_coc +
-                   susprindum_pbc +
-                   susprindum_mar, 
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                  id = id, 
                  data = current_data,
                  family = poisson(), 
-                 weight= current_data$iiw_nocorr_st,
+                 weight = current_data$iiw_nocorr_st,
                  corstr = "independence", 
                  jack = T)
   
@@ -1022,28 +954,29 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset using geem
   model <- geem(tr_outcome ~ policonsumo2 +
                   comp_bpsc_y3_severe+
                   edad_al_ing_1 + 
                   ano_nac_corr + 
-                  susinidum_oh +
-                  susinidum_coc +
-                  susinidum_pbc +
-                  susinidum_mar +
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
                   psycom_dum_study +
                   psycom_dum_with +
                   freq_cons_dum_5day +
                   cond_oc_dum_2inact +
                   cond_oc_dum_3unemp +
-                  susprindum_coc +
-                  susprindum_pbc +
-                  susprindum_mar, # Include relevant predictors
+                  susprindumrec_coc +
+                  susprindumrec_pbc +
+                  susprindumrec_mar +
+                  susprindumrec_otr, # Include relevant predictors
                 id = id, 
                 data = current_data,
-                weight= current_data$iiw_nocorr_st,
+                weight = current_data$iiw_nocorr_st,
                 family = poisson("log"), 
                 corstr = "independence")
   
@@ -1078,7 +1011,7 @@ Loop over each unique plan name to fit models
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp, tipo_de_plan_2_mod == plan_names[i])
   
   # Initialize variable to store the best QIC and associated model
   best_qic <- Inf
@@ -1092,21 +1025,22 @@ for (i in seq_along(plan_names)) {
                     comp_bpsc_y3_severe+
                     edad_al_ing_1 + 
                     ano_nac_corr + 
-                    susinidum_oh +
-                    susinidum_coc +
-                    susinidum_pbc +
-                    susinidum_mar +
+                    susinidumrec_otr +
+                    susinidumrec_coc +
+                    susinidumrec_pbc +
+                    susinidumrec_mar +
                     psycom_dum_study +
                     psycom_dum_with +
                     freq_cons_dum_5day +
                     cond_oc_dum_2inact +
                     cond_oc_dum_3unemp +
-                    susprindum_coc +
-                    susprindum_pbc +
-                    susprindum_mar, # Include relevant predictors
+                    susprindumrec_coc +
+                    susprindumrec_pbc +
+                    susprindumrec_mar +
+                    susprindumrec_otr, # Include relevant predictors
                   id = id, 
                   data = current_data,
-                  weight= current_data$iiw_nocorr_st,
+                  weight = current_data$iiw_nocorr_st,
                   family = MASS::negative.binomial(x),
                   corstr = "independence")
     
@@ -1160,29 +1094,30 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset
   model <- geese(tr_outcome ~ policonsumo2 +
                    comp_bpsc_y3_severe+
                    edad_al_ing_1 + 
                    ano_nac_corr + 
-                   susinidum_oh +
-                   susinidum_coc +
-                   susinidum_pbc +
-                   susinidum_mar +
+                   susinidumrec_otr +
+                   susinidumrec_coc +
+                   susinidumrec_pbc +
+                   susinidumrec_mar +
                    psycom_dum_study +
                    psycom_dum_with +
                    freq_cons_dum_5day +
                    cond_oc_dum_2inact +
                    cond_oc_dum_3unemp +
-                   susprindum_coc +
-                   susprindum_pbc +
-                   susprindum_mar, 
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                  id = id, 
                  data = current_data,
                  family = poisson(), 
-                 weight= current_data$iiw_nocorr_alt_st,
+                 weight = current_data$iiw_nocorr_alt_st,
                  corstr = "independence", 
                  jack = T)
   
@@ -1209,28 +1144,29 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset using geem
   model <- geem(tr_outcome ~ policonsumo2 +
                   comp_bpsc_y3_severe+
                   edad_al_ing_1 + 
                   ano_nac_corr + 
-                  susinidum_oh +
-                  susinidum_coc +
-                  susinidum_pbc +
-                  susinidum_mar +
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
                   psycom_dum_study +
                   psycom_dum_with +
                   freq_cons_dum_5day +
                   cond_oc_dum_2inact +
                   cond_oc_dum_3unemp +
-                  susprindum_coc +
-                  susprindum_pbc +
-                  susprindum_mar, # Include relevant predictors
+                  susprindumrec_coc +
+                  susprindumrec_pbc +
+                  susprindumrec_mar +
+                  susprindumrec_otr, # Include relevant predictors
                 id = id, 
                 data = current_data,
-                weight= current_data$iiw_nocorr_alt_st,
+                weight = current_data$iiw_nocorr_alt_st,
                 family = poisson("log"), 
                 corstr = "independence")
   
@@ -1265,7 +1201,7 @@ Loop over each unique plan name to fit models
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp, tipo_de_plan_2_mod == plan_names[i])
   
   # Initialize variable to store the best QIC and associated model
   best_qic <- Inf
@@ -1279,21 +1215,22 @@ for (i in seq_along(plan_names)) {
                     comp_bpsc_y3_severe+
                     edad_al_ing_1 + 
                     ano_nac_corr + 
-                    susinidum_oh +
-                    susinidum_coc +
-                    susinidum_pbc +
-                    susinidum_mar +
+                    susinidumrec_otr +
+                    susinidumrec_coc +
+                    susinidumrec_pbc +
+                    susinidumrec_mar +
                     psycom_dum_study +
                     psycom_dum_with +
                     freq_cons_dum_5day +
                     cond_oc_dum_2inact +
                     cond_oc_dum_3unemp +
-                    susprindum_coc +
-                    susprindum_pbc +
-                    susprindum_mar, # Include relevant predictors
+                    susprindumrec_coc +
+                    susprindumrec_pbc +
+                    susprindumrec_mar +
+                    susprindumrec_otr, # Include relevant predictors
                   id = id, 
                   data = current_data,
-                  weight= current_data$iiw_nocorr_alt_st,
+                  weight = current_data$iiw_nocorr_alt_st,
                   family = MASS::negative.binomial(x),
                   corstr = "independence")
     
@@ -1346,27 +1283,44 @@ Loop over each unique plan name to fit a model
 ```{r gee21, warning=T, echo=T, error=F, eval=T}
 #| class-output: center-table
 
+data_mine_miss_restr_proc2exp_iiw_after_ph <-
+  data_mine_miss_restr_proc2_iiw_after_ph %>% 
+left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","n_off_acq","n_off_vio","n_off_sud","n_off_oth", "n_prev_off")], by="hash_key") %>% 
+  {if (nrow(.) > nrow(data_mine_miss_restr_proc2_iiw_after_ph)) {message("left join added rows"); .} else .} %>% 
+  dplyr::mutate(n_prev_off_bin= ifelse(n_prev_off>0,1,0)) %>% 
+  dplyr::mutate(
+    susinidumrec_coc = ifelse(sus_ini_mod_mvv == "Cocaine hydrochloride", 1, 0),
+    susinidumrec_pbc = ifelse(sus_ini_mod_mvv == "Cocaine paste", 1, 0),
+    susinidumrec_mar = ifelse(sus_ini_mod_mvv == "Marijuana", 1, 0),
+    susinidumrec_otr = ifelse(sus_ini_mod_mvv == "Other", 1, 0), #sus_principal_mod
+    susprindumrec_coc = ifelse(sus_principal_mod == "Cocaine hydrochloride", 1, 0),
+    susprindumrec_pbc = ifelse(sus_principal_mod == "Cocaine paste", 1, 0),
+    susprindumrec_mar = ifelse(sus_principal_mod == "Marijuana", 1, 0),
+    susprindumrec_otr = ifelse(sus_principal_mod == "Other", 1, 0) # "susprindum_coc", "susprindum_pbc", "susprindum_mar", "susprindum_oh
+  )
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset
   model <- geese(tr_outcome ~ policonsumo2 +
                    comp_bpsc_y3_severe+
                    edad_al_ing_1 + 
                    ano_nac_corr + 
-                   susinidum_oh +
-                   susinidum_coc +
-                   susinidum_pbc +
-                   susinidum_mar +
+                   susinidumrec_otr +
+                   susinidumrec_coc +
+                   susinidumrec_pbc +
+                   susinidumrec_mar +
                    psycom_dum_study +
                    psycom_dum_with +
                    freq_cons_dum_5day +
                    cond_oc_dum_2inact +
                    cond_oc_dum_3unemp +
-                   susprindum_coc +
-                   susprindum_pbc +
-                   susprindum_mar, 
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                  id = id, 
                  data = current_data,
                  family = poisson(), 
@@ -1398,25 +1352,26 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset using geem
   model <- geem(tr_outcome ~ policonsumo2 +
                   comp_bpsc_y3_severe+
                   edad_al_ing_1 + 
                   ano_nac_corr + 
-                  susinidum_oh +
-                  susinidum_coc +
-                  susinidum_pbc +
-                  susinidum_mar +
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
                   psycom_dum_study +
                   psycom_dum_with +
                   freq_cons_dum_5day +
                   cond_oc_dum_2inact +
                   cond_oc_dum_3unemp +
-                  susprindum_coc +
-                  susprindum_pbc +
-                  susprindum_mar, # Include relevant predictors
+                  susprindumrec_coc +
+                  susprindumrec_pbc +
+                  susprindumrec_mar +
+                  susprindumrec_otr, # Include relevant predictors
                 id = id, 
                 data = current_data,
                 family = poisson("log"), 
@@ -1454,7 +1409,7 @@ Loop over each unique plan name to fit models
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
   
   # Initialize variable to store the best QIC and associated model
   best_qic <- Inf
@@ -1468,18 +1423,19 @@ for (i in seq_along(plan_names)) {
                     comp_bpsc_y3_severe+
                     edad_al_ing_1 + 
                     ano_nac_corr + 
-                    susinidum_oh +
-                    susinidum_coc +
-                    susinidum_pbc +
-                    susinidum_mar +
+                    susinidumrec_otr +
+                    susinidumrec_coc +
+                    susinidumrec_pbc +
+                    susinidumrec_mar +
                     psycom_dum_study +
                     psycom_dum_with +
                     freq_cons_dum_5day +
                     cond_oc_dum_2inact +
                     cond_oc_dum_3unemp +
-                    susprindum_coc +
-                    susprindum_pbc +
-                    susprindum_mar, # Include relevant predictors
+                    susprindumrec_coc +
+                    susprindumrec_pbc +
+                    susprindumrec_mar +
+                    susprindumrec_otr, # Include relevant predictors
                   id = id, 
                   data = current_data,
                   family = MASS::negative.binomial(x),
@@ -1537,29 +1493,30 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset
   model <- geese(tr_outcome ~ policonsumo2 +
                    comp_bpsc_y3_severe+
                    edad_al_ing_1 + 
                    ano_nac_corr + 
-                   susinidum_oh +
-                   susinidum_coc +
-                   susinidum_pbc +
-                   susinidum_mar +
+                   susinidumrec_otr +
+                   susinidumrec_coc +
+                   susinidumrec_pbc +
+                   susinidumrec_mar +
                    psycom_dum_study +
                    psycom_dum_with +
                    freq_cons_dum_5day +
                    cond_oc_dum_2inact +
                    cond_oc_dum_3unemp +
-                   susprindum_coc +
-                   susprindum_pbc +
-                   susprindum_mar, 
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                  id = id, 
                  data = current_data,
                  family = poisson(), 
-                 weight= current_data$iiw_after_ph_st,
+                 weight = current_data$iiw_after_ph_st,
                  corstr = "independence", 
                  jack = T)
   
@@ -1587,28 +1544,29 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset using geem
   model <- geem(tr_outcome ~ policonsumo2 +
                   comp_bpsc_y3_severe+
                   edad_al_ing_1 + 
                   ano_nac_corr + 
-                  susinidum_oh +
-                  susinidum_coc +
-                  susinidum_pbc +
-                  susinidum_mar +
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
                   psycom_dum_study +
                   psycom_dum_with +
                   freq_cons_dum_5day +
                   cond_oc_dum_2inact +
                   cond_oc_dum_3unemp +
-                  susprindum_coc +
-                  susprindum_pbc +
-                  susprindum_mar, # Include relevant predictors
+                  susprindumrec_coc +
+                  susprindumrec_pbc +
+                  susprindum_mar +
+                  susprindumrec_otr, # Include relevant predictors
                 id = id, 
                 data = current_data,
-                weight= current_data$iiw_after_ph_st,
+                weight = current_data$iiw_after_ph_st,
                 family = poisson("log"), 
                 corstr = "independence")
   
@@ -1644,7 +1602,7 @@ Loop over each unique plan name to fit models
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp_iiw_after_ph, tipo_de_plan_2_mod == plan_names[i])
   
   # Initialize variable to store the best QIC and associated model
   best_qic <- Inf
@@ -1658,21 +1616,22 @@ for (i in seq_along(plan_names)) {
                     comp_bpsc_y3_severe+
                     edad_al_ing_1 + 
                     ano_nac_corr + 
-                    susinidum_oh +
-                    susinidum_coc +
-                    susinidum_pbc +
-                    susinidum_mar +
+                    susinidumrec_otr +
+                    susinidumrec_coc +
+                    susinidumrec_pbc +
+                    susinidumrec_mar +
                     psycom_dum_study +
                     psycom_dum_with +
                     freq_cons_dum_5day +
                     cond_oc_dum_2inact +
                     cond_oc_dum_3unemp +
-                    susprindum_coc +
-                    susprindum_pbc +
-                    susprindum_mar, # Include relevant predictors
+                    susprindumrec_coc +
+                    susprindumrec_pbc +
+                    susprindumrec_mar +
+                    susprindumrec_otr, # Include relevant predictors
                   id = id, 
                   data = current_data,
-                  weight= current_data$iiw_after_ph_st,
+                  weight = current_data$iiw_after_ph_st,
                   family = MASS::negative.binomial(x),
                   corstr = "independence")
     
@@ -1724,31 +1683,49 @@ Loop over each unique plan name to fit a model
 ```{r gee23, warning=T, echo=T, error=F, eval=T}
 #| class-output: center-table
 
+data_mine_miss_restr_proc2exp_iiw_after_ph_alt <-
+  data_mine_miss_restr_proc2_iiw_after_ph_alt %>% 
+left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","n_off_acq","n_off_vio","n_off_sud","n_off_oth", "n_prev_off")], by="hash_key") %>% 
+  {if (nrow(.) > nrow(data_mine_miss_restr_proc2_iiw_after_ph_alt)) {message("left join added rows"); .} else .} %>% 
+  dplyr::mutate(n_prev_off_bin= ifelse(n_prev_off>0,1,0)) %>% 
+  dplyr::mutate(
+    susinidumrec_coc = ifelse(sus_ini_mod_mvv == "Cocaine hydrochloride", 1, 0),
+    susinidumrec_pbc = ifelse(sus_ini_mod_mvv == "Cocaine paste", 1, 0),
+    susinidumrec_mar = ifelse(sus_ini_mod_mvv == "Marijuana", 1, 0),
+    susinidumrec_otr = ifelse(sus_ini_mod_mvv == "Other", 1, 0), #sus_principal_mod
+    susprindumrec_coc = ifelse(sus_principal_mod == "Cocaine hydrochloride", 1, 0),
+    susprindumrec_pbc = ifelse(sus_principal_mod == "Cocaine paste", 1, 0),
+    susprindumrec_mar = ifelse(sus_principal_mod == "Marijuana", 1, 0),
+    susprindumrec_otr = ifelse(sus_principal_mod == "Other", 1, 0) # "susprindum_coc", "susprindum_pbc", "susprindum_mar", "susprindum_oh
+  )
+
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset
   model <- geese(tr_outcome ~ policonsumo2 +
                    comp_bpsc_y3_severe+
                    edad_al_ing_1 + 
                    ano_nac_corr + 
-                   susinidum_oh +
-                   susinidum_coc +
-                   susinidum_pbc +
-                   susinidum_mar +
+                   susinidumrec_otr +
+                   susinidumrec_coc +
+                   susinidumrec_pbc +
+                   susinidumrec_mar +
                    psycom_dum_study +
                    psycom_dum_with +
                    freq_cons_dum_5day +
                    cond_oc_dum_2inact +
                    cond_oc_dum_3unemp +
-                   susprindum_coc +
-                   susprindum_pbc +
-                   susprindum_mar, 
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                  id = id, 
                  data = current_data,
                  family = poisson(), 
-                 weight= current_data$iiw_after_ph_st,
+                 weight = current_data$iiw_after_ph_st,
                  corstr = "independence", 
                  jack = T)
   
@@ -1776,28 +1753,29 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset using geem
   model <- geem(tr_outcome ~ policonsumo2 +
                   comp_bpsc_y3_severe+
                   edad_al_ing_1 + 
                   ano_nac_corr + 
-                  susinidum_oh +
-                  susinidum_coc +
-                  susinidum_pbc +
-                  susinidum_mar +
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
                   psycom_dum_study +
                   psycom_dum_with +
                   freq_cons_dum_5day +
                   cond_oc_dum_2inact +
                   cond_oc_dum_3unemp +
-                  susprindum_coc +
-                  susprindum_pbc +
-                  susprindum_mar, # Include relevant predictors
+                  susprindumrec_coc +
+                  susprindumrec_pbc +
+                  susprindumrec_mar +
+                  susprindumrec_otr, # Include relevant predictors
                 id = id, 
                 data = current_data,
-                weight= current_data$iiw_after_ph_st,
+                weight = current_data$iiw_after_ph_st,
                 family = poisson("log"), 
                 corstr = "independence")
   
@@ -1831,7 +1809,7 @@ Loop over each unique plan name to fit models
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_restr_proc2_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_restr_proc2exp_iiw_after_ph_alt, tipo_de_plan_2_mod == plan_names[i])
   
   # Initialize variable to store the best QIC and associated model
   best_qic <- Inf
@@ -1845,21 +1823,22 @@ for (i in seq_along(plan_names)) {
                     comp_bpsc_y3_severe+
                     edad_al_ing_1 + 
                     ano_nac_corr + 
-                    susinidum_oh +
-                    susinidum_coc +
-                    susinidum_pbc +
-                    susinidum_mar +
+                    susinidumrec_otr +
+                    susinidumrec_coc +
+                    susinidumrec_pbc +
+                    susinidumrec_mar +
                     psycom_dum_study +
                     psycom_dum_with +
                     freq_cons_dum_5day +
                     cond_oc_dum_2inact +
                     cond_oc_dum_3unemp +
-                    susprindum_coc +
-                    susprindum_pbc +
-                    susprindum_mar, # Include relevant predictors
+                    susprindumrec_coc +
+                    susprindumrec_pbc +
+                    susprindumrec_mar +
+                    susprindumrec_otr, # Include relevant predictors
                   id = id, 
                   data = current_data,
-                  weight= current_data$iiw_after_ph_st,
+                  weight = current_data$iiw_after_ph_st,
                   family = MASS::negative.binomial(x),
                   corstr = "independence")
     
@@ -1912,27 +1891,45 @@ Loop over each unique plan name to fit a model
 ```{r gee31, warning=T, echo=T, error=F, eval=T}
 #| class-output: center-table
 
+
+data_mine_miss_proc2exp_iiw_strata <-
+  data_mine_miss_proc2_iiw_strata %>% 
+left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","n_off_acq","n_off_vio","n_off_sud","n_off_oth", "n_prev_off")], by="hash_key") %>% 
+  {if (nrow(.) > nrow(data_mine_miss_restr_proc2_iiw_after_ph_alt)) {message("left join added rows"); .} else .} %>% 
+  dplyr::mutate(n_prev_off_bin= ifelse(n_prev_off>0,1,0)) %>% 
+  dplyr::mutate(
+    susinidumrec_coc = ifelse(sus_ini_mod_mvv == "Cocaine hydrochloride", 1, 0),
+    susinidumrec_pbc = ifelse(sus_ini_mod_mvv == "Cocaine paste", 1, 0),
+    susinidumrec_mar = ifelse(sus_ini_mod_mvv == "Marijuana", 1, 0),
+    susinidumrec_otr = ifelse(sus_ini_mod_mvv == "Other", 1, 0), #sus_principal_mod
+    susprindumrec_coc = ifelse(sus_principal_mod == "Cocaine hydrochloride", 1, 0),
+    susprindumrec_pbc = ifelse(sus_principal_mod == "Cocaine paste", 1, 0),
+    susprindumrec_mar = ifelse(sus_principal_mod == "Marijuana", 1, 0),
+    susprindumrec_otr = ifelse(sus_principal_mod == "Other", 1, 0) # "susprindum_coc", "susprindum_pbc", "susprindum_mar", "susprindum_oh
+  )
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset
   model <- geese(tr_outcome ~ policonsumo2 +
                    comp_bpsc_y3_severe+
                    edad_al_ing_1 + 
                    ano_nac_corr + 
-                   susinidum_oh +
-                   susinidum_coc +
-                   susinidum_pbc +
-                   susinidum_mar +
+                   susinidumrec_otr +
+                   susinidumrec_coc +
+                   susinidumrec_pbc +
+                   susinidumrec_mar +
                    psycom_dum_study +
                    psycom_dum_with +
                    freq_cons_dum_5day +
                    cond_oc_dum_2inact +
                    cond_oc_dum_3unemp +
-                   susprindum_coc +
-                   susprindum_pbc +
-                   susprindum_mar, 
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                  id = id, 
                  data = current_data,
                  family = poisson(), 
@@ -1963,25 +1960,26 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset using geem
   model <- geem(tr_outcome ~ policonsumo2 +
                   comp_bpsc_y3_severe+
                   edad_al_ing_1 + 
                   ano_nac_corr + 
-                  susinidum_oh +
-                  susinidum_coc +
-                  susinidum_pbc +
-                  susinidum_mar +
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
                   psycom_dum_study +
                   psycom_dum_with +
                   freq_cons_dum_5day +
                   cond_oc_dum_2inact +
                   cond_oc_dum_3unemp +
-                  susprindum_coc +
-                  susprindum_pbc +
-                  susprindum_mar, # Include relevant predictors
+                  susprindumrec_coc +
+                  susprindumrec_pbc +
+                  susprindumrec_mar +
+                  susprindumrec_otr, # Include relevant predictors
                 id = id, 
                 data = current_data,
                 family = poisson("log"), 
@@ -2019,7 +2017,7 @@ Loop over each unique plan name to fit models
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
   
   # Initialize variable to store the best QIC and associated model
   best_qic <- Inf
@@ -2033,18 +2031,19 @@ for (i in seq_along(plan_names)) {
                     comp_bpsc_y3_severe+
                     edad_al_ing_1 + 
                     ano_nac_corr + 
-                    susinidum_oh +
-                    susinidum_coc +
-                    susinidum_pbc +
-                    susinidum_mar +
+                    susinidumrec_otr +
+                    susinidumrec_coc +
+                    susinidumrec_pbc +
+                    susinidumrec_mar +
                     psycom_dum_study +
                     psycom_dum_with +
                     freq_cons_dum_5day +
                     cond_oc_dum_2inact +
                     cond_oc_dum_3unemp +
-                    susprindum_coc +
-                    susprindum_pbc +
-                    susprindum_mar, # Include relevant predictors
+                    susprindumrec_coc +
+                    susprindumrec_pbc +
+                    susprindumrec_mar +
+                    susprindumrec_otr, # Include relevant predictors
                   id = id, 
                   data = current_data,
                   family = MASS::negative.binomial(x),
@@ -2099,29 +2098,30 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset
   model <- geese(tr_outcome ~ policonsumo2 +
                    comp_bpsc_y3_severe+
                    edad_al_ing_1 + 
                    ano_nac_corr + 
-                   susinidum_oh +
-                   susinidum_coc +
-                   susinidum_pbc +
-                   susinidum_mar +
+                   susinidumrec_otr +
+                   susinidumrec_coc +
+                   susinidumrec_pbc +
+                   susinidumrec_mar +
                    psycom_dum_study +
                    psycom_dum_with +
                    freq_cons_dum_5day +
                    cond_oc_dum_2inact +
                    cond_oc_dum_3unemp +
-                   susprindum_coc +
-                   susprindum_pbc +
-                   susprindum_mar, 
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                  id = id, 
                  data = current_data,
                  family = poisson(), 
-                 weight= current_data$iiw_strata_st,
+                 weight = current_data$iiw_strata_st,
                  corstr = "independence", 
                  jack = T)
   
@@ -2149,28 +2149,29 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset using geem
   model <- geem(tr_outcome ~ policonsumo2 +
                   comp_bpsc_y3_severe+
                   edad_al_ing_1 + 
                   ano_nac_corr + 
-                  susinidum_oh +
-                  susinidum_coc +
-                  susinidum_pbc +
-                  susinidum_mar +
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
                   psycom_dum_study +
                   psycom_dum_with +
                   freq_cons_dum_5day +
                   cond_oc_dum_2inact +
                   cond_oc_dum_3unemp +
-                  susprindum_coc +
-                  susprindum_pbc +
-                  susprindum_mar, # Include relevant predictors
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                 id = id, 
                 data = current_data,
-                weight= current_data$iiw_strata_st,
+                weight = current_data$iiw_strata_st,
                 family = poisson("log"), 
                 corstr = "independence")
   
@@ -2205,7 +2206,7 @@ Loop over each unique plan name to fit models
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata, tipo_de_plan_2_mod == plan_names[i])
   
   # Initialize variable to store the best QIC and associated model
   best_qic <- Inf
@@ -2219,18 +2220,19 @@ for (i in seq_along(plan_names)) {
                     comp_bpsc_y3_severe+
                     edad_al_ing_1 + 
                     ano_nac_corr + 
-                    susinidum_oh +
-                    susinidum_coc +
-                    susinidum_pbc +
-                    susinidum_mar +
+                    susinidumrec_otr +
+                    susinidumrec_coc +
+                    susinidumrec_pbc +
+                    susinidumrec_mar +
                     psycom_dum_study +
                     psycom_dum_with +
                     freq_cons_dum_5day +
                     cond_oc_dum_2inact +
                     cond_oc_dum_3unemp +
-                    susprindum_coc +
-                    susprindum_pbc +
-                    susprindum_mar, # Include relevant predictors
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                   id = id, 
                   data = current_data,
                   weight= current_data$iiw_strata_st,
@@ -2285,31 +2287,50 @@ Loop over each unique plan name to fit a model
 ```{r gee33, warning=T, echo=T, error=F, eval=T}
 #| class-output: center-table
 
+
+data_mine_miss_proc2exp_iiw_strata_alt <-
+  data_mine_miss_proc2_iiw_strata_alt %>% 
+left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","n_off_acq","n_off_vio","n_off_sud","n_off_oth", "n_prev_off")], by="hash_key") %>% 
+  {if (nrow(.) > nrow(data_mine_miss_restr_proc2_iiw_after_ph_alt)) {message("left join added rows"); .} else .} %>% 
+  dplyr::mutate(n_prev_off_bin= ifelse(n_prev_off>0,1,0)) %>% 
+  dplyr::mutate(
+    susinidumrec_coc = ifelse(sus_ini_mod_mvv == "Cocaine hydrochloride", 1, 0),
+    susinidumrec_pbc = ifelse(sus_ini_mod_mvv == "Cocaine paste", 1, 0),
+    susinidumrec_mar = ifelse(sus_ini_mod_mvv == "Marijuana", 1, 0),
+    susinidumrec_otr = ifelse(sus_ini_mod_mvv == "Other", 1, 0), #sus_principal_mod
+    susprindumrec_coc = ifelse(sus_principal_mod == "Cocaine hydrochloride", 1, 0),
+    susprindumrec_pbc = ifelse(sus_principal_mod == "Cocaine paste", 1, 0),
+    susprindumrec_mar = ifelse(sus_principal_mod == "Marijuana", 1, 0),
+    susprindumrec_otr = ifelse(sus_principal_mod == "Other", 1, 0) # "susprindum_coc", "susprindum_pbc", "susprindum_mar", "susprindum_oh
+  )
+
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset
   model <- geese(tr_outcome ~ policonsumo2 +
                    comp_bpsc_y3_severe+
                    edad_al_ing_1 + 
                    ano_nac_corr + 
-                   susinidum_oh +
-                   susinidum_coc +
-                   susinidum_pbc +
-                   susinidum_mar +
+                   susinidumrec_otr +
+                   susinidumrec_coc +
+                   susinidumrec_pbc +
+                   susinidumrec_mar +
                    psycom_dum_study +
                    psycom_dum_with +
                    freq_cons_dum_5day +
                    cond_oc_dum_2inact +
                    cond_oc_dum_3unemp +
-                   susprindum_coc +
-                   susprindum_pbc +
-                   susprindum_mar, 
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                  id = id, 
                  data = current_data,
                  family = poisson(), 
-                 weight= current_data$iiw_strata_st,
+                 weight = current_data$iiw_strata_st,
                  corstr = "independence", 
                  jack = T)
   
@@ -2337,28 +2358,29 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset using geem
   model <- geem(tr_outcome ~ policonsumo2 +
                   comp_bpsc_y3_severe+
                   edad_al_ing_1 + 
                   ano_nac_corr + 
-                  susinidum_oh +
-                  susinidum_coc +
-                  susinidum_pbc +
-                  susinidum_mar +
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
                   psycom_dum_study +
                   psycom_dum_with +
                   freq_cons_dum_5day +
                   cond_oc_dum_2inact +
                   cond_oc_dum_3unemp +
-                  susprindum_coc +
-                  susprindum_pbc +
-                  susprindum_mar, # Include relevant predictors
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                 id = id, 
                 data = current_data,
-                weight= current_data$iiw_strata_st,
+                weight = current_data$iiw_strata_st,
                 family = poisson("log"), 
                 corstr = "independence")
   
@@ -2403,7 +2425,7 @@ Loop over each unique plan name to fit models
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata_alt, tipo_de_plan_2_mod == plan_names[i])
   
   # Initialize variable to store the best QIC and associated model
   best_qic <- Inf
@@ -2417,21 +2439,22 @@ for (i in seq_along(plan_names)) {
                     comp_bpsc_y3_severe+
                     edad_al_ing_1 + 
                     ano_nac_corr + 
-                    susinidum_oh +
-                    susinidum_coc +
-                    susinidum_pbc +
-                    susinidum_mar +
+                    susinidumrec_otr +
+                    susinidumrec_coc +
+                    susinidumrec_pbc +
+                    susinidumrec_mar +
                     psycom_dum_study +
                     psycom_dum_with +
                     freq_cons_dum_5day +
                     cond_oc_dum_2inact +
                     cond_oc_dum_3unemp +
-                    susprindum_coc +
-                    susprindum_pbc +
-                    susprindum_mar, # Include relevant predictors
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                   id = id, 
                   data = current_data,
-                  weight= current_data$iiw_strata_st,
+                  weight = current_data$iiw_strata_st,
                   family = MASS::negative.binomial(x),
                   corstr = "independence")
     
@@ -2483,31 +2506,50 @@ Loop over each unique plan name to fit a model
 ```{r gee34, warning=T, echo=T, error=F, eval=T}
 #| class-output: center-table
 
+
+data_mine_miss_proc2exp_iiw_strata_alt_alt <-
+  data_mine_miss_proc2_iiw_strata_alt_alt %>% 
+left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","n_off_acq","n_off_vio","n_off_sud","n_off_oth", "n_prev_off")], by="hash_key") %>% 
+  {if (nrow(.) > nrow(data_mine_miss_restr_proc2_iiw_after_ph_alt)) {message("left join added rows"); .} else .} %>% 
+  dplyr::mutate(n_prev_off_bin= ifelse(n_prev_off>0,1,0)) %>% 
+  dplyr::mutate(
+    susinidumrec_coc = ifelse(sus_ini_mod_mvv == "Cocaine hydrochloride", 1, 0),
+    susinidumrec_pbc = ifelse(sus_ini_mod_mvv == "Cocaine paste", 1, 0),
+    susinidumrec_mar = ifelse(sus_ini_mod_mvv == "Marijuana", 1, 0),
+    susinidumrec_otr = ifelse(sus_ini_mod_mvv == "Other", 1, 0), #sus_principal_mod
+    susprindumrec_coc = ifelse(sus_principal_mod == "Cocaine hydrochloride", 1, 0),
+    susprindumrec_pbc = ifelse(sus_principal_mod == "Cocaine paste", 1, 0),
+    susprindumrec_mar = ifelse(sus_principal_mod == "Marijuana", 1, 0),
+    susprindumrec_otr = ifelse(sus_principal_mod == "Other", 1, 0) # "susprindum_coc", "susprindum_pbc", "susprindum_mar", "susprindum_oh
+  )
+
+
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset
   model <- geese(tr_outcome ~ policonsumo2 +
                    comp_bpsc_y3_severe+
                    edad_al_ing_1 + 
                    ano_nac_corr + 
-                   susinidum_oh +
-                   susinidum_coc +
-                   susinidum_pbc +
-                   susinidum_mar +
+                   susinidumrec_otr +
+                   susinidumrec_coc +
+                   susinidumrec_pbc +
+                   susinidumrec_mar +
                    psycom_dum_study +
                    psycom_dum_with +
                    freq_cons_dum_5day +
                    cond_oc_dum_2inact +
                    cond_oc_dum_3unemp +
-                   susprindum_coc +
-                   susprindum_pbc +
-                   susprindum_mar, 
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                  id = id, 
                  data = current_data,
                  family = poisson(), 
-                 weight= current_data$iiw_strata_st,
+                 weight = current_data$iiw_strata_st,
                  corstr = "independence", 
                  jack = T)
   
@@ -2534,28 +2576,29 @@ Loop over each unique plan name to fit a model
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
   
   # Fit the GEE model for the current subset using geem
   model <- geem(tr_outcome ~ policonsumo2 +
                   comp_bpsc_y3_severe+
                   edad_al_ing_1 + 
                   ano_nac_corr + 
-                  susinidum_oh +
-                  susinidum_coc +
-                  susinidum_pbc +
-                  susinidum_mar +
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
                   psycom_dum_study +
                   psycom_dum_with +
                   freq_cons_dum_5day +
                   cond_oc_dum_2inact +
                   cond_oc_dum_3unemp +
-                  susprindum_coc +
-                  susprindum_pbc +
-                  susprindum_mar, # Include relevant predictors
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                 id = id, 
                 data = current_data,
-                weight= current_data$iiw_strata_st,
+                weight = current_data$iiw_strata_st,
                 family = poisson("log"), 
                 corstr = "independence")
   
@@ -2594,7 +2637,7 @@ Loop over each unique plan name to fit models
 
 for (i in seq_along(plan_names)) {
   # Subset the data for the current plan type
-  current_data <- subset(data_mine_miss_proc2_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
+  current_data <- subset(data_mine_miss_proc2exp_iiw_strata_alt_alt, tipo_de_plan_2_mod == plan_names[i])
   
   # Initialize variable to store the best QIC and associated model
   best_qic <- Inf
@@ -2608,21 +2651,22 @@ for (i in seq_along(plan_names)) {
                     comp_bpsc_y3_severe+
                     edad_al_ing_1 + 
                     ano_nac_corr + 
-                    susinidum_oh +
-                    susinidum_coc +
-                    susinidum_pbc +
-                    susinidum_mar +
+                    susinidumrec_otr +
+                    susinidumrec_coc +
+                    susinidumrec_pbc +
+                    susinidumrec_mar +
                     psycom_dum_study +
                     psycom_dum_with +
                     freq_cons_dum_5day +
                     cond_oc_dum_2inact +
                     cond_oc_dum_3unemp +
-                    susprindum_coc +
-                    susprindum_pbc +
-                    susprindum_mar, # Include relevant predictors
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, 
                   id = id, 
                   data = current_data,
-                  weight= current_data$iiw_strata_st,
+                  weight = current_data$iiw_strata_st,
                   family = MASS::negative.binomial(x),
                   corstr = "independence")
     
@@ -2659,7 +2703,6 @@ print(geem2_strata_alt_alt_wgt_list[[1]])
 ```
 
 
-
 # Model output
 
 ```{r output-gee}
@@ -2672,38 +2715,38 @@ print(geem2_strata_alt_alt_wgt_list[[1]])
 
 
 types_of_model<-
-  c("No correction",
-    "No correction, main",
-    "No correction, alternative",
-    "Correction for PH, no weight",
-    "Correction for PH, main",
-    "Correction for PH, alternative",
-    "Stratifying, no weight",
-    "Stratifying, main",
-    "Stratifying, alternative",
-    "Stratifying, 2nd alternative, main"
+  c("No time-varying coefficients, no weight",
+    "No time-varying coefficients, lag=0",
+    "No time-varying coefficients, lag=1",
+    "With time-varying coefficients, no weight",
+    "With time-varying coefficients, lag=0",
+    "With time-varying coefficients, lag=1",
+    "Stratified by follow-up intervals, no weight",
+    "Stratified by follow-up intervals, lag=0",
+    "Stratified by follow-up intervals, lag=1",
+    "Stratified by follow-up intervals, 2nd, lag=0"
 )
 types_of_model2<-
-  c("No correction",
-    "No correction, NB",
-    "No correction, main",
-    "No correction, main, NB",
-    "No correction, alternative",
-    "No correction, alternative, NB",
-    "Correction for PH, no weight",
-    "Correction for PH, no weight, NB",
-    "Correction for PH, main",
-    "Correction for PH, main, NB",
-    "Correction for PH, alternative",
-    "Correction for PH, alternative, NB",
-    "Stratified, no weight",
-    "Stratified, no weight, NB",
-    "Stratified, main",
-    "Stratified, main, NB",
-    "Stratified, alternative",
-    "Stratified, alternative, NB",
-    "Stratified, 2nd alternative",
-    "Stratified, 2nd alternative, NB"    
+  c("No time-varying coefficients, no weight",
+    "No time-varying coefficients, no weight, NB",
+    "No time-varying coefficients, lag=0",
+    "No time-varying coefficients, lag=0, NB",
+    "No time-varying coefficients, lag=1",
+    "No time-varying coefficients, lag=1, NB",
+    "With time-varying coefficients, no weight",
+    "With time-varying coefficients, no weight, NB",
+    "With time-varying coefficients, lag=0",
+    "With time-varying coefficients, lag=0, NB",
+    "With time-varying coefficients, lag=1",
+    "With time-varying coefficients, lag=1, NB",
+    "Stratified by follow-up intervals, no weight",
+    "Stratified by follow-up intervals, no weight, NB",
+    "Stratified by follow-up intervals, lag=0",
+    "Stratified by follow-up intervals, lag=0, NB",
+    "Stratified by follow-up intervals, lag=1",
+    "Stratified by follow-up intervals, lag=1, NB",
+    "Stratified by follow-up intervals, 2nd, lag=1",
+    "Stratified by follow-up intervals, 2nd, lag=1, NB"    
   )
 
 plan_names[1]
@@ -3071,11 +3114,16 @@ rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_a
                  ) %>% 
   dplyr::group_by(setting) %>% 
   dplyr::mutate(min_qic_setting=ifelse(QIC==min(QIC),1,0)) %>% 
-  dplyr::ungroup() %>% 
+  dplyr::mutate(QIC= format(as.numeric(sprintf("%1.1f",QIC)), big.mark=",")) %>% 
+  dplyr::ungroup() %>%
+  dplyr::mutate(`RR (95% IC)`= paste0(Estimates, " (", `CI.lower`, ", ", CI.upper, ")")) %>% 
+  dplyr::select(setting, model, QIC, `RR (95% IC)`, p.value) %>% 
   {
   #copiar_nombres2()
     write.table(., file = paste0(folder_path,"gee_240515.csv"), dec=",", sep="\t")
-    knitr::kable(., size=10, format="markdown", caption="GEE Models, Association between PSU and Treatment outcome") 
+    knitr::kable(., size=10, format="html", caption="Relative risk of treatment non-completion status by reported polysubstance use") %>% 
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
+    kableExtra::scroll_box(width = "100%", height = "375px")  
   }
 ```
 
@@ -3095,7 +3143,7 @@ Loop over each unique plan name to fit a model. We used an interaction of PSU an
 
 df_marginal_plots<-
   cbind.data.frame(wgt= c("wgt", "iiw_nocorr_st", "iiw_nocorr_alt_st", "wgt", "iiw_after_ph_st", "iiw_after_ph_st"), 
-        df= c("data_mine_miss_restr_proc2","data_mine_miss_restr_proc2","data_mine_miss_restr_proc2","data_mine_miss_restr_proc2_iiw_after_ph","data_mine_miss_restr_proc2_iiw_after_ph","data_mine_miss_restr_proc2_iiw_after_ph_alt"),
+        df= c("data_mine_miss_restr_proc2exp","data_mine_miss_restr_proc2exp","data_mine_miss_restr_proc2exp","data_mine_miss_restr_proc2exp_iiw_after_ph","data_mine_miss_restr_proc2exp_iiw_after_ph","data_mine_miss_restr_proc2exp_iiw_after_ph_alt"),
         model= c("no corr no wgt","no corr main","no corr alt", "after ph no wgt", "after ph main", "after ph alt"))
 
 # Loop over each unique plan name to fit a model
@@ -3105,18 +3153,19 @@ for (i in seq_along(df_marginal_plots$wgt)) {
   geeglm( tr_outcome  ~ policonsumo2 * tipo_de_plan_2_mod +
                         edad_al_ing_1 + 
                         ano_nac_corr + 
-                        susinidum_oh +
-                        susinidum_coc +
-                        susinidum_pbc +
-                        susinidum_mar +
+                        susinidumrec_otr +
+                        susinidumrec_coc +
+                        susinidumrec_pbc +
+                        susinidumrec_mar +
                         psycom_dum_study +
                         psycom_dum_with +
                         freq_cons_dum_5day +
                         cond_oc_dum_2inact +
                         cond_oc_dum_3unemp +
-                        susprindum_coc +
-                        susprindum_pbc +
-                        susprindum_mar,
+                       susprindumrec_coc +
+                       susprindumrec_pbc +
+                       susprindumrec_mar +
+                       susprindumrec_otr, 
                     id= id, 
                     data= get(df_marginal_plots$df[i]) %>% dplyr::mutate(wgt=1), 
                     weight= get(df_marginal_plots$df[i]) %>% dplyr::mutate(wgt=1) %>% pull(df_marginal_plots$wgt[i]), 
@@ -3146,6 +3195,236 @@ plot(emmeans_response_after_ph_main)+ ggtitle("After PH, main weights")
 plot(emmeans_response_after_ph_alt)+ ggtitle("After PH, alt weights")
 ```
 
+# Heterogeneity
+
+```{r heterogeneity}
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+
+library(meta)
+try(library(dmetar))
+library(metafor)
+
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+##_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+##
+# Define los valores de los Relative Risk Reductions (RRR) y sus intervalos de confianza
+rrr <- rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_ambulatory),
+                 cbind.data.frame(setting=plan_names[2],result_data_geem_GP_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[3],result_data_geem_GP_residential),
+                 cbind.data.frame(setting=plan_names[4],result_data_geem_WO_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[5],result_data_geem_WO_residential)
+) %>% 
+    dplyr::group_by(setting) %>% 
+    dplyr::filter(model=="No time-varying coefficients, no weight") %>% pull(`Estimates`) %>% as.numeric()
+lcl <- rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_ambulatory),
+                 cbind.data.frame(setting=plan_names[2],result_data_geem_GP_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[3],result_data_geem_GP_residential),
+                 cbind.data.frame(setting=plan_names[4],result_data_geem_WO_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[5],result_data_geem_WO_residential)
+) %>% 
+    dplyr::group_by(setting) %>% 
+    dplyr::filter(model=="No time-varying coefficients, no weight") %>% pull(`CI.lower`) %>% as.numeric()
+ucl <- rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_ambulatory),
+                 cbind.data.frame(setting=plan_names[2],result_data_geem_GP_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[3],result_data_geem_GP_residential),
+                 cbind.data.frame(setting=plan_names[4],result_data_geem_WO_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[5],result_data_geem_WO_residential)
+) %>% 
+    dplyr::group_by(setting) %>% 
+    dplyr::filter(model=="No time-varying coefficients, no weight") %>% pull(`CI.upper`) %>% as.numeric()
+
+
+# Calcula los logaritmos de los RRR y de los límites de sus intervalos de confianza
+log_rrr <- log(rrr)
+log_lcl <- log(lcl)
+log_ucl <- log(ucl)
+
+# Calcula las varianzas
+variances <- ((log_ucl - log_rrr) / qnorm(0.975))^2
+
+# Meta-análisis usando un modelo de efectos aleatorios
+meta_analysis <- rma(yi=log_rrr, sei=sqrt(variances), method="REML")
+
+# Prueba de Cochran Q para evaluar la heterogeneidad
+cochrans_q <- meta_analysis$QE
+p_value_q <- meta_analysis$QEp
+
+cat(sprintf("No time-varying coefficients, no weight- Cochran's Q = %.2f, p-value = %.4f\n", cochrans_q, p_value_q))
+#concuerda con el calculo de stata
+#
+#
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+##_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+###_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+###
+###
+
+# Define los valores de los Relative Risk Reductions (RRR) y sus intervalos de confianza
+rrr2 <- rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_ambulatory),
+                         cbind.data.frame(setting=plan_names[2],result_data_geem_GP_intensive_ambulatory),
+                         cbind.data.frame(setting=plan_names[3],result_data_geem_GP_residential),
+                         cbind.data.frame(setting=plan_names[4],result_data_geem_WO_intensive_ambulatory),
+                         cbind.data.frame(setting=plan_names[5],result_data_geem_WO_residential)
+) %>% 
+    dplyr::group_by(setting) %>% 
+    dplyr::filter(model=="No time-varying coefficients, lag=0") %>% pull(`Estimates`) %>% as.numeric()
+lcl2 <- rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_ambulatory),
+                         cbind.data.frame(setting=plan_names[2],result_data_geem_GP_intensive_ambulatory),
+                         cbind.data.frame(setting=plan_names[3],result_data_geem_GP_residential),
+                         cbind.data.frame(setting=plan_names[4],result_data_geem_WO_intensive_ambulatory),
+                         cbind.data.frame(setting=plan_names[5],result_data_geem_WO_residential)
+) %>% 
+    dplyr::group_by(setting) %>% 
+    dplyr::filter(model=="No time-varying coefficients, lag=0") %>% pull(`CI.lower`) %>% as.numeric()
+ucl2 <- rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_ambulatory),
+                         cbind.data.frame(setting=plan_names[2],result_data_geem_GP_intensive_ambulatory),
+                         cbind.data.frame(setting=plan_names[3],result_data_geem_GP_residential),
+                         cbind.data.frame(setting=plan_names[4],result_data_geem_WO_intensive_ambulatory),
+                         cbind.data.frame(setting=plan_names[5],result_data_geem_WO_residential)
+) %>% 
+    dplyr::group_by(setting) %>% 
+    dplyr::filter(model=="No time-varying coefficients, lag=0") %>% pull(`CI.upper`) %>% as.numeric()
+
+
+# Calcula los logaritmos de los RRR y de los límites de sus intervalos de confianza
+log_rrr2 <- log(rrr2)
+log_lcl2 <- log(lcl2)
+log_ucl2 <- log(ucl2)
+
+# Calcula las varianzas
+variances2 <- ((log_ucl2 - log_rrr2) / qnorm(0.975))^2
+
+# Meta-análisis usando un modelo de efectos aleatorios
+meta_analysis2 <- rma(yi=log_rrr2, sei=sqrt(variances2), method="REML")
+
+# Prueba de Cochran Q para evaluar la heterogeneidad
+cochrans_q2 <- meta_analysis2$QE
+p_value_q2 <- meta_analysis2$QEp
+
+cat(sprintf("No time-varying coefficients, lag=0, main- Cochran's Q = %.2f, p-value = %.4f\n", cochrans_q2, p_value_q2))
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+##_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+###_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+# Define los valores de los Relative Risk Reductions (RRR) y sus intervalos de confianza
+rrr3 <- rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_ambulatory),
+                 cbind.data.frame(setting=plan_names[2],result_data_geem_GP_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[3],result_data_geem_GP_residential),
+                 cbind.data.frame(setting=plan_names[4],result_data_geem_WO_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[5],result_data_geem_WO_residential)
+) %>% 
+    dplyr::group_by(setting) %>% 
+    dplyr::filter(model=="No time-varying coefficients, lag=1") %>% pull(`Estimates`) %>% as.numeric()
+lcl3 <- rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_ambulatory),
+                 cbind.data.frame(setting=plan_names[2],result_data_geem_GP_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[3],result_data_geem_GP_residential),
+                 cbind.data.frame(setting=plan_names[4],result_data_geem_WO_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[5],result_data_geem_WO_residential)
+) %>% 
+    dplyr::group_by(setting) %>% 
+    dplyr::filter(model=="No time-varying coefficients, lag=1") %>% pull(`CI.lower`) %>% as.numeric()
+ucl3 <- rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_ambulatory),
+                 cbind.data.frame(setting=plan_names[2],result_data_geem_GP_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[3],result_data_geem_GP_residential),
+                 cbind.data.frame(setting=plan_names[4],result_data_geem_WO_intensive_ambulatory),
+                 cbind.data.frame(setting=plan_names[5],result_data_geem_WO_residential)
+) %>% 
+    dplyr::group_by(setting) %>% 
+    dplyr::filter(model=="No time-varying coefficients, lag=1") %>% pull(`CI.upper`) %>% as.numeric()
+
+
+# Calcula los logaritmos de los RRR y de los límites de sus intervalos de confianza
+log_rrr3 <- log(rrr3)
+log_lcl3 <- log(lcl3)
+log_ucl3 <- log(ucl3)
+
+# Calcula las varianzas
+variances3 <- ((log_ucl3 - log_rrr3) / qnorm(0.975))^2
+
+# Meta-análisis usando un modelo de efectos aleatorios
+meta_analysis3 <- rma(yi=log_rrr3, sei=sqrt(variances3), method="REML")
+
+# Prueba de Cochran Q para evaluar la heterogeneidad
+cochrans_q3 <- meta_analysis3$QE
+p_value_q3 <- meta_analysis3$QEp
+
+cat(sprintf("No time-varying coefficients, lag=1- Cochran's Q = %.2f, p-value = %.4f\n", cochrans_q3, p_value_q3))
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+##_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+###_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+###
+
+# Comparaciones de Altman para todas las combinaciones de RRR
+results <- expand.grid(i=1:5, j=1:5) %>%
+  filter(i < j) %>%
+  mutate(
+    drrr = log_rrr[i] - log_rrr[j],
+    var_drrr = variances[i] + variances[j],
+    se_drrr = sqrt(var_drrr),
+    z_value = drrr / se_drrr,
+    p_value = 2 * (1 - pnorm(abs(z_value))),
+    ratio_estimates = exp(drrr),
+    lower_bound = exp(drrr - qnorm(0.975) * se_drrr),
+    upper_bound = exp(drrr + qnorm(0.975) * se_drrr)
+  ) %>% 
+  dplyr::mutate(i= dplyr::case_when(i==1~plan_names[1], i==2~plan_names[2], i==3~plan_names[3], i==4~plan_names[4], i==5~plan_names[5]), j= dplyr::case_when(j==1~plan_names[1], j==2~plan_names[2], j==3~plan_names[3], j==4~plan_names[4], j==5~plan_names[5]))
+
+results2 <- expand.grid(i=1:5, j=1:5) %>%
+  filter(i < j) %>%
+  mutate(
+    drrr = log_rrr2[i] - log_rrr2[j],
+    var_drrr = variances[i] + variances[j],
+    se_drrr = sqrt(var_drrr),
+    z_value = drrr / se_drrr,
+    p_value = 2 * (1 - pnorm(abs(z_value))),
+    ratio_estimates = exp(drrr),
+    lower_bound = exp(drrr - qnorm(0.975) * se_drrr),
+    upper_bound = exp(drrr + qnorm(0.975) * se_drrr)
+  ) %>% 
+  dplyr::mutate(i= dplyr::case_when(i==1~plan_names[1], i==2~plan_names[2], i==3~plan_names[3], i==4~plan_names[4], i==5~plan_names[5]), j= dplyr::case_when(j==1~plan_names[1], j==2~plan_names[2], j==3~plan_names[3], j==4~plan_names[4], j==5~plan_names[5]))
+
+results3 <- expand.grid(i=1:5, j=1:5) %>%
+  filter(i < j) %>%
+  mutate(
+    drrr = log_rrr3[i] - log_rrr3[j],
+    var_drrr = variances[i] + variances[j],
+    se_drrr = sqrt(var_drrr),
+    z_value = drrr / se_drrr,
+    p_value = 2 * (1 - pnorm(abs(z_value))),
+    ratio_estimates = exp(drrr),
+    lower_bound = exp(drrr - qnorm(0.975) * se_drrr),
+    upper_bound = exp(drrr + qnorm(0.975) * se_drrr)
+  ) %>% 
+  dplyr::mutate(i= dplyr::case_when(i==1~plan_names[1], i==2~plan_names[2], i==3~plan_names[3], i==4~plan_names[4], i==5~plan_names[5]), j= dplyr::case_when(j==1~plan_names[1], j==2~plan_names[2], j==3~plan_names[3], j==4~plan_names[4], j==5~plan_names[5]))
+
+# Imprime los resultados
+#el 5 tiene el mayor efecto en omparación con el resto
+#
+bind_rows(cbind.data.frame(model= "No time-varying coefficients, no weight",results), 
+                 cbind.data.frame(model= "No time-varying coefficients, lag=0",results2), 
+                 cbind.data.frame(model= "No time-varying coefficients, lag=1",results3)
+                 ) %>% 
+  dplyr::mutate(across(c("drrr","var_drrr", "se_drrr", "z_value", "ratio_estimates", "lower_bound", "upper_bound"),~sprintf("%1.2f",.))) %>% 
+  dplyr::mutate(across(c("p_value"),~sprintf("%1.4f",.))) %>% 
+  dplyr::mutate(`rrr (95% IC)`= paste0(ratio_estimates, " (", lower_bound, ", ", upper_bound,")")) %>% 
+  dplyr::select(-any_of(c("drrr", "var_drrr", "se_drrr", "z_value", "ratio_estimates", "lower_bound", "upper_bound"))) %>% 
+  {
+  #copiar_nombres2()
+    write.table(., file = paste0(folder_path,"rr_contrasts_240625.csv"), dec=",", sep="\t")
+    knitr::kable(., size=10, format="html", caption="GEE Models, Heterogeneity & contrasts by setting") %>% 
+     kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
+     kableExtra::scroll_box(width = "100%", height = "375px")  
+  }
+```
+
+
 
 # Session info
 
@@ -3164,10 +3443,12 @@ dplyr::select(
   tibble::as_tibble(sesion_info$packages),
   c(package, loadedversion, source)
 ) %>% 
- kable(caption = "R packages", format = "markdown",
+ knitr::kable(caption = "R packages", format = "html",
       col.names = c("Row number", "Package", "Version"),
     row.names = FALSE,
-      align = c("c", "l", "r"))
+      align = c("c", "l", "r")) %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
+  kableExtra::scroll_box(width = "100%", height = "375px")  
 ```
 
 
@@ -3175,10 +3456,12 @@ dplyr::select(
 #| class-output: center-table
 
 reticulate::py_list_packages()%>% 
- kable(caption = "Python packages", format = "markdown",
+ knitr::kable(caption = "Python packages", format = "html",
       col.names = c("Package", "Version", "Requirement"),
     row.names = FALSE,
-      align = c("c", "l", "r", "r"))
+      align = c("c", "l", "r", "r"))%>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
+  kableExtra::scroll_box(width = "100%", height = "375px")  
 ```
 
 

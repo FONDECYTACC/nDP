@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['automatic survival.py', 'H:\\Mi unidad\\PERSONAL ANDRES\\UCH_salud_publica\\asignaturas\\un_inv_II\\un_inv_II\\002_casos_ppoo_minsal_rsh_al_menos.py', 'prueba_cox.py', 'H:\\Mi unidad\\PERSONAL ANDRES\\UCH_salud_publica\\asignaturas\\un_inv_II\\un_inv_II\\004_trees_para_area.py', 'C:\\Users\\andre\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\sklearn\\base.py']
+recent_files = ['automatic survival.py', 'H:\\Mi unidad\\PERSONAL ANDRES\\UCH_salud_publica\\asignaturas\\un_inv_II\\un_inv_II\\002_casos_ppoo_minsal_rsh_al_menos.py', 'prueba_cox.py', 'H:\\Mi unidad\\PERSONAL ANDRES\\UCH_salud_publica\\asignaturas\\un_inv_II\\un_inv_II\\004_trees_para_area.py', 'C:\\Users\\andre\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\sklearn\\base.py', 'C:\\Users\\andre\\Desktop\\traductor.py']
 
 [main]
 version = 0.2.0

@@ -1,5 +1,5 @@
-/*-- scss:rules --*/
-      
+/* custom-styles.css */
+
 .showopt {
     background-color: #004c93;
     color: #FFFFFF;
@@ -34,7 +34,6 @@ pre.plot {
     margin-right: auto;
 }
 
-/* Applies to outputs that are not code other than R */
 pre {
     overflow-x: auto !important;
 }
@@ -44,12 +43,12 @@ pre code {
     white-space: pre !important;
 }
 
-.sourceCode { /* Important gives precedence */
+.sourceCode {
     font-size: 10px !important;
     line-height: 50% !important;
 }
 
-body { /* Normal */
+body {
     text-align: justify;
 }
 
@@ -88,8 +87,8 @@ div.red {
     text-align: justify;
 }
 
-.pandoc-table { /* Should add !important; but it seems no necessary */
-    margin-left: auto; /* To center */
+.pandoc-table {
+    margin-left: auto;
     margin-right: auto;
     border-collapse: collapse;
     table-layout: auto;
@@ -101,7 +100,7 @@ div.red {
     width: 450px;
 }
 
-.pandoc-table th { /* header */
+.pandoc-table th {
     text-align: center !important;
     font-size: 10px;
     padding: 0px;
@@ -127,14 +126,6 @@ div.red {
     overflow-x: scroll;
 }
 
-center-table {
-    text-align: left !important;
-    font-size: 9px;
-    padding: 0px;
-    overflow-y: scroll;
-    height: 400px;
-    overflow-x: scroll;
-}
 .controlly {
     overflow-y: scroll;
     height: 350px;
