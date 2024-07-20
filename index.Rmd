@@ -7,7 +7,7 @@ author:
   - first_name: "Álvaro"
     last_name: "Castillo-Carniglia"
     url: https://github.com/FONDECYTACC
-    affiliation: Society and Health Research Center, Universidad Mayor,Santiago, Chile; Department of Epidemiology, Columbia University Mailman School of Public Health, New York, United States; Department of Population Health and Center for Opioid Epidemiology and Policy, New York University Grossman School of Medicine, New York, United States; PI, Millennium Nucleus nDP.
+    affiliation: Associate Professor, Department of Public Health, Facultad de Medicina y Ciencia, Universidad San Sebastian, Chile; Department of Epidemiology, Columbia University Mailman School of Public Health, New York, United States; Department of Population Health and Center for Opioid Epidemiology and Policy, New York University Grossman School of Medicine, New York, United States; PI, Millennium Nucleus nDP.
     affiliation_url: 
     email: alvacasti@gmail.com
     orcid_id: 0000-0002-3016-890X
@@ -27,8 +27,8 @@ author:
     orcid_id: 0000-0002-9607-7541
   - name: Ruiz-Tagle Maturana, J.A. 
     affiliation: |
-     Teacher at Duoc UC Professional Institute Foundation, Santiago, Chile; Young Researcher, Millennium Nucleus nDP; PhD Program in Public Policy, Universidad Mayor, Santiago, Chile
-    orcid_id: 0000-0002-5166-9121    
+     Teacher at Duoc UC Professional Institute Foundation, Santiago, Chile; Young Researcher, Millennium Nucleus nDP; PhD in Public Policy, Universidad Mayor, Chile
+    orcid_id: 0000-0002-4866-5701   
 description: |
  A small part of the research done and available in https://www.nucleondp.cl/ 
 base_url: https://beta.rstudioconnect.com/content/3776/

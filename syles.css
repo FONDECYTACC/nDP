@@ -1,0 +1,59 @@
+  .remark-slide-scaler { overflow-y: auto; }
+  .gray { color: #aaaaaa; }
+  .red { color: #A4222B; }
+  .darkgreen { color: #45503B; }
+  .darkred { color: #591F0A; }
+  .small { font-size: 90%; }
+  .pull_c { float: center; width: 30%; height: 50%; padding-left: 40%; }
+  .pull_c_title { height: 90%; }
+  .pull_l_70 { float: left; width: 72%; font-size: 90%; }
+  .pull_r_30 { float: right; width: 23%; font-size: 90%; }
+  .pull_left { float: left; width: 47%; height: 100%; padding-right: 2%; }
+  .pull_right { float: right; width: 47%; height: 100%; padding-left: 2%; }
+  .small_left { float: left; width: 47%; height: 50%; padding-right: 2%; }
+  .small_right { float: right; width: 47%; height: 50%; padding-left: 2%; }
+  .left_code { float: left; width: 47%; height: 100%; padding-right: 2%; font: Roboto; }
+  .code_out { float: right; width: 47%; height: 100%; padding-left: 2%; font: Roboto; }
+  .text_180 { font-size: 180%; }
+  .text_170 { font-size: 170%; }
+  .text_160 { font-size: 160%; }
+  .text_150 { font-size: 150%; }
+  .text_140 { font-size: 140%; }
+  .text_130 { font-size: 130%; }
+  .text_120 { font-size: 120%; }
+  .text_110 { font-size: 110%; }
+  .text_100 { font-size: 100%; }
+  .code_10 { font-size: 60%; overflow-y: scroll !important; overflow-x: scroll !important; max-height: 50vh !important; line-height: 0.75em; }
+  .code_10_pre { font-size: 60%; overflow-y: scroll !important; overflow-x: scroll !important; max-height: 15vh !important; line-height: 0.75em; min-height: 0.5em; }
+  .code_15 { font-size: 15%; overflow-y: scroll !important; overflow-x: scroll !important; max-height: 10vh !important; }
+  .text_90 { font-size: 90%; }
+  .text_80 { font-size: 80%; }
+  .text_70 { font-size: 70%; }
+  .text_65 { font-size: 65%; }
+  .text_60 { font-size: 60%; }
+  .text_50 { font-size: 50%; }
+  .text_40 { font-size: 40%; }
+  .text_30 { font-size: 30%; }
+  .text_20 { font-size: 20%; }
+  .line_space_15 { line-height: 1.5em; }
+  .line_space_13 { line-height: 1.3em; }
+  .line_space_11 { line-height: 1.1em; }
+  .line_space_09 { line-height: 0.9em; }
+  .line_space_07 { line-height: 0.7em; }
+  .line_space_05 { line-height: 0.5em; }
+  .largest { font-size: 2.488em; }
+  .larger { font-size: 2.074em; }
+  .large { font-size: 1.44em; }
+  .smaller { font-size: 0.694em; }
+  .smallest { font-size: 0.579em; }
+  .limity150 { max-height: 150px; overflow-y: auto; }
+  .tiny_text { font-size: 70%; }
+  .large_text { font-size: 150%; }
+  .slide_blue { background-color: #FEDA3F; color: #3C3C3B; }
+  .bottom_center { margin: 0; position: absolute; top: 90%; left: 50%; transform: translate(-50%, -50%); }
+  .down_center { margin: 0; position: absolute; top: 80%; left: 50%; transform: translate(-50%, -50%); }
+  .center_image { margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+  .down_left { margin: 0; position: absolute; top: 80%; left: 22%; transform: translate(-50%, -50%); }
+  .down_right { margin: 0; position: absolute; top: 80%; left: 72%; transform: translate(-50%, -50%); }
+  slides > slide { overflow-x: auto !important; overflow-y: auto !important; }
+  .superbigimage { white-space: nowrap; overflow-y: scroll; }
