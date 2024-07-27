@@ -1,6 +1,17 @@
 load("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/an_grant_23_24_4.RData")
 library(tidyverse)
 
+
+data_mine_miss_proc2 %>% 
+  dplyr::group_by(hash_key)  %>%
+  dplyr::mutate(num_tr = row_number(), tot_tr= max(num_tr))%>% 
+  summarise(n=max(num_tr)) %>% 
+  pull(n) %>% 
+  {
+    print(round(mean(.),1))
+    print(round(sd(.),1))
+  }
+
 #la diferencia en meses
 data_mine_miss_restr_proc2$time_diff<-ifelse(is.na(data_mine_miss_restr_proc2$time-data_mine_miss_restr_proc2$lag_time), 0, data_mine_miss_restr_proc2$time-data_mine_miss_restr_proc2$lag_time)
 
@@ -59,18 +70,67 @@ data_mine_miss_proc2 %>%
 # 
 # 1. IRRs -----------------------------------------------------------------
 
+data_mine_miss_proc2 %>% 
+  dplyr::group_by(hash_key)  %>%
+  dplyr::mutate(num_tr = row_number(), tot_tr= max(num_tr))%>% 
+  dplyr::ungroup() %>% 
+  dplyr::filter(tot_tr==1) %>% 
+  dplyr::group_by(policonsumo2) %>% 
+  summarise(prev_noncomp= sum(tr_outcome==1)/n(), n=n()) %>% 
+  dplyr::mutate(prev=n/sum(n))
+#   policonsumo2 prev_noncomp     n  prev
+#          <dbl>        <dbl> <int> <dbl>
+# 1            0        0.635 16459 0.279
+# 2            1        0.744 42628 0.721
+
+#when examining patients with multiple treatment episodes, xx reported PSU in at least one treatment episode
+data_mine_miss_proc2 %>% 
+  dplyr::group_by(hash_key)  %>%
+  dplyr::mutate(num_tr = row_number(), tot_tr= max(num_tr))%>% 
+  dplyr::ungroup() %>% 
+  dplyr::filter(tot_tr>1) %>% 
+  dplyr::group_by(hash_key) %>% 
+  summarise(psu= sum(policonsumo2==1)) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::summarise(prev_psu=sum(psu>0)/n())
+  
+
+#Specifically, 71% of patients with only one treatment did not complete it, 
+##whereas 79%, 81%, and 85% of the treatment episodes of patients with two, 
+###three, or four treatments and more, respectively, had a non-completion status. 
+data_mine_miss_proc2 %>% 
+  dplyr::group_by(hash_key)  %>%
+  dplyr::mutate(num_tr = row_number(), tot_tr= max(num_tr))%>% 
+  dplyr::ungroup() %>% 
+  dplyr::filter(num_tr==1) %>% 
+  dplyr::group_by(tr_outcome) %>% 
+  summarise(n=n()) %>% 
+  dplyr::mutate(prev=n/sum(n))
+
 
 data_mine_miss_proc2 %>% 
   dplyr::group_by(hash_key)  %>%
-  dplyr::mutate(num_tr = row_number())%>% 
+  dplyr::mutate(num_tr = row_number(), tot_tr= max(num_tr))%>% 
+  dplyr::ungroup() %>% 
+  dplyr::filter(num_tr==2) %>% 
+  dplyr::group_by(tr_outcome) %>% 
+  summarise(n=n()) %>% 
+  dplyr::mutate(prev=n/sum(n))
+
+
+data_mine_miss_proc2 %>% 
+  dplyr::group_by(hash_key)  %>%
+  dplyr::mutate(num_tr = row_number(), tot_tr= max(num_tr))%>% 
   dplyr::ungroup() %>% 
   dplyr::filter(num_tr==1) %>% 
   dplyr::group_by(policonsumo2) %>% 
-  summarise(prev_noncomp= sum(tr_outcome==1)/n(), n=n())
+  summarise(prev_noncomp= sum(tr_outcome==1)/n(), n=n()) %>% 
+  dplyr::mutate(prev=n/sum(n))
 #   policonsumo2 prev_noncomp     n
 #          <dbl>        <dbl> <int>
 # 1            0        0.652 18842
 # 2            1        0.753 53562
+# 
 
 data_mine_miss_proc2 %>% 
   dplyr::group_by(hash_key)  %>%
@@ -78,7 +138,8 @@ data_mine_miss_proc2 %>%
   dplyr::ungroup() %>% 
   dplyr::filter(num_tr==2) %>% 
   dplyr::group_by(policonsumo2) %>% 
-  summarise(prev_noncomp= sum(tr_outcome==1)/n(), n=n())
+  summarise(prev_noncomp= sum(tr_outcome==1)/n(), n=n()) %>% 
+  dplyr::mutate(prev=n/sum(n))
 #   policonsumo2 prev_noncomp     n
 #          <dbl>        <dbl> <int>
 # 1            0        0.676  3059
@@ -90,7 +151,8 @@ data_mine_miss_proc2 %>%
   dplyr::ungroup() %>% 
   dplyr::filter(num_tr==3) %>% 
   dplyr::group_by(policonsumo2) %>% 
-  summarise(prev_noncomp= sum(tr_outcome==1)/n(), n=n())
+  summarise(prev_noncomp= sum(tr_outcome==1)/n(), n=n()) %>% 
+  dplyr::mutate(prev=n/sum(n))
 #   policonsumo2 prev_noncomp     n
 #          <dbl>        <dbl> <int>
 # 1            0        0.714   682
@@ -102,7 +164,8 @@ data_mine_miss_proc2 %>%
   dplyr::ungroup() %>% 
   dplyr::filter(num_tr==4) %>% 
   dplyr::group_by(policonsumo2) %>% 
-  summarise(prev_noncomp= sum(tr_outcome==1)/n(), n=n())
+  summarise(prev_noncomp= sum(tr_outcome==1)/n(), n=n()) %>% 
+  dplyr::mutate(prev=n/sum(n))
 #   policonsumo2 prev_noncomp     n
 #          <dbl>        <dbl> <int>
 # 1            0        0.695   174
@@ -470,11 +533,11 @@ for (i in seq_along(plan_names)) {
   assign(paste0("emmeans_response_int_", model_name), emmeans_response, envir = .GlobalEnv)
 }
 
-nocor_nowgt_int_tab[1]
-nocor_nowgt_int_tab[2]
-nocor_nowgt_int_tab[3]
-nocor_nowgt_int_tab[4]
-nocor_nowgt_int_tab[5]
+nocor_nowgt_int_tab[[1]] %>% dplyr::mutate(Var0=ifelse(grepl("no PSU",Var1),1,0)) %>% dplyr::group_by(Var0, Var2) %>% dplyr::summarise(n= sum(Freq))
+nocor_nowgt_int_tab[[2]] %>% dplyr::mutate(Var0=ifelse(grepl("no PSU",Var1),1,0)) %>% dplyr::group_by(Var0, Var2) %>% dplyr::summarise(n= sum(Freq))
+nocor_nowgt_int_tab[[3]] %>% dplyr::mutate(Var0=ifelse(grepl("no PSU",Var1),1,0)) %>% dplyr::group_by(Var0, Var2) %>% dplyr::summarise(n= sum(Freq))
+nocor_nowgt_int_tab[[4]] %>% dplyr::mutate(Var0=ifelse(grepl("no PSU",Var1),1,0)) %>% dplyr::group_by(Var0, Var2) %>% dplyr::summarise(n= sum(Freq))
+nocor_nowgt_int_tab[[5]] %>% dplyr::mutate(Var0=ifelse(grepl("no PSU",Var1),1,0)) %>% dplyr::group_by(Var0, Var2) %>% dplyr::summarise(n= sum(Freq))
 # > nocor_nowgt_int_tab[1]
 # $tab_basic_ambulatory
 # Var1 Var2 Freq
@@ -525,11 +588,15 @@ nocor_nowgt_int_tab[5]
 # 5 1.only PSU    1 1147
 # 6     2.both    1  383
 # 
+# 
+# 
+
+# 
  inviisble("no hay tan pocos casos en un estrato, salvo en WO intensive ambulatory")
 
 #[1] "basic ambulatory"        "GP intensive ambulatory" "GP residential"          "WO intensive ambulatory" "WO residential"          
 
-invisible("En el basic ambulatory, GP intensive-amb y GP residential, el sig es el ambos (consumo alcohol)")
+invisible("En el basic ambulatory [no era en el main], GP intensive-amb [sí era] y GP residential [no era], el sig es el ambos (consumo alcohol)")
   
 broom::tidy(nocorr_nowgt_int_list[[1]], exponentiate=T, conf.int=T)[1:3,] 
 #    term                         estimate std.error statistic     p.value conf.low conf.high

@@ -14,6 +14,14 @@ format:
     #   - custom-scripts.js
 ---
 
+```{css}
+#| echo: false
+
+body {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+```
 # Setup
 
 ```{r}
@@ -38,6 +46,8 @@ load(paste0(folder_path,"an_grant_23_24_3.RData"))
 #| include: true
 #| warning: false
 
+system("fc-cache -f -v")
+
 pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando paquetes
 
 
@@ -58,7 +68,16 @@ if(!require(rms)){install.packages("rms");library(rms)}
 if(!require(meta)){install.packages("meta");library(meta)}
 try(if(!require(dmetar)){install.packages("dmetar");library(dmetar)})
 if(!require(metafor)){install.packages("metafor");library(metafor)}
+try(if(!require(extrafont)){install.packages("extrafont");library(extrafont)})
+try(if(!require(showtext)){install.packages("showtext");library(showtext)})
 
+try(extrafont::font_import(pattern = "Times New Roman", prompt = FALSE))
+extrafont::loadfonts(device="win")
+# Agregar la ruta a la fuente "Times New Roman"
+font_add("Times New Roman", "C:/Windows/Fonts/times.ttf")
+
+# Habilitar showtext para gráficos
+showtext::showtext_auto()
 
 #https://gist.github.com/avallecam/56af06f46e5544c3af0f46344df20989 
 #https://stackoverflow.com/questions/49089476/any-updates-to-model-negative-binomial-distribution-data-with-gee-in-r
@@ -3128,6 +3147,292 @@ rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_a
 ```
 
 
+# Stratifying by presence of alcohol among poly-substance use
+
+```{r}
+
+data_mine_miss_restr_proc2exp2<-
+  data_mine_miss_restr_proc2 %>% 
+  left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","n_off_acq","n_off_vio","n_off_sud","n_off_oth", "n_prev_off")], by="hash_key") %>%
+  tidylog::left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","fech_ing_num","otras_sus1_mod","otras_sus2_mod","otras_sus3_mod")], by=c("hash_key"="hash_key","fech_ing_num"="fech_ing_num")) %>% 
+  {if (nrow(.) > nrow(data_mine_miss_restr_proc2)) {message("left join added rows"); .} else .} %>% 
+  dplyr::mutate(n_prev_off_bin= ifelse(n_prev_off>0,1,0)) %>% 
+  dplyr::mutate(
+    susinidumrec_coc = ifelse(sus_ini_mod_mvv == "Cocaine hydrochloride", 1, 0),
+    susinidumrec_pbc = ifelse(sus_ini_mod_mvv == "Cocaine paste", 1, 0),
+    susinidumrec_mar = ifelse(sus_ini_mod_mvv == "Marijuana", 1, 0),
+    susinidumrec_otr = ifelse(sus_ini_mod_mvv == "Other", 1, 0), #sus_principal_mod
+    susprindumrec_coc = ifelse(sus_principal_mod == "Cocaine hydrochloride", 1, 0),
+    susprindumrec_pbc = ifelse(sus_principal_mod == "Cocaine paste", 1, 0),
+    susprindumrec_mar = ifelse(sus_principal_mod == "Marijuana", 1, 0),
+    susprindumrec_otr = ifelse(sus_principal_mod == "Other", 1, 0) # "susprindum_coc", "susprindum_pbc", "susprindum_mar", "susprindum_oh
+  ) %>% 
+  rowwise() %>%
+  #Condition
+  dplyr::mutate(oh_otras_sus = if_else("Alcohol" %in% c(otras_sus1_mod, otras_sus2_mod, otras_sus3_mod),1,0)) %>%
+  dplyr::mutate(policonsumo2_rec= dplyr::case_when(policonsumo2==1 & oh_otras_sus==1~"2.both",policonsumo2==1 & oh_otras_sus==0~"1.only PSU",T~"0.no PSU")) %>% 
+  ungroup()
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#
+
+nocorr_nowgt_int_list<-list()
+nocorr_nowgt_int_probs_list<-list()
+nocor_nowgt_int_tab <-list()
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2exp2, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- geeglm(tr_outcome ~ policonsumo2_rec +
+                   comp_bpsc_y3_severe+
+                   edad_al_ing_1 + 
+                   ano_nac_corr + 
+                   susinidumrec_otr +
+                   susinidumrec_coc +
+                   susinidumrec_pbc +
+                   susinidumrec_mar +
+                   psycom_dum_study +
+                   psycom_dum_with +
+                   freq_cons_dum_5day +
+                   cond_oc_dum_2inact +
+                   cond_oc_dum_3unemp +
+                   susprindumrec_coc +
+                   susprindumrec_pbc +
+                   susprindumrec_mar +
+                   susprindumrec_otr, #origen_ingreso_mod fis_comorbidity_icd_10 dg_trs_cons_sus_or
+                 id = id, 
+                 data = current_data,
+                 family = poisson, 
+                 corstr = "independence")
+
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  
+  nocor_nowgt_int_tab[[paste0("tab_", model_name)]] <- table(current_data$policonsumo2_rec, current_data$tr_outcome) %>% data.frame()
+  nocorr_nowgt_int_list[[paste("model", model_name, sep = "_")]] <- model
+  emmeans_response <- emmeans(model, ~policonsumo2_rec,  rg.limit=2e5, type = "response")
+  nocorr_nowgt_int_probs_list[[paste0("emmeans_response_int_", model_name)]] <- emmeans_response
+  assign(paste0("emmeans_response_int_", model_name), emmeans_response, envir = .GlobalEnv)
+}
+
+nocor_nowgt_int_tab[1]
+nocor_nowgt_int_tab[2]
+nocor_nowgt_int_tab[3]
+nocor_nowgt_int_tab[4]
+nocor_nowgt_int_tab[5]
+
+# > nocor_nowgt_int_tab[1]
+# $tab_basic_ambulatory
+# Var1 Var2 Freq
+# 1   0.no PSU    0  629
+# 2 1.only PSU    0 1210
+# 3     2.both    0  286
+# 4   0.no PSU    1 1827
+# 5 1.only PSU    1 4450
+# 6     2.both    1 1591
+# 
+# > nocor_nowgt_int_tab[2]
+# $tab_GP_intensive_ambulatory
+# Var1 Var2 Freq
+# 1   0.no PSU    0  624
+# 2 1.only PSU    0 1615
+# 3     2.both    0  401
+# 4   0.no PSU    1 1573
+# 5 1.only PSU    1 5226
+# 6     2.both    1 2058
+# 
+# > nocor_nowgt_int_tab[3]
+# $tab_GP_residential
+# Var1 Var2 Freq
+# 1   0.no PSU    0  261
+# 2 1.only PSU    0  905
+# 3     2.both    0  400
+# 4   0.no PSU    1  572
+# 5 1.only PSU    1 2360
+# 6     2.both    1  706
+# 
+# > nocor_nowgt_int_tab[4]
+# $tab_WO_intensive_ambulatory
+# Var1 Var2 Freq
+# 1   0.no PSU    0  110
+# 2 1.only PSU    0  253
+# 3     2.both    0   61
+# 4   0.no PSU    1  292
+# 5 1.only PSU    1  726
+# 6     2.both    1  318
+# 
+# > nocor_nowgt_int_tab[5]
+# $tab_WO_residential
+# Var1 Var2 Freq
+# 1   0.no PSU    0  172
+# 2 1.only PSU    0  413
+# 3     2.both    0  130
+# 4   0.no PSU    1  289
+# 5 1.only PSU    1 1147
+# 6     2.both    1  383
+# 
+invisible("no hay tan pocos casos en un estrato, salvo en WO intensive ambulatory")
+
+
+
+invisible("En el basic ambulatory, GP intensive-amb y GP residential, el sig es el ambos (consumo alcohol)")
+  
+#broom::tidy(nocorr_nowgt_int_list[[1]], exponentiate=T, conf.int=T)[1:3,] 
+#    term                         estimate std.error statistic     p.value conf.low conf.high
+#   <chr>                           <dbl>     <dbl>     <dbl>       <dbl>    <dbl>     <dbl>
+# 1 (Intercept)                0.00000870    4.83       5.81  0.0159      6.68e-10     0.113
+# 2 policonsumo2_rec1.only PSU 1.01          0.0143     0.488 0.485       9.82e- 1     1.04 
+# 3 policonsumo2_rec2.both     1.08          0.0161    24.8   0.000000622 1.05e+ 0     1.12 
+
+#broom::tidy(nocorr_nowgt_int_list[[2]], exponentiate=T, conf.int=T)[1:3,]
+#   term                         estimate std.error statistic       p.value conf.low conf.high
+#   <chr>                           <dbl>     <dbl>     <dbl>         <dbl>    <dbl>     <dbl>
+# 1 (Intercept)                0.00000655    4.81        6.15 0.0132        5.23e-10    0.0822
+# 2 policonsumo2_rec1.only PSU 1.02          0.0153      1.98 0.160         9.92e- 1    1.05  
+# 3 policonsumo2_rec2.both     1.10          0.0162     35.1  0.00000000312 1.07e+ 0    1.14  
+
+invisible("Aunque GP residential es protector el policonsumo en both")
+#broom::tidy(nocorr_nowgt_int_list[[3]], exponentiate=T, conf.int=T)[1:3,]
+#   term                       estimate std.error statistic  p.value     conf.low    conf.high
+#   <chr>                         <dbl>     <dbl>     <dbl>    <dbl>        <dbl>        <dbl>
+# 1 (Intercept)                   1.14     9.06    0.000199 0.989    0.0000000221 58484383.   
+# 2 policonsumo2_rec1.only PSU    0.989    0.0275  0.175    0.676    0.937               1.04 
+# 3 policonsumo2_rec2.both        0.885    0.0332 13.5      0.000243 0.830               0.945
+
+
+invisible("En WO intensive ambulatory, no tira ninguno")
+
+#broom::tidy(nocorr_nowgt_int_list[[4]], exponentiate=T, conf.int=T)[1:3,]
+# # A tibble: 3 x 7
+#   term                       estimate std.error statistic p.value conf.low  conf.high
+#   <chr>                         <dbl>     <dbl>     <dbl>   <dbl>    <dbl>      <dbl>
+# 1 (Intercept)                0.000318   12.0        0.452  0.501  2.02e-14 4991312.  
+# 2 policonsumo2_rec1.only PSU 0.956       0.0357     1.62   0.203  8.91e- 1       1.02
+# 3 policonsumo2_rec2.both     1.07        0.0376     3.13   0.0767 9.93e- 1       1.15
+# 
+invisible("En WO residential, ambos mueven la aguja a mayor riesgo")
+# 
+#broom::tidy(nocorr_nowgt_int_list[[5]], exponentiate=T, conf.int=T)[1:3,]
+#   term                        estimate std.error statistic  p.value  conf.low conf.high
+#   <chr>                          <dbl>     <dbl>     <dbl>    <dbl>     <dbl>     <dbl>
+# 1 (Intercept)                249351.     11.6         1.15 0.284    0.0000331   1.88e15
+# 2 policonsumo2_rec1.only PSU      1.14    0.0388     11.3  0.000775 1.06        1.23e 0
+# 3 policonsumo2_rec2.both          1.14    0.0439      8.83 0.00297  1.05        1.24e 0
+# 
+# 
+bind_rows(
+    lapply(nocorr_nowgt_int_list[1:5], function(model) {
+        broom::tidy(model, exponentiate = TRUE, conf.int = TRUE) %>%
+            dplyr::select(term, estimate, conf.low, conf.high, p.value) %>%
+        
+            slice(2:3)
+    }),
+    .id = "model"
+) %>% 
+  dplyr::mutate(term= gsub("policonsumo2_","", term)) %>% 
+  dplyr::mutate(across(c("estimate","conf.low", "conf.high"),~sprintf("%1.2f",.))) %>% 
+  dplyr::mutate(RR= paste0(estimate, " (", conf.low,"-", conf.high,")")) %>% 
+  dplyr::select(-estimate, -conf.low, -conf.high) %>% 
+  dplyr::select(model, term, RR, p.value) %>% 
+  dplyr::mutate(across(c("p.value"),~sprintf("%1.4f",.))) %>%
+  {
+  knitr::kable(., "markdown", caption= "Relative risk of treatment non-completion status by reported polysubstance use, whether ")
+  }
+```
+
+```{r "fig-prev-psu-tr-noncomp", fig.align='center', paged.print=TRUE, fig.cap="Percentage distribution of treatment outcomes by treatment setting and polysubstance use status", results='hold'}
+#| fig-width: 7
+#| fig-height: 8.4
+#| fig.showtext: true
+
+# bind_rows(
+#   lapply(1:5, function(model) {
+#     nocor_nowgt_int_tab[[model]]%>% dplyr::mutate(Var0=ifelse(grepl("no PSU",Var1),1,0)) %>% dplyr::group_by(Var0, Var2) %>% dplyr::summarise(n= sum(Freq))
+#   }),
+#   .id = "model"
+# ) %>% 
+#   group_by(model) %>% 
+#   summarise(n=sum(n))
+
+bind_rows(
+  lapply(1:5, function(model) {
+    nocor_nowgt_int_tab[[model]]%>% dplyr::mutate(Var0=ifelse(grepl("no PSU",Var1),1,0)) %>% dplyr::group_by(Var0, Var2) %>% dplyr::summarise(n= sum(Freq))
+  }),
+  .id = "model"
+) %>% 
+  dplyr::mutate(Var0= ifelse(Var0==1,"PSU", "no PSU")) %>% 
+  group_by(model, Var0) %>%
+  mutate(percentage = n / sum(n)) %>% 
+  dplyr::ungroup() %>% 
+  ggplot(aes(x = factor(Var0), y = percentage, fill = factor(Var2))) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~ model, ncol = 1, labeller = labeller(model = c(
+    "1" = "Basic ambulatory (n= 9,993)",
+    "2" = "General-population, intensive ambulatory (n= 11,497)",
+    "3" = "General-population, residential (n= 5,204)",
+    "4" = "Women-only,intensive ambulatory (n= 1,760)",
+    "5" = "Women-only, residential (n= 2,534)"
+  )), strip.position = "top") +
+  scale_fill_manual(values = c("grey60", "grey20"), label=c("Treatment completion", "Treatment non-completion")) +
+  labs(x = "Polysubstance use (PSU)", y = "Percentage", fill = "Treatment outcome") +
+  scale_y_continuous(labels = scales::percent) +
+  geom_text(aes(label = scales::percent(percentage, accuracy = 0.1)), 
+            position = position_stack(vjust = 0.5), size = 3.5, color = "white") +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(size = 12, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    text = element_text(family = "Times New Roman"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    strip.text.x = element_text(angle = 0, hjust = 0.5, size = 12, face = "bold"),
+    strip.background = element_blank(),
+    axis.line = element_line(colour = "black"),
+    legend.position = "bottom"
+  )
+ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/_figs/barplot2.png", height=12*.7, width=10*.7, dpi=500)
+ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/_figs/barplot2.jpg", height=12*.7, width=10*.7, dpi=500)
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#
+nocorr_nowgt_int2_list<-
+bind_rows(
+  lapply(nocorr_nowgt_int_list[1:5], function(model) {
+    broom::tidy(model, exponentiate = TRUE, conf.int = TRUE) %>%
+      dplyr::select(term, estimate, std.error, conf.low, conf.high, p.value) %>%
+      dplyr::mutate(log_rr= log(estimate), log_lcl= log(conf.low), log_ucl= log(conf.high), variance= ((log_ucl-log_rr)/qnorm(0.975))^2)%>% 
+      dplyr::slice(2:3)
+  }),
+  .id = "model"
+)
+
+log_rr_int<- nocorr_nowgt_int2_list$log_rr  
+variances_int<- nocorr_nowgt_int2_list$variance  
+
+
+results_int <- expand.grid(i=1:5, j=1:5) %>%
+  filter(i < j) %>%
+  mutate(
+    drrr = log_rr_int[i] - log_rr_int[j],
+    var_drrr = variances_int[i] + variances_int[j],
+    se_drrr = sqrt(var_drrr),
+    z_value = drrr / se_drrr,
+    p_value = 2 * (1 - pnorm(abs(z_value))),
+    ratio_estimates = exp(drrr),
+    lower_bound = exp(drrr - qnorm(0.975) * se_drrr),
+    upper_bound = exp(drrr + qnorm(0.975) * se_drrr)
+  ) %>% 
+  dplyr::mutate(i= dplyr::case_when(i==1~plan_names[1], i==2~plan_names[2], 
+                i==3~plan_names[3], i==4~plan_names[4], i==5~plan_names[5]), 
+                j= dplyr::case_when(j==1~plan_names[1], j==2~plan_names[2], 
+                j==3~plan_names[3], j==4~plan_names[4], j==5~plan_names[5]))
+```
+
 
 # Marginal probabilities
 
@@ -3186,6 +3491,7 @@ for (i in seq_along(df_marginal_plots$wgt)) {
 #| warning: true
 #| error: false
 #| eval: true
+#| fig.showtext: true
 
 plot(emmeans_response_no_corr_no_wgt)+ ggtitle("No corr, no weights")#+ geom_point(aes(x = percent, y = conc), data = pigs, pch = 2, color = "blue")
 plot(emmeans_response_no_corr_main)+ ggtitle("No corr, main weights")
@@ -3380,7 +3686,7 @@ results2 <- expand.grid(i=1:5, j=1:5) %>%
   filter(i < j) %>%
   mutate(
     drrr = log_rrr2[i] - log_rrr2[j],
-    var_drrr = variances[i] + variances[j],
+    var_drrr = variances2[i] + variances2[j],
     se_drrr = sqrt(var_drrr),
     z_value = drrr / se_drrr,
     p_value = 2 * (1 - pnorm(abs(z_value))),
@@ -3394,7 +3700,7 @@ results3 <- expand.grid(i=1:5, j=1:5) %>%
   filter(i < j) %>%
   mutate(
     drrr = log_rrr3[i] - log_rrr3[j],
-    var_drrr = variances[i] + variances[j],
+    var_drrr = variances3[i] + variances3[j],
     se_drrr = sqrt(var_drrr),
     z_value = drrr / se_drrr,
     p_value = 2 * (1 - pnorm(abs(z_value))),
