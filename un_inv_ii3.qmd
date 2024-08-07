@@ -3357,65 +3357,35 @@ bind_rows(
 # ) %>% 
 #   group_by(model) %>% 
 #   summarise(n=sum(n))
-data_barplot <- bind_rows(
+
+bind_rows(
   lapply(1:5, function(model) {
-    nocor_nowgt_int_tab[[model]] %>% 
-      dplyr::mutate(Var0 = ifelse(grepl("no PSU", Var1), "Single\nsubstance use", "Polysubstance\nuse")) %>% 
-      dplyr::group_by(Var0, Var2) %>% 
-      dplyr::summarise(n = sum(Freq))
+    nocor_nowgt_int_tab[[model]]%>% dplyr::mutate(Var0=ifelse(grepl("no PSU",Var1),1,0)) %>% dplyr::group_by(Var0, Var2) %>% dplyr::summarise(n= sum(Freq))
   }),
   .id = "model"
 ) %>% 
+  dplyr::mutate(Var0= ifelse(Var0==1,"PSU", "no PSU")) %>% 
   group_by(model, Var0) %>%
-  mutate(percentage = n / sum(n)) %>%
-  ungroup()
-
-# Filter data for treatment non-completion only
-data_non_completion <- data_barplot %>% filter(Var2 == "1")
-
-# Create labels for the total counts and percentages for each group
-labels <- data_barplot %>%
-  group_by(model, Var0) %>%
-  summarise(total = sum(n)) %>%
-  mutate(label = scales::percent(total / sum(total), accuracy = 0.1))
-
-# Calculate overall percentages for PSU and no PSU
-overall_percentages <- data_barplot %>%
-  group_by(model, Var0) %>%
-  summarise(total = sum(n)) %>%
-  mutate(overall_percentage = total / sum(total))
-
-# Create a separate data frame for the labels
-labels <- overall_percentages %>%
-  mutate(label = scales::percent(overall_percentage, accuracy = 1))
-
-data_barplot$Var0 <- factor(data_barplot$Var0, levels = c("Single\nsubstance use", "Polysubstance\nuse"))
-labels$Var0 <- factor(labels$Var0, levels = c("Single\nsubstance use", "Polysubstance\nuse"))
-
-# Generate the plot
-ggplot(data_barplot, aes(x = factor(Var0), y = n, fill = factor(Var2))) +
-  geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) +
-  #geom_bar(stat = "identity", position = "stack") +
+  mutate(percentage = n / sum(n)) %>% 
+  dplyr::ungroup() %>% 
+  ggplot(aes(x = factor(Var0), y = percentage, fill = factor(Var2))) +
+  geom_bar(stat = "identity", position = "stack") +
   facet_wrap(~ model, ncol = 1, labeller = labeller(model = c(
     "1" = "Basic ambulatory (n= 9,993)",
     "2" = "General-population, intensive ambulatory (n= 11,497)",
     "3" = "General-population, residential (n= 5,204)",
-    "4" = "Women-specific, intensive ambulatory (n= 1,760)",
-    "5" = "Women-specific, residential (n= 2,534)"
+    "4" = "Women-only,intensive ambulatory (n= 1,760)",
+    "5" = "Women-only, residential (n= 2,534)"
   )), strip.position = "top") +
-  scale_fill_manual(values = c("grey60", "grey20"), label=c("Treatment\ncompletion", "Treatment\nnon-completion")) +
-  labs(x = "Polysubstance use (PSU)", y = "Count", fill = "Treatment\noutcome") +
-  geom_label(data = data_non_completion, aes(label = scales::percent(percentage, accuracy = 0.1)), 
-             position = position_stack(vjust = 0.8, reverse = TRUE), size = 4, color = "white", fill = "black", label.size = 0.2, family = "Times New Roman") +
-   geom_text(data = labels, aes(x = Var0, y = 9e3, label = label, fill="1"), 
-             size = 4, color = "black", hjust = 0.5, vjust = -0.5, fontface = "bold.italic", family = "Times New Roman") +
-  ylim(0,1.1e4)+
-  theme_minimal(base_size = 14, base_family = "Times New Roman") +
+  scale_fill_manual(values = c("grey60", "grey20"), label=c("Treatment completion", "Treatment non-completion")) +
+  labs(x = "Polysubstance use (PSU)", y = "Percentage", fill = "Treatment outcome") +
+  scale_y_continuous(labels = scales::percent) +
+  geom_text(aes(label = scales::percent(percentage, accuracy = 0.1)), 
+            position = position_stack(vjust = 0.5), size = 3.5, color = "white") +
+  theme_minimal() +
   theme(
     strip.text = element_text(size = 12, face = "bold"),
-    axis.text.x = element_text(angle = 30, hjust = 1),
-    axis.title.x = element_blank(),
-    axis.text = element_text(size = 12, family = "Times New Roman"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
     text = element_text(family = "Times New Roman"),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -3425,8 +3395,8 @@ ggplot(data_barplot, aes(x = factor(Var0), y = n, fill = factor(Var2))) +
     axis.line = element_line(colour = "black"),
     legend.position = "bottom"
   )
-ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/_figs/barplot2.png", height=14*.7, width=10*.7, dpi=500)
-ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/_figs/barplot2.jpg", height=14*.7, width=10*.7, dpi=500)
+ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/_figs/barplot2.png", height=12*.7, width=10*.7, dpi=500)
+ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/_figs/barplot2.jpg", height=12*.7, width=10*.7, dpi=500)
 
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #
@@ -3767,7 +3737,7 @@ bind_rows(cbind.data.frame(model= "No time-varying coefficients, no weight",resu
 ```{r session-info, echo=T, error=T, message=TRUE, paged.print=TRUE,eval=T}
 message(paste0("R library: ", Sys.getenv("R_LIBS_USER")))
 message(paste0("Date: ",withr::with_locale(new = c('LC_TIME' = 'C'), code =Sys.time())))
-message(paste0("Editor context: ", path))
+message(paste0("Editor context: ", getwd()))
 ```
 
 
@@ -3804,7 +3774,6 @@ reticulate::py_list_packages()%>%
 # Output 
 
 ```{r}
-invisible("Adicionales en E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/para_pres_cum_mean.R")
 folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/"),
                       "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/",
                       "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
