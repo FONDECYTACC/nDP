@@ -32,7 +32,7 @@ body {
 rm(list = ls()) 
 folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/"),
                       "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/",
-                      "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
+                      "G:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
 load(paste0(folder_path,"an_grant_23_24_3.RData"))
 ```
 
@@ -48,6 +48,7 @@ load(paste0(folder_path,"an_grant_23_24_3.RData"))
 
 system("fc-cache -f -v")
 
+if(!require(pacman)){install.packages("pacman");library(pacman)}
 pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando paquetes
 
 
@@ -70,6 +71,11 @@ try(if(!require(dmetar)){install.packages("dmetar");library(dmetar)})
 if(!require(metafor)){install.packages("metafor");library(metafor)}
 try(if(!require(extrafont)){install.packages("extrafont");library(extrafont)})
 try(if(!require(showtext)){install.packages("showtext");library(showtext)})
+try(if(!require(mice)){install.packages("mice");library(mice)})
+try(if(!require(htmltools)){install.packages("htmltools");library(htmltools)})
+if(!require(chisq.posthoc.test)){devtools::install_github("ebbertd/chisq.posthoc.test")}
+if(!require(DescTools)){install.packages("DescTools")}
+if(!require(vcd)){install.packages("vcd")}
 
 try(extrafont::font_import(pattern = "Times New Roman", prompt = FALSE))
 extrafont::loadfonts(device="win")
@@ -285,6 +291,54 @@ counting_process_output<-
   }
 
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+tidy_coxph <- function(model, conf.level = 0.95) {
+  # Extract the coefficients (a named numeric vector)
+  coefs <- model$coefficients
+  
+  # Compute robust standard errors from the robust variance matrix
+  robust_se <- sqrt(diag(model$var))
+  
+  # Compute z statistics and two-sided p-values
+  z <- coefs / robust_se
+  p_value <- 2 * (1 - pnorm(abs(z)))
+  
+  # Compute the critical z value for the specified confidence level
+  z_crit <- qnorm(1 - (1 - conf.level) / 2)
+  
+  # Exponentiate coefficients to get hazard ratios
+  hazard_ratio <- exp(coefs)
+  
+  # Compute the lower and upper confidence intervals (exponentiated)
+  lower_ci <- exp(coefs - z_crit * robust_se)
+  upper_ci <- exp(coefs + z_crit * robust_se)
+  
+  # Build and return a tidy data frame
+  result <- data.frame(
+    term         = names(coefs),
+    coef         = coefs,
+    robust_se    = robust_se,
+    hazard_ratio = hazard_ratio,
+    lower_ci     = lower_ci,
+    upper_ci     = upper_ci,
+    z            = z,
+    p_value      = p_value,
+    stringsAsFactors = FALSE
+  )
+  
+  return(result)
+}
+
+format_hr_ci <- function(tidy_table, digits = 2) {
+  # Build a format string dynamically using the desired number of digits.
+  fmt <- paste0("%.", digits, "f (%.", digits, "f, %.", digits, "f)")
+  
+  # Create the new column using sprintf to format each row.
+  tidy_table$hr_ci <- with(tidy_table, sprintf(fmt, hazard_ratio, lower_ci, upper_ci))
+  
+  return(tidy_table)
+}
+
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 
 
@@ -294,6 +348,119 @@ if(.Platform$OS.type == "windows") withAutoprint({
   memory.limit()
 })
 memory.limit(size=56000)
+```
+```{r flwchrt}
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: false
+
+invisible("At the beginning is in wide format")
+invisible("At the beginning is in wide format")
+
+nrow(Base_fiscalia_v15f_grant_23_24_long)
+#[1] 109756
+length(unique(Base_fiscalia_v15f_grant_23_24_long$hash_key))
+#[1] 85048
+
+
+Base_fiscalia_v15f_grant_23_24_long |> 
+    dplyr::filter(motivodeegreso_mod_imp %in% c("En curso", "Muerte", "Derivación")) |>
+    (\(df) {
+        print(message(paste0("Dead, Referrals, ongoing treatments, Entries: ", nrow(df))))
+        print(message(paste0("Dead, Referrals, ongoing treatments, HASHs: ", nrow(distinct(df,hash_key)))))
+        
+    })()
+
+Base_fiscalia_v15f_grant_23_24_long |> 
+    dplyr::filter(!motivodeegreso_mod_imp %in% c("En curso", "Muerte", "Derivación")) |>
+    (\(df) {
+        print(message(paste0("Dead, Referrals, ongoing treatments, Entries: ", nrow(df))))
+        print(message(paste0("Dead, Referrals, ongoing treatments, HASHs: ", nrow(distinct(df,hash_key)))))
+        
+    })()
+
+length(unlist(unique(Base_fiscalia_v15f_grant_23_24_long2$hash_key)))
+ 
+#[exclude ongoing treatments and external referrals]
+length(unique(Base_fiscalia_v15f_grant_23_24$hash_key))
+
+length(unique(Base_fiscalia_v15f_grant_23_24_long2$hash_key))
+#72404
+nrow(Base_fiscalia_v15f_grant_23_24_long2)
+#[1] 90075
+#
+Base_fiscalia_v15f_grant_23_24_long2 |> 
+    dplyr::filter(!hash_key %in% Base_fiscalia_v15f_grant_23_24_long2_miss_proc_multtr$hash_key
+) |>
+    (\(df) {
+        print(message(paste0("Only one treatment: ", nrow(df))))
+        print(message(paste0("Only one treatment: ", nrow(distinct(df,hash_key)))))
+        
+    })()
+```
+
+
+```{r flwchrt2}
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+library(DiagrammeR)
+gr<-
+grViz("
+digraph flowchart {
+  graph [layout = dot, rankdir = TB]
+
+  # General node styling
+  node [fontname = Times, shape = rectangle, fontsize = 10, style = filled, fillcolor = transparent]
+
+  # Main flow nodes
+  original [label = 'Original C1 Dataset\\n(n = 163,146;\\nPatients = 85,722)', fillcolor = lightgray]
+  c1_dataset [label = 'C1 Dataset\\n(n = 109,756;\\nPatients = 85,048)']
+  after_discard [label = 'C1 Dataset\\n(n = 90,075;\\nPatients = 72,404)']
+  final_dataset [label = 'Final C1 Dataset\\n(n = 30,988;\\nPatients = 13,317)', fillcolor = lightgray]
+
+  # Discard nodes (aligned between main flow steps)
+  discard_referrals [label = '&#8226;Discard external referrals or ongoing treatments\\l(n = 19,681; Patients = 18,450)\\l']
+  discard_duplicates [label = '&#8226;Discard duplicated entries\\l&#8226;Intermediate events of treatment (continuous referrals)\\l']
+  discard_single [label = '&#8226;Discard admitted to only one treatment(Patients = 59,087)\\l']
+
+  # Invisible vertices for middle line
+  v1 [shape = point, width = 0, style = invis]
+  v2 [shape = point, width = 0, style = invis]
+  v3 [shape = point, width = 0, style = invis]
+
+  # Main flow edges (vertical line)
+  original -> v1 [arrowhead = none]
+  v1 -> c1_dataset
+  c1_dataset -> v2 [arrowhead = none]
+  v2 -> after_discard
+  after_discard -> v3 [arrowhead = none]
+  v3 -> final_dataset
+
+  # Discard connections (from the middle line)
+  v1 -> discard_referrals
+  v2 -> discard_duplicates
+  v3 -> discard_single
+
+  # Alignment
+  { rank = same; discard_referrals; v1 }
+  { rank = same; discard_duplicates; v2 }
+  { rank = same; discard_single; v3 }
+}
+", 
+width = 800,
+height = 600)
+gr
+
+unlink(paste0(folder_path, "_doc/_flowchart_files"), recursive = TRUE)
+htmlwidgets::saveWidget(gr, paste0(folder_path, "_doc/_flowchart.html"))
+webshot::webshot(paste0(folder_path, "_doc/_flowchart.html"), 
+                 paste0(folder_path, "_doc/_flowchart.png"),
+                 vwidth = 300*1.2, vheight = 300,  zoom=10, expand=100)  # Prueba con diferentes coordenadas top, left, width, and height.
 ```
 
 
@@ -401,7 +568,7 @@ tableOne <- CreateTableOne(vars = vars, data = data_mine_miss_restr_proc2_baseli
                            includeNA = TRUE,
                            test = TRUE) # Remove statistical tests for speed
 
-print(tableOne, smd = TRUE) # Calculate SMD separately if needed
+#print(tableOne, smd = TRUE) # Calculate SMD separately if needed
 
 smd_bin(
   prop.table(table(data_mine_miss_restr_proc2_baseline$susprindum_mar[data_mine_miss_restr_proc2_baseline$policonsumo==0]))[[2]],
@@ -521,7 +688,6 @@ rbind.data.frame(
   dplyr::mutate_if(is.numeric, ~sprintf("%1.2f",.)) %>% 
   dplyr::mutate(model= dplyr::case_when(model== "Primary (no corrections, lag=0)"~ "No time-varying coefficients, lagged covariates fixed in 0", model== "Alternative (no corrections, lag=1)"~ "No time-varying coefficients, lagged covariates fixed in 1", model== "Primary (after PH, lag=0)"~ "With time-varying coefficients, lagged covariates fixed in 0", model== "Alternative (after PH, lag=1)"~ "With time-varying coefficients, lagged covariates fixed in 1", model== "Primary (strata, lag=0)"~ "Stratified by follow-up intervals, lagged covariates fixed in 0", model== "Alternative (strata, lag=1)"~ "Stratified by follow-up intervals, lagged covariates fixed in 1")) %>% 
   {
-    copiar_nombres2(.)
     write.table(.,paste0(folder_path,"iiws_20240516.csv"), dec=",", sep="\t")
     knitr::kable(.,size=10, format="html",caption= "Descriptive characterization of inverse intensity weights", escape=T, col.names= c("Visit intensity model", "Min.",	"First quartile",	"Median",	"Mean",	"Third quartile",	"Max."))%>% 
      kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
@@ -713,6 +879,161 @@ models_hr_table2%>%
      kableExtra::scroll_box(width = "100%", height = "375px")  
   }
 
+```
+
+
+### 0.c.Intensity model (with model that originated IWWs)
+
+Taking other substances as dummy just as in `irrelong-21-iiw-weights-nocorr` (step 3).
+
+```{r intensity-model-alcohol}
+#| class-output: center-table
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+
+term_mapping2 <- data.frame(
+  term = c("lag_tr_outcome", "lag_comp_bpsc_y3_severe", "lag_less_90d_tr1", "log_lag_dias_treat_imp_sin_na", "lag_policonsumo2", "edad_al_ing_1", "ano_nac_corr", "susinidum_coc", "susinidum_pbc", "susinidum_mar", "susinidum_oh", "psycom_dum_study", "psycom_dum_with", "freq_cons_dum_5day", "cond_oc_dum_2inact", "cond_oc_dum_3unemp", "susprindum_coc", "susprindum_pbc", "susprindum_mar", "susprindum_oh",  "lag_tr_outcome_rec", "lag_less_90d_tr1_rec", "lag_comp_bpsc_y3_severe_rec", "susinidum_coc_rec2", "psycom_dum_with_rec2"),
+  term_label = c("Treatment outcome of the previous treatment", "Previous biopsychosocial compromise (severe)", 
+                 "Previous treatment duration (<90 days)", "Previous treatment duration (in logarithmic scaled days)", 
+                 "Polysubstance use status of the previous treatment", "Age at admission to treatment", "Birth year", 
+                  "Primary substance (initial diagnosis), cocaine", "Primary substance (initial diagnosis), cocaine base paste", "Primary substance (initial diagnosis), marijuana", "Primary substance (initial diagnosis), alcohol", "Psychiatric comorbidity (diagnosis unknown or under study)", "Psychiatric comorbidity (confirmed comorbidity)", "Daily frequence of primary substance use at admission", "Occupational status (inactive)", "Occupational status (unemployed)", "Primary substance at admission to treatment (cocaine hydrochloride)", "Primary substance at admission to treatment (cocaine base paste)", "Primary substance at admission to treatment (marijuana)", "Primary substance at admission to treatment (alcohol)", "Treatment outcome of the previous treatment (recoded for interaction with time)", "Previous biopsychosocial compromise (severe, recoded for interaction with time)", "Previous treatment duration (<90 days, recoded for interaction with time)", "Primary substance (initial diagnosis), cocaine (recoded for interaction with time)", "Psychiatric comorbidity (confirmed comorbidity, recoded for interaction with time)")
+)
+
+#susinidumrec_oh susprindumrec_oh
+
+cph_nocorr_oh<-
+  cph(Surv(lag_time,time,event)~
+        cluster(id)+ 
+        lag_tr_outcome+ #tr_outcome.lag
+        lag_comp_bpsc_y3_severe+ #comp_bpsc_y3_severe.lag
+        lag_less_90d_tr1+ #less_90d_tr1.lag
+        log_lag_dias_treat_imp_sin_na + #log_dias_treat_imp_sin_na.lag
+        lag_policonsumo2 +  #policonsumo2.lag 
+        edad_al_ing_1 + 
+        ano_nac_corr + 
+        susinidum_oh+
+        #susinidumrec_otr +
+        susinidum_coc +
+        susinidum_pbc +
+        susinidum_mar +
+        psycom_dum_study +
+        psycom_dum_with +
+        freq_cons_dum_5day +
+        cond_oc_dum_2inact +
+        cond_oc_dum_3unemp +
+        susprindum_oh +
+        susprindum_coc +
+        susprindum_pbc +
+        susprindum_mar +
+        strat(tipo_de_plan_2_mod),
+      data= data_mine_miss_restr_proc2 %>% data.table::as.data.table() %>% data.frame(), 
+      x=TRUE, y=TRUE, surv=TRUE, iter.max = 250*4, tol = 1e-6)
+
+models_hr_table2_oh<-
+rbind.data.frame(
+cbind.data.frame(model="No correction", tidy.rms(cph_nocorr_oh, conf.int=T, exponentiate=T)[, c("term","estimate", "conf.low", "conf.high")]%>% dplyr::mutate_if(is.numeric, ~sprintf("%1.2f",.)))
+)
+
+models_hr_table2_oh$term_label <- term_mapping2$term_label[match(models_hr_table2_oh$term, term_mapping2$term)]
+
+models_hr_table2_oh%>%
+  dplyr::select(term_label, everything()) %>% 
+  {
+    #copiar_nombres2(.)
+    write.table(.,paste0(folder_path,"coxph_intensity_model_prev_250216.csv"), dec=",", sep="\t")
+    knitr::kable(.,size=10, format="html",caption= "Intensity model (no correction, original)", escape=T)%>% 
+     kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
+     kableExtra::scroll_box(width = "100%", height = "375px")  
+  }
+
+```
+
+
+## 0.d. Cox intensity model behind weights, under two scenarios (lag1 and lag0)
+
+```{r intensity-model-2-scenarios}
+#| class-output: center-table
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+
+update_terms <- function(tidy_table, term_mapping2) {
+  
+  # Function to convert tidy_table term to mapping key.
+  convert_term <- function(term) {
+    # Check if the term ends with ".lag"
+    if(grepl("\\.lag$", term)) {
+      base <- sub("\\.lag$", "", term)
+      # Special case: if the base is "log_dias_treat_imp_sin_na", insert "lag" after "log_"
+      if(base == "log_dias_treat_imp_sin_na") {
+        return("log_lag_dias_treat_imp_sin_na")
+      } else {
+        return(paste0("lag_", base))
+      }
+    } else {
+      return(term)
+    }
+  }
+  
+  # Create a new column with the mapping key.
+  tidy_table$term_key <- sapply(tidy_table$term, convert_term)
+  
+  # Merge the tidy_table with the term_mapping on the mapping key.
+  # term_mapping has columns "term" and "term_label".
+  tidy_table <- merge(tidy_table, term_mapping2, by.x = "term_key", by.y = "term", all.x = TRUE)
+  
+  # Replace the original term with the label if available.
+  tidy_table$term <- ifelse(!is.na(tidy_table$term_label), tidy_table$term_label, tidy_table$term)
+  
+  # Remove temporary columns used for the merge.
+  tidy_table$term_key <- NULL
+  tidy_table$term_label <- NULL
+  
+  return(tidy_table)
+}
+
+tidy_table <- tidy_coxph(iiw_nocorr$m)
+
+tidy_table_alt <- tidy_coxph(iiw_nocorr_alt$m)
+
+term_vector <- c(
+  "Treatment outcome of the previous treatment",
+  "Previous treatment duration (in logarithmic scaled days)",
+  "Previous treatment duration (<90 days)",
+  "Previous biopsychosocial compromise (severe)",
+  "Polysubstance use status of the previous treatment",
+  "Age at admission to treatment",
+  "Birth year",
+  "Primary substance (initial diagnosis), cocaine",
+  "Primary substance (initial diagnosis), alcohol",
+  "Primary substance (initial diagnosis), cocaine base paste",
+  "Primary substance (initial diagnosis), marijuana",
+  "Psychiatric comorbidity (confirmed comorbidity)",
+  "Psychiatric comorbidity (diagnosis unknown or under study)",
+  "Daily frequence of primary substance use at admission",
+  "Occupational status (inactive)",
+  "Occupational status (unemployed)",
+  "Primary substance at admission to treatment (alcohol)",
+  "Primary substance at admission to treatment (cocaine hydrochloride)",
+  "Primary substance at admission to treatment (cocaine base paste)",
+  "Primary substance at admission to treatment (marijuana)"
+)
+
+rbind.data.frame(cbind.data.frame(lag="Lag 0", update_terms(format_hr_ci(tidy_table, digits = 2), term_mapping2)),cbind.data.frame(lag="Lag 1", update_terms(format_hr_ci(tidy_table_alt, digits = 2), term_mapping2)))%>% 
+  dplyr::mutate(term= factor(term, levels=term_vector))%>% 
+  dplyr::arrange(lag, term)%>% #rio::export("clipboard")
+  {
+    #copiar_nombres2(.)
+    write.table(., paste0(folder_path,"coxph_intensity_model_250216.csv"), dec=",", sep="\t")
+    knitr::kable(tidyr::pivot_wider(dplyr::select(.,"term","lag", "hr_ci"), names_from="lag", values_from="hr_ci"), size=10, format="html",caption= "Specifications of the treatment (visit) process, in Hazard Ratios (HR) and under different lagged variables scenarios (no correction, original)", escape=T)%>% 
+     kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
+     kableExtra::scroll_box(width = "100%", height = "375px")  
+  }
 ```
 
 
@@ -2731,7 +3052,7 @@ print(geem2_strata_alt_alt_wgt_list[[1]])
 #| warning: false
 #| error: false
 #| eval: true
-
+#| results: hide
 
 types_of_model<-
   c("No time-varying coefficients, no weight",
@@ -3123,8 +3444,16 @@ cbind.data.frame(model= types_of_model2,
     assign(paste0("result_data_geem_", gsub(" ","_",plan_names[i])), ., envir = .GlobalEnv)
     print(.)
   }
+```
 
 
+```{r output-gee-consolidated}
+#| class-output: center-table
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
 rbind.data.frame(cbind.data.frame(setting=plan_names[1],result_data_geem_basic_ambulatory),
                  cbind.data.frame(setting=plan_names[2],result_data_geem_GP_intensive_ambulatory),
                  cbind.data.frame(setting=plan_names[3],result_data_geem_GP_residential),
@@ -3344,10 +3673,11 @@ bind_rows(
   }
 ```
 
-```{r "fig-prev-psu-tr-noncomp", fig.align='center', paged.print=TRUE, fig.cap="Percentage distribution of treatment outcomes by treatment setting and polysubstance use status", results='hold'}
+```{r "fig-prev-psu-tr-noncomp", fig.align='center', paged.print=TRUE, fig.cap="Percentage distribution of treatment outcomes by treatment setting and polysubstance use status", results='hold', echo=T}
 #| fig-width: 7
 #| fig-height: 8.4
 #| fig.showtext: true
+
 
 # bind_rows(
 #   lapply(1:5, function(model) {
@@ -3392,6 +3722,11 @@ labels <- overall_percentages %>%
 data_barplot$Var0 <- factor(data_barplot$Var0, levels = c("Single\nsubstance use", "Polysubstance\nuse"))
 labels$Var0 <- factor(labels$Var0, levels = c("Single\nsubstance use", "Polysubstance\nuse"))
 
+showtext_auto()
+showtext_opts(dpi = 500)
+invisible("Si no funciona el times new roman")
+#windowsFonts(TimesNewRoman = windowsFont("Times New Roman"))
+# names(grDevices::windowsFonts())
 # Generate the plot
 ggplot(data_barplot, aes(x = factor(Var0), y = n, fill = factor(Var2))) +
   geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) +
@@ -3403,31 +3738,159 @@ ggplot(data_barplot, aes(x = factor(Var0), y = n, fill = factor(Var2))) +
     "4" = "Women-specific, intensive ambulatory (n= 1,760)",
     "5" = "Women-specific, residential (n= 2,534)"
   )), strip.position = "top") +
-  scale_fill_manual(values = c("grey60", "grey20"), label=c("Treatment\ncompletion", "Treatment\nnon-completion")) +
+  scale_fill_manual(values = c("grey80", "grey35"), label=c("Completion", "Non-completion")) +
   labs(x = "Polysubstance use (PSU)", y = "Count", fill = "Treatment\noutcome") +
-  geom_label(data = data_non_completion, aes(label = scales::percent(percentage, accuracy = 0.1)), 
-             position = position_stack(vjust = 0.8, reverse = TRUE), size = 4, color = "white", fill = "black", label.size = 0.2, family = "Times New Roman") +
+  geom_label(data = data_non_completion, aes(label = scales::percent(percentage, accuracy = 1)), position = position_stack(vjust = 0.8, reverse = TRUE), size = 3.9, fontface = "bold", color = "white", fill = "black", label.size = 0.2, family = "serif") +
    geom_text(data = labels, aes(x = Var0, y = 9e3, label = label, fill="1"), 
-             size = 4, color = "black", hjust = 0.5, vjust = -0.5, fontface = "bold.italic", family = "Times New Roman") +
+             size = 3.9, color = "black", hjust = 0.5, vjust = -0.5, fontface = "bold.italic", family = "serif") +
   ylim(0,1.1e4)+
-  theme_minimal(base_size = 14, base_family = "Times New Roman") +
+  #theme_minimal(base_size = 14, base_family = "Times New Roman") +
   theme(
-    strip.text = element_text(size = 12, face = "bold"),
-    axis.text.x = element_text(angle = 30, hjust = 1),
+    strip.text = element_text(size = 12, face = "bold", family = "serif"),
+    #axis.text.x = element_text(angle = 0, hjust = 1),
     axis.title.x = element_blank(),
-    axis.text = element_text(size = 12, family = "Times New Roman"),
-    text = element_text(family = "Times New Roman"),
+    axis.text = element_text(size = 12, family = "serif"),
+    axis.text.x = element_text(family = "serif"),
+    text = element_text(family = "serif"),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.background = element_blank(),
-    strip.text.x = element_text(angle = 0, hjust = 0.5, size = 12, face = "bold"),
+    strip.text.x = element_text(angle = 0, hjust = 0.5, size = 12, face = "bold", family = "serif"),
     strip.background = element_blank(),
     axis.line = element_line(colour = "black"),
-    legend.position = "bottom"
+    legend.position = "bottom",
+    legend.text = element_text(size= 12, family = "serif"),
+    legend.title = element_text(size= 13, family = "serif"),
   )
-ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/_figs/barplot2.png", height=14*.7, width=10*.7, dpi=500)
-ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/_figs/barplot2.jpg", height=14*.7, width=10*.7, dpi=500)
+ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/_figs/barplot3.png", height=14*.68, width=10*.68, dpi=500)
+ggsave("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/_figs/barplot3.jpg", height=14*.68, width=10*.68, dpi=500)
+```
 
+
+```{r "contrasts-comp-tr-setting", fig.align='center', paged.print=TRUE}
+#data_barplot
+#
+mantelhaen.test(
+xtabs(n ~Var2+ Var0 +model, data= data_barplot)
+)
+#Mantel-Haenszel X-squared = 93.675, df = 1, p-value < 2.2e-16
+
+invisible("Si bien se ve una aso")
+
+chisq.test(xtabs(n ~Var2+ Var0, data= data_barplot))
+#X-squared = 76.039, df = 1, p-value < 2.2e-16
+
+vcd::woolf_test(
+  xtabs(n ~Var2+ Var0 +model, data= data_barplot)
+)
+#Woolf-test on Homogeneity of Odds Ratios (no 3-Way assoc.)
+#X-squared = 13.735, df = 4, p-value = 0.008192
+
+invisible("Los odds de no completar varían por baseline tr. setting (p<0,001)")
+invisible("No se puede usar Maentel-haenzel")
+invisible("Suggests conditional dependence and varying strength or direction of association across strata (interaction), cautioning against a simple summary of the association.[common OR may not be reliable]")
+
+
+# nocor_nowgt_int_tab[[1]] %>% 
+#       dplyr::mutate(Var0 = ifelse(grepl("no PSU", Var1), "Single\nsubstance use", "Polysubstance\nuse")) %>% 
+#       dplyr::group_by(Var0, Var2) %>% 
+#       dplyr::summarise(n = sum(Freq))
+chisq.test(
+xtabs(n ~ Var2+Var0, data = nocor_nowgt_int_tab[[1]] %>% 
+          dplyr::mutate(Var0 = ifelse(grepl("no PSU", Var1), "Single\nsubstance use", "Polysubstance\nuse")) %>% 
+          dplyr::group_by(Var0, Var2) %>% 
+          dplyr::summarise(n = sum(Freq)))
+)
+#X-squared = 36.389, df = 1, p-value = 1.616e-09
+# Phi-Coefficient   : 0.061 
+# Contingency Coeff.: 0.061 
+# Cramer's V        : 0.061 
+
+
+chisq.test(
+xtabs(n ~ Var2+Var0, data = nocor_nowgt_int_tab[[2]] %>% 
+          dplyr::mutate(Var0 = ifelse(grepl("no PSU", Var1), "Single\nsubstance use", "Polysubstance\nuse")) %>% 
+          dplyr::group_by(Var0, Var2) %>% 
+          dplyr::summarise(n = sum(Freq)))
+)
+#X-squared = 45.055, df = 1, p-value = 1.916e-11
+# Phi-Coefficient   : 0.063 
+# Contingency Coeff.: 0.063 
+# Cramer's V        : 0.063
+
+chisq.test(
+xtabs(n ~ Var2+Var0, data = nocor_nowgt_int_tab[[3]] %>% 
+          dplyr::mutate(Var0 = ifelse(grepl("no PSU", Var1), "Single\nsubstance use", "Polysubstance\nuse")) %>% 
+          dplyr::group_by(Var0, Var2) %>% 
+          dplyr::summarise(n = sum(Freq)))
+)
+#X-squared = 0.65673, df = 1, p-value = 0.4177
+# hi-Coefficient   : 0.012 
+# Contingency Coeff.: 0.012 
+# Cramer's V        : 0.012 
+# 
+chisq.test(
+xtabs(n ~ Var2+Var0, data = nocor_nowgt_int_tab[[4]] %>% 
+          dplyr::mutate(Var0 = ifelse(grepl("no PSU", Var1), "Single\nsubstance use", "Polysubstance\nuse")) %>% 
+          dplyr::group_by(Var0, Var2) %>% 
+          dplyr::summarise(n = sum(Freq)))
+)
+#X-squared = 2.8231, df = 1, p-value = 0.09291
+# Phi-Coefficient   : 0.042 
+# Contingency Coeff.: 0.042 
+# Cramer's V        : 0.042 
+#
+invisible("setting 5= No completar vs. completar, según PSU vs. no-PSU")
+chisq.test(
+xtabs(n ~ Var2+Var0, data = nocor_nowgt_int_tab[[5]] %>% 
+          dplyr::mutate(Var0 = ifelse(grepl("no PSU", Var1), "Single\nsubstance use", "Polysubstance\nuse")) %>% 
+          dplyr::group_by(Var0, Var2) %>% 
+          dplyr::summarise(n = sum(Freq)))
+)
+#X-squared = 22.463, df = 1, p-value = 2.142e-06
+# Phi-Coefficient   : 0.095 
+# Contingency Coeff.: 0.095 
+# Cramer's V        : 0.095 
+invisible("compare setting vs. PSUs")
+chisq.test(xtabs(n ~Var0+ model, data= data_barplot))
+#X-squared = 194.31, df = 4, p-value < 2.2e-16
+
+
+# Cox, M. K., & Key, C. H. (1993). Post hoc pair-wise comparisons for the chi-square test of homogeneity of proportions. Educational and Psychological Measurement, 53(4), 951–962. https://doi.org/10.1177/0013164493053004008
+
+invisible("Settings vs. noncompletion")
+
+chisq.test(xtabs(n ~Var2+ model, data= data_barplot))
+#X-squared = 177.64, df = 4, p-value < 2.2e-16
+
+cat("For each baseline setting, calculate the std. residuals of chi-square, to compare non-completion shares")
+data.frame(chisq.posthoc.test(xtabs(n ~Var2+ model, data= data_barplot))) |> 
+    dplyr::mutate(X4=as.character(X4)) |> 
+    pivot_longer(cols = c(`X1`,`X2`,`X3`,`X4`,`X5`), names_to = "Group", values_to = "Values") %>%
+    pivot_wider(names_from = Value, values_from = Values) %>%
+    dplyr::filter(Dimension=="1") %>%
+  dplyr::mutate(across(1, ~ gsub("\n"," ",as.character(.))))|>
+    dplyr::mutate(Residuals= sprintf("%1.2f", as.numeric(Residuals))) %>% 
+    dplyr::mutate( `p values`= sprintf("%1.3f", as.numeric(gsub("\\*","",`p values`)))) %>%
+    dplyr::select(Dimension, Residuals, `p values`) %>% 
+  dplyr::mutate(`p values`= ifelse(`p values`=="0.000","<0.001",`p values`))
+
+
+data.frame(chisq.posthoc.test(xtabs(n ~Var0+ model, data= data_barplot))) |> 
+    dplyr::mutate(X4=as.character(X4)) |> 
+    pivot_longer(cols = c(`X1`,`X2`,`X3`,`X4`,`X5`), names_to = "Group", values_to = "Values") %>%
+    pivot_wider(names_from = Value, values_from = Values) %>%
+    dplyr::filter(Dimension=="Polysubstance\nuse") %>%
+  dplyr::mutate(across(1, ~ gsub("\n"," ",as.character(.))))|>
+    dplyr::mutate(Residuals= sprintf("%1.2f", as.numeric(Residuals))) %>% 
+    dplyr::mutate( `p values`= sprintf("%1.3f", as.numeric(gsub("\\*","",`p values`)))) %>%
+    dplyr::select(Dimension, Residuals, `p values`) %>% 
+  dplyr::mutate(`p values`= ifelse(`p values`=="0.000","<0.001",`p values`))
+
+```
+
+
+```{r "contrasts-rrs-nocorr-nowgt", fig.align='center', paged.print=TRUE}
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #
 nocorr_nowgt_int2_list<-
@@ -3807,6 +4270,8 @@ reticulate::py_list_packages()%>%
 invisible("Adicionales en E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/para_pres_cum_mean.R")
 folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/"),
                       "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/",
-                      "C:/Users/CISS Fondecyt/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
+                      "G:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
 save.image(paste0(folder_path,"an_grant_23_24_4.RData"))
+invisible("ültima vs. estable")
+#load(paste0(folder_path,"1_an_grant_23_24_4.RData"))
 ```

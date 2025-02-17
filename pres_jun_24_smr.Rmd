@@ -587,7 +587,7 @@ colors <- c("#FFCC00", "#FF4500", "#1E40AF", "#FF7F50", "#21177A")
 
 # First plot with magick
 image1 <- magick::image_annotate(
-    magick::image_read("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/people.png"), 
+    magick::image_read(paste0(getwd(),"/_outputs/ser2024/people.png")), 
     text = "100,322 patients", 
     size = 65, 
     gravity = "south", 
@@ -623,7 +623,7 @@ image1 <- magick::image_annotate(
 #   magick::image_border(color = "white", geometry = "0x100") 
 
 # Save the first image
-suppressMessages(magick::image_write(image1, path = "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_outputs/ser2024/image1.png"))
+suppressMessages(magick::image_write(image1, path = paste0(getwd(),"/_outputs/ser2024/image1.png")))
 
 # Second plot with plotly
 plot2 <- data.frame(

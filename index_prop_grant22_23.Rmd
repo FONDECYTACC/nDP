@@ -1,51 +1,30 @@
 ---
-name: "repositorio_ndp_ags_mariel"
-title: "Assessing the impact of substance use treatment for preventing criminal justice system contact in Chile"
+name: "repositorio"
+title: "Trayectorias de hospitalización por condiciones vinculadas a trastornos de salud mental y consumo de sustancias en usuarios/as jóvenes de población general y pertenecientes a pueblos originarios, 2018-2021, Chile"
 lang: es-ES
 subject: R Markdown
 author:
-  - first_name: "Mariel"
-    last_name: "Mateo Piñones"
-    url: https://github.com/nDP
-    affiliation: Ph.D. student, School of Criminology and Criminal Justice, Griffith University, Australia; Nucleo Milenio de Drogas
-    affiliation_url: 
-    email: mariel.mateopinones@griffithuni.edu.au
-    orcid_id: 0000-0002-9607-7541
   - first_name: "Andrés"
     last_name: "González-Santa Cruz"
-    url: https://github.com/nDP
-    affiliation: Nucleo Milenio de Drogas; Ph.D. student, School of Public Health, Universidad de Chile
+    url: https://github.com/AGSCL
+    affiliation: Núcleo Milenio para la evaluación y análisis de políticas de drogas (nDP); Estudiante de Doctorado, Escuela de Salud Pública. Universidad de Chile (UCH); Grupo de Ciencia de Datos y Salud Pública. Escuela de Salud Pública. UCH
     affiliation_url: 
     email: gonzalez.santacruz.andres@gmail.com
     orcid_id: 0000-0002-5166-9121
-  - first_name: "Andrés"
-    last_name: "González-Santa Cruz"
+  - first_name: "Sebastián"
+    last_name: "Medina Gay"
     url: https://github.com/nDP
-    affiliation: Technical Staff of Núcleo Milenio de Drogas; Ph.D. student, School of Public Health, Universidad de Chile
+    affiliation: Programa Salud Colectiva y Medicina Social. Escuela de Salud Pública. UCH
     affiliation_url: 
-    email: gonzalez.santacruz.andres@gmail.com
-    orcid_id: 0000-0002-5166-9121
-  - first_name: "Christine"
-    last_name: "Bond"
-    url: 
-    affiliation: School of Criminology and Criminal Justice, Griffith University, Australia
+    email: sebamed@uchile.cl
+    orcid_id: 0000-0003-4659-680X
+  - first_name: "Sandra"
+    last_name: "Flores Alvarado"
+    url: https://github.com/nDP
+    affiliation: Grupo de Ciencia de Datos y Salud Pública. Escuela de Salud Pública. UCH; Programa de Bioestadística. Escuela de Salud Pública. UCH
     affiliation_url: 
-    email: c.bond@griffith.edu.au
-    orcid_id: 
-  - first_name: "Tara"
-    last_name: "McGee"
-    url: 
-    affiliation: School of Criminology and Criminal Justice, Griffith University, Australia
-    affiliation_url: t.mcgee@griffith.edu.au
-    email: c.bond@griffith.edu.au
-    orcid_id: 0000-0003-1385-1931
-  - first_name: "Álvaro"
-    last_name: "Castillo-Carniglia"
-    url: https://github.com/FONDECYTACC
-    affiliation: Society and Health Research Center, Universidad Mayor,Santiago, Chile; Department of Epidemiology, Columbia University Mailman School of Public Health, New York, United States; Department of Population Health and Center for Opioid Epidemiology and Policy, New York University Grossman School of Medicine, New York, United States; PI, Millennium Nucleus nDP.
-    affiliation_url: 
-    email: alvacasti@gmail.com
-    orcid_id: 0000-0002-3016-890X                  
+    email: sfloresa@uchile.cl
+    orcid_id: 0000-0003-0490-0578
 description: |
  Proposal grant 2022-2023
 base_url: https://beta.rstudioconnect.com/content/3776/
@@ -55,39 +34,9 @@ output:
     theme: theme.css
 ---
 
-**Main**
+**Principal**
 
-- [Chilean prosecutor’s office Data merge (Step 5)](Fiscalia_merge5.html)
+- [Poster presentado a JNE]()
 
 - [Descriptive glimpse and initial analysis ](analisis_mariel_nov_2022_stata.html)
 
-- [Descriptive glimpse and initial analysis (Imprisonment only)](analisis_mariel_nov_2022_stata_pris.html)
-
-- [Main analyses of Imputed Data](analisis_mariel_feb_2023_stata_m1.html)
-
-- [Main analyses of Imputed Data (Imprisonment only)](analisis_mariel_feb_2023_stata_pris_m1.html)
-
-- [Summary tables & Sensitivity Analyses](res_intram_feb_2023_stata.html)
-
-- [Main analyses of Imputed Data: After review](analisis_mariel_ene_2024_stata_m1.html)
-
-- [Main analyses of Imputed Data (Imprisonment only): After review](analisis_mariel_ene_2024_stata_pris_m1.html)
-
-
-**Supplemental material**
-
-- [Main analyses](analisis_mariel_feb_2023_stata.html)
-
-- [Main analyses (Imprisonment only)](analisis_mariel_feb_2023_stata_pris.html)
-
-- [Main analyses of Imputed Data (including diagnoses in-study)](analisis_mariel_feb_2023_stata_m2.html)
-
-- [Main analyses of Imputed Data (Imprisonment only, including diagnoses in-study)](analisis_mariel_feb_2023_stata_pris_m2.html)
-
-- [Poster (idea)](pres_dic_22.html)
-
-- [Poster (updated)](pres_mar_23.html)
-
-- [Poster (final)](pres_mar_23_final.html)
-
-- [Poster (final) (PDF)](pres_mar_23_poly_final (2).pdf)

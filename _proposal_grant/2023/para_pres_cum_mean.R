@@ -639,3 +639,155 @@ broom::tidy(nocorr_nowgt_int_list[[5]], exponentiate=T, conf.int=T)[1:3,]
 # 1 (Intercept)                249351.     11.6         1.15 0.284    0.0000331   1.88e15
 # 2 policonsumo2_rec1.only PSU      1.14    0.0388     11.3  0.000775 1.06        1.23e 0
 # 3 policonsumo2_rec2.both          1.14    0.0439      8.83 0.00297  1.05        1.24e 0
+# 
+# 
+#
+#
+
+# 5. Cluster bootstrap -------------------------------------------------------
+if(!require(ClusterBootstrap)){install.packages("ClusterBootstrap")}
+ library(tidyverse)
+#https://cran.r-project.org/web/packages/ClusterBootstrap/ClusterBootstrap.pdf
+#eing a bootstrap method, the technique is relatively assumption-free, and it has already been shown to be comparable, if not superior, to GEE in its performance
+
+
+
+
+data_mine_miss_restr_proc2exp2<-
+  data_mine_miss_restr_proc2 %>% 
+  left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","n_off_acq","n_off_vio","n_off_sud","n_off_oth", "n_prev_off")], by="hash_key") %>%
+  tidylog::left_join(Base_fiscalia_v15f_grant_23_24[,c("hash_key","fech_ing_num","otras_sus1_mod","otras_sus2_mod","otras_sus3_mod")], by=c("hash_key"="hash_key","fech_ing_num"="fech_ing_num")) %>% 
+  {if (nrow(.) > nrow(data_mine_miss_restr_proc2)) {message("left join added rows"); .} else .} %>% 
+  dplyr::mutate(n_prev_off_bin= ifelse(n_prev_off>0,1,0)) %>% 
+  dplyr::mutate(
+    susinidumrec_coc = ifelse(sus_ini_mod_mvv == "Cocaine hydrochloride", 1, 0),
+    susinidumrec_pbc = ifelse(sus_ini_mod_mvv == "Cocaine paste", 1, 0),
+    susinidumrec_mar = ifelse(sus_ini_mod_mvv == "Marijuana", 1, 0),
+    susinidumrec_otr = ifelse(sus_ini_mod_mvv == "Other", 1, 0), #sus_principal_mod
+    susprindumrec_coc = ifelse(sus_principal_mod == "Cocaine hydrochloride", 1, 0),
+    susprindumrec_pbc = ifelse(sus_principal_mod == "Cocaine paste", 1, 0),
+    susprindumrec_mar = ifelse(sus_principal_mod == "Marijuana", 1, 0),
+    susprindumrec_otr = ifelse(sus_principal_mod == "Other", 1, 0) # "susprindum_coc", "susprindum_pbc", "susprindum_mar", "susprindum_oh
+  ) %>% 
+  rowwise() %>%
+  dplyr::mutate(oh_otras_sus = if_else("Alcohol" %in% c(otras_sus1_mod, otras_sus2_mod, otras_sus3_mod),1,0)) %>%
+  dplyr::mutate(policonsumo2_rec= dplyr::case_when(policonsumo2==1 & oh_otras_sus==1~"2.both",policonsumo2==1 & oh_otras_sus==0~"1.only PSU",T~"0.no PSU")) %>% 
+  ungroup()
+
+
+nocorr_nowgt_boot_int_list<-list()
+nocorr_nowgt_boot_int_probs_list<-list()
+nocor_nowgt_boot_int_tab <-list()
+for (i in seq_along(plan_names)) {
+  # Subset the data for the current plan type
+  current_data <- subset(data_mine_miss_restr_proc2exp2, tipo_de_plan_2_mod == plan_names[i])
+  
+  # Fit the GEE model for the current subset
+  model <- 
+    ClusterBootstrap::clusbootglm(
+      tr_outcome ~ policonsumo2_rec +
+        comp_bpsc_y3_severe+
+        edad_al_ing_1 + 
+        ano_nac_corr + 
+        susinidumrec_otr +
+        susinidumrec_coc +
+        susinidumrec_pbc +
+        susinidumrec_mar +
+        psycom_dum_study +
+        psycom_dum_with +
+        freq_cons_dum_5day +
+        cond_oc_dum_2inact +
+        cond_oc_dum_3unemp +
+        susprindumrec_coc +
+        susprindumrec_pbc +
+        susprindumrec_mar +
+        susprindumrec_otr,
+      current_data,
+      id,
+      family = poisson,
+      B = 2000,
+      confint.level = 0.95,
+      n.cores = 6
+    )
+  
+  # Assign the model to the list with a name based on the plan name
+  model_name <- gsub(" ", "_", plan_names[i])
+  model_name <- gsub("[^[:alnum:]_]", "", model_name)  # Clean up non-alphanumeric characters
+  
+  nocorr_nowgt_boot_int_list[[paste("model", model_name, sep = "_")]] <- model
+  nocorr_nowgt_boot_int_probs_list[[paste0("emmeans_response_int_", model_name)]] <- emmeans_response
+}
+#duro como 20 min
+#
+confint_boot_wo_res<-round(exp(confint(nocorr_nowgt_boot_int_list$model_WO_residential)),3)
+confint_boot_int_amb<-round(exp(confint(nocorr_nowgt_boot_int_list$model_WO_intensive_ambulatory)),3)
+confint_boot_gp_res<-round(exp(confint(nocorr_nowgt_boot_int_list$model_GP_residential)),3)
+confint_boot_gp_int_amb<-round(exp(confint(nocorr_nowgt_boot_int_list$model_GP_intensive_ambulatory)),3)
+confint_boot_gp_bas_amb<-round(exp(confint(nocorr_nowgt_boot_int_list$model_basic_ambulatory)),3)
+
+coef_boot_wo_res<-round(exp(coef(nocorr_nowgt_boot_int_list$model_WO_residential)),3)
+coef_boot_int_amb<-round(exp(coef(nocorr_nowgt_boot_int_list$model_WO_intensive_ambulatory)),3)
+coef_boot_gp_res<-round(exp(coef(nocorr_nowgt_boot_int_list$model_GP_residential)),3)
+coef_boot_gp_int_amb<-round(exp(coef(nocorr_nowgt_boot_int_list$model_GP_intensive_ambulatory)),3)
+coef_boot_gp_bas_amb<-round(exp(coef(nocorr_nowgt_boot_int_list$model_basic_ambulatory)),3)
+
+
+dir_folder <- "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/boot/"
+
+# Save each object as an RDS file using paste0 to create the file paths
+saveRDS(confint_boot_wo_res, paste0(dir_folder, "confint_boot_wo_res.rds"))
+saveRDS(confint_boot_int_amb, paste0(dir_folder, "confint_boot_int_amb.rds"))
+saveRDS(confint_boot_gp_res, paste0(dir_folder, "confint_boot_gp_res.rds"))
+saveRDS(confint_boot_gp_int_amb, paste0(dir_folder, "confint_boot_gp_int_amb.rds"))
+saveRDS(confint_boot_gp_bas_amb, paste0(dir_folder, "confint_boot_gp_bas_amb.rds"))
+
+saveRDS(coef_boot_wo_res, paste0(dir_folder, "coef_boot_wo_res.rds"))
+saveRDS(coef_boot_int_amb, paste0(dir_folder, "coef_boot_int_amb.rds"))
+saveRDS(coef_boot_gp_res, paste0(dir_folder, "coef_boot_gp_res.rds"))
+saveRDS(coef_boot_gp_int_amb, paste0(dir_folder, "coef_boot_gp_int_amb.rds"))
+saveRDS(coef_boot_gp_bas_amb, paste0(dir_folder, "coef_boot_gp_bas_amb.rds"))
+
+
+
+
+
+confint_boot_wo_res <- readRDS(paste0(dir_folder, "confint_boot_wo_res.rds"))
+confint_boot_int_amb <- readRDS(paste0(dir_folder, "confint_boot_int_amb.rds"))
+confint_boot_gp_res <- readRDS(paste0(dir_folder, "confint_boot_gp_res.rds"))
+confint_boot_gp_int_amb <- readRDS(paste0(dir_folder, "confint_boot_gp_int_amb.rds"))
+confint_boot_gp_bas_amb <- readRDS(paste0(dir_folder, "confint_boot_gp_bas_amb.rds"))
+
+coef_boot_wo_res <- readRDS(paste0(dir_folder, "coef_boot_wo_res.rds"))
+coef_boot_int_amb <- readRDS(paste0(dir_folder, "coef_boot_int_amb.rds"))
+coef_boot_gp_res <- readRDS(paste0(dir_folder, "coef_boot_gp_res.rds"))
+coef_boot_gp_int_amb <- readRDS(paste0(dir_folder, "coef_boot_gp_int_amb.rds"))
+coef_boot_gp_bas_amb <- readRDS(paste0(dir_folder, "coef_boot_gp_bas_amb.rds"))
+
+bind_rows(
+  data.table::data.table(cbind.data.frame(setting="Women-specific residential", coef_boot_wo_res, confint_boot_wo_res),keep.rownames = T),
+  data.table::data.table(cbind.data.frame(setting="Women-specific intensive ambulatory", coef_boot_int_amb, confint_boot_int_amb),keep.rownames = T),
+  data.table::data.table(cbind.data.frame(setting="GP residential", coef_boot_gp_res, confint_boot_gp_res),keep.rownames = T),
+  data.table::data.table(cbind.data.frame(setting="GP intensive ambulatory", coef_boot_gp_int_amb, confint_boot_gp_int_amb),keep.rownames = T),
+  data.table::data.table(cbind.data.frame(setting="GP basic ambulatory", coef_boot_gp_bas_amb, confint_boot_gp_bas_amb),keep.rownames = T)
+  )%>% 
+  dplyr::mutate(across(c("bootstrap", "2.5%", "97.5%"), ~sprintf("%1.2f",.))) %>% 
+  dplyr::select(setting, rn, everything()) %>% 
+  dplyr::filter(grepl("policonsumo2",rn))
+
+#                                 setting                         rn bootstrap   2.5%  97.5%
+#                                  <char>                     <char>    <char> <char> <char>
+#  1:          Women-specific residential policonsumo2_rec1.only PSU      1.14   1.06   1.23
+#  2:          Women-specific residential     policonsumo2_rec2.both      1.14   1.05   1.25
+#  3: Women-specific intensive ambulatory policonsumo2_rec1.only PSU      0.95   0.89   1.03
+#  4: Women-specific intensive ambulatory     policonsumo2_rec2.both      1.07   0.99   1.16
+#  5:                      GP residential policonsumo2_rec1.only PSU      0.99   0.94   1.05
+#  6:                      GP residential     policonsumo2_rec2.both      0.89   0.83   0.94
+#  7:             GP intensive ambulatory policonsumo2_rec1.only PSU      1.02   0.99   1.05
+#  8:             GP intensive ambulatory     policonsumo2_rec2.both      1.10   1.07   1.14
+#  9:                 GP basic ambulatory policonsumo2_rec1.only PSU      1.01   0.98   1.04
+# 10:                 GP basic ambulatory     policonsumo2_rec2.both      1.08   1.05   1.12
+
+
+#WO res es el mismo
+#basic también
+#gp residential es mas amplio acá
