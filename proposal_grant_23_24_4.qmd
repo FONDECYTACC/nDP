@@ -349,6 +349,7 @@ if(.Platform$OS.type == "windows") withAutoprint({
 })
 memory.limit(size=56000)
 ```
+
 ```{r flwchrt}
 #| message: false
 #| include: true
@@ -410,57 +411,67 @@ Base_fiscalia_v15f_grant_23_24_long2 |>
 #| eval: true
 library(DiagrammeR)
 gr<-
-grViz("
-digraph flowchart {
-  graph [layout = dot, rankdir = TB]
-
-  # General node styling
-  node [fontname = Times, shape = rectangle, fontsize = 10, style = filled, fillcolor = transparent]
-
-  # Main flow nodes
-  original [label = 'Original C1 Dataset\\n(n = 163,146;\\nPatients = 85,722)', fillcolor = lightgray]
-  c1_dataset [label = 'C1 Dataset\\n(n = 109,756;\\nPatients = 85,048)']
-  after_discard [label = 'C1 Dataset\\n(n = 90,075;\\nPatients = 72,404)']
-  final_dataset [label = 'Final C1 Dataset\\n(n = 30,988;\\nPatients = 13,317)', fillcolor = lightgray]
-
-  # Discard nodes (aligned between main flow steps)
-  discard_referrals [label = '&#8226;Discard external referrals or ongoing treatments\\l(n = 19,681; Patients = 18,450)\\l']
-  discard_duplicates [label = '&#8226;Discard duplicated entries\\l&#8226;Intermediate events of treatment (continuous referrals)\\l']
-  discard_single [label = '&#8226;Discard admitted to only one treatment(Patients = 59,087)\\l']
-
-  # Invisible vertices for middle line
-  v1 [shape = point, width = 0, style = invis]
-  v2 [shape = point, width = 0, style = invis]
-  v3 [shape = point, width = 0, style = invis]
-
-  # Main flow edges (vertical line)
-  original -> v1 [arrowhead = none]
-  v1 -> c1_dataset
-  c1_dataset -> v2 [arrowhead = none]
-  v2 -> after_discard
-  after_discard -> v3 [arrowhead = none]
-  v3 -> final_dataset
-
-  # Discard connections (from the middle line)
-  v1 -> discard_referrals
-  v2 -> discard_duplicates
-  v3 -> discard_single
-
-  # Alignment
-  { rank = same; discard_referrals; v1 }
-  { rank = same; discard_duplicates; v2 }
-  { rank = same; discard_single; v3 }
-}
-", 
-width = 800,
-height = 600)
+  grViz("
+    digraph flowchart {
+      graph [layout = dot, rankdir = TB]
+    
+      # General node styling
+      node [fontname = Times, shape = rectangle, fontsize = 10, style = filled, fillcolor = transparent]
+    
+      # Main flow nodes
+      original [label = 'Original C1 Dataset\\n(n = 163,146;\\nPatients = 85,722)', fillcolor = lightgray]
+      c1_dataset [label = 'C1 Dataset\\n(n = 109,756;\\nPatients = 85,048)']
+      after_discard [label = 'C1 Dataset\\n(n = 90,075;\\nPatients = 72,404)']
+      final_dataset [label = 'Final C1 Dataset\\n(n = 30,988;\\nPatients = 13,317)', fillcolor = lightgray]
+    
+      # Discard nodes (aligned between main flow steps)
+      discard_referrals [label = '&#8226;Discard external referrals or ongoing treatments\\l(n = 19,681; Patients = 18,450)\\l']
+      discard_duplicates [label = '&#8226;Discard duplicated entries\\l&#8226;Intermediate events of treatment (continuous referrals)\\l']
+      discard_single [label = '&#8226;Discard admitted to only one treatment(Patients = 59,087)\\l']
+    
+      # Invisible vertices for middle line
+      v1 [shape = point, width = 0, style = invis]
+      v2 [shape = point, width = 0, style = invis]
+      v3 [shape = point, width = 0, style = invis]
+    
+      # Main flow edges (vertical line)
+      original -> v1 [arrowhead = none]
+      v1 -> c1_dataset
+      c1_dataset -> v2 [arrowhead = none]
+      v2 -> after_discard
+      after_discard -> v3 [arrowhead = none]
+      v3 -> final_dataset
+    
+      # Discard connections (from the middle line)
+      v1 -> discard_referrals
+      v2 -> discard_duplicates
+      v3 -> discard_single
+    
+      # Alignment
+      { rank = same; discard_referrals; v1 }
+      { rank = same; discard_duplicates; v2 }
+      { rank = same; discard_single; v3 }
+    }
+  ", 
+  width = 1600,
+  height = 1200)
 gr
 
+folder_path <- ifelse(dir.exists("E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/"),
+                      "E:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/",
+                      "G:/Mi unidad/Alvacast/SISTRAT 2022 (github)/_proposal_grant/2023/")
 unlink(paste0(folder_path, "_doc/_flowchart_files"), recursive = TRUE)
 htmlwidgets::saveWidget(gr, paste0(folder_path, "_doc/_flowchart.html"))
 webshot::webshot(paste0(folder_path, "_doc/_flowchart.html"), 
                  paste0(folder_path, "_doc/_flowchart.png"),
                  vwidth = 300*1.2, vheight = 300,  zoom=10, expand=100)  # Prueba con diferentes coordenadas top, left, width, and height.
+
+webshot::webshot(paste0(folder_path, "_doc/_flowchart.html"), 
+                 paste0(folder_path, "_doc/_flowchart_fixed.png"),
+                 vwidth = 1200,   # Ancho mayor para mejor resolución
+                 vheight = 800,   # Alto suficiente para capturar todo
+                 zoom = 20,        # Zoom alto para mejor calidad
+                 expand = -250)     # Márgenes adicionales
 ```
 
 
@@ -473,6 +484,63 @@ webshot::webshot(paste0(folder_path, "_doc/_flowchart.html"),
 #| error: false
 #| eval: true
 
+invisible("Las siguientes variables no eran de interés para mí y aposterior al análisis, pero sí se usaron para imputar: ")
+#num_hijos_mod_joel_bin,
+#tenencia_de_la_vivienda_mod
+#macrozona
+#tipo_centro_pub, origen_ingreso_mod,
+#porc_pobr
+#clas_r
+#con_quien_vive_joel
+#edad_ini_cons
+nonimputed_data_with_final_hashs_complete_cases<-
+subset(Base_fiscalia_v15f_grant_23_24_long2, hash_key %in% unique(Base_fiscalia_v15f_grant_23_24_long2_miss_proc_multtr$hash_key))[which(complete.cases(subset(Base_fiscalia_v15f_grant_23_24_long2, hash_key %in% unique(Base_fiscalia_v15f_grant_23_24_long2_miss_proc_multtr$hash_key), select= c(hash_key, tipo_de_plan_2, tipo_de_plan_2_mod, sex,  edad_al_ing_1,  escolaridad_rec, sus_principal_mod, freq_cons_sus_prin_ord, condicion_ocupacional_corr24, policonsumo, policonsumo2, dg_cie_10_rec, dg_trs_cons_sus_or, sus_ini_mod_mvv, ano_nac_corr,  compromiso_biopsicosocial,compromiso_biopsicosocial.y)))),] |> nrow()
+
+paste0("Percentage of the total that had complete values: ",
+scales::percent(nonimputed_data_with_final_hashs_complete_cases/nrow(subset(Base_fiscalia_v15f_grant_23_24_long2, hash_key %in% unique(Base_fiscalia_v15f_grant_23_24_long2_miss_proc_multtr$hash_key))), accuracy = 0.1)
+, "; total= ", format(nrow(subset(Base_fiscalia_v15f_grant_23_24_long2, hash_key %in% unique(Base_fiscalia_v15f_grant_23_24_long2_miss_proc_multtr$hash_key))),big.mark=","))
+#27,460 x 39
+#[1] "Percentage of the total that had complete values: 88.6%; total= 30,988"
+
+missing_stats<-
+subset(Base_fiscalia_v15f_grant_23_24_long2, 
+       hash_key %in% unique(Base_fiscalia_v15f_grant_23_24_long2_miss_proc_multtr$hash_key), 
+       select = c(hash_key, tipo_de_plan_2, tipo_de_plan_2_mod, sex,  edad_al_ing_1, escolaridad_rec, sus_principal_mod, freq_cons_sus_prin_ord, condicion_ocupacional_corr24, policonsumo, policonsumo2, dg_cie_10_rec, dg_trs_cons_sus_or, sus_ini_mod_mvv, ano_nac_corr,  compromiso_biopsicosocial,compromiso_biopsicosocial.y)) |> 
+  (\(df) {
+    data.frame(
+      Variable = names(df),
+      N_missing = colSums(is.na(df)),
+      Percent_missing = round(colMeans(is.na(df)) * 100, 2)
+    )
+  })() |> 
+  (\(stats) stats[order(-stats$Percent_missing), ])()|> 
+  data.table::data.table()
+#                         Variable N_missing Percent_missing
+#                           <char>     <num>           <num>
+#  1:  tenencia_de_la_vivienda_mod      1965            6.34
+#  2:    compromiso_biopsicosocial       569            1.84
+#  3:  compromiso_biopsicosocial.y       571            1.84
+#  4:                edad_ini_cons       411            1.33
+#  5:              sus_ini_mod_mvv       344            1.11
+#  6:       num_hijos_mod_joel_bin       207            0.67
+#  7:       freq_cons_sus_prin_ord       149            0.48
+#  8:              escolaridad_rec       102            0.33
+#  9:           tipo_de_plan_2_mod        63            0.20
+# 10:               tipo_de_plan_2        41            0.13
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+invisible("2024-05-21: test number of treatments")
+subset(Base_fiscalia_v15f_grant_23_24_long2_miss_proc_multtr, is_first_occurrence==T)  |> 
+    dplyr::summarise(min= min(n), mean= mean(n), sd= sd(n), p25= quantile(n, .25), p50= quantile(n, .5), p75= quantile(n, .75), p77= quantile(n, .77), p89= quantile(n, .89), max= max(n))
+#   min     mean       sd p25 p50 p75 p77 p89 max
+# 1   2 2.326951 0.679621   2   2   2   3   3  10
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 invisible("2024-05-21: test different")
 data_mine_miss_restr_proc2exp<-
 data_mine_miss_restr_proc2 %>% 
@@ -514,13 +582,7 @@ data_mine_miss_restr_proc2_baseline<-
   subset(data_mine_miss_restr_proc2exp , is_first_occurrence==1) 
 
 
-variables_vector <- c("tr_outcome", "policonsumo2", "comp_bpsc_y3_severe",
-                      "less_90d_tr1", "log_dias_treat_imp_sin_na",
-                      "edad_al_ing_1", "ano_nac_corr", "susinidumrec_coc", 
-                      "susinidumrec_pbc", "susinidumrec_mar", "susinidumrec_otr", 
-                      "psycom_dum_study", "psycom_dum_with", "freq_cons_dum_5day", 
-                      "cond_oc_dum_2inact", "cond_oc_dum_3unemp", "susprindumrec_coc", 
-                      "susprindumrec_pbc", "susprindumrec_mar", "susprindumrec_otr")#,"lag_comp_bpsc_y3_severe", "lag_less_90d_tr1", "log_lag_dias_treat_imp_sin_na", "lag_policonsumo2", "lag_tr_outcome")
+variables_vector <- c("tr_outcome", "policonsumo2", "comp_bpsc_y3_severe", "less_90d_tr1", "log_dias_treat_imp_sin_na", "edad_al_ing_1", "ano_nac_corr", "susinidumrec_coc", "susinidumrec_pbc", "susinidumrec_mar", "susinidumrec_otr", "psycom_dum_study", "psycom_dum_with", "freq_cons_dum_5day", "cond_oc_dum_2inact", "cond_oc_dum_3unemp", "susprindumrec_coc", "susprindumrec_pbc", "susprindumrec_mar", "susprindumrec_otr")# ,"lag_comp_bpsc_y3_severe", "lag_less_90d_tr1", "log_lag_dias_treat_imp_sin_na", "lag_policonsumo2", "lag_tr_outcome")
 
 ```
 
@@ -665,6 +727,79 @@ as.data.frame.TableOne(tableOne, smd=T, nonnormal= T)%>%
      kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 12) %>% 
      kableExtra::scroll_box(width = "100%", height = "375px")  
   }
+```
+
+
+```{r post-rev}
+#| class-output: center-table
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+
+#This finding suggests that the former group had a longer observation period in the database, potentially influencing the observed association, as shown in Table 2. 
+
+#JRT- 2024-12-30
+#Quizás esto se puede decir más concreto, "sabiendo que el tiempo de observación es mayor en el grupo..." Eso es un hecho? que ocurre en la base de datos?
+
+data_mine_miss_restr_proc2 %>% 
+                        dplyr::group_by(hash_key) %>% 
+                        dplyr::mutate(sum_tr_outcomes=sum(tr_outcome==1,na.rm=T)) %>% 
+                        dplyr::filter(is_first_occurrence==1) %>% 
+                        dplyr::ungroup() |> 
+  group_by(policonsumo2) |> count()
+#   policonsumo2     n
+#          <dbl> <int>
+# 1            0  2383
+# 2            1 10934
+
+#161852.30/2383
+#[1] 67.91956
+#872863.25/10934
+#[1] 79.83019
+invisible("Razón PSU al ingreso y exposición por tiempo")
+#79.83019/67.91956
+#[1] 1.175364
+#
+scales::percent(1.175364-1)
+#"18"
+data_mine_miss_restr_proc2 %>% 
+    dplyr::group_by(hash_key) %>% 
+    dplyr::mutate(sum_tr_outcomes=sum(tr_outcome==1,na.rm=T),
+                  sum_policonsumo2=sum(policonsumo2==1,na.rm=T)) %>% 
+    dplyr::filter(is_first_occurrence==1) %>% 
+    dplyr::ungroup() %>% dplyr::mutate(policonsumo2=ifelse(sum_policonsumo2>0,1,0)) |> 
+    group_by(policonsumo2) |> 
+    count()
+#  policonsumo2     n
+#          <dbl> <int>
+# 1            0  1271
+# 2            1 12046
+#78926.85/1099
+#955788.69/11121
+#85.94449/71.81697
+invisible("Razón PSU al ingreso y no completar")
+#1.196716
+scales::percent(1.196716-1)
+#
+invisible("Prevalencia; al menos un no-completar, con PSU al ingreso")
+scales::percent(2135/2383) #90%
+invisible("Prevalencia; al menos un no-completar, con PSU al ingreso")
+scales::percent(10085/10934) #92%
+invisible("Prevalencia; no completar el primer tto., con PSU al ingreso")
+scales::percent(1833/2383) #77%
+invisible("Prevalencia; no completar el primer tto., con PSU al ingreso")
+scales::percent(8615/10934) #79%
+invisible("Prevalencia; al menos un no-completar, sin PSU alguna vez")
+scales::percent(1099/1271) #86%
+invisible("Prevalencia; al menos un no-completar, con PSU alguna vez")
+scales::percent(11121/12046) #92%
+invisible("Prevalencia; no completar el primer tto., sin PSU lguna vez")
+scales::percent(936/1271) #74%
+invisible("Prevalencia; no completar el primer tto., con PSU alguna vez")
+scales::percent(9512/12046) #79%
+
 ```
 
 
@@ -1044,10 +1179,101 @@ rbind.data.frame(cbind.data.frame(lag="Lag 0", update_terms(format_hr_ci(tidy_ta
 ## 1. No correction
 
 ```{r}
+#| class-output: center-table
+#| message: false
+#| include: true
+#| warning: false
+#| error: false
+#| eval: true
+#| results: hold
+
 plan_names <- attr(table(data_mine_miss_restr_proc2$tipo_de_plan_2_mod),"dimnames")[[1]]
+
+
+model <- geese(tr_outcome ~ policonsumo2 +
+                 comp_bpsc_y3_severe+
+                 edad_al_ing_1 + 
+                 ano_nac_corr + 
+                 susinidumrec_otr +
+                 susinidumrec_coc +
+                 susinidumrec_pbc +
+                 susinidumrec_mar +
+                 psycom_dum_study +
+                 psycom_dum_with +
+                 freq_cons_dum_5day +
+                 cond_oc_dum_2inact +
+                 cond_oc_dum_3unemp +
+                 susprindumrec_coc +
+                 susprindumrec_pbc +
+                 susprindumrec_mar +
+                 susprindumrec_otr, #origen_ingreso_mod fis_comorbidity_icd_10 dg_trs_cons_sus_or
+               id = id, 
+               data = data_mine_miss_restr_proc2exp,
+               family = poisson(), 
+               corstr = "independence", 
+               jack = T)
+
+dplyr::filter(
+  tidy_geese_model(model), Term=="policonsumo2")
+#   Term         Estimate Std.Error z.value p.value CI.Lower CI.Upper
+#   <chr>        <chr>    <chr>     <chr>   <chr>   <chr>    <chr>   
+# 1 policonsumo2 1.02     0.01      2.53    0.0113  1.01     1.04 
+
+model_weight <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindumrec_coc +
+                  susprindumrec_pbc +
+                  susprindumrec_mar +
+                  susprindumrec_otr, # Include relevant predictors
+                id = id, 
+                data = data_mine_miss_restr_proc2exp,
+                weight = data_mine_miss_restr_proc2exp$iiw_nocorr_st,
+                family = poisson("log"), 
+                corstr = "independence")
+dplyr::filter(summary2.geem(model_weight,exponentiate=T, digits=2), Term=="policonsumo2")
+#           Term Estimates Model SE Robust SE Wald CI.lower CI.upper p.value
+# 1 policonsumo2      1.03     0.01      0.01 2.70     1.01     1.05  0.0069
+
+model_alt_weight <- geem(tr_outcome ~ policonsumo2 +
+                  comp_bpsc_y3_severe+
+                  edad_al_ing_1 + 
+                  ano_nac_corr + 
+                  susinidumrec_otr +
+                  susinidumrec_coc +
+                  susinidumrec_pbc +
+                  susinidumrec_mar +
+                  psycom_dum_study +
+                  psycom_dum_with +
+                  freq_cons_dum_5day +
+                  cond_oc_dum_2inact +
+                  cond_oc_dum_3unemp +
+                  susprindumrec_coc +
+                  susprindumrec_pbc +
+                  susprindumrec_mar +
+                  susprindumrec_otr, # Include relevant predictors
+                id = id, 
+                data = data_mine_miss_restr_proc2exp,
+                weight = data_mine_miss_restr_proc2exp$iiw_nocorr_alt_st,
+                family = poisson("log"), 
+                corstr = "independence")
+
+dplyr::filter(summary2.geem(model_alt_weight,exponentiate=T, digits=2), Term=="policonsumo2")
+#           Term Estimates Model SE Robust SE Wald CI.lower CI.upper p.value
+# 1 policonsumo2      1.02     0.01      0.01 1.95     1.00     1.04  0.0513
 ```
 
-### 1.1. No correciton, no weight 
+### 1.1. No correction, no weight 
 
 Initialize a list to store models
 
@@ -1278,7 +1504,7 @@ for (i in seq_along(plan_names)) {
 ```
 
 
-#### 1.2.1 No correction, no weight, GEEM Poisson 
+#### 1.2.1 No correction, weight, GEEM Poisson 
 
 Initialize a list to store models
 
@@ -1329,7 +1555,7 @@ for (i in seq_along(plan_names)) {
 }
 ```
 
-#### 1.2.2 No correction, no weight, GEEM Negative binomial 
+#### 1.2.2 No correction, weight, GEEM Negative binomial 
 
 Define a sequence of x values
 
